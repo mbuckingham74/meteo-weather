@@ -17,16 +17,25 @@ git reset --hard origin/main
 echo "✅ Code updated to: $(git log -1 --oneline)"
 echo ""
 
+# Verify environment configuration
+echo "🔐 Verifying environment configuration..."
+if ! bash scripts/verify-env.sh; then
+    echo "❌ Environment verification failed. Aborting deployment."
+    exit 1
+fi
+echo ""
+
 # Load environment variables
 echo "🔐 Loading environment variables..."
 export $(cat .env.production | grep -v "^#" | xargs)
 echo "✅ Environment variables loaded"
+echo "   OPENWEATHER_API_KEY: ${OPENWEATHER_API_KEY:0:10}..."
 echo ""
 
 # Build both frontend and backend
 echo "🏗️  Building frontend..."
-OPENWEATHER_API_KEY=$OPENWEATHER_API_KEY \
-  docker compose -f docker-compose.prod.yml build --no-cache frontend
+echo "   Passing REACT_APP_OPENWEATHER_API_KEY to build..."
+docker compose -f docker-compose.prod.yml build --no-cache frontend
 echo "✅ Frontend built"
 echo ""
 
@@ -47,13 +56,36 @@ sleep 5
 
 # Verify deployment
 echo "🔍 Verifying deployment..."
+
+# Check if containers are running
+FRONTEND_RUNNING=$(docker ps --filter "name=meteo-frontend-prod" --filter "status=running" -q)
+BACKEND_RUNNING=$(docker ps --filter "name=meteo-backend-prod" --filter "status=running" -q)
+
+if [ -z "$FRONTEND_RUNNING" ]; then
+    echo "❌ ERROR: Frontend container is not running!"
+    docker logs meteo-frontend-prod --tail 50
+    exit 1
+fi
+
+if [ -z "$BACKEND_RUNNING" ]; then
+    echo "❌ ERROR: Backend container is not running!"
+    docker logs meteo-backend-prod --tail 50
+    exit 1
+fi
+
+echo "✅ All containers are running"
+
+# Verify API key in bundle
 if [ -n "$OPENWEATHER_API_KEY" ]; then
+  echo "   Checking for API key in bundle..."
   API_KEY_COUNT=$(docker exec meteo-frontend-prod sh -c "grep -c '$OPENWEATHER_API_KEY' /usr/share/nginx/html/static/js/main.*.js 2>/dev/null" || echo "0")
 
   if [ "$API_KEY_COUNT" -gt 0 ]; then
-    echo "✅ OpenWeather API key found in bundle"
+    echo "✅ OpenWeather API key found in bundle ($API_KEY_COUNT occurrence(s))"
   else
     echo "❌ WARNING: OpenWeather API key NOT found in bundle!"
+    echo "   Checking if REACT_APP_ prefix variable exists..."
+    docker exec meteo-frontend-prod sh -c "grep -o 'REACT_APP_OPENWEATHER_API_KEY' /usr/share/nginx/html/static/js/main.*.js | head -5" || echo "   No REACT_APP_OPENWEATHER_API_KEY references found"
   fi
 else
   echo "⚠️  WARNING: OPENWEATHER_API_KEY not set - skipping bundle verification"
