@@ -267,13 +267,130 @@ function AIWeatherPage() {
     setAutoSubmitted(false);
   }, []);
 
-  const exampleQuestions = [
-    "Will it rain today?", // Triggers radar + historical table
-    "What's the temperature trend this week?", // Triggers temperature chart
-    "How windy will it be tomorrow?", // Triggers wind chart
-    "What's the 48-hour forecast?", // Triggers hourly chart
-    "Should I bring an umbrella this weekend?" // Triggers radar
-  ];
+  // Pre-cached answers for example questions (instant responses)
+  const exampleQuestionsWithAnswers = React.useMemo(() => ({
+    "Will it rain today?": {
+      answer: "Based on current weather data, I'll analyze the precipitation forecast for today. Check the radar map and historical precipitation data below to see rain patterns in your area.",
+      confidence: "High",
+      tokensUsed: 0,
+      suggestedVisualizations: [
+        {
+          type: 'radar',
+          reason: 'Live precipitation radar showing current rain patterns'
+        },
+        {
+          type: 'historical-precipitation',
+          reason: 'Historical precipitation data for context',
+          params: { date: new Date().toISOString().split('T')[0], years: 5 }
+        }
+      ],
+      followUpQuestions: [
+        "When will the rain stop?",
+        "How much rain is expected today?",
+        "Will it rain tomorrow?"
+      ]
+    },
+    "What's the temperature trend this week?": {
+      answer: "I'll show you the temperature trends for the next 7 days. The chart below displays daily high and low temperatures, helping you plan your week ahead.",
+      confidence: "High",
+      tokensUsed: 0,
+      suggestedVisualizations: [
+        {
+          type: 'chart-temperature',
+          reason: 'Temperature trend chart showing daily highs and lows'
+        }
+      ],
+      followUpQuestions: [
+        "What's the warmest day this week?",
+        "Will temperatures drop this weekend?",
+        "How does this compare to normal temperatures?"
+      ]
+    },
+    "How windy will it be tomorrow?": {
+      answer: "Let me show you the wind forecast for tomorrow. The chart below displays wind speed and direction patterns, helping you prepare for outdoor activities.",
+      confidence: "High",
+      tokensUsed: 0,
+      suggestedVisualizations: [
+        {
+          type: 'chart-wind',
+          reason: 'Wind speed and direction forecast'
+        }
+      ],
+      followUpQuestions: [
+        "What's the peak wind speed tomorrow?",
+        "Will winds be gusty?",
+        "Is it safe to fly a drone tomorrow?"
+      ]
+    },
+    "What's the 48-hour forecast?": {
+      answer: "Here's your detailed 48-hour weather forecast showing hourly temperature, precipitation, and wind conditions. This helps you plan the next two days with precision.",
+      confidence: "High",
+      tokensUsed: 0,
+      suggestedVisualizations: [
+        {
+          type: 'chart-hourly',
+          reason: 'Comprehensive 48-hour hourly forecast'
+        }
+      ],
+      followUpQuestions: [
+        "What's the best time to go outside tomorrow?",
+        "When will conditions be worst?",
+        "Should I plan indoor or outdoor activities?"
+      ]
+    }
+  }), []); // Empty deps - this data never changes
+
+  const exampleQuestions = Object.keys(exampleQuestionsWithAnswers);
+
+  // Handle clicking an example question - show animation then instant answer
+  const handleExampleClick = React.useCallback(async (exampleQuestion) => {
+    if (!location) {
+      setError('Please select a location first');
+      return;
+    }
+
+    setQuestion(exampleQuestion);
+    setLoading(true);
+    setError(null);
+    setAnswer(null);
+    setVisualizationsLoaded({}); // Reset visualization loading states
+
+    // Simulate "Analyzing..." animation for 500ms for better UX
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    // Get the pre-cached answer
+    const cachedAnswer = exampleQuestionsWithAnswers[exampleQuestion];
+
+    // Build the complete answer object with weather data
+    const completeAnswer = {
+      answer: cachedAnswer.answer,
+      confidence: cachedAnswer.confidence,
+      tokensUsed: cachedAnswer.tokensUsed,
+      weatherData: {
+        location: location,
+        currentConditions: 'See visualizations below',
+        temperature: unit === 'F' ? '(see chart)' : '(see chart)',
+        coordinates: null // Will be populated by visualizations if needed
+      },
+      suggestedVisualizations: cachedAnswer.suggestedVisualizations,
+      followUpQuestions: cachedAnswer.followUpQuestions,
+      model: 'Cached (instant response)'
+    };
+
+    setAnswer(completeAnswer);
+    setLoading(false);
+
+    // Add to AI history
+    addToAIHistory({
+      question: exampleQuestion,
+      answer: cachedAnswer.answer,
+      location: location,
+      confidence: cachedAnswer.confidence,
+      tokensUsed: cachedAnswer.tokensUsed,
+      visualizations: cachedAnswer.suggestedVisualizations,
+      followUpQuestions: cachedAnswer.followUpQuestions
+    });
+  }, [location, unit, exampleQuestionsWithAnswers]);
 
   return (
     <div className="ai-weather-page">
@@ -466,7 +583,7 @@ function AIWeatherPage() {
           {exampleQuestions.map((q, index) => (
             <button
               key={index}
-              onClick={() => setQuestion(q)}
+              onClick={() => handleExampleClick(q)}
               className="example-button"
               disabled={loading}
             >
