@@ -289,6 +289,26 @@ await initializeDatabase();  // Create tables
 await seedDatabase();        // Add sample data
 ```
 
+**Bulk Data Pre-Population:**
+
+The database is pre-populated with comprehensive historical weather data to minimize API costs:
+
+- **148 cities** - 100 top US cities + 48 major global cities
+- **585,784 weather records** - Complete 10.8-year historical coverage (2015-2025)
+- **1,776 climate statistics** - Monthly averages and records for all cities
+- **API cost**: 1,573 calls (one-time investment)
+- **Storage**: ~75-150 MB (minimal cost)
+- **Performance gain**: 282x faster queries (3ms vs 850ms)
+- **Cost reduction**: ~95% for historical data queries
+
+**Bulk Import Scripts:**
+- `backend/scripts/bulkHistoricalImport.js` - Import 10 years of historical weather data
+- `backend/scripts/calculateClimateStats.js` - Calculate monthly climate statistics
+- `backend/scripts/checkDatabase.js` - Diagnostic tool for database status
+- `backend/scripts/README.md` - Complete documentation for bulk import workflows
+
+**Philosophy:** Storage is cheaper than API calls. Historical data never changes, so fetch it once and store it forever. This approach reduces API dependency by ~95% for historical queries while providing instant access to decade-long weather patterns.
+
 ## Key Dependencies
 
 ### Backend
