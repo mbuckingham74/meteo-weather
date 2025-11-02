@@ -95,7 +95,7 @@ function UniversalSearchBar() {
    * Handle complex AI query (intelligent analysis) - INLINE
    */
   const handleAIQuery = async (question) => {
-    if (!location || typeof location !== 'string' || !location.trim()) {
+    if (!location || !location.trim()) {
       setAiError('Please select a location first');
       return;
     }
