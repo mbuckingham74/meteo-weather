@@ -67,7 +67,8 @@ sleep 5
 # Check backend health
 echo "🔍 Checking backend health..."
 for i in {1..30}; do
-    if docker exec meteo-backend-prod wget -q -O- http://localhost:5001/api/health 2>/dev/null | grep -q "ok"; then
+    # Check via external API endpoint (uses NPM proxy)
+    if curl -s https://api.meteo-beta.tachyonfuture.com/api/health 2>/dev/null | grep -q "ok"; then
         echo "✅ Backend is healthy"
         break
     fi
