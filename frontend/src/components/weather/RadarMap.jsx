@@ -35,6 +35,26 @@ function MapReadyHandler({ onReady }) {
     });
   }, [map, onReady]);
 
+  // Handle map resizing when container size changes
+  React.useEffect(() => {
+    const handleResize = () => {
+      // Small delay to ensure container has resized
+      setTimeout(() => {
+        map.invalidateSize();
+      }, 100);
+    };
+
+    // Listen for window resize events
+    window.addEventListener('resize', handleResize);
+
+    // Also trigger on mount to ensure correct initial size
+    handleResize();
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [map]);
+
   return null;
 }
 
