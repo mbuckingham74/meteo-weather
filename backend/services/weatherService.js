@@ -1,5 +1,6 @@
 const axios = require('axios');
 const { withCache, CACHE_TTL } = require('./cacheService');
+const historicalDataService = require('./historicalDataService');
 
 /**
  * Visual Crossing Weather API Service
@@ -386,12 +387,50 @@ async function getHourlyForecast(location, hours = 48) {
 
 /**
  * Get historical weather data for a location
+ * Prioritizes pre-populated database (2015-2025) over API calls
  * @param {string} location - City name, address, or coordinates
  * @param {string} startDate - Start date (YYYY-MM-DD)
  * @param {string} endDate - End date (YYYY-MM-DD)
  * @returns {Promise<object>} Historical weather data
  */
 async function getHistoricalWeather(location, startDate, endDate) {
+  // Step 1: Check if date range is within pre-populated data (2015-2025)
+  const isInDb = historicalDataService.isDateRangeInDatabase(startDate, endDate);
+
+  if (isInDb) {
+    // Step 2: Try to find location in database
+    const dbLocation = await historicalDataService.findLocationByAddress(location);
+
+    if (dbLocation) {
+      // Step 3: Query database for historical data
+      const dbResult = await historicalDataService.getHistoricalDataFromDb(
+        dbLocation.id,
+        startDate,
+        endDate
+      );
+
+      if (dbResult.success && dbResult.data.length > 0) {
+        console.log(`✅ Using pre-populated data from database (${dbResult.count} records) - API call saved!`);
+
+        return {
+          success: true,
+          source: 'database',
+          location: {
+            address: `${dbLocation.city_name}, ${dbLocation.state || dbLocation.country}`,
+            latitude: dbLocation.latitude,
+            longitude: dbLocation.longitude,
+            timezone: dbLocation.timezone
+          },
+          historical: dbResult.data,
+          queryCost: 0 // No API cost!
+        };
+      }
+    }
+  }
+
+  // Step 4: Fallback to API if data not in database
+  console.log(`⚠️  Data not in database, falling back to API call...`);
+
   const url = buildApiUrl(location, startDate, endDate, {
     include: 'days'
   });
@@ -406,6 +445,7 @@ async function getHistoricalWeather(location, startDate, endDate) {
 
   return {
     success: true,
+    source: 'api',
     location: {
       address: data.resolvedAddress,
       latitude: data.latitude,
@@ -442,6 +482,7 @@ async function getHistoricalWeather(location, startDate, endDate) {
 /**
  * Get historical weather data for a specific date (MM-DD) across multiple years
  * Example: Get weather for November 1st over the last 25 years
+ * Prioritizes pre-populated database (2015-2025) over API calls
  *
  * @param {string} location - City name or coordinates
  * @param {string} date - Date in MM-DD format (e.g., "11-01")
@@ -454,9 +495,41 @@ async function getHistoricalDateData(location, date, years = 25) {
   return withCache(cacheKey, async () => {
     const [month, day] = date.split('-');
     const currentYear = new Date().getFullYear();
-    const historicalData = [];
+    let historicalData = [];
 
     console.log(`📅 Fetching ${years} years of historical data for ${date} in ${location}...`);
+
+    // Step 1: Try to get data from database first
+    const dbLocation = await historicalDataService.findLocationByAddress(location);
+
+    if (dbLocation) {
+      const dbResult = await historicalDataService.getHistoricalDateDataFromDb(
+        dbLocation.id,
+        date,
+        years
+      );
+
+      if (dbResult.success && dbResult.data.length > 0) {
+        console.log(`✅ Using ${dbResult.data.length} years from database - API calls saved!`);
+
+        return {
+          location,
+          date,
+          years: dbResult.data.length,
+          requestedYears: years,
+          source: 'database',
+          data: dbResult.data,
+          statistics: {
+            averagePrecipitation: dbResult.stats.avgPrecip,
+            maxPrecipitation: dbResult.stats.maxPrecip,
+            minPrecipitation: dbResult.stats.minPrecip
+          }
+        };
+      }
+    }
+
+    // Step 2: Fallback to API if data not in database
+    console.log(`⚠️  Data not in database, falling back to API calls...`);
 
     // Fetch data for each year in parallel (in batches to respect rate limits)
     const BATCH_SIZE = 3; // Match MAX_CONCURRENT_REQUESTS
