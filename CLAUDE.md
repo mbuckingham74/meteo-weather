@@ -827,14 +827,15 @@ The main weather dashboard uses a responsive 65/35 split layout with compact spa
     - Show All / Hide All buttons control chart visibility
     - Click any chart button → Smoothly scrolls to that chart
     - Panel scrolls vertically if needed to access all options
-- **Full-Width Interactive Radar Map:**
-  - Positioned after the 65/35 grid layout (spans 100% width, ~1376px on desktop)
-  - 350px fixed height with zoom level 7.5 default
-  - User-controllable zoom with + and − buttons
-  - Animation controls and toggleable layers (precipitation, clouds, temperature)
-  - Dark mode support for all controls
-  - Layer controls, weather alerts, storm tracking, screenshot export
-- **Below Radar Map:** "Forecast & Charts" section with interactive visualizations (dark theme enabled)
+  - **Interactive Radar Map:**
+    - Positioned inside left column (65% width, ~878px on desktop)
+    - Located after current conditions, within `.current-footer`
+    - 350px fixed height with zoom level 7.5 default
+    - User-controllable zoom with + and − buttons
+    - Animation controls and toggleable layers (precipitation, clouds, temperature)
+    - Dark mode support for all controls
+    - Layer controls, weather alerts, storm tracking, screenshot export
+- **Below:** "Forecast & Charts" section with interactive visualizations (dark theme enabled)
 
 **Chart Navigation:**
 - Large "View [CityName] Forecast & Charts" button provides quick access
@@ -882,7 +883,7 @@ The hourly forecast chart features multiple clickable views for focused analysis
 - **Component:** `HourlyForecastChart.jsx`
 
 ### Weather Radar Map
-The app features a professional-grade interactive radar map powered by RainViewer with real historical precipitation data. The map is positioned **full-width** after the 65/35 dashboard grid to maximize visibility on desktop screens (~1376px vs previous ~878px in left column).
+The app features a professional-grade interactive radar map powered by RainViewer with real historical precipitation data. The map is positioned within the left column (65% width, ~878px) of the dashboard grid, after the current conditions section.
 
 **Data Sources:**
 - **Precipitation**: RainViewer API (real historical data, past 2 hours + 30 min forecast)
