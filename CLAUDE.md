@@ -795,11 +795,6 @@ The main weather dashboard uses a responsive 65/35 split layout with compact spa
     - City name (left) and coordinates/timezone (right)
     - Current weather: temperature, feels-like, conditions
     - **5 compact stat boxes**: Wind, Humidity, Visibility, Clouds, 24h Precipitation
-  - **Interactive Radar Map** (350px height, zoom level 7.5)
-    - Fixed height provides consistent sizing
-    - User-controllable zoom with + and − buttons
-    - Animation controls and toggleable layers
-    - Dark mode support for all controls
   - **Today's Highlights Section:**
     - 2x2 grid of info cards
     - 🌅 Sunrise/Sunset times (12-hour format with AM/PM)
@@ -832,7 +827,14 @@ The main weather dashboard uses a responsive 65/35 split layout with compact spa
     - Show All / Hide All buttons control chart visibility
     - Click any chart button → Smoothly scrolls to that chart
     - Panel scrolls vertically if needed to access all options
-- **Below:** "Forecast & Charts" section with interactive visualizations (dark theme enabled)
+- **Full-Width Interactive Radar Map:**
+  - Positioned after the 65/35 grid layout (spans 100% width, ~1376px on desktop)
+  - 350px fixed height with zoom level 7.5 default
+  - User-controllable zoom with + and − buttons
+  - Animation controls and toggleable layers (precipitation, clouds, temperature)
+  - Dark mode support for all controls
+  - Layer controls, weather alerts, storm tracking, screenshot export
+- **Below Radar Map:** "Forecast & Charts" section with interactive visualizations (dark theme enabled)
 
 **Chart Navigation:**
 - Large "View [CityName] Forecast & Charts" button provides quick access
@@ -880,7 +882,7 @@ The hourly forecast chart features multiple clickable views for focused analysis
 - **Component:** `HourlyForecastChart.jsx`
 
 ### Weather Radar Map
-The app features a professional-grade interactive radar map powered by RainViewer with real historical precipitation data:
+The app features a professional-grade interactive radar map powered by RainViewer with real historical precipitation data. The map is positioned **full-width** after the 65/35 dashboard grid to maximize visibility on desktop screens (~1376px vs previous ~878px in left column).
 
 **Data Sources:**
 - **Precipitation**: RainViewer API (real historical data, past 2 hours + 30 min forecast)
@@ -948,7 +950,10 @@ The app features a professional-grade interactive radar map powered by RainViewe
 - **Base map**: OpenStreetMap tiles
 - **Default zoom**: Level 7.5 (balanced regional view)
 - **Map height**: Fixed 350px for consistent sizing
+- **Map width**: Full dashboard width (~1376px) - positioned outside .dashboard-main-row grid
+- **Layout**: Wrapped in `.radar-map-section` with 16px vertical margin, 100% width
 - **Zoom controls**: Custom React state-managed zoom with +/− buttons
+- **Resize handling**: Multi-strategy approach (ResizeObserver + window resize + aggressive mount timers)
 
 ### Location Search & Geolocation
 Enhanced location detection with multiple fallback mechanisms:
@@ -1174,6 +1179,7 @@ The application is fully optimized for mobile devices with comprehensive respons
 
 **Dashboard Optimizations:**
 - **Layout**: 65/35 desktop split → stacked single column on mobile
+- **Radar Map**: Full-width on desktop (~1376px), maintains 100% width on mobile
 - **Current Conditions**: Highlights grid adapts from 2 columns to responsive flow
 - **Stat Boxes**: Grid from 5 columns → 2 columns on mobile
 - **Typography**: Responsive font sizes (64px temp → proportional scaling)

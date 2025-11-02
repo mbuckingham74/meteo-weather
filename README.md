@@ -1498,6 +1498,7 @@ MIT License - feel free to use this project for learning and development.
 - [x] Simplified theme toggle (cycling button: Light → Dark → Auto)
 - [x] Improved "Use My Location" to display "Your Location" instead of coordinates
 - [x] Fixed radar map height in flex layouts (min-height issue resolved)
+- [x] **Radar map layout optimization** - Moved to full-width position (~1376px vs ~878px, 58% wider on desktop)
 - [x] Improved theme consistency across all UI elements
 - [x] Better error handling and fallback mechanisms
 - [x] Temperature unit toggle moved to dashboard controls for better UX
