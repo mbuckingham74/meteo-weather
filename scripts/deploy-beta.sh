@@ -44,15 +44,42 @@ docker compose -f docker-compose.prod.yml build --no-cache backend
 echo "✅ Backend built"
 echo ""
 
-# Restart all services (will use newly built images)
-echo "🔄 Restarting services..."
-docker compose -f docker-compose.prod.yml --env-file .env.production up -d --force-recreate
-echo "✅ Services restarted"
+# Stop all services first to ensure clean restart
+echo "🛑 Stopping all services..."
+docker compose -f docker-compose.prod.yml down
+echo "✅ Services stopped"
 echo ""
 
-# Wait for containers to be ready
-echo "⏳ Waiting for containers..."
+# Start all services with newly built images
+echo "🔄 Starting all services..."
+docker compose -f docker-compose.prod.yml --env-file .env.production up -d
+echo "✅ Services started"
+echo ""
+
+# Wait for MySQL to be ready first
+echo "⏳ Waiting for MySQL to be ready..."
+sleep 10
+
+# Wait for backend to connect to MySQL
+echo "⏳ Waiting for backend to start..."
 sleep 5
+
+# Check backend health
+echo "🔍 Checking backend health..."
+for i in {1..30}; do
+    if docker exec meteo-backend-prod wget -q -O- http://localhost:5001/api/health 2>/dev/null | grep -q "ok"; then
+        echo "✅ Backend is healthy"
+        break
+    fi
+    if [ $i -eq 30 ]; then
+        echo "❌ Backend health check failed after 30 attempts"
+        echo "📋 Backend logs:"
+        docker logs meteo-backend-prod --tail 50
+        exit 1
+    fi
+    sleep 1
+done
+echo ""
 
 # Verify deployment
 echo "🔍 Verifying deployment..."
@@ -74,6 +101,33 @@ if [ -z "$BACKEND_RUNNING" ]; then
 fi
 
 echo "✅ All containers are running"
+
+# Verify network connectivity
+echo ""
+echo "🔌 Verifying network connectivity..."
+FRONTEND_NETWORK=$(docker inspect meteo-frontend-prod --format '{{range $net, $conf := .NetworkSettings.Networks}}{{$net}} {{end}}')
+BACKEND_NETWORK=$(docker inspect meteo-backend-prod --format '{{range $net, $conf := .NetworkSettings.Networks}}{{$net}} {{end}}')
+
+if echo "$FRONTEND_NETWORK" | grep -q "npm_network"; then
+    echo "✅ Frontend connected to npm_network"
+else
+    echo "❌ Frontend NOT connected to npm_network!"
+    echo "   Networks: $FRONTEND_NETWORK"
+fi
+
+if echo "$BACKEND_NETWORK" | grep -q "npm_network"; then
+    echo "✅ Backend connected to npm_network"
+else
+    echo "❌ Backend NOT connected to npm_network!"
+    echo "   Networks: $BACKEND_NETWORK"
+fi
+
+if echo "$BACKEND_NETWORK" | grep -q "meteo-internal"; then
+    echo "✅ Backend connected to meteo-internal"
+else
+    echo "❌ Backend NOT connected to meteo-internal!"
+fi
+echo ""
 
 # Verify API key in bundle
 if [ -n "$OPENWEATHER_API_KEY" ]; then
