@@ -35,61 +35,6 @@ function MapReadyHandler({ onReady }) {
     });
   }, [map, onReady]);
 
-  // Handle map resizing with multiple strategies for reliability
-  React.useEffect(() => {
-    const handleResize = () => {
-      // Invalidate size immediately
-      map.invalidateSize();
-
-      // Also trigger after short delay to catch late layout changes
-      setTimeout(() => {
-        map.invalidateSize();
-      }, 100);
-
-      // Final attempt after longer delay for slow renders
-      setTimeout(() => {
-        map.invalidateSize();
-      }, 500);
-    };
-
-    // Strategy 1: Listen for window resize events
-    window.addEventListener('resize', handleResize);
-
-    // Strategy 2: Use ResizeObserver to watch the map container itself
-    const mapContainer = map.getContainer();
-    let resizeObserver = null;
-
-    if (typeof ResizeObserver !== 'undefined') {
-      resizeObserver = new ResizeObserver(() => {
-        map.invalidateSize();
-      });
-      resizeObserver.observe(mapContainer);
-      // Also observe parent to catch flex layout changes
-      if (mapContainer.parentElement) {
-        resizeObserver.observe(mapContainer.parentElement);
-      }
-    }
-
-    // Strategy 3: Aggressive initial resize on mount
-    // This fixes the issue where flex containers take time to calculate
-    handleResize();
-    const timers = [
-      setTimeout(handleResize, 10),
-      setTimeout(handleResize, 50),
-      setTimeout(handleResize, 200),
-      setTimeout(handleResize, 500),
-      setTimeout(handleResize, 1000)
-    ];
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      if (resizeObserver) {
-        resizeObserver.disconnect();
-      }
-      timers.forEach(timer => clearTimeout(timer));
-    };
-  }, [map]);
-
   return null;
 }
 

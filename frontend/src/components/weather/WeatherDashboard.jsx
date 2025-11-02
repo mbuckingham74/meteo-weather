@@ -378,6 +378,18 @@ function WeatherDashboard() {
                     </div>
                   </div>
 
+                  <div className="current-footer">
+                    {data.location && (
+                      <RadarMap
+                        latitude={data.location.latitude}
+                        longitude={data.location.longitude}
+                        zoom={7.5}
+                        height="350px"
+                        alerts={data.alerts}
+                      />
+                    )}
+                  </div>
+
                   {/* Today's Highlights */}
                   {currentWeather.data && !currentWeather.loading && data.forecast && data.forecast.length > 0 && (
                     <div className="todays-highlights">
@@ -781,19 +793,6 @@ function WeatherDashboard() {
             </div>
           </div>
         </div>
-
-          {/* Interactive Radar Map - Full Width */}
-          {data.location && (
-            <div className="radar-map-section">
-              <RadarMap
-                latitude={data.location.latitude}
-                longitude={data.location.longitude}
-                zoom={7.5}
-                height="350px"
-                alerts={data.alerts}
-              />
-            </div>
-          )}
 
           {/* Weather Alerts */}
           {data.alerts && data.alerts.length > 0 && (
