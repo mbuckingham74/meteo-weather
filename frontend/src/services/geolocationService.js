@@ -30,7 +30,9 @@ async function getLocationFromIP() {
           longitude: data.longitude,
           timezone: data.timezone,
           accuracy: 5000,
-          method: 'ip'
+          method: 'ip',
+          requiresConfirmation: true, // IP-based locations should be confirmed
+          detectionMethod: 'IP Geolocation (ipapi.co)'
         };
       }
     },
@@ -50,7 +52,9 @@ async function getLocationFromIP() {
           longitude: parseFloat(data.longitude),
           timezone: data.timezone,
           accuracy: 5000,
-          method: 'ip'
+          method: 'ip',
+          requiresConfirmation: true, // IP-based locations should be confirmed
+          detectionMethod: 'IP Geolocation (geojs.io)'
         };
       }
     }
@@ -140,12 +144,18 @@ export async function getCurrentLocation() {
               resolve({
                 ...location,
                 address: 'Your Location', // User-friendly display instead of coordinates
-                accuracy: position.coords.accuracy
+                accuracy: position.coords.accuracy,
+                method: options.enableHighAccuracy ? 'gps' : 'browser',
+                requiresConfirmation: position.coords.accuracy > 1000, // Confirm if accuracy is poor
+                detectionMethod: options.enableHighAccuracy ? 'GPS (High Accuracy)' : 'Browser Geolocation'
               });
             } else {
               resolve({
                 ...location,
-                accuracy: position.coords.accuracy
+                accuracy: position.coords.accuracy,
+                method: options.enableHighAccuracy ? 'gps' : 'browser',
+                requiresConfirmation: position.coords.accuracy > 1000, // Confirm if accuracy is poor
+                detectionMethod: options.enableHighAccuracy ? 'GPS (High Accuracy)' : 'Browser Geolocation'
               });
             }
           } catch (error) {
@@ -158,7 +168,10 @@ export async function getCurrentLocation() {
               latitude: latitude,
               longitude: longitude,
               timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-              accuracy: position.coords.accuracy
+              accuracy: position.coords.accuracy,
+              method: options.enableHighAccuracy ? 'gps' : 'browser',
+              requiresConfirmation: position.coords.accuracy > 1000, // Confirm if accuracy is poor
+              detectionMethod: options.enableHighAccuracy ? 'GPS (High Accuracy)' : 'Browser Geolocation'
             };
 
             console.log('📍 Using fallback location:', fallbackLocation);

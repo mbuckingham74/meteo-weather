@@ -4,6 +4,7 @@ import { useForecastComparison, useThisDayInHistory } from '../../hooks/useClima
 import { formatTemperature, aggregateWeatherData } from '../../utils/weatherHelpers';
 import { useTemperatureUnit } from '../../contexts/TemperatureUnitContext';
 import LocationSearchBar from './LocationSearchBar';
+import LocationConfirmationModal from './LocationConfirmationModal';
 import TemperatureUnitToggle from '../units/TemperatureUnitToggle';
 import TemperatureBandChart from '../charts/TemperatureBandChart';
 import PrecipitationChart from '../charts/PrecipitationChart';
@@ -35,6 +36,8 @@ function LocationComparisonView() {
   const [showAiSection, setShowAiSection] = useState(false); // Start collapsed
   const [currentLocationData, setCurrentLocationData] = useState(null);
   const [gettingLocation, setGettingLocation] = useState(false);
+  const [pendingLocation, setPendingLocation] = useState(null); // Location pending confirmation
+  const [showLocationConfirmation, setShowLocationConfirmation] = useState(false);
 
   const { unit } = useTemperatureUnit();
 
@@ -46,11 +49,21 @@ function LocationComparisonView() {
     const detectLocation = async () => {
       try {
         const location = await getCurrentLocation();
-        setCurrentLocationData({
-          lat: location.latitude,
-          lng: location.longitude,
-          city: location.address
-        });
+
+        // Check if location requires confirmation (IP-based or poor accuracy)
+        if (location.requiresConfirmation) {
+          console.log('🔍 Location requires confirmation:', location);
+          setPendingLocation(location);
+          setShowLocationConfirmation(true);
+          // Don't set currentLocationData yet - wait for confirmation
+        } else {
+          // High-accuracy location - use immediately
+          setCurrentLocationData({
+            lat: location.latitude,
+            lng: location.longitude,
+            city: location.address
+          });
+        }
       } catch (error) {
         console.log('Location detection skipped:', error.message);
         // Don't show error - it's optional
@@ -59,6 +72,35 @@ function LocationComparisonView() {
 
     detectLocation();
   }, []);
+
+  // Handle location confirmation
+  const handleConfirmLocation = () => {
+    if (pendingLocation) {
+      console.log('✅ User confirmed location:', pendingLocation);
+      setCurrentLocationData({
+        lat: pendingLocation.latitude,
+        lng: pendingLocation.longitude,
+        city: pendingLocation.address
+      });
+      setShowLocationConfirmation(false);
+      setPendingLocation(null);
+    }
+  };
+
+  // Handle location rejection
+  const handleRejectLocation = () => {
+    console.log('❌ User rejected location');
+    setShowLocationConfirmation(false);
+    setPendingLocation(null);
+    setCurrentLocationData(null); // Clear any detected location
+  };
+
+  // Handle modal close
+  const handleCloseConfirmation = () => {
+    console.log('🚫 User closed confirmation modal');
+    setShowLocationConfirmation(false);
+    // Don't set currentLocationData if user didn't confirm
+  };
 
   // Calculate date range based on selected time range
   const getDateRange = () => {
@@ -484,6 +526,16 @@ function LocationComparisonView() {
 
   return (
     <div className="location-comparison-view">
+      {/* Location Confirmation Modal */}
+      {showLocationConfirmation && pendingLocation && (
+        <LocationConfirmationModal
+          location={pendingLocation}
+          onConfirm={handleConfirmLocation}
+          onReject={handleRejectLocation}
+          onClose={handleCloseConfirmation}
+        />
+      )}
+
       <div className="comparison-header">
         <h2>📊 Location Comparison</h2>
         <div className="comparison-controls">

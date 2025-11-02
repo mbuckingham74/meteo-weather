@@ -994,6 +994,35 @@ The IP fallback ensures location detection works 99% of the time.
 - Improves UX when API rate limits prevent address lookups
 - Coordinates still available in location metadata for API calls
 
+**VPN/IP Geolocation Confirmation System:**
+To handle VPN and IP-based geolocation edge cases, the app includes a smart confirmation workflow:
+
+**Location Confirmation Modal** (`LocationConfirmationModal.jsx`):
+- **Automatic Triggering:** Shows when location detection uses IP-based geolocation or has poor accuracy (>1km)
+- **VPN Detection Warning:** Special alert when IP-based location is detected (likely VPN/proxy)
+- **Accuracy Indicators:**
+  - 🎯 **Precise (GPS)** - <100m accuracy (green) - auto-accepted, no confirmation needed
+  - 📍 **Approximate (Wi-Fi)** - 100m-1km accuracy (blue) - auto-accepted
+  - 🌐 **City-level (IP)** - >1km accuracy (orange) - **requires confirmation**
+- **User Actions:**
+  - ✅ **Yes, this is correct** - Accepts detected location
+  - ❌ **No, let me search** - Rejects location, focuses search bar for manual entry
+  - ✕ **Close** - Dismisses modal without action
+
+**Implementation Details:**
+- **Metadata Added to Geolocation:**
+  - `requiresConfirmation: boolean` - Set to `true` for IP-based or low-accuracy locations
+  - `method: 'gps' | 'browser' | 'ip'` - Detection method used
+  - `detectionMethod: string` - Human-readable method description
+  - `accuracy: number` - Accuracy in meters (from browser Geolocation API or estimated 5000m for IP)
+- **Integration Points:**
+  - `WeatherDashboard.jsx` - Asks for confirmation when "Use My Location" is clicked
+  - `LocationComparisonView.jsx` - Auto-detects location on page load with confirmation
+- **User Experience:**
+  - High-accuracy GPS locations (mobile devices) bypass confirmation for seamless UX
+  - IP-based locations (VPN users, desktop users) get friendly confirmation dialog
+  - Clear visual feedback about accuracy level helps users understand data quality
+
 ### Global Controls
 - **Temperature Unit Toggle** (Dashboard Controls): Switches between °C and °F
   - Persists to localStorage for guests

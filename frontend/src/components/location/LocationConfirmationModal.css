@@ -1,0 +1,339 @@
+/**
+ * LocationConfirmationModal Styles
+ * Modal for confirming auto-detected location
+ */
+
+.location-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 20px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.location-modal-content {
+  background: var(--bg-elevated, white);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.location-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid var(--border-color, #e0e0e0);
+}
+
+.location-modal-header h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary, #111827);
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: var(--text-tertiary, #6b7280);
+  cursor: pointer;
+  padding: 4px 8px;
+  line-height: 1;
+  transition: all 0.2s;
+}
+
+.modal-close-btn:hover {
+  color: var(--text-primary, #111827);
+  transform: scale(1.1);
+}
+
+.location-modal-body {
+  padding: 24px;
+}
+
+.detected-location-card {
+  background: var(--bg-tertiary, #f9fafb);
+  border: 2px solid var(--border-color, #e0e0e0);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.location-info {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.location-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.location-details {
+  flex: 1;
+}
+
+.location-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary, #111827);
+  margin-bottom: 8px;
+}
+
+.location-accuracy {
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.location-accuracy[data-accuracy-color="green"] {
+  background: var(--success-bg, #d1fae5);
+  color: var(--success-text, #065f46);
+  border: 1px solid var(--success-border, #6ee7b7);
+}
+
+.location-accuracy[data-accuracy-color="blue"] {
+  background: var(--info-bg, #dbeafe);
+  color: var(--info-text, #1e40af);
+  border: 1px solid var(--info-border, #93c5fd);
+}
+
+.location-accuracy[data-accuracy-color="orange"] {
+  background: var(--warning-bg, #fef3c7);
+  color: var(--warning-text, #92400e);
+  border: 1px solid var(--warning-border, #fcd34d);
+}
+
+.location-coords {
+  font-size: 12px;
+  color: var(--text-tertiary, #6b7280);
+  font-family: 'Courier New', monospace;
+  margin-top: 4px;
+}
+
+.vpn-warning {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 12px;
+  background: var(--warning-bg, #fef3c7);
+  border: 1px solid var(--warning-border, #fcd34d);
+  border-radius: 8px;
+}
+
+.warning-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.warning-content {
+  flex: 1;
+}
+
+.warning-content strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--warning-text, #92400e);
+  margin-bottom: 4px;
+}
+
+.warning-content p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--warning-text, #92400e);
+}
+
+.confirmation-question {
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.confirmation-question p {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-primary, #111827);
+  margin: 0;
+}
+
+.location-modal-footer {
+  display: flex;
+  gap: 12px;
+  padding: 16px 24px 24px;
+  border-top: 1px solid var(--border-color, #e0e0e0);
+}
+
+.modal-btn {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.modal-btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.modal-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.modal-btn-primary:active {
+  transform: translateY(0);
+}
+
+.modal-btn-secondary {
+  background: var(--bg-tertiary, #f3f4f6);
+  color: var(--text-primary, #111827);
+  border: 1px solid var(--border-color, #e0e0e0);
+}
+
+.modal-btn-secondary:hover {
+  background: var(--bg-secondary, #e5e7eb);
+  border-color: var(--text-tertiary, #9ca3af);
+}
+
+.modal-btn-secondary:active {
+  transform: scale(0.98);
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .location-modal-content {
+    background: var(--bg-elevated, #1a1a2e);
+  }
+
+  .location-modal-header {
+    border-bottom-color: var(--border-color, #3a3a4e);
+  }
+
+  .detected-location-card {
+    background: var(--bg-secondary, #16213e);
+    border-color: var(--border-color, #3a3a4e);
+  }
+
+  .modal-close-btn:hover {
+    color: var(--text-primary, white);
+  }
+
+  .location-modal-footer {
+    border-top-color: var(--border-color, #3a3a4e);
+  }
+
+  .modal-btn-secondary {
+    background: var(--bg-secondary, #16213e);
+    border-color: var(--border-color, #3a3a4e);
+    color: var(--text-primary, white);
+  }
+
+  .modal-btn-secondary:hover {
+    background: var(--bg-tertiary, #1f2937);
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 480px) {
+  .location-modal-content {
+    border-radius: 12px;
+    max-height: 95vh;
+  }
+
+  .location-modal-header,
+  .location-modal-body,
+  .location-modal-footer {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .location-modal-footer {
+    flex-direction: column;
+  }
+
+  .modal-btn {
+    width: 100%;
+  }
+
+  .location-name {
+    font-size: 16px;
+  }
+
+  .warning-content p {
+    font-size: 12px;
+  }
+}
+
+/* Accessibility */
+.modal-btn:focus-visible {
+  outline: 2px solid var(--accent-primary, #667eea);
+  outline-offset: 2px;
+}
+
+.modal-close-btn:focus-visible {
+  outline: 2px solid var(--accent-primary, #667eea);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .location-modal-overlay,
+  .location-modal-content,
+  .modal-btn,
+  .modal-close-btn {
+    animation: none;
+    transition: none;
+  }
+
+  .modal-btn:hover,
+  .modal-btn-primary:hover {
+    transform: none;
+  }
+}

@@ -32,6 +32,7 @@ import TemperatureUnitToggle from '../units/TemperatureUnitToggle';
 import DashboardSkeleton from '../common/DashboardSkeleton';
 import RadarMap from './RadarMap';
 import UniversalSearchBar from '../ai/UniversalSearchBar';
+import LocationConfirmationModal from '../location/LocationConfirmationModal';
 import './WeatherDashboard.css';
 
 /**
@@ -47,6 +48,8 @@ function WeatherDashboard() {
   const [detectingLocation, setDetectingLocation] = useState(false);
   const [locationError, setLocationError] = useState(null);
   const [activeTab, setActiveTab] = useState('forecast'); // Tab state: forecast, details, historical, air-quality
+  const [pendingLocation, setPendingLocation] = useState(null); // Location pending user confirmation
+  const [showLocationConfirmation, setShowLocationConfirmation] = useState(false);
 
   // Chart visibility state
   const [visibleCharts, setVisibleCharts] = useState({
@@ -155,12 +158,53 @@ function WeatherDashboard() {
 
     try {
       const currentLoc = await getCurrentLocation();
-      selectLocation(currentLoc);
+
+      // Check if location requires confirmation (IP-based or poor accuracy)
+      if (currentLoc.requiresConfirmation) {
+        console.log('🔍 Location requires confirmation:', currentLoc);
+        setPendingLocation(currentLoc);
+        setShowLocationConfirmation(true);
+      } else {
+        // GPS/high-accuracy location - use immediately
+        console.log('✅ High-accuracy location - using immediately:', currentLoc);
+        selectLocation(currentLoc);
+      }
     } catch (error) {
       setLocationError(error.message);
     } finally {
       setDetectingLocation(false);
     }
+  };
+
+  // Handle location confirmation (user confirmed detected location is correct)
+  const handleConfirmLocation = () => {
+    if (pendingLocation) {
+      console.log('✅ User confirmed location:', pendingLocation);
+      selectLocation(pendingLocation);
+      setShowLocationConfirmation(false);
+      setPendingLocation(null);
+    }
+  };
+
+  // Handle location rejection (user says location is wrong)
+  const handleRejectLocation = () => {
+    console.log('❌ User rejected location, showing search');
+    setShowLocationConfirmation(false);
+    setPendingLocation(null);
+    // Focus search input for manual entry
+    setTimeout(() => {
+      const searchInput = document.querySelector('[data-search-input]');
+      if (searchInput) {
+        searchInput.focus();
+      }
+    }, 100);
+  };
+
+  // Handle modal close (user dismissed without confirming)
+  const handleCloseConfirmation = () => {
+    console.log('🚫 User closed confirmation modal without action');
+    setShowLocationConfirmation(false);
+    // Keep pendingLocation in case they want to try again
   };
 
   // Handle adding current location to favorites
@@ -222,6 +266,16 @@ function WeatherDashboard() {
 
   return (
     <div className="weather-dashboard">
+      {/* Location Confirmation Modal */}
+      {showLocationConfirmation && pendingLocation && (
+        <LocationConfirmationModal
+          location={pendingLocation}
+          onConfirm={handleConfirmLocation}
+          onReject={handleRejectLocation}
+          onClose={handleCloseConfirmation}
+        />
+      )}
+
       {/* Header */}
       <header className="dashboard-header">
         <h1 className="dashboard-title">
