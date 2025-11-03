@@ -47,6 +47,7 @@ services:
       METEO_ANTHROPIC_API_KEY: ${METEO_ANTHROPIC_API_KEY}
       CORS_ORIGIN: https://meteo-beta.tachyonfuture.com
       JWT_SECRET: ${JWT_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
     depends_on:
       mysql-prod:
         condition: service_healthy

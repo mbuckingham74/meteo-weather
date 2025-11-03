@@ -23,6 +23,7 @@ services:
       - "5001:5001"
     environment:
       - NODE_ENV=development
+      - PORT=5001
       - DB_HOST=mysql
       - DB_PORT=3306
       - DB_USER=${DB_USER:-root}
@@ -31,6 +32,8 @@ services:
       - VISUAL_CROSSING_API_KEY=${VISUAL_CROSSING_API_KEY}
       - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
       - METEO_ANTHROPIC_API_KEY=${METEO_ANTHROPIC_API_KEY}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
     volumes:
       - ./backend:/app
       - ./database:/database
