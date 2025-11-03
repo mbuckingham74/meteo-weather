@@ -1,54 +1,61 @@
 ---
-description: Processes and validates weather-related algorithms, data analysis, and meteorological computations
+description: Documents weather-specific algorithms, data processing, and analysis features for meteorological applications
 ---
 
 
 # weather-algorithms
 
-## Core Weather Analysis Components
+Core Weather Algorithm Components:
 
-### Climate Statistics Engine (Importance: 95)
-`backend/services/climateService.js`
-- Historical pattern recognition using 30-year climate normals
-- Temperature probability distribution calculations
-- Custom weather severity classification algorithms
-- Multi-metric climate similarity scoring
-- Precipitation intensity normalization
-
-### Weather Pattern Analysis (Importance: 90) 
-`backend/services/weatherService.js`
-- Custom algorithms for weather trend identification
-- Temperature anomaly detection using statistical baselines
-- Storm track prediction using radar data correlation
-- Precipitation probability calculations using local terrain data
-
-### Radar Data Processing (Importance: 85)
-`frontend/src/components/weather/RadarMap.jsx`
-- Multi-layer precipitation intensity analysis
-- Storm cell tracking algorithms
-- Custom frame interpolation for smooth transitions
-- Dynamic radar tile processing with elevation considerations
-
-### Historical Data Analysis (Importance: 80)
-`frontend/src/components/charts/HistoricalComparisonChart.jsx`
-- Climate normal deviation calculations
-- Record temperature identification algorithms
-- Custom historical weather pattern matching
-- Seasonal trend analysis with weighted averaging
-
-### Temperature Distribution Analysis (Importance: 75)
+1. Temperature Distribution Analysis (90/100)
 `frontend/src/components/charts/TemperatureProbabilityChart.jsx`
-- Probability distribution calculations for temperature ranges
-- Historical temperature percentile analysis
-- Custom algorithms for extreme temperature event detection
-- Temperature band calculation with confidence intervals
+- Climate probability calculations using historical data
+- Temperature range binning with adaptive boundaries
+- Statistical frequency analysis for temperature distributions
+- Percentile-based climate band visualization
 
-### Weather Risk Assessment (Importance: 70)
+2. Radar Data Processing (85/100)
+`frontend/src/components/weather/RadarMap.jsx`
+- Storm tracking simulation with movement vectors
+- Multi-layer weather data compositing (precipitation, clouds, temperature)
+- Frame-based animation system for pattern visualization
+- Fallback chain between multiple radar data providers
+
+3. Historical Climate Analysis (85/100)
+`backend/services/climateService.js`
+- Climate normals computation across multiple timescales
+- Temperature trend deviation analysis
+- Historical pattern matching algorithms
+- Weather event classification system
+
+4. Precipitation Pattern Analysis (80/100)
+`frontend/src/components/weather/HistoricalRainTable.jsx`
+- Rainfall intensity normalization
+- Statistical analysis of precipitation patterns
+- Multi-year trend comparison system
+- Rainy day percentage calculations
+
+5. Weather Query Processing (75/100)
 `backend/services/aiWeatherAnalysisService.js`
-- Multi-factor weather risk scoring
-- Custom severity classification algorithms
-- Health impact assessment based on weather conditions
-- Dynamic threshold adjustment based on geographical location
+- Natural language weather query parsing
+- Context-aware visualization selection
+- Dynamic meteorological data correlation
+- Weather pattern interpretation system
+
+6. Location Climate Matching (75/100)
+`backend/services/aiLocationFinderService.js`
+- Climate similarity scoring algorithm
+- Temperature profile matching
+- Precipitation pattern correlation
+- Seasonal weather alignment calculation
+
+Key Integration Points:
+- Historical data aggregation with real-time forecasts
+- Multi-source weather data normalization
+- Climate classification system
+- Pattern recognition for extreme weather events
+
+The system implements sophisticated meteorological algorithms focused on pattern recognition, statistical analysis, and climate modeling, with particular emphasis on temperature distribution analysis and radar data processing.
 
 $END$
 

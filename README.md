@@ -526,6 +526,7 @@ Professional development workflow with automated testing, security scanning, and
 - 🎯 GITHUB_TOPICS.md (discovery strategy)
 - 📣 PROMOTION.md (launch content for multiple platforms)
 - 🗺️ CLAUDE.md (AI-assisted development guidelines)
+- 📘 AGENTS.md (Repository guidelines for new contributors and agents)
 
 ### Roadmap Ideas
 
@@ -1247,8 +1248,6 @@ meteo-app/
 │   │   └── userFavoritesService.js  # Cloud favorites management
 │   ├── middleware/
 │   │   └── authMiddleware.js        # JWT authentication middleware
-│   ├── database/
-│   │   └── auth-schema.sql          # User & auth database schema
 │   └── server.js
 │
 └── docker-compose.yml

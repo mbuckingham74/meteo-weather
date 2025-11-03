@@ -1509,56 +1509,47 @@ announce('Location changed to New York, NY');
 - Explain your OBSERVATIONS clearly, then provide REASONING to identify the exact issue. Add console logs when needed to gather more information.
 
 
-The application implements sophisticated weather analysis and location comparison through several interconnected systems:
+The weather application's core business logic is organized around four primary systems:
 
-## Core Analysis Systems
+1. AI Weather Intelligence System
+- Query interpretation and routing through AIWeatherAnalysisService
+- Natural language processing for complex weather questions
+- Contextual visualization selection based on question types
+- Historical pattern matching and trend analysis
+- Dynamic follow-up question generation
+Importance Score: 95
 
-### Climate Analysis Engine (Score: 90)
-Located in `backend/services/climateService.js`, provides:
-- Multi-year historical pattern analysis
-- Climate normals calculation using 30-day moving averages
-- Temperature probability distribution modeling
-- Record temperature identification algorithms
+2. Climate Analysis Engine
+- Multi-year historical data processing in climateService
+- Temperature probability distribution calculations
+- Climate normal computations and deviation analysis
+- Weather pattern comparison across time periods
+- Statistical analysis of temperature ranges
+Importance Score: 85
 
-### AI Location Recommendation System (Score: 85)
-Implemented in `backend/services/aiLocationFinderService.js`:
-- Natural language processing for location preferences
-- Climate matching between locations
-- Temperature delta analysis
-- Structured criteria extraction from queries
+3. Location Intelligence Platform
+- AI-powered location matching based on weather preferences
+- Multi-source location validation (GPS, IP, WiFi)
+- Climate-based location scoring system
+- Location comparison engine with weighted metrics
+- Historical weather pattern matching between locations
+Importance Score: 90
 
-### Weather Data Processing Pipeline (Score: 80)
-Spans multiple components including:
-- Historical comparison algorithms
-- Custom aggregation for different time ranges
-- Climate similarity matching
-- Temperature trend analysis
-- Precipitation pattern recognition
+4. Weather Data Integration Hub
+- Smart caching system with weather-specific TTL rules
+- Bulk historical data pre-population strategy
+- Multi-source radar data integration
+- Air quality index processing and health recommendations
+- Real-time weather alert processing
+Importance Score: 80
 
-## Supporting Systems
+Key Integration Points:
+- AILocationFinder connects location and climate analysis systems
+- WeatherAnalysis engine coordinates data from all subsystems
+- Historical data service bridges climate analysis and caching systems
+- Location validation integrates with weather data providers
 
-### Air Quality Analysis (Score: 75)
-Handles complex air quality calculations:
-- Multi-pollutant index processing
-- Health impact assessment
-- Custom AQI level determination
-- Trend analysis and forecasting
-
-### Location Management (Score: 70)
-Provides sophisticated location handling:
-- Cloud sync prioritization
-- Intelligent location matching
-- Duplicate detection algorithms
-- Migration strategies between local/cloud storage
-
-### Weather Risk Assessment (Score: 70)
-Implements comprehensive risk analysis:
-- Temperature probability distribution analysis
-- Custom weather risk scoring
-- Climate variability assessment
-- Severity classification algorithms
-
-The system integrates these components through a domain-specific caching layer that handles weather data invalidation rules and variable TTL based on data types.
+The system maintains separation between core weather intelligence (AI, climate analysis) and supporting services (caching, data transformation), with clear interfaces between components.
 
 $END$
 

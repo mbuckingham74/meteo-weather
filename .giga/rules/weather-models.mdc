@@ -1,57 +1,59 @@
 ---
-description: Documents data models and relationships for weather metrics, forecasts, historical data, and location information
+description: Specification for weather data models, metrics, relationships and processing logic
 ---
 
 
 # weather-models
 
-## Core Weather Data Models
+Core Weather Data Models:
 
-### Climate Analysis Model
-Path: `backend/services/climateService.js`
-Importance Score: 95
+1. Historical Weather Records
+- Maintains historical weather data with 10-year lookback period
+- Climate normals calculation with weighted averaging
+- Statistical analysis of temperature distributions and patterns
+- Links historical precipitation data to climate trends
+Importance: 95/100
 
-- Historical weather pattern tracking with 30-year climate normals
-- Temperature distribution models using probability curves
-- Multi-metric climate similarity scoring system
-- Record temperature identification with significance weighting
-- Custom statistical aggregation for long-term trends
+2. Location Weather Profile
+- Geocoded location data with weather station mapping
+- Current conditions with extended forecast integration
+- Historical climate pattern associations
+- UV, air quality and weather alert aggregation
+Importance: 90/100
 
-### Location Weather Model 
-Path: `backend/services/weatherService.js`
-Importance Score: 90
+3. Temperature Probability Model
+- Statistical temperature distribution analysis
+- Historical temperature band calculations
+- Record temperature tracking and comparison
+- Temperature probability forecasting
+Importance: 85/100
 
-- Integrated current conditions with forecast probability bands
-- Real-time alert severity classification system
-- Custom dewpoint calculation using Magnus formula implementation
-- Weather pattern matching for similar historical conditions
+4. Precipitation Analytics Model
+- Historical rain pattern analysis
+- Precipitation intensity normalization
+- Storm tracking and movement prediction
+- Multi-year rainfall comparisons
+Importance: 80/100
 
-### Air Quality Index Model
-Path: `backend/services/airQualityService.js`
-Importance Score: 85
+5. Climate Pattern Detection
+- Long-term climate trend analysis
+- Temperature and precipitation pattern matching
+- Climate zone classification
+- Seasonal variation tracking
+Importance: 85/100
 
-- Multi-pollutant concentration tracking
-- AQI calculation with regional standard adjustments
-- Health impact assessment scoring
-- Trend analysis with moving averages
+Key Relationships:
+- Location -> Weather Station -> Historical Records
+- Current Conditions -> Historical Normals -> Probability Models
+- Temperature Data -> Climate Patterns -> Weather Alerts
+- Precipitation Data -> Storm Tracking -> Radar Integration
 
-### Weather Data Cache Model
-Path: `backend/services/cacheService.js`
-Importance Score: 75
-
-- Variable TTL based on weather metric type
-- Staleness calculations for different weather parameters
-- Invalidation rules for sudden weather changes
-- Historical data persistence strategies
-
-### Weather Risk Assessment Model
-Path: `frontend/src/components/charts/TemperatureProbabilityChart.jsx`
-Importance Score: 80
-
-- Probability distribution curves for temperature ranges
-- Risk score calculation from multiple weather parameters
-- Historical pattern deviation detection
-- Climate variability assessment metrics
+The models support:
+- Multi-location climate comparison
+- AI-powered weather analysis
+- Historical pattern recognition
+- Predictive weather modeling
+- Climate zone matching
 
 $END$
 

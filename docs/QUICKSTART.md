@@ -10,23 +10,30 @@ cd meteo-app
 
 ### 2. Create Environment File
 
-Your API key is **already configured locally** in `backend/.env` and will **never be committed to Git**.
-
 For a new environment, create a `.env` file in the project root:
 
 ```bash
 cat > .env << 'EOF'
+# Server
+PORT=5001
+NODE_ENV=development
+
 # Database
 DB_USER=root
 DB_PASSWORD=your_secure_db_password_here
 DB_NAME=meteo_app
 
-# Visual Crossing API
+# External APIs
 VISUAL_CROSSING_API_KEY=your_visual_crossing_api_key_here
+# Optional:
+# OPENWEATHER_API_KEY=your_openweather_key_here
+# METEO_ANTHROPIC_API_KEY=your_anthropic_api_key_here
+
+# JWT (required for auth flows)
+JWT_SECRET=replace_me_with_strong_secret
+JWT_REFRESH_SECRET=replace_me_with_stronger_secret
 EOF
 ```
-
-**📝 Note:** For actual credentials, see `.env.secrets` file (not committed to Git)
 
 **⚠️ Security Note:** The `.env` file is in `.gitignore` and will NOT be pushed to GitHub.
 
@@ -47,6 +54,8 @@ docker exec -it meteo-backend npm run db:init
 ```
 
 This creates all tables and adds sample location data.
+
+> ℹ️ Historical weather tables start empty. Data is fetched and cached on demand when you hit the API; we do not ship pre-populated historical records.
 
 ### 5. Verify Everything Works
 ```bash
