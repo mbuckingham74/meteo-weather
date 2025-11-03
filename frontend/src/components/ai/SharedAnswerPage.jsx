@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import { useTemperatureUnit } from '../../contexts/TemperatureUnitContext';
 import RadarMap from '../weather/RadarMap';
 import HistoricalRainTable from '../weather/HistoricalRainTable';
@@ -16,14 +17,12 @@ const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api
  * Displays a publicly shared AI weather analysis
  */
 function SharedAnswerPage() {
+  const { shareId } = useParams();
   const { unit } = useTemperatureUnit();
   const [sharedAnswer, setSharedAnswer] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [visualizationsLoaded, setVisualizationsLoaded] = useState({});
-
-  // Extract share ID from URL
-  const shareId = window.location.pathname.split('/').pop();
 
   // Fetch shared answer on mount
   useEffect(() => {
@@ -86,7 +85,7 @@ function SharedAnswerPage() {
           <p>{error}</p>
         </div>
         <div className="back-link">
-          <a href="/ai-weather">← Ask your own question</a>
+          <Link to="/ai-weather">← Ask your own question</Link>
         </div>
       </div>
     );

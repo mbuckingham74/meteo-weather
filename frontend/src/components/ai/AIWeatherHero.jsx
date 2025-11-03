@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useLocation } from '../../contexts/LocationContext';
 import './AIWeatherHero.css';
 
@@ -10,11 +11,12 @@ import './AIWeatherHero.css';
 function AIWeatherHero() {
   const { location } = useLocation();
   const [question, setQuestion] = useState('');
+  const navigate = useNavigate();
 
   const handleAskNow = () => {
     // Navigate to AI weather page with pre-filled question
     const questionParam = question ? `?q=${encodeURIComponent(question)}` : '';
-    window.location.href = `/ai-weather${questionParam}`;
+    navigate(`/ai-weather${questionParam}`);
   };
 
   const exampleQuestions = [

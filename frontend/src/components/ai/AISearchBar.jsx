@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useLocation } from '../../contexts/LocationContext';
 import './AISearchBar.css';
 
@@ -11,6 +12,7 @@ function AISearchBar() {
   const { location } = useLocation();
   const [isExpanded, setIsExpanded] = useState(false);
   const [question, setQuestion] = useState('');
+  const navigate = useNavigate();
 
   const handleExpand = () => {
     setIsExpanded(true);
@@ -20,10 +22,10 @@ function AISearchBar() {
     if (question.trim()) {
       // Navigate to AI weather page with the question
       const questionParam = encodeURIComponent(question);
-      window.location.href = `/ai-weather?q=${questionParam}`;
+      navigate(`/ai-weather?q=${questionParam}`);
     } else {
       // Just go to AI page if no question entered
-      window.location.href = '/ai-weather';
+      navigate('/ai-weather');
     }
   };
 

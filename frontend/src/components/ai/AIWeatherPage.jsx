@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLocation as useRouterLocation } from 'react-router-dom';
 import { useLocation } from '../../contexts/LocationContext';
 import { useTemperatureUnit } from '../../contexts/TemperatureUnitContext';
 import RadarMap from '../weather/RadarMap';
@@ -21,6 +22,7 @@ const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api
 function AIWeatherPage() {
   const { location } = useLocation();
   const { unit } = useTemperatureUnit();
+  const routerLocation = useRouterLocation();
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -48,7 +50,7 @@ function AIWeatherPage() {
 
   // Read question from URL parameter on mount
   React.useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
+    const urlParams = new URLSearchParams(routerLocation.search);
     const questionParam = urlParams.get('q');
 
     console.log('[URL param check]', { questionParam });
@@ -58,7 +60,7 @@ function AIWeatherPage() {
       console.log('[URL param] Setting question:', questionParam);
       setQuestion(questionParam);
     }
-  }, []);
+  }, [routerLocation.search]);
 
   const handleAskQuestion = React.useCallback(async () => {
     if (!question.trim()) {
@@ -166,7 +168,7 @@ function AIWeatherPage() {
       locationValue: JSON.stringify(location),
       autoSubmitted,
       loading,
-      urlSearch: window.location.search
+      urlSearch: routerLocation.search
     });
 
     // Check that location is actually a non-empty string

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useLocation } from '../../contexts/LocationContext';
 import { useTemperatureUnit } from '../../contexts/TemperatureUnitContext';
 import { useForecast, useHourlyForecast, useCurrentWeather } from '../../hooks/useWeatherData';
@@ -10,7 +11,7 @@ import {
 } from '../../hooks/useClimateData';
 import { getCurrentLocation } from '../../services/geolocationService';
 import { celsiusToFahrenheit } from '../../utils/weatherHelpers';
-import { updateLocationUrl } from '../../utils/urlHelpers';
+import { createLocationSlug } from '../../utils/urlHelpers';
 import useKeyboardShortcuts, { useScreenReaderAnnouncement } from '../../hooks/useKeyboardShortcuts';
 import TemperatureBandChart from '../charts/TemperatureBandChart';
 import PrecipitationChart from '../charts/PrecipitationChart';
@@ -42,6 +43,7 @@ function WeatherDashboard() {
   // Use shared location state from context
   const { location, locationData, selectLocation } = useLocation();
   const { unit } = useTemperatureUnit();
+  const navigate = useNavigate();
 
   const days = 7; // Default forecast days for charts
   const [detectingLocation, setDetectingLocation] = useState(false);
@@ -106,9 +108,14 @@ function WeatherDashboard() {
   // Sync location with URL
   useEffect(() => {
     if (locationData?.address) {
-      updateLocationUrl(locationData, true); // Use replace to avoid cluttering history
+      const slug = createLocationSlug(locationData.address);
+      const targetPath = `/location/${slug}`;
+      navigate(targetPath, {
+        replace: true,
+        state: { location: locationData }
+      });
     }
-  }, [locationData]);
+  }, [locationData, navigate]);
 
   // Get date ranges for records and probability
   const today = new Date();
