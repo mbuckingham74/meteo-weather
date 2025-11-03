@@ -96,31 +96,58 @@ CREATE TABLE IF NOT EXISTS climate_stats (
     UNIQUE KEY unique_climate_stat (location_id, month, data_year_start, data_year_end)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Users table: for user accounts and preferences
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
-    username VARCHAR(100),
-    preferred_temp_unit ENUM('celsius', 'fahrenheit') DEFAULT 'fahrenheit',
-    preferred_wind_unit ENUM('mph', 'kmh', 'ms', 'knots') DEFAULT 'mph',
-    preferred_language VARCHAR(10) DEFAULT 'en',
+    name VARCHAR(100) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     last_login TIMESTAMP NULL,
     INDEX idx_email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- User preferences table
+CREATE TABLE IF NOT EXISTS user_preferences (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    temperature_unit VARCHAR(1) DEFAULT 'C',
+    default_forecast_days INT DEFAULT 7,
+    default_location VARCHAR(255),
+    theme VARCHAR(20) DEFAULT 'light',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_user_preferences (user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- User favorite locations table
 CREATE TABLE IF NOT EXISTS user_favorites (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
-    location_id INT NOT NULL,
+    location_name VARCHAR(255) NOT NULL,
+    latitude DECIMAL(10, 7) NOT NULL,
+    longitude DECIMAL(10, 7) NOT NULL,
+    address VARCHAR(500),
+    timezone VARCHAR(100),
+    display_order INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_user_favorites (user_id),
+    INDEX idx_display_order (user_id, display_order)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Refresh tokens table (optional support for persisted refresh tokens)
+CREATE TABLE IF NOT EXISTS refresh_tokens (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    token VARCHAR(500) NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (location_id) REFERENCES locations(id) ON DELETE CASCADE,
-    UNIQUE KEY unique_favorite (user_id, location_id),
-    INDEX idx_user (user_id)
+    INDEX idx_token (token(255)),
+    INDEX idx_user_tokens (user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- API cache table: cache API responses to reduce API calls
