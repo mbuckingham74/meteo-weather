@@ -1,7 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  Link,
+  useLocation as useRouterLocation
+} from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
-import { LocationProvider, useLocation } from './contexts/LocationContext';
+import { LocationProvider, useLocation as useLocationContext } from './contexts/LocationContext';
 import { TemperatureUnitProvider } from './contexts/TemperatureUnitContext';
 import ErrorBoundary from './components/common/ErrorBoundary';
 import SkipToContent from './components/common/SkipToContent';
@@ -11,147 +19,110 @@ import LocationComparisonView from './components/location/LocationComparisonView
 import PrivacyPolicy from './components/legal/PrivacyPolicy';
 import AIWeatherPage from './components/ai/AIWeatherPage';
 import SharedAnswerPage from './components/ai/SharedAnswerPage';
-import { getCurrentRoute, parseLocationSlug } from './utils/urlHelpers';
+import { parseLocationSlug } from './utils/urlHelpers';
 import { geocodeLocation } from './services/weatherApi';
 import './styles/themes.css';
 import './App.css';
 
-function AppContent() {
-  const [currentView, setCurrentView] = useState('dashboard');
-  const { selectLocation } = useLocation();
+function RouteAwareLocationManager() {
+  const routerLocation = useRouterLocation();
+  const { selectLocation } = useLocationContext();
+  const lastSyncedRef = useRef(null);
 
-  // Handle route-based location loading
   useEffect(() => {
-    const loadLocationFromUrl = async () => {
-      const route = getCurrentRoute();
+    const locationState = routerLocation.state?.location;
+    if (locationState && locationState.address) {
+      const key = `state:${locationState.latitude},${locationState.longitude}`;
+      if (lastSyncedRef.current !== key) {
+        lastSyncedRef.current = key;
+        selectLocation(locationState);
+      }
+      return;
+    }
 
-      // Handle location route
-      if (route.path === 'location' && route.params.slug) {
-        // If we have cached location state from navigation, use it
-        if (route.state?.location) {
-          selectLocation(route.state.location);
-        } else {
-          // Otherwise, geocode the slug
-          try {
-            const searchQuery = parseLocationSlug(route.params.slug);
-            const results = await geocodeLocation(searchQuery, 1);
-            if (results && results.length > 0) {
-              selectLocation(results[0]);
-            }
-          } catch (error) {
-            console.error('Error loading location from URL:', error);
-          }
+    const match = routerLocation.pathname.match(/^\/location\/([^/]+)$/);
+    if (!match) {
+      lastSyncedRef.current = null;
+      return;
+    }
+
+    const slug = match[1];
+    if (lastSyncedRef.current === slug) {
+      return;
+    }
+
+    let isCancelled = false;
+
+    (async () => {
+      try {
+        const searchQuery = parseLocationSlug(slug);
+        const results = await geocodeLocation(searchQuery, 1);
+        if (!isCancelled && results && results.length > 0) {
+          lastSyncedRef.current = slug;
+          selectLocation(results[0]);
+        }
+      } catch (error) {
+        if (!isCancelled) {
+          // eslint-disable-next-line no-console
+          console.error('Error loading location from URL:', error);
         }
       }
+    })();
+
+    return () => {
+      isCancelled = true;
     };
+  }, [routerLocation.pathname, routerLocation.state, selectLocation]);
 
-    loadLocationFromUrl();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Only run on mount - selectLocation is stable from context
+  return null;
+}
 
-  // Simple client-side routing
-  useEffect(() => {
-    const handleNavigation = async () => {
-      const route = getCurrentRoute();
+function ComparePage() {
+  return (
+    <>
+      <div style={{ padding: '20px 20px 0 20px', maxWidth: '1400px', margin: '0 auto' }}>
+        <Link
+          to="/"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '8px 16px',
+            background: '#f3f4f6',
+            borderRadius: '8px',
+            textDecoration: 'none',
+            color: '#374151',
+            fontWeight: '600',
+            fontSize: '14px',
+            transition: 'background 0.2s'
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = '#e5e7eb'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = '#f3f4f6'; }}
+        >
+          ← Back to Dashboard
+        </Link>
+      </div>
+      <LocationComparisonView />
+    </>
+  );
+}
 
-      // Update view based on route
-      if (route.path === 'compare') {
-        setCurrentView('compare');
-      } else if (route.path === 'privacy') {
-        setCurrentView('privacy');
-      } else if (route.path === 'ai-weather') {
-        // Check if this is a shared answer route
-        if (route.params.action === 'shared') {
-          setCurrentView('shared-answer');
-        } else {
-          setCurrentView('ai-weather');
-        }
-      } else {
-        // Both dashboard and location routes show the dashboard
-        setCurrentView('dashboard');
-      }
-
-      // Load location if navigating to a location route via back/forward
-      if (route.path === 'location' && route.params.slug) {
-        if (route.state?.location) {
-          selectLocation(route.state.location);
-        } else {
-          try {
-            const searchQuery = parseLocationSlug(route.params.slug);
-            const results = await geocodeLocation(searchQuery, 1);
-            if (results && results.length > 0) {
-              selectLocation(results[0]);
-            }
-          } catch (error) {
-            console.error('Error loading location from URL:', error);
-          }
-        }
-      }
-    };
-
-    handleNavigation();
-    window.addEventListener('popstate', handleNavigation);
-
-    return () => window.removeEventListener('popstate', handleNavigation);
-  }, [selectLocation]);
-
-  // Handle link clicks
-  useEffect(() => {
-    const handleClick = (e) => {
-      if (e.target.tagName === 'A' && e.target.href.startsWith(window.location.origin)) {
-        e.preventDefault();
-        const url = new URL(e.target.href);
-        window.history.pushState({}, '', url.pathname);
-
-        // Trigger popstate event to handle navigation consistently
-        window.dispatchEvent(new PopStateEvent('popstate', { state: {} }));
-      }
-    };
-
-    document.addEventListener('click', handleClick);
-    return () => document.removeEventListener('click', handleClick);
-  }, []);
-
+function AppShell() {
   return (
     <div className="App">
       <SkipToContent />
       <AuthHeader />
+      <RouteAwareLocationManager />
       <main id="main-content" tabIndex={-1}>
-        {currentView === 'privacy' ? (
-          <PrivacyPolicy />
-        ) : currentView === 'shared-answer' ? (
-          <SharedAnswerPage />
-        ) : currentView === 'ai-weather' ? (
-          <AIWeatherPage />
-        ) : currentView === 'compare' ? (
-          <>
-          <div style={{ padding: '20px 20px 0 20px', maxWidth: '1400px', margin: '0 auto' }}>
-            <a
-              href="/"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '8px 16px',
-                background: '#f3f4f6',
-                borderRadius: '8px',
-                textDecoration: 'none',
-                color: '#374151',
-                fontWeight: '600',
-                fontSize: '14px',
-                transition: 'background 0.2s'
-              }}
-              onMouseEnter={(e) => e.target.style.background = '#e5e7eb'}
-              onMouseLeave={(e) => e.target.style.background = '#f3f4f6'}
-            >
-              ← Back to Dashboard
-            </a>
-          </div>
-          <LocationComparisonView />
-        </>
-        ) : (
-          <WeatherDashboard />
-        )}
+        <Routes>
+          <Route path="/" element={<WeatherDashboard />} />
+          <Route path="/location/:slug" element={<WeatherDashboard />} />
+          <Route path="/compare" element={<ComparePage />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/ai-weather" element={<AIWeatherPage />} />
+          <Route path="/ai-weather/shared/:shareId" element={<SharedAnswerPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </main>
     </div>
   );
@@ -164,7 +135,9 @@ function App() {
         <ThemeProvider>
           <TemperatureUnitProvider>
             <LocationProvider>
-              <AppContent />
+              <BrowserRouter>
+                <AppShell />
+              </BrowserRouter>
             </LocationProvider>
           </TemperatureUnitProvider>
         </ThemeProvider>
