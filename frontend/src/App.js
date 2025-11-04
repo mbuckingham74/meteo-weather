@@ -20,6 +20,7 @@ import PrivacyPolicy from './components/legal/PrivacyPolicy';
 import AIWeatherPage from './components/ai/AIWeatherPage';
 import SharedAnswerPage from './components/ai/SharedAnswerPage';
 import UserPreferencesPage from './components/settings/UserPreferencesPage';
+import AboutPage from './components/about/AboutPage';
 import { parseLocationSlug } from './utils/urlHelpers';
 import { geocodeLocation } from './services/weatherApi';
 import './styles/themes.css';
@@ -119,6 +120,7 @@ function AppShell() {
           <Route path="/" element={<WeatherDashboard />} />
           <Route path="/location/:slug" element={<WeatherDashboard />} />
           <Route path="/compare" element={<ComparePage />} />
+          <Route path="/about" element={<AboutPage />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/preferences" element={<UserPreferencesPage />} />
           <Route path="/ai-weather" element={<AIWeatherPage />} />
