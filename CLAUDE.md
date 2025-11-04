@@ -3,6 +3,26 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## 🚨 CRITICAL DEVELOPMENT WORKFLOW 🚨
+
+**ALWAYS FOLLOW THIS WORKFLOW FOR NEW FEATURES:**
+
+1. **Implement the feature locally** - Write code, make changes
+2. **Commit to Git** - Create descriptive commit with changes
+3. **Push to GitHub** - Push to main branch
+4. **STOP AND WAIT** - Do NOT deploy to production automatically
+5. **User Tests Locally** - User will test at http://localhost:3000 or on beta site
+6. **User Gives Approval** - User will explicitly say "deploy" or "looks good, deploy"
+7. **Deploy to Production** - Only then run deployment to tachyonfuture.com
+
+**Why This Matters:**
+- Saves significant tokens by avoiding unnecessary production deployments
+- Allows user to catch issues before they reach production
+- User can request changes before deployment
+- More efficient development cycle
+
+**Exception:** Only deploy automatically if user explicitly says "deploy this" or "push and deploy" in their initial request.
+
 ## Project Overview
 
 Meteo App is a Weather Spark (weatherspark.com) clone - a comprehensive weather application focused on historical climate data, year-round weather patterns, and detailed visualizations.
