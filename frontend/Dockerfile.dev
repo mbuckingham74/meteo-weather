@@ -1,0 +1,19 @@
+# Development Dockerfile for hot-reload with webpack-dev-server
+FROM node:24-alpine
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci
+
+# Copy application code (will be overridden by volume mount)
+COPY . .
+
+# Expose webpack-dev-server port
+EXPOSE 3000
+
+# Start development server with hot reload
+CMD ["npm", "start"]
