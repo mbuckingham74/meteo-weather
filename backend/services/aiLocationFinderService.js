@@ -5,7 +5,7 @@ const anthropic = new Anthropic({
   apiKey: process.env.METEO_ANTHROPIC_API_KEY,
 });
 
-const MODEL = 'claude-sonnet-4-20250514';
+const MODEL = 'claude-sonnet-4-5-20250929';
 
 /**
  * Validate if a user query is a legitimate location/climate search query

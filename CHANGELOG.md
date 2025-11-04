@@ -21,14 +21,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## ![Unreleased](https://img.shields.io/badge/Unreleased-gray?style=flat-square)
 
 ### Added
+- **Comprehensive Backend Test Suite** (November 4, 2025)
+  - Expanded from 2 tests to 80+ tests across 8 test suites
+  - **New test files:**
+    - `weatherService.test.js` - Weather API integration (~12 tests)
+    - `aiLocationFinderService.test.js` - AI query validation and parsing (~8 tests)
+    - `historicalDataService.test.js` - Database queries and validation (~10 tests)
+    - `aiWeatherAnalysisService.test.js` - AI weather analysis (~20 tests)
+    - `cacheService.test.js` - Cache management (~20 tests)
+    - `weatherRoutes.test.js` - API route integration (~8 tests)
+  - **Coverage improvements:** Backend coverage increased from 0% to ~60-65%
+  - **Test infrastructure:**
+    - Comprehensive HTTP mocking with nock
+    - Anthropic SDK mocking for AI service tests
+    - Database pool mocking for isolation
+    - Proper test cleanup with beforeEach/afterEach
+  - **Services updated for testability:**
+    - Exported `detectVisualizationIntent` and `generateFollowUpQuestions` from aiWeatherAnalysisService
+    - Exported `buildApiUrl` from weatherService for unit testing
 - **Backend Testing Infrastructure** ([9901d2c](https://github.com/mbuckingham74/meteo-weather/commit/9901d2c))
   - Implemented Jest + Supertest testing framework for backend API
-  - Added comprehensive test suite: health check and weather forecast caching
   - HTTP request mocking with nock for external API simulation
   - Database integration testing with proper cleanup
   - Environment-specific configuration (.env.test for local testing)
   - Split test setup into environment loading and test hooks
-  - Test coverage: 2 test suites, 2 tests passing
   - Dependencies: jest@29.7.0, supertest@7.1.1, nock@13.5.4, cross-env@7.0.3
 - **React Router v6 Integration** ([b1cd37a](https://github.com/mbuckingham74/meteo-weather/commit/b1cd37a))
   - Migrated from custom routing to React Router v6 for standard navigation patterns
@@ -44,6 +60,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Commit and pull request guidelines
 
 ### Changed
+- **Production Docker Configuration** (November 4, 2025)
+  - **Backend Dockerfile:**
+    - Changed from `npm install` to `npm ci --only=production` for deterministic builds
+    - Added health check on port 5001
+    - Set `NODE_ENV=production` explicitly
+    - Changed CMD from `npm run dev` to `npm start` for production readiness
+  - **Frontend Dockerfile:**
+    - Implemented multi-stage build with nginx for production
+    - Build stage uses Node.js 24 Alpine
+    - Production stage uses nginx Alpine for serving
+    - Added health check on port 80 (/health endpoint)
+    - Configured gzip compression for static assets
+    - Added security headers (X-Frame-Options, X-Content-Type-Options, X-XSS-Protection, Referrer-Policy)
+    - React Router support with proper fallbacks
+    - Created `nginx.conf` for nginx configuration
+  - **Docker ignore files:**
+    - Created `backend/.dockerignore` to exclude tests, coverage, and dev files
+    - Created `frontend/.dockerignore` for optimized builds
+- **Claude AI Model Version Update** (November 4, 2025)
+  - Updated from `claude-sonnet-4-20250514` to `claude-sonnet-4-5-20250929` (latest)
+  - Updated in all 5 occurrences:
+    - `backend/services/aiWeatherAnalysisService.js` (2 locations)
+    - `backend/services/aiLocationFinderService.js`
+    - `CLAUDE.md` documentation
+    - `REPOSITORY_AUDIT_REPORT.md` documentation
+  - Ensures application uses latest AI capabilities
+- **Environment Variable Standardization** (November 4, 2025)
+  - Renamed `ANTHROPIC_API_KEY` to `METEO_ANTHROPIC_API_KEY` in all configuration files
+  - Updated `backend/.env` with explanatory comment about METEO_ prefix
+  - Updated `backend/.env.test` for consistency
+  - Prevents conflicts with Claude Code CLI during development
 - **Database Schema Refactoring** ([207d711](https://github.com/mbuckingham74/meteo-weather/commit/207d711))
   - Split user preferences into dedicated `user_preferences` table
   - Simplified `users` table structure (removed inline preference columns)
@@ -56,6 +103,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added `JWT_SECRET` and `JWT_REFRESH_SECRET` to backend service
   - Updated production Docker config with authentication variables
   - Updated .env.backend.example with JWT secret placeholders
+
+### Fixed
+- **Frontend Test Failures** (November 4, 2025)
+  - Fixed 3 failing tests in `geolocationService.test.js`
+  - Added missing metadata fields to test expectations:
+    - `method` - Detection method used ('browser' or 'ip')
+    - `requiresConfirmation` - Whether location needs user confirmation
+    - `detectionMethod` - Human-readable method description
+  - All 476 frontend tests now passing (0 failures)
+  - Test suite execution time: ~5-6 seconds
 
 ### Refactored
 - **Frontend AI Components** ([e1bfabb](https://github.com/mbuckingham74/meteo-weather/commit/e1bfabb))

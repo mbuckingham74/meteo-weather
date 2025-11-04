@@ -1,53 +1,52 @@
 ---
-description: Defines AI-powered weather services including location finding, weather analysis, and natural language processing
+description: Handles AI-powered features including location finder service, weather analysis system, and natural language processing implementations
 ---
 
 
 # ai-services
 
-Core AI Service Components:
+Core AI Weather Analysis System:
+Location: `backend/services/aiWeatherAnalysisService.js`
+- Natural language weather query processor
+- Query classification engine for weather/location/historical queries
+- Multi-stage validation and analysis pipeline
+- Context-aware visualization suggestion system
+- Confidence scoring for AI responses
+Importance Score: 90/100
 
-1. Weather Query Analysis System (95/100)
-`backend/services/aiWeatherAnalysisService.js`
-- Natural language processing for weather-related questions
-- Context-aware visualization recommendations
-- Dynamic follow-up question generation based on weather patterns
-- Multi-metric correlation analysis for comprehensive answers
+AI Location Finder Service:
+Location: `backend/services/aiLocationFinderService.js`
+- Smart location detection from natural language input
+- Climate preference matching algorithm
+- Multi-factor location scoring based on weather patterns
+- Location similarity detection using climate data
+Importance Score: 85/100
 
-2. AI Location Finder (90/100)
-`backend/services/aiLocationFinderService.js`
-- Climate matching algorithms based on user preferences
-- Natural language location criteria parsing
-- Temperature delta analysis for location recommendations
-- Weighted scoring system incorporating multiple weather factors
+Weather Pattern Analysis:
+Location: `frontend/src/components/ai/AIWeatherPage.jsx`
+- Historical pattern recognition
+- Anomaly detection in weather data
+- Trend analysis across multiple weather parameters
+- Natural language response generation for weather queries
+Importance Score: 80/100
 
-3. Weather Pattern Intelligence (85/100)
-`frontend/src/components/ai/AIWeatherPage.jsx`
-- Smart query routing between location and complex weather questions
-- Historical climate pattern comparison algorithms
-- Probability distribution analysis for temperature predictions
-- Multi-metric visualization coordination based on question context
+Query Processing Pipeline:
+Location: `frontend/src/components/ai/UniversalSearchBar.jsx`
+- Intelligent query type detection
+- Context-aware routing between location/weather systems
+- Query enhancement with historical context
+- Smart fallback handling for ambiguous queries
+Importance Score: 75/100
 
-4. Question History Management (75/100)
-`frontend/src/utils/aiHistoryStorage.js`
-- Intelligent categorization of weather queries
-- Pattern recognition for frequently asked questions
-- Context preservation across related questions
-- Smart query suggestion system
+AI History Management:
+Location: `frontend/src/utils/aiHistoryStorage.js`
+- Persistent storage of AI interactions
+- Query pattern learning system
+- Context preservation across sessions
+- Smart suggestion generation from past queries
+Importance Score: 70/100
 
-5. Shared Answer System (70/100)
-`backend/routes/shareAnswer.js`
-- AI-generated weather insights preservation
-- Dynamic visualization state capture
-- Context-aware answer regeneration
-- Multi-format response packaging
-
-Integration Points:
-- Weather data preprocessing for AI analysis
-- Natural language query transformation
-- Climate pattern recognition
-- Location preference matching
-- Historical data correlation
+The system implements a sophisticated AI-powered weather analysis platform with specialized natural language processing for weather-related queries, location matching based on climate preferences, and intelligent visualization selection based on query context.
 
 $END$
 

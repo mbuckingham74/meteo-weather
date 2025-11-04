@@ -10,7 +10,7 @@ const anthropic = new Anthropic({
   apiKey: process.env.METEO_ANTHROPIC_API_KEY
 });
 
-const MODEL = 'claude-sonnet-4-20250514';
+const MODEL = 'claude-sonnet-4-5-20250929';
 
 /**
  * Detect query intent and suggest relevant visualizations
@@ -257,5 +257,8 @@ ${JSON.stringify(weatherData, null, 2)}`;
 
 module.exports = {
   validateWeatherQuery,
-  analyzeWeatherQuestion
+  analyzeWeatherQuestion,
+  // Exported for testing
+  detectVisualizationIntent,
+  generateFollowUpQuestions
 };

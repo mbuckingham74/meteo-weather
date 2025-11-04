@@ -1,59 +1,64 @@
 ---
-description: Specification for weather data models, metrics, relationships and processing logic
+description: Defines weather data models, relationships, and structures for handling meteorological data across the application.
 ---
 
 
 # weather-models
 
-Core Weather Data Models:
+Core Weather Data Models and Relationships:
 
-1. Historical Weather Records
-- Maintains historical weather data with 10-year lookback period
-- Climate normals calculation with weighted averaging
-- Statistical analysis of temperature distributions and patterns
-- Links historical precipitation data to climate trends
-Importance: 95/100
+1. Historical Climate Model (backend/services/climateService.js)
+- Daily temperature ranges with percentile bands (5th, 25th, 75th, 95th)
+- Record high/low temperatures with dates and sources
+- Precipitation probability distributions by month
+- Climate normals calculated from 30-year periods
+Importance Score: 95/100
 
-2. Location Weather Profile
-- Geocoded location data with weather station mapping
-- Current conditions with extended forecast integration
-- Historical climate pattern associations
-- UV, air quality and weather alert aggregation
-Importance: 90/100
+2. Current Weather Model (backend/services/weatherService.js)
+- Real-time conditions including temperature, humidity, pressure
+- Cloud cover percentages with type classification
+- Precipitation intensity and probability modeling
+- Wind vectors with gust calculations
+Importance Score: 90/100
 
-3. Temperature Probability Model
-- Statistical temperature distribution analysis
-- Historical temperature band calculations
-- Record temperature tracking and comparison
-- Temperature probability forecasting
-Importance: 85/100
+3. Weather Alert Schema (backend/routes/weather.js)
+- Severity levels: Advisory, Watch, Warning
+- Geographic polygon definitions for alert boundaries
+- Start/end timing with confidence intervals
+- Impact assessments with standardized categories
+Importance Score: 85/100
 
-4. Precipitation Analytics Model
-- Historical rain pattern analysis
-- Precipitation intensity normalization
-- Storm tracking and movement prediction
-- Multi-year rainfall comparisons
-Importance: 80/100
-
-5. Climate Pattern Detection
-- Long-term climate trend analysis
-- Temperature and precipitation pattern matching
+4. Location Weather Profile (backend/services/locationService.js)
 - Climate zone classification
-- Seasonal variation tracking
-Importance: 85/100
+- Typical temperature ranges by season
+- Precipitation patterns and annual totals
+- Extreme weather event frequency
+Importance Score: 80/100
 
-Key Relationships:
-- Location -> Weather Station -> Historical Records
-- Current Conditions -> Historical Normals -> Probability Models
-- Temperature Data -> Climate Patterns -> Weather Alerts
-- Precipitation Data -> Storm Tracking -> Radar Integration
+Relationships and Dependencies:
 
-The models support:
-- Multi-location climate comparison
-- AI-powered weather analysis
-- Historical pattern recognition
-- Predictive weather modeling
-- Climate zone matching
+1. Location-Weather Binding
+- One-to-many relationship between locations and weather readings
+- Temporal indexing for historical queries
+- Spatial indexing for regional analysis
+
+2. Climate-Weather Integration
+- Historical readings feed climate normal calculations
+- Current conditions compared against climate expectations
+- Record tracking with automated updates
+
+Key Weather Data Types:
+- Temperature: Celsius/Fahrenheit with conversion logic
+- Precipitation: mm/inch with type classification
+- Wind: Speed and direction vectors
+- Pressure: Absolute and sea-level adjusted
+- Humidity: Relative and absolute calculations
+
+Data Update Frequencies:
+- Current conditions: 5-15 minutes
+- Short-term forecast: Hourly
+- Climate data: Monthly refresh
+- Records: Real-time updates
 
 $END$
 

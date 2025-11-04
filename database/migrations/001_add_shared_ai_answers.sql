@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS shared_ai_answers (
     follow_up_questions JSON COMMENT 'Follow-up questions array',
     confidence VARCHAR(20) COMMENT 'AI confidence level (high/medium/low)',
     tokens_used INT COMMENT 'Number of tokens used for this query',
-    model VARCHAR(50) COMMENT 'AI model used (e.g., claude-sonnet-4-20250514)',
+    model VARCHAR(50) COMMENT 'AI model used (e.g., claude-sonnet-4-5-20250929)',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'When the answer was created',
     expires_at TIMESTAMP NOT NULL COMMENT 'When the share link expires (7 days from creation)',
     views INT DEFAULT 0 COMMENT 'Number of times this shared answer was viewed',

@@ -607,5 +607,7 @@ module.exports = {
   getForecast,
   getHourlyForecast,
   getHistoricalWeather,
-  getHistoricalDateData
+  getHistoricalDateData,
+  // Exported for testing
+  buildApiUrl
 };

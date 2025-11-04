@@ -22,6 +22,8 @@ paths = [
   '''DEPLOYMENT.*\.md$''',
   '''SECURITY.*\.md$''',
   '''^docs/.*\.md$''',
+  '''REPOSITORY_AUDIT_REPORT\.md$''',  # Audit report contains example weak secrets for documentation
+  '''AUDIT_FINDINGS_SUMMARY\.md$''',  # Audit summary may reference weak patterns
 ]
 
 # Allow specific patterns that look like secrets but aren't

@@ -125,6 +125,9 @@ describe('Geolocation Service', () => {
         longitude: -122.3321,
         timezone: 'America/Los_Angeles',
         accuracy: 100,
+        method: 'browser',
+        requiresConfirmation: false,
+        detectionMethod: 'Browser Geolocation',
       });
       expect(reverseGeocode).toHaveBeenCalledWith(47.6062, -122.3321);
     });
@@ -150,6 +153,9 @@ describe('Geolocation Service', () => {
         longitude: -122.3321,
         timezone: expect.any(String), // System timezone
         accuracy: 100,
+        method: 'browser',
+        requiresConfirmation: false,
+        detectionMethod: 'Browser Geolocation',
       });
     });
 
@@ -209,6 +215,8 @@ describe('Geolocation Service', () => {
         timezone: 'America/Detroit',
         accuracy: 5000,
         method: 'ip',
+        requiresConfirmation: true,
+        detectionMethod: 'IP Geolocation (ipapi.co)',
       });
     });
 

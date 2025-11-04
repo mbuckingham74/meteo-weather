@@ -431,7 +431,7 @@ Implemented in `backend/services/weatherService.js`:
 ### Claude API for Natural Language Processing
 The application uses **Anthropic's Claude Sonnet 4.5** for AI-powered location finding and climate preference extraction.
 
-**Model:** `claude-sonnet-4-20250514`
+**Model:** `claude-sonnet-4-5-20250929`
 **Purpose:** Parse natural language climate queries into structured search criteria
 **Key ENV Variable:** `METEO_ANTHROPIC_API_KEY`
 
@@ -1494,19 +1494,33 @@ announce('Location changed to New York, NY');
 
 **Backend Testing:**
 - **Framework:** Jest + Supertest for API endpoint testing
-- **Test Suites:** 2 passing (health, weatherForecast)
-- **Total Tests:** 2 passing
+- **Test Suites:** 8 passing
+- **Total Tests:** 80+ passing
+- **Estimated Coverage:** 60-65% of critical backend services
 - **Features:**
   - HTTP request mocking with nock
   - Database integration testing
+  - Anthropic AI SDK mocking
   - API response caching verification
   - Environment-specific configuration (.env.test)
   - 30-second timeout for API tests
 - **Test Files:**
+  - `backend/tests/weatherService.test.js` - Weather API integration (~12 tests)
+  - `backend/tests/aiLocationFinderService.test.js` - AI location finder (~8 tests)
+  - `backend/tests/historicalDataService.test.js` - Database queries (~10 tests)
+  - `backend/tests/aiWeatherAnalysisService.test.js` - AI weather analysis (~20 tests)
+  - `backend/tests/cacheService.test.js` - Cache management (~20 tests)
+  - `backend/tests/weatherRoutes.test.js` - API route integration (~8 tests)
   - `backend/tests/health.test.js` - Health check endpoint
   - `backend/tests/weatherForecast.test.js` - Weather API caching
   - `backend/tests/jest.setup.js` - Test hooks and utilities
   - `backend/tests/jest.env.js` - Environment variable loading
+- **Coverage Areas:**
+  - ✅ Weather API integration (caching, throttling, retries)
+  - ✅ AI services (Claude API, token tracking, validation)
+  - ✅ Database operations (queries, fuzzy matching, date validation)
+  - ✅ Cache service (TTL, expiration, statistics)
+  - ✅ API routes (error handling, validation, integration)
 - **Run Tests:** `cd backend && npm test`
 # === END USER INSTRUCTIONS ===
 
@@ -1525,47 +1539,57 @@ announce('Location changed to New York, NY');
 - Explain your OBSERVATIONS clearly, then provide REASONING to identify the exact issue. Add console logs when needed to gather more information.
 
 
-The weather application's core business logic is organized around four primary systems:
+Weather Analysis and Visualization System
 
-1. AI Weather Intelligence System
-- Query interpretation and routing through AIWeatherAnalysisService
-- Natural language processing for complex weather questions
-- Contextual visualization selection based on question types
-- Historical pattern matching and trend analysis
-- Dynamic follow-up question generation
-Importance Score: 95
+Core Business Components:
 
-2. Climate Analysis Engine
-- Multi-year historical data processing in climateService
-- Temperature probability distribution calculations
-- Climate normal computations and deviation analysis
-- Weather pattern comparison across time periods
-- Statistical analysis of temperature ranges
-Importance Score: 85
+1. AI Weather Analysis Pipeline (85/100)
+- Natural language query processing for weather questions
+- Intelligent visualization suggestion system
+- Multi-stage validation with confidence scoring
+- Pattern recognition across historical weather data
+- Context-aware response generation
+Key file: `backend/services/aiWeatherAnalysisService.js`
 
-3. Location Intelligence Platform
-- AI-powered location matching based on weather preferences
-- Multi-source location validation (GPS, IP, WiFi)
-- Climate-based location scoring system
-- Location comparison engine with weighted metrics
-- Historical weather pattern matching between locations
-Importance Score: 90
+2. Climate Data Processing Engine (80/100)
+- Historical weather pattern analysis
+- Temperature probability distributions
+- Multi-year climate comparisons
+- Record temperature identification
+- Statistical trend analysis
+Key file: `backend/services/climateService.js`
 
-4. Weather Data Integration Hub
-- Smart caching system with weather-specific TTL rules
-- Bulk historical data pre-population strategy
-- Multi-source radar data integration
-- Air quality index processing and health recommendations
-- Real-time weather alert processing
-Importance Score: 80
+3. Location Services (75/100)
+- Climate-based location matching algorithm
+- Multi-provider geolocation system
+- Location comparison based on weather patterns
+- Custom scoring for climate preferences
+Key file: `frontend/src/services/locationFinderService.js`
 
-Key Integration Points:
-- AILocationFinder connects location and climate analysis systems
-- WeatherAnalysis engine coordinates data from all subsystems
-- Historical data service bridges climate analysis and caching systems
-- Location validation integrates with weather data providers
+4. Weather Data Visualization (70/100)
+- Specialized radar data processing
+- Historical rainfall pattern analysis
+- Temperature band calculations
+- Storm tracking with direction prediction
+Key files: 
+- `frontend/src/components/charts/WeatherOverviewChart.jsx`
+- `frontend/src/components/weather/RadarMap.jsx`
 
-The system maintains separation between core weather intelligence (AI, climate analysis) and supporting services (caching, data transformation), with clear interfaces between components.
+5. Data Management System (65/100)
+- Strategic weather data pre-population
+- Domain-specific caching strategies
+- Intelligent API cost optimization
+- Multi-source data aggregation
+Key file: `backend/services/cacheService.js`
+
+Integration Architecture:
+- Frontend weather components consume processed data through specialized hooks
+- Backend services handle data aggregation and analysis
+- AI pipeline integrates with visualization system for context-aware displays
+- Location services feed into climate comparison engine
+- Caching layer optimizes data freshness vs API usage
+
+The system's primary value proposition lies in its intelligent weather analysis capabilities, sophisticated climate data processing, and cost-optimized data management strategy. Core functionality focuses on providing accurate, contextual weather insights while minimizing external API usage through strategic data pre-population and caching.
 
 $END$
 
