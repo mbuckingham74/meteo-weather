@@ -44,7 +44,7 @@ function AuthHeader() {
       <div className="auth-header">
         <div className="auth-header-left">
           <a href="/about" className="auth-header-button auth-header-about-button">
-            About
+            About Meteo Weather
           </a>
           <a href="/privacy" className="auth-header-button auth-header-privacy-button">
             Privacy Policy
