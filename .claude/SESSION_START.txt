@@ -1,0 +1,31 @@
+Hi Claude! Quick context for this session:
+
+PROJECT: Meteo Weather App (Weather Spark clone)
+- React frontend, Node/Express backend, MySQL, Docker
+- Read CLAUDE.md for full context before doing anything
+
+WORKFLOW (NEVER SKIP):
+1. Code locally → Commit → Push to GitHub
+2. STOP AND WAIT - don't deploy automatically
+3. I test localhost first
+4. I explicitly say "deploy" when ready
+5. Only then deploy to beta
+
+KEY DIFFERENCES:
+- Localhost = Dockerfile.dev (webpack-dev-server, port 3000)
+- Beta = Dockerfile (nginx production build)
+- They look different sometimes - always test localhost first
+
+RULES:
+- Use TodoWrite for multi-step tasks
+- Update CHANGELOG.md for user-facing changes
+- Check docs/DEPLOYMENT_TESTING_CHECKLIST.md before deploying
+- Never deploy without my explicit "deploy" command
+- Check browser console (F12) before troubleshooting CSS
+
+SERVER ACCESS:
+- Beta: https://meteo-beta.tachyonfuture.com
+- SSH: ssh michael@tachyonfuture.com (ask before connecting)
+- Deploy: bash scripts/deploy-beta.sh (on server only)
+
+NOW: [Tell me what you want to work on]
