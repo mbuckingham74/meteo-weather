@@ -21,6 +21,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## ![Unreleased](https://img.shields.io/badge/Unreleased-gray?style=flat-square)
 
 ### Added
+- **Frontend Test Coverage Phase 1** (November 4, 2025)
+  - Created 3 comprehensive test files with 79 new tests
+  - **New test files:**
+    - `urlHelpers.test.js` - 13 tests achieving 100% coverage (URL slug creation/parsing)
+    - `aiHistoryStorage.test.js` - 31 tests achieving 100% coverage (localStorage AI history)
+    - `useWeatherData.test.js` - 35 tests for weather data fetching hooks
+  - **Coverage improvements:**
+    - Utils folder: 95.91% (up from 69.38%)
+    - Hooks folder: 16.43% (up from 0%)
+    - Total tests: 555 passing (up from 476)
+  - **Infrastructure improvements:**
+    - Added axios mocking to setupTests.js for API testing support
+    - Added interceptors property to axios mock
+    - Comprehensive edge case and error handling tests
+    - Timezone-safe date testing patterns
 - **Comprehensive Backend Test Suite** (November 4, 2025)
   - Expanded from 2 tests to 80+ tests across 8 test suites
   - **New test files:**
