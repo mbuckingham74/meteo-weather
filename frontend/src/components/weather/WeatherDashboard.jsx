@@ -34,6 +34,7 @@ import TemperatureUnitToggle from '../units/TemperatureUnitToggle';
 import DashboardSkeleton from '../common/DashboardSkeleton';
 import RadarMap from './RadarMap';
 import UniversalSearchBar from '../ai/UniversalSearchBar';
+import LocationConfirmationModal from '../location/LocationConfirmationModal';
 import './WeatherDashboard.css';
 
 /**
@@ -53,6 +54,8 @@ function WeatherDashboard() {
   const [locationError, setLocationError] = useState(null);
   const [activeTab, setActiveTab] = useState('forecast'); // Tab state: forecast, details, historical, air-quality
   const [hasAttemptedGeolocation, setHasAttemptedGeolocation] = useState(false);
+  const [pendingLocation, setPendingLocation] = useState(null); // Location pending VPN/IP confirmation
+  const [showLocationConfirmation, setShowLocationConfirmation] = useState(false);
 
   // Chart visibility state
   const [visibleCharts, setVisibleCharts] = useState({
@@ -112,18 +115,32 @@ function WeatherDashboard() {
   // Auto-detect location on home page if no location saved
   useEffect(() => {
     const isHomePage = routerLocation.pathname === '/';
-    const hasNoSavedLocation = !locationData;
+    // Check if we have no saved locationData (only the default string location)
+    const hasNoSavedLocation = !locationData || !locationData.latitude;
 
     if (isHomePage && hasNoSavedLocation && !hasAttemptedGeolocation) {
+      console.log('🌍 Home page detected, attempting geolocation...');
       setHasAttemptedGeolocation(true);
       setDetectingLocation(true);
       setLocationError(null);
 
       getCurrentLocation()
         .then(currentLoc => {
-          selectLocation(currentLoc);
+          console.log('✅ Geolocation successful:', currentLoc.address);
+
+          // Check if location requires confirmation (VPN/IP or poor accuracy)
+          if (currentLoc.requiresConfirmation) {
+            console.log('🔍 Location requires confirmation (VPN/IP or poor accuracy):', currentLoc);
+            setPendingLocation(currentLoc);
+            setShowLocationConfirmation(true);
+            // Don't call selectLocation yet - wait for user confirmation
+          } else {
+            // High-accuracy location - use immediately
+            selectLocation(currentLoc);
+          }
         })
         .catch(error => {
+          console.log('❌ Geolocation failed:', error.message);
           setLocationError(error.message);
         })
         .finally(() => {
@@ -187,14 +204,49 @@ function WeatherDashboard() {
     setLocationError(null);
   };
 
-  // Handle current location detection
+  // Handle location confirmation (VPN/IP detection)
+  const handleConfirmLocation = () => {
+    if (pendingLocation) {
+      console.log('✅ User confirmed location:', pendingLocation.address);
+      selectLocation(pendingLocation);
+      setShowLocationConfirmation(false);
+      setPendingLocation(null);
+    }
+  };
+
+  // Handle location rejection
+  const handleRejectLocation = () => {
+    console.log('❌ User rejected location');
+    setShowLocationConfirmation(false);
+    setPendingLocation(null);
+    // Location stays as default, user can manually search
+  };
+
+  // Handle modal close
+  const handleCloseConfirmation = () => {
+    console.log('🚫 User closed confirmation modal');
+    setShowLocationConfirmation(false);
+    setPendingLocation(null);
+    // Location stays as default
+  };
+
+  // Handle current location detection (called by "Use My Location" button)
   const handleDetectLocation = async () => {
     setDetectingLocation(true);
     setLocationError(null);
 
     try {
       const currentLoc = await getCurrentLocation();
-      selectLocation(currentLoc);
+
+      // Check if location requires confirmation (VPN/IP or poor accuracy)
+      if (currentLoc.requiresConfirmation) {
+        console.log('🔍 Location requires confirmation:', currentLoc);
+        setPendingLocation(currentLoc);
+        setShowLocationConfirmation(true);
+      } else {
+        // High-accuracy location - use immediately
+        selectLocation(currentLoc);
+      }
     } catch (error) {
       setLocationError(error.message);
     } finally {
@@ -1012,6 +1064,16 @@ function WeatherDashboard() {
       <footer className="dashboard-footer">
         <p>Data provided by Visual Crossing Weather API</p>
       </footer>
+
+      {/* Location Confirmation Modal (VPN/IP Detection) */}
+      {showLocationConfirmation && pendingLocation && (
+        <LocationConfirmationModal
+          location={pendingLocation}
+          onConfirm={handleConfirmLocation}
+          onReject={handleRejectLocation}
+          onClose={handleCloseConfirmation}
+        />
+      )}
     </div>
   );
 }

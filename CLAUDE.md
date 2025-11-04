@@ -808,8 +808,9 @@ The application uses a custom client-side routing system with shareable URLs and
 - **Browser Navigation** - Full support for back/forward buttons
 - **Deep Linking** - Load location directly from URL on page load
 - **SEO-Friendly** - Meaningful URLs for search engine indexing
-- **Auto URL Sync** - URL automatically updates when location changes
+- **Smart URL Sync** - URL updates when searching locations, but home page ("/") never auto-redirects
 - **Clickable Header** - "Meteo Weather" banner always links to home (/)
+- **Auto-Geolocation** - Home page ("/") automatically detects user location on first visit
 
 **Implementation:**
 - **urlHelpers.js** - Utility functions for URL slug generation and parsing
@@ -818,7 +819,10 @@ The application uses a custom client-side routing system with shareable URLs and
 - `updateLocationUrl(location)` - Updates browser URL without page reload
 - `getCurrentRoute()` - Parses current route and parameters from URL
 - **App.js** - Route handling with popstate events for navigation
-- **WeatherDashboard.jsx** - Syncs location changes with URL updates
+- **WeatherDashboard.jsx** - Smart URL sync that respects home page ("/")
+  - Auto-detects location on home page without saved data
+  - URL sync only updates when navigating away from home page
+  - Preserves home page URL for clean user experience
 - History state caching for instant back/forward navigation
 - Geocoding fallback for direct URL access without cached state
 
@@ -1065,12 +1069,17 @@ To handle VPN and IP-based geolocation edge cases, the app includes a smart conf
   - `detectionMethod: string` - Human-readable method description
   - `accuracy: number` - Accuracy in meters (from browser Geolocation API or estimated 5000m for IP)
 - **Integration Points:**
-  - `WeatherDashboard.jsx` - Asks for confirmation when "Use My Location" is clicked
+  - `WeatherDashboard.jsx` - Auto-detects location on home page ("/") AND when "Use My Location" button is clicked
   - `LocationComparisonView.jsx` - Auto-detects location on page load with confirmation
 - **User Experience:**
   - High-accuracy GPS locations (mobile devices) bypass confirmation for seamless UX
   - IP-based locations (VPN users, desktop users) get friendly confirmation dialog
   - Clear visual feedback about accuracy level helps users understand data quality
+- **Home Page Behavior:**
+  - First visit to "/" without saved location → Auto-detects location with VPN confirmation if needed
+  - Returning visit to "/" with saved location → Loads saved location immediately
+  - URL stays at "/" (no automatic redirect to /location/{slug})
+  - Direct visits to /location/{slug} still work as expected
 
 ### Global Controls
 - **Temperature Unit Toggle** (Dashboard Controls): Switches between °C and °F
