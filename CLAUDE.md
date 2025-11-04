@@ -228,8 +228,11 @@ npm run dev
 # Production mode
 npm start
 
-# Run tests (not yet implemented)
+# Run tests with Jest and Supertest
 npm test
+
+# Run tests in watch mode
+npm run test:watch
 ```
 
 ### Local Frontend Development
@@ -1490,8 +1493,21 @@ announce('Location changed to New York, NY');
   - All tests passing with zero failures
 
 **Backend Testing:**
-- Backend testing framework not yet implemented
-- Planned: Jest + Supertest for API endpoint testing
+- **Framework:** Jest + Supertest for API endpoint testing
+- **Test Suites:** 2 passing (health, weatherForecast)
+- **Total Tests:** 2 passing
+- **Features:**
+  - HTTP request mocking with nock
+  - Database integration testing
+  - API response caching verification
+  - Environment-specific configuration (.env.test)
+  - 30-second timeout for API tests
+- **Test Files:**
+  - `backend/tests/health.test.js` - Health check endpoint
+  - `backend/tests/weatherForecast.test.js` - Weather API caching
+  - `backend/tests/jest.setup.js` - Test hooks and utilities
+  - `backend/tests/jest.env.js` - Environment variable loading
+- **Run Tests:** `cd backend && npm test`
 # === END USER INSTRUCTIONS ===
 
 

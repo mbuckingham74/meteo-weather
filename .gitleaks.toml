@@ -15,6 +15,7 @@ description = "Allowlisted files and patterns"
 paths = [
   '''\.env\.example$''',
   '''\.env\..*\.example$''',
+  '''\.env\.test$''',  # Test environment files with non-production credentials
   '''README\.md$''',
   '''CLAUDE\.md$''',
   '''QUICKSTART\.md$''',

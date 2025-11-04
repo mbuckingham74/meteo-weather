@@ -1,23 +1,9 @@
-const fs = require('fs');
-const path = require('path');
-const dotenv = require('dotenv');
+// This file sets up test hooks and utilities AFTER the test framework is ready
+// Environment variables are loaded by jest.env.js BEFORE this runs
+
 const nock = require('nock');
 
-const envTestPath = path.join(__dirname, '.env.test');
-const envRootPath = path.join(__dirname, '..', '.env');
-
-if (fs.existsSync(envTestPath)) {
-  dotenv.config({ path: envTestPath });
-} else if (fs.existsSync(envRootPath)) {
-  dotenv.config({ path: envRootPath });
-} else {
-  dotenv.config();
-}
-
-process.env.NODE_ENV = 'test';
-process.env.VISUAL_CROSSING_API_KEY = process.env.VISUAL_CROSSING_API_KEY || 'test-api-key';
-
-// Load database pool after environment variables are available
+// Load database pool - environment variables are already set by jest.env.js
 // eslint-disable-next-line global-require
 const { pool } = require('../config/database');
 

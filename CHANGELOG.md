@@ -20,7 +20,61 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## ![Unreleased](https://img.shields.io/badge/Unreleased-gray?style=flat-square)
 
-*No unreleased changes yet. Stay tuned for the next update!*
+### Added
+- **Backend Testing Infrastructure** ([9901d2c](https://github.com/mbuckingham74/meteo-weather/commit/9901d2c))
+  - Implemented Jest + Supertest testing framework for backend API
+  - Added comprehensive test suite: health check and weather forecast caching
+  - HTTP request mocking with nock for external API simulation
+  - Database integration testing with proper cleanup
+  - Environment-specific configuration (.env.test for local testing)
+  - Split test setup into environment loading and test hooks
+  - Test coverage: 2 test suites, 2 tests passing
+  - Dependencies: jest@29.7.0, supertest@7.1.1, nock@13.5.4, cross-env@7.0.3
+- **React Router v6 Integration** ([b1cd37a](https://github.com/mbuckingham74/meteo-weather/commit/b1cd37a))
+  - Migrated from custom routing to React Router v6 for standard navigation patterns
+  - Implemented RouteAwareLocationManager for URL-to-location syncing
+  - Better browser navigation support (back/forward buttons)
+  - Fixed circular dependencies in location synchronization
+  - Dependency: react-router-dom@6.30.1
+- **Repository Guidelines** (AGENTS.md) ([e6db673](https://github.com/mbuckingham74/meteo-weather/commit/e6db673))
+  - Created comprehensive contributor guidelines for new developers
+  - Project structure and module organization documentation
+  - Build, test, and development command reference
+  - Coding style and naming conventions
+  - Commit and pull request guidelines
+
+### Changed
+- **Database Schema Refactoring** ([207d711](https://github.com/mbuckingham74/meteo-weather/commit/207d711))
+  - Split user preferences into dedicated `user_preferences` table
+  - Simplified `users` table structure (removed inline preference columns)
+  - Updated `user_favorites` to store coordinates directly (no foreign key dependency)
+  - Added `refresh_tokens` table for JWT refresh token persistence
+  - Removed consolidated `backend/database/auth-schema.sql` into main schema
+  - Better separation of concerns: auth vs preferences vs favorites
+- **Docker Configuration Updates** ([82e68f4](https://github.com/mbuckingham74/meteo-weather/commit/82e68f4))
+  - Added explicit `PORT=5001` environment variable to docker-compose
+  - Added `JWT_SECRET` and `JWT_REFRESH_SECRET` to backend service
+  - Updated production Docker config with authentication variables
+  - Updated .env.backend.example with JWT secret placeholders
+
+### Refactored
+- **Frontend AI Components** ([e1bfabb](https://github.com/mbuckingham74/meteo-weather/commit/e1bfabb))
+  - Updated AISearchBar, AIWeatherHero, AIWeatherPage for React Router compatibility
+  - Replaced custom navigation with `useNavigate` hook
+  - Fixed SharedAnswerPage route parameter access
+  - Consistent routing patterns across all AI features
+- **Documentation Architecture** ([e6db673](https://github.com/mbuckingham74/meteo-weather/commit/e6db673))
+  - Refactored CLAUDE.md main-overview section with clearer system descriptions
+  - Reorganized into 4 primary business logic systems (AI Weather Intelligence, Climate Analysis, Location Intelligence, Weather Data Integration)
+  - Updated backend testing documentation (removed "not yet implemented" status)
+  - Added integration points between systems
+  - Updated Giga AI context files (.giga/rules/)
+
+### Technical Improvements
+- Extracted backend/app.js from server.js for better testability
+- Backend tests now run with proper database connection (localhost:3307)
+- Fixed Jest setup to load environment variables before framework initialization
+- Better test isolation with environment-specific .env.test file
 
 ---
 
