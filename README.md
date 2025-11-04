@@ -43,6 +43,8 @@ A comprehensive weather dashboard inspired by Weather Spark, providing detailed 
 - **💨 Air Quality Monitoring** - Live AQI data with health recommendations
 - **📈 10-Year Climate Analysis** - Historical trends and statistical insights
 - **🔐 User Accounts** - Cloud-synced favorites and preferences
+- **⚙️ User Preferences Page** - Comprehensive settings with email notification scheduling for daily/weekly weather reports
+- **📧 Email Notifications** - Scheduled weather reports, weather alerts, and weekly summaries (infrastructure ready)
 - **🎨 Theme System** - Light, dark, and auto modes
 - **🌍 Location Comparison** - Compare weather across multiple cities with AI assistance
 - **📱 Mobile Responsive** - Fully optimized for all device sizes
@@ -403,10 +405,16 @@ Users start with familiar location search, then discover AI capabilities through
 - **User Registration** - Create account with email and password
 - **Secure Login** - JWT-based authentication with token refresh
 - **User Profiles** - Manage name, email, and password
-- **Cloud Sync** - Favorites automatically sync across all devices
+- **Cloud Sync** - Favorites and preferences automatically sync across all devices
 - **Auto-Migration** - localStorage favorites migrate to cloud on login
 - **User Preferences** - Save default temperature units, forecast days, and theme
 - **Profile Management** - Tab-based interface for profile, preferences, and security settings
+- **Advanced Settings Page** - Comprehensive preferences management with:
+  - Email notification scheduling (daily reports, weekly summaries, weather alerts)
+  - Multiple report locations with location search
+  - Configurable report time (user's local timezone)
+  - Language and theme preferences
+  - One-click access from dashboard for logged-in users
 
 ### 🎨 Theme System
 

@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from '../../contexts/LocationContext';
 import { useTemperatureUnit } from '../../contexts/TemperatureUnitContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { useForecast, useHourlyForecast, useCurrentWeather } from '../../hooks/useWeatherData';
 import {
   useThisDayInHistory,
@@ -43,6 +44,7 @@ function WeatherDashboard() {
   // Use shared location state from context
   const { location, locationData, selectLocation } = useLocation();
   const { unit } = useTemperatureUnit();
+  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   const days = 7; // Default forecast days for charts
@@ -616,6 +618,15 @@ function WeatherDashboard() {
                 >
                   <span aria-hidden="true">🤖</span> Ask AI
                 </a>
+                {isAuthenticated && (
+                  <button
+                    className="location-action-button settings-link"
+                    onClick={() => navigate('/preferences')}
+                    aria-label="Go to my preferences and settings"
+                  >
+                    <span aria-hidden="true">⚙️</span> My Settings
+                  </button>
+                )}
               </div>
               {locationError && (
                 <div className="location-error">

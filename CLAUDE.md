@@ -21,6 +21,8 @@ Meteo App is a Weather Spark (weatherspark.com) clone - a comprehensive weather 
 - Monthly, daily, and hourly weather views
 - 10-year historical data analysis
 - User accounts with cloud-synced favorite locations
+- **User Preferences Page** - Comprehensive settings with email notification scheduling
+- **Email Notifications** - Daily/weekly weather reports, weather alerts (infrastructure ready)
 - Global temperature unit toggle (Celsius/Fahrenheit)
 - Light/dark/auto theme system
 - Weather alerts and air quality monitoring
@@ -1050,6 +1052,57 @@ To handle VPN and IP-based geolocation edge cases, the app includes a smart conf
 - Accessed via "Favorites" tab in profile
 - Cloud-synced across all devices
 - Click any favorite to load location instantly
+
+### User Preferences & Email Notifications
+Comprehensive settings management system accessible to authenticated users:
+
+**Access Points:**
+- **Dashboard Quick Access** - "My Settings" button in Quick Actions (one-click, authenticated users only)
+- **Profile Modal** - "Advanced Settings & Email Preferences" button in preferences tab
+
+**Features:**
+- **General Settings:**
+  - Temperature unit preference (Celsius/Fahrenheit)
+  - Default forecast days (1-14 days)
+  - Theme preference (light/dark/auto)
+  - Language selection
+- **Email Notification System:**
+  - Master toggle for email notifications
+  - Daily weather report scheduling
+  - Weekly summary reports
+  - Weather alert notifications
+  - Configurable report time (user's local timezone)
+  - Multiple report locations with search
+- **Location Management:**
+  - OpenWeather Geocoding API integration
+  - Add/remove report locations dynamically
+  - Duplicate detection (same coordinates)
+  - JSON storage for flexible location arrays
+- **Cloud Sync:**
+  - All preferences persisted to database
+  - JWT authentication required
+  - RESTful API with upsert logic
+  - Real-time updates across all devices
+
+**Technical Implementation:**
+- **Frontend:** `UserPreferencesPage.jsx`, `UserPreferencesPage.css`
+- **Backend:** `/api/user-preferences` routes (GET, PUT, PATCH, DELETE)
+- **Database:** `user_preferences` table with 7 email notification columns
+- **Migration:** `database/migrations/001_add_email_preferences_simple.sql`
+- **Documentation:** `docs/USER_PREFERENCES_SYSTEM.md`
+
+**Email Infrastructure:**
+- Database schema complete (ready for future SMTP integration)
+- UI fully functional for preference management
+- Scheduled reports (cron jobs) - pending implementation
+- Email templates and delivery service - pending implementation
+
+**User Experience:**
+- Mobile-responsive with dark mode support
+- Progressive disclosure (show options only when relevant)
+- Form validation and error handling
+- Success/error messages with clear feedback
+- Accessibility (ARIA labels, keyboard navigation)
 
 ### Compare Locations
 Enhanced side-by-side weather comparison for multiple cities (accessible via dashboard link):

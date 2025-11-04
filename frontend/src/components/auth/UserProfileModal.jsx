@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLocation } from '../../contexts/LocationContext';
 import {
@@ -16,6 +17,7 @@ import './UserProfileModal.css';
  * Manages user profile, preferences, password, and favorites
  */
 function UserProfileModal({ isOpen, onClose }) {
+  const navigate = useNavigate();
   const { user, accessToken, logout, updateUser } = useAuth();
   const { selectLocation } = useLocation();
   const [activeTab, setActiveTab] = useState('profile'); // 'profile', 'preferences', 'security', 'favorites'
@@ -361,6 +363,26 @@ function UserProfileModal({ isOpen, onClose }) {
               >
                 {loading ? 'Saving...' : 'Save Preferences'}
               </button>
+
+              <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border-color, #e0e0e0)' }}>
+                <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
+                  Want more control? Configure email notifications, weather reports, and advanced settings.
+                </p>
+                <button
+                  className="profile-action-button"
+                  style={{
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    color: 'white',
+                    fontWeight: '600'
+                  }}
+                  onClick={() => {
+                    onClose();
+                    navigate('/preferences');
+                  }}
+                >
+                  ⚙️ Advanced Settings & Email Preferences
+                </button>
+              </div>
             </div>
           )}
 

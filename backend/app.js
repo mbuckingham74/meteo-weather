@@ -12,6 +12,7 @@ const cacheRoutes = require('./routes/cache');
 const aiLocationFinderRoutes = require('./routes/aiLocationFinder');
 const aiWeatherAnalysisRoutes = require('./routes/aiWeatherAnalysis');
 const shareAnswerRoutes = require('./routes/shareAnswer');
+const userPreferencesRoutes = require('./routes/userPreferences');
 
 const app = express();
 
@@ -47,6 +48,7 @@ app.use('/api/cache', cacheRoutes);
 app.use('/api/ai-location-finder', aiLocationFinderRoutes);
 app.use('/api/ai-weather', aiWeatherAnalysisRoutes);
 app.use('/api/share', shareAnswerRoutes);
+app.use('/api/user-preferences', userPreferencesRoutes);
 
 // 404 handler
 app.use((req, res) => {

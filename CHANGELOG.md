@@ -21,6 +21,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## ![Unreleased](https://img.shields.io/badge/Unreleased-gray?style=flat-square)
 
 ### Added
+- **User Preferences Page with Email Notifications** (November 4, 2025)
+  - Created comprehensive user preferences management system
+  - **Frontend Components:**
+    - UserPreferencesPage.jsx - Full-featured settings page with authentication
+    - UserPreferencesPage.css - Responsive design with dark mode support
+    - Link from UserProfileModal to advanced settings
+  - **Backend API:**
+    - `/api/user-preferences` routes (GET, PUT, PATCH, DELETE)
+    - JWT authentication required for all endpoints
+    - Upsert support (create if not exists, update if exists)
+  - **Email Notification Features:**
+    - Master email notifications toggle
+    - Daily weather report scheduling
+    - Weather alert notifications
+    - Weekly summary reports (sent Mondays)
+    - Configurable report time (user's local time)
+    - Multiple report locations support with JSON storage
+  - **Database Migration:**
+    - Added 7 new columns to `user_preferences` table
+    - language, email_notifications, daily_weather_report, weather_alert_notifications
+    - weekly_summary, report_time, report_locations (JSON)
+    - Indexed for batch email processing performance
+  - **User Experience:**
+    - Location search with OpenWeather geocoding API
+    - Add/remove report locations dynamically
+    - Real-time form validation
+    - Success/error messaging
+    - Mobile-responsive design
+    - Seamless integration with existing auth system
 - **Frontend Test Coverage Phase 1** (November 4, 2025)
   - Created 3 comprehensive test files with 79 new tests
   - **New test files:**
