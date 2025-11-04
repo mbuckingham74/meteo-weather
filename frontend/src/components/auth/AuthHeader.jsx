@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import ThemeToggle from '../theme/ThemeToggle';
 import AuthModal from './AuthModal';
@@ -14,7 +15,8 @@ function AuthHeader() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [authMode, setAuthMode] = useState('login');
-  const isAboutPage = window.location.pathname === '/about';
+  const location = useLocation();
+  const isAboutPage = location.pathname === '/about';
 
   const handleLoginClick = () => {
     setAuthMode('login');
@@ -44,12 +46,12 @@ function AuthHeader() {
     <>
       <div className="auth-header">
         <div className="auth-header-left">
-          <a href="/about" className="auth-header-button auth-header-about-button">
+          <Link to="/about" className="auth-header-button auth-header-about-button">
             About Meteo Weather
-          </a>
-          <a href="/privacy" className="auth-header-button auth-header-privacy-button">
+          </Link>
+          <Link to="/privacy" className="auth-header-button auth-header-privacy-button">
             Privacy Policy
-          </a>
+          </Link>
         </div>
         {isAuthenticated ? (
           <div className="auth-user-info">
@@ -84,11 +86,11 @@ function AuthHeader() {
 
       {/* Hero Image Button - Only shows on About page */}
       {isAboutPage && (
-        <a href="/" className="hero-image-button" aria-label="Go to Meteo Weather home page">
+        <Link to="/" className="hero-image-button" aria-label="Go to Meteo Weather home page">
           <div className="hero-image-overlay">
             <span className="hero-image-text">🏠 Go to Meteo Weather</span>
           </div>
-        </a>
+        </Link>
       )}
 
       <AuthModal
