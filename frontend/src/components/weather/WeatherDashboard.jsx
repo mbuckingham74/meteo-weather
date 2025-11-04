@@ -297,7 +297,14 @@ function WeatherDashboard() {
 
   // Capitalize location name for proper display (in case of cached lowercase data)
   const getFormattedLocationName = () => {
-    const address = data?.location?.address || locationData?.address || location || 'Unknown Location';
+    // Use displayName if available (for "Your Location" fallback), otherwise use address
+    const address = data?.location?.displayName || locationData?.displayName ||
+                    data?.location?.address || locationData?.address || location || 'Unknown Location';
+
+    // If it's coordinates (lat,lon pattern), show "Your Location" instead
+    if (/^-?\d+\.\d+,\s*-?\d+\.\d+$/.test(address)) {
+      return 'Your Location';
+    }
 
     // If it's all lowercase or has mixed capitalization issues, fix it
     // Split by comma and capitalize each part

@@ -141,9 +141,12 @@ export async function getCurrentLocation() {
 
             if (isCoordinatesOnly) {
               console.warn('⚠️ Reverse geocoding returned coordinates as address, using friendly fallback');
+              // Keep coordinates as address (API understands "lat,lon" format)
+              // But add displayName for UI
               resolve({
                 ...location,
-                address: 'Your Location', // User-friendly display instead of coordinates
+                // address stays as coordinates for API
+                displayName: 'Your Location', // User-friendly display for UI
                 accuracy: position.coords.accuracy,
                 method: options.enableHighAccuracy ? 'gps' : 'browser',
                 requiresConfirmation: position.coords.accuracy > 1000, // Confirm if accuracy is poor
