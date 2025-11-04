@@ -9,7 +9,7 @@
  * - Weather data: Stale-while-revalidate (show cached, update in background)
  */
 
-const CACHE_VERSION = 'meteo-v1.0.0';
+const CACHE_VERSION = 'meteo-v1.0.1';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const DYNAMIC_CACHE = `${CACHE_VERSION}-dynamic`;
 const API_CACHE = `${CACHE_VERSION}-api`;

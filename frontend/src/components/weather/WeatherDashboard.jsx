@@ -217,17 +217,31 @@ function WeatherDashboard() {
   // Handle location rejection
   const handleRejectLocation = () => {
     console.log('❌ User rejected location');
+
+    // If we have no valid location data, use the pending location anyway
+    // Better to show potentially wrong location than broken UI
+    if (pendingLocation && (!locationData || !locationData.latitude)) {
+      console.log('⚠️ No valid location, using rejected location as fallback');
+      selectLocation(pendingLocation);
+    }
+
     setShowLocationConfirmation(false);
     setPendingLocation(null);
-    // Location stays as default, user can manually search
   };
 
   // Handle modal close
   const handleCloseConfirmation = () => {
     console.log('🚫 User closed confirmation modal');
+
+    // If user closes modal, use the detected location as fallback
+    // Better to show potentially wrong location than broken UI
+    if (pendingLocation && (!locationData || !locationData.latitude)) {
+      console.log('⚠️ Modal closed, using detected location as fallback');
+      selectLocation(pendingLocation);
+    }
+
     setShowLocationConfirmation(false);
     setPendingLocation(null);
-    // Location stays as default
   };
 
   // Handle current location detection (called by "Use My Location" button)
