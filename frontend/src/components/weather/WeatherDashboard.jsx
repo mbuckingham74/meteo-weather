@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation as useRouterLocation } from 'react-router-dom';
 import { useLocation } from '../../contexts/LocationContext';
 import { useTemperatureUnit } from '../../contexts/TemperatureUnitContext';
 import { useAuth } from '../../contexts/AuthContext';
@@ -46,11 +46,13 @@ function WeatherDashboard() {
   const { unit } = useTemperatureUnit();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const routerLocation = useRouterLocation();
 
   const days = 7; // Default forecast days for charts
   const [detectingLocation, setDetectingLocation] = useState(false);
   const [locationError, setLocationError] = useState(null);
   const [activeTab, setActiveTab] = useState('forecast'); // Tab state: forecast, details, historical, air-quality
+  const [hasAttemptedGeolocation, setHasAttemptedGeolocation] = useState(false);
 
   // Chart visibility state
   const [visibleCharts, setVisibleCharts] = useState({
@@ -107,17 +109,45 @@ function WeatherDashboard() {
     }
   }, [locationData?.address, announce]);
 
-  // Sync location with URL
+  // Auto-detect location on home page if no location saved
+  useEffect(() => {
+    const isHomePage = routerLocation.pathname === '/';
+    const hasNoSavedLocation = !locationData;
+
+    if (isHomePage && hasNoSavedLocation && !hasAttemptedGeolocation) {
+      setHasAttemptedGeolocation(true);
+      setDetectingLocation(true);
+      setLocationError(null);
+
+      getCurrentLocation()
+        .then(currentLoc => {
+          selectLocation(currentLoc);
+        })
+        .catch(error => {
+          setLocationError(error.message);
+        })
+        .finally(() => {
+          setDetectingLocation(false);
+        });
+    }
+  }, [routerLocation.pathname, locationData, hasAttemptedGeolocation, selectLocation]);
+
+  // Sync location with URL (but don't redirect from home page)
   useEffect(() => {
     if (locationData?.address) {
       const slug = createLocationSlug(locationData.address);
       const targetPath = `/location/${slug}`;
-      navigate(targetPath, {
-        replace: true,
-        state: { location: locationData }
-      });
+
+      // Only navigate if we're not already on the correct location page
+      // This prevents redirecting from home page
+      if (routerLocation.pathname !== targetPath && routerLocation.pathname !== '/') {
+        navigate(targetPath, {
+          replace: true,
+          state: { location: locationData }
+        });
+      }
     }
-  }, [locationData, navigate]);
+  }, [locationData, navigate, routerLocation.pathname]);
 
   // Get date ranges for records and probability
   const today = new Date();
