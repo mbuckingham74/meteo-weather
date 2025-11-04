@@ -20,6 +20,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## ![Unreleased](https://img.shields.io/badge/Unreleased-gray?style=flat-square)
 
+### Fixed
+- **Webpack Dev Server Not Starting** (November 4, 2025) - **CRITICAL FIX** ⭐
+  - **Known-Good Commit:** `1ae7d225856422af9b17b821c76a0ce967d6e86b`
+  - **Issue:** Home page broken on both local and beta environments
+  - **Root Cause:** Missing `react-router-dom` dependency in Docker container due to out-of-sync package-lock.json
+  - **Solution:**
+    - Regenerated `frontend/package-lock.json` to fix TypeScript version mismatch (5.9.3 → 4.9.5)
+    - Created `frontend/Dockerfile.dev` for development mode with webpack-dev-server
+    - Updated `docker-compose.yml` to use development Dockerfile with hot reload
+    - Added `WATCHPACK_POLLING` and `CHOKIDAR_USEPOLLING` environment variables
+  - **Impact:** Both local development (localhost:3000) and beta site (meteo-beta.tachyonfuture.com) now working
+  - **Note:** This commit preserves correct styling for Current Conditions and Location cards - use as reference for future changes
+  - **Files Changed:**
+    - `docker-compose.yml` - Updated frontend build configuration
+    - `frontend/Dockerfile.dev` - New development Dockerfile
+    - `frontend/package-lock.json` - Regenerated with correct dependencies
+
 ### Added
 - **User Preferences Page with Email Notifications** (November 4, 2025)
   - Created comprehensive user preferences management system

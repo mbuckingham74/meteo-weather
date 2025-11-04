@@ -23,6 +23,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Exception:** Only deploy automatically if user explicitly says "deploy this" or "push and deploy" in their initial request.
 
+## 🎯 Known-Good Commits
+
+**Styling Reference - Current Conditions & Location Cards:**
+- Commit: `1ae7d225856422af9b17b821c76a0ce967d6e86b`
+- Date: 2025-11-04
+- Description: Known-good styling for Current Conditions and Location cards on dashboard
+- Use this as reference when making styling changes to preserve working layout
+- Includes: Weather radar map sizing, dashboard grid layout, card spacing
+
 ## Project Overview
 
 Meteo App is a Weather Spark (weatherspark.com) clone - a comprehensive weather application focused on historical climate data, year-round weather patterns, and detailed visualizations.
