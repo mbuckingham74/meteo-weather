@@ -14,6 +14,7 @@ function AuthHeader() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [authMode, setAuthMode] = useState('login');
+  const isAboutPage = window.location.pathname === '/about';
 
   const handleLoginClick = () => {
     setAuthMode('login');
@@ -80,6 +81,15 @@ function AuthHeader() {
         )}
         {isAuthenticated && <ThemeToggle />}
       </div>
+
+      {/* Hero Image Button - Only shows on About page */}
+      {isAboutPage && (
+        <a href="/" className="hero-image-button" aria-label="Go to Meteo Weather home page">
+          <div className="hero-image-overlay">
+            <span className="hero-image-text">🏠 Go to Meteo Weather</span>
+          </div>
+        </a>
+      )}
 
       <AuthModal
         isOpen={showAuthModal}

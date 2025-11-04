@@ -56,13 +56,6 @@ function AboutPage() {
 
   return (
     <div className="about-page">
-      {/* Hero Image Button */}
-      <a href="/" className="hero-image-button" aria-label="Go to Meteo Weather home page">
-        <div className="hero-image-overlay">
-          <span className="hero-image-text">🏠 Go to Meteo Weather</span>
-        </div>
-      </a>
-
       {/* Hero Section */}
       <section className="about-hero">
         <div className="hero-content">
