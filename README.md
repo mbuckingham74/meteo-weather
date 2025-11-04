@@ -60,6 +60,7 @@ A comprehensive weather dashboard inspired by Weather Spark, providing detailed 
 - [🚀 Setup Instructions](#-setup-instructions) | [🌐 Live Demo](https://meteo-beta.tachyonfuture.com) | [📋 Changelog](CHANGELOG.md) | [🤝 Contributing](#-contributing)
 
 **Getting Started:**
+- [🚀 **For Claude Code Users:** Start Here](/.claude/QUICK_START.md) - Copy-paste onboarding prompt for new sessions
 - [💻 Minimum Server Requirements](#-minimum-server-requirements)
 - [🔑 Required External APIs](#-required-external-apis)
   - [Visual Crossing Weather API](#1-visual-crossing-weather-api-required)
