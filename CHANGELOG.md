@@ -20,6 +20,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## ![Unreleased](https://img.shields.io/badge/Unreleased-gray?style=flat-square)
 
+### Fixed
+- **Current Conditions Layout Regression** (November 5, 2025)
+  - **Issue:** Weather data card in "Current Conditions" section was compressed to ~30% width instead of spanning full container width when using "Use My Location" feature
+  - **Root Cause:** CSS Grid using percentage-based columns (`grid-template-columns: 65% 35%`) with missing flex container constraints
+  - **Solution:**
+    - Changed `.dashboard-main-row` grid from percentage units to `fr` units (`2fr 1fr`)
+    - Added `min-width: 0` and `overflow: hidden` to `.location-info` container to prevent grid blowout
+    - Added explicit `width: 100%` to all child elements (`.current-conditions`, `.current-main`, `.current-stats`, `.current-footer`, `.todays-highlights`)
+    - Added `box-sizing: border-box` to ensure padding doesn't affect width calculations
+  - **Files Changed:**
+    - `frontend/src/components/weather/WeatherDashboard.css` - 7 CSS rule updates
+  - **Impact:** Weather card now properly fills the full width of its container, significantly improving readability and UI consistency
+  - **Note:** This layout issue had persisted for over a week; the fix involved switching from percentage-based grid columns to fractional units with proper flex constraints
+
+- **Location Name Display with Geolocation** (November 5, 2025)
+  - **Issue:** When using "Use My Location", raw coordinates (e.g., "47.9123, -124.5744") were displayed instead of "Your Location"
+  - **Root Cause:** `getFormattedLocationName()` function checked `displayName` property after `address`, causing coordinate-formatted addresses to display before the friendly fallback
+  - **Solution:** Reordered property checks to prioritize `displayName` first in `getFormattedLocationName()` function
+  - **Files Changed:**
+    - `frontend/src/components/weather/WeatherDashboard.jsx` - Updated location name formatting logic (lines 299-337)
+  - **Impact:** Users now see "Your Location" when geolocation returns coordinates or reverse geocoding fails, improving UX and readability
+
 ### Added
 - **Production API Testing Script** (November 5, 2025)
   - Created `scripts/test-production-apis.sh` - Comprehensive automated testing for deployment verification
