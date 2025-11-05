@@ -8,24 +8,12 @@ A comprehensive weather dashboard inspired by Weather Spark, providing detailed 
 
 <div align="center">
 
-![CI/CD](https://img.shields.io/github/actions/workflow/status/mbuckingham74/meteo-weather/deploy.yml?branch=main&label=deployment&logo=github-actions&logoColor=white)
-![Security Scan](https://img.shields.io/github/actions/workflow/status/mbuckingham74/meteo-weather/security-scan.yml?branch=main&label=security&logo=security&logoColor=white)
-![Tests](https://img.shields.io/github/actions/workflow/status/mbuckingham74/meteo-weather/ci.yml?branch=main&label=tests&logo=jest&logoColor=white)
-![Test Coverage](https://img.shields.io/badge/coverage-34%25-yellow?logo=jest&logoColor=white)
-![Tests Passing](https://img.shields.io/badge/tests-476%2F476%20passing-brightgreen?logo=jest&logoColor=white)
-![Vulnerabilities](https://img.shields.io/badge/vulnerabilities-0-brightgreen?logo=dependabot&logoColor=white)
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Node](https://img.shields.io/badge/node-%3E%3D20.0.0-brightgreen.svg)
-![React](https://img.shields.io/badge/react-19.2.0-blue.svg)
-![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=flat&logo=docker&logoColor=white)
-![MySQL](https://img.shields.io/badge/mysql-8.0-%2300758f.svg?style=flat&logo=mysql&logoColor=white)
-![Express](https://img.shields.io/badge/express-4.18-%23404d59.svg?style=flat&logo=express)
-
-![GitHub stars](https://img.shields.io/github/stars/mbuckingham74/meteo-weather?style=social)
-![GitHub forks](https://img.shields.io/github/forks/mbuckingham74/meteo-weather?style=social)
-![GitHub issues](https://img.shields.io/github/issues/mbuckingham74/meteo-weather)
-![GitHub last commit](https://img.shields.io/github/last-commit/mbuckingham74/meteo-weather)
-![GitHub repo size](https://img.shields.io/github/repo-size/mbuckingham74/meteo-weather)
+[![Deployment Status](https://img.shields.io/github/actions/workflow/status/mbuckingham74/meteo-weather/deploy.yml?branch=main&label=deployment&logo=github-actions&logoColor=white)](https://github.com/mbuckingham74/meteo-weather/actions)
+[![Security](https://img.shields.io/badge/vulnerabilities-0-brightgreen?logo=dependabot&logoColor=white)](https://github.com/mbuckingham74/meteo-weather/security)
+[![Tests](https://img.shields.io/badge/tests-476%2F476%20passing-brightgreen?logo=jest&logoColor=white)](https://github.com/mbuckingham74/meteo-weather/actions)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Docker](https://img.shields.io/badge/docker-ready-%230db7ed.svg?logo=docker&logoColor=white)](#-quick-start)
+[![Live Demo](https://img.shields.io/badge/demo-live-success?logo=vercel&logoColor=white)](https://meteo-beta.tachyonfuture.com)
 
 </div>
 
