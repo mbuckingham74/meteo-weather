@@ -365,12 +365,50 @@ If you need to rollback to CRA (not recommended):
 - Consider Vite PWA plugin for better PWA support
 - Explore Vite's SSR capabilities for future features
 
+## Build Validation System
+
+To prevent configuration drift and catch issues early, we've implemented a comprehensive validation system:
+
+### Package Configuration Validator
+```bash
+cd frontend
+npm run validate
+```
+
+This validates:
+- package.json scripts consistency
+- Dockerfile commands match npm scripts
+- Environment variable naming (VITE_ prefix)
+- Source code patterns (ESM, env vars)
+- Vite configuration completeness
+- CI/CD workflow alignment
+
+### Docker Build Verifier
+```bash
+./scripts/verify-docker-build.sh
+```
+
+This tests:
+- Dockerfile existence and syntax
+- Actual Docker image builds
+- Container startup functionality
+- Production build output structure
+
+### Pre-build Hook
+Validation runs automatically before every build:
+```bash
+npm run build  # Runs validation first
+```
+
+**For complete documentation:** See [docs/BUILD_VALIDATION.md](docs/BUILD_VALIDATION.md)
+
 ## Resources
 
 - [Vite Documentation](https://vitejs.dev/)
 - [Vitest Documentation](https://vitest.dev/)
 - [Vite Migration Guide (Official)](https://vitejs.dev/guide/migration.html)
 - [TypeScript in React](https://react.dev/learn/typescript)
+- [Build Validation Guide](docs/BUILD_VALIDATION.md) - Prevent configuration issues
 
 ## Support
 
@@ -378,6 +416,7 @@ For issues or questions:
 1. Check [Vite Discord](https://chat.vitejs.dev/)
 2. Search [Vite GitHub Issues](https://github.com/vitejs/vite/issues)
 3. Check [Vitest Documentation](https://vitest.dev/)
+4. Review [Build Validation Guide](docs/BUILD_VALIDATION.md) for build errors
 
 ---
 

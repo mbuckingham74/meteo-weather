@@ -13,6 +13,7 @@ Welcome to the Meteo Weather App documentation! This directory contains comprehe
 - **[development/AGENTS.md](development/AGENTS.md)** - Repository guidelines for contributors and AI agents
 - **[CODE_QUALITY_AUDIT.md](CODE_QUALITY_AUDIT.md)** - Code quality analysis and improvement recommendations
 - **[USER_PREFERENCES_SYSTEM.md](USER_PREFERENCES_SYSTEM.md)** - User preferences and email notification system architecture
+- **[BUILD_VALIDATION.md](BUILD_VALIDATION.md)** - Build configuration validation and Docker verification system
 
 ### 🚢 Deployment & Operations
 - **[DEPLOYMENT.md](DEPLOYMENT.md)** - Production deployment guide (general)
@@ -86,6 +87,19 @@ Technical specification for user preferences and email notifications:
 
 **Audience:** Backend developers, feature contributors
 **Read time:** 10 minutes
+
+#### BUILD_VALIDATION.md
+Comprehensive guide to build validation and safety systems:
+- Package configuration validator (checks scripts, env vars, source code)
+- Docker build verifier (tests container builds and startup)
+- Pre-build hooks and automatic validation
+- CI/CD integration and workflow order
+- Troubleshooting common validation errors
+- Extending validation for custom checks
+
+**Audience:** Developers, DevOps engineers, CI/CD maintainers
+**Read time:** 15 minutes
+**Critical:** Prevents build configuration drift and catches issues early
 
 ---
 
@@ -245,6 +259,7 @@ Comprehensive repository audit conducted November 2025:
 - **...promote the project** → Use templates in [PROMOTION.md](PROMOTION.md)
 - **...configure email notifications** → Read [USER_PREFERENCES_SYSTEM.md](USER_PREFERENCES_SYSTEM.md)
 - **...understand the codebase** → Read [CODE_QUALITY_AUDIT.md](CODE_QUALITY_AUDIT.md) and [development/AGENTS.md](development/AGENTS.md)
+- **...validate build configuration** → Run checks from [BUILD_VALIDATION.md](BUILD_VALIDATION.md)
 
 ---
 

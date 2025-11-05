@@ -67,6 +67,11 @@ jobs:
           cd frontend
           npm install
 
+      - name: Validate build configuration
+        run: |
+          cd frontend
+          npm run validate
+
       - name: Lint frontend code
         run: |
           cd frontend
