@@ -11,16 +11,16 @@ echo "╚═══════════════════════�
 echo ""
 
 # Check if running on production server
-if [ ! -d "/opt/meteo-app" ]; then
-  echo "❌ Error: Not on production server (/opt/meteo-app not found)"
+if [ ! -d "/home/michael/meteo-app" ]; then
+  echo "❌ Error: Not on production server (/home/michael/meteo-app not found)"
   echo "Please run this script on the production server:"
   echo "  1. SSH to server"
-  echo "  2. cd /opt/meteo-app"
+  echo "  2. cd /home/michael/meteo-app"
   echo "  3. bash scripts/deploy-security-update.sh"
   exit 1
 fi
 
-cd /opt/meteo-app
+cd /home/michael/meteo-app
 
 echo "📦 Step 1: Pulling latest code from GitHub..."
 git pull origin main
