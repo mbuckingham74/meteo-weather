@@ -54,10 +54,42 @@ A comprehensive weather dashboard inspired by Weather Spark, providing detailed 
 
 ---
 
+## ⚡ Quick Start
+
+Get up and running in **3 minutes** with Docker:
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/mbuckingham74/meteo-weather.git
+cd meteo-weather
+
+# 2. Copy environment example and add your API keys
+cp .env.example backend/.env
+# Edit backend/.env - Add your FREE Visual Crossing API key
+
+# 3. Start the application
+docker-compose up
+
+# 4. Open in browser
+# Frontend: http://localhost:3000
+# Backend API: http://localhost:5001
+```
+
+**That's it!** The app will start with pre-populated weather data for 148 cities.
+
+**Get your FREE API keys (2 minutes):**
+- **Visual Crossing** (required): [Sign up here](https://www.visualcrossing.com/weather-api) - 1000 records/day free
+- **OpenWeather** (required for radar): [Sign up here](https://openweathermap.org/api) - 1000 calls/day free
+- **Anthropic Claude** (optional, AI features): [Sign up here](https://console.anthropic.com/) - Pay-as-you-go (~$0.01/query)
+
+**No API keys yet?** The app works out of the box with cached data for major cities!
+
+---
+
 ## 📋 Table of Contents
 
 **Quick Links:**
-- [🚀 Setup Instructions](#-setup-instructions) | [🌐 Live Demo](https://meteo-beta.tachyonfuture.com) | [🏗️ Architecture](ARCHITECTURE.md) | [📋 Changelog](CHANGELOG.md) | [🤝 Contributing](#-contributing)
+- [⚡ Quick Start](#-quick-start) | [🚀 Setup Instructions](#-setup-instructions) | [🌐 Live Demo](https://meteo-beta.tachyonfuture.com) | [🏗️ Architecture](ARCHITECTURE.md) | [📋 Changelog](CHANGELOG.md) | [🤝 Contributing](#-contributing)
 
 **Getting Started:**
 - [🚀 **For Claude Code Users:** Start Here](/.claude/QUICK_START.md) - Copy-paste onboarding prompt for new sessions
