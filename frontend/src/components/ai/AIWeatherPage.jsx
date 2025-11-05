@@ -10,10 +10,11 @@ import HourlyForecastChart from '../charts/HourlyForecastChart';
 import { ChartSkeleton, TableSkeleton, MapSkeleton } from '../common/Skeleton';
 import AIHistoryDropdown from './AIHistoryDropdown';
 import { addToAIHistory } from '../../utils/aiHistoryStorage';
+import API_CONFIG from '../../config/api';
 import './AIWeatherPage.css';
 
-// Use environment variable for API URL, fallback to localhost for development
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
+// Use centralized API configuration
+const API_BASE_URL = API_CONFIG.BASE_URL;
 
 /**
  * AI Weather Page

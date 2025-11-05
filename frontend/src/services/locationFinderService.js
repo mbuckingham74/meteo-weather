@@ -1,4 +1,6 @@
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
+import API_CONFIG from '../config/api';
+
+const API_BASE_URL = API_CONFIG.BASE_URL;
 
 /**
  * Validate if a user query is legitimate for location/climate search

@@ -6,6 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import API_CONFIG from '../../config/api';
 import './UserPreferencesPage.css';
 
 const UserPreferencesPage = () => {
@@ -50,7 +51,7 @@ const UserPreferencesPage = () => {
       setLoading(true);
       const token = localStorage.getItem('token');
 
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5001'}/api/user-preferences`, {
+      const response = await fetch(`${API_CONFIG.BASE_URL.replace('/api', '')}/api/user-preferences`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -85,7 +86,7 @@ const UserPreferencesPage = () => {
     try {
       const token = localStorage.getItem('token');
 
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5001'}/api/user-preferences`, {
+      const response = await fetch(`${API_CONFIG.BASE_URL.replace('/api', '')}/api/user-preferences`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

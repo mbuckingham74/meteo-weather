@@ -1,6 +1,7 @@
 import axios from 'axios';
+import API_CONFIG from '../config/api';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
+const API_BASE_URL = API_CONFIG.BASE_URL;
 
 /**
  * Weather API Service

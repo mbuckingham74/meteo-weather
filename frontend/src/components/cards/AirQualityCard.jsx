@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import API_CONFIG from '../../config/api';
 import './AirQualityCard.css';
 
 /**
@@ -16,7 +17,7 @@ function AirQualityCard({ latitude, longitude }) {
       setError(null);
 
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL || 'http://localhost:5001/api'}/air-quality?lat=${latitude}&lon=${longitude}&days=1`
+        `${API_CONFIG.BASE_URL}/air-quality?lat=${latitude}&lon=${longitude}&days=1`
       );
 
       const result = await response.json();

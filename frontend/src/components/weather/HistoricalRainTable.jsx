@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import API_CONFIG from '../../config/api';
 import './HistoricalRainTable.css';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
+const API_BASE_URL = API_CONFIG.BASE_URL;
 
 /**
  * Historical Rain Table Component

@@ -41,6 +41,36 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Different CSS extraction, env vars, build processes
 - ALWAYS verify localhost FIRST before deploying to beta
 
+## 🔍 CRITICAL DEBUGGING PROTOCOL
+
+**When user reports bugs, NEVER blame cache/browser/extensions if user says:**
+- "Tested in multiple browsers"
+- "Using Guest Window/Incognito"
+- "Cleared cache"
+- "Same behavior across all browsers"
+
+**STOP circular reasoning. Instead:**
+
+1. **Acknowledge the evidence** - User has already eliminated cache/browser as causes
+2. **Request actual data** - Ask for DevTools screenshots (Elements panel HTML structure, Network tab responses)
+3. **Trace through code** - Follow data flow from API → service → component → render
+4. **Check recent changes** - What was modified in the last commit that could cause this?
+5. **Verify API responses** - Is the backend returning expected data structure?
+6. **Inspect rendered output** - What HTML is actually being rendered vs expected?
+
+**Recent Case Study (Nov 2025):**
+- **Bug**: Location header styling broken (text appearing as subscript)
+- **User Evidence**: Tested 4 browsers, all Guest Windows, consistent behavior
+- **Bad Response**: Kept suggesting cache/extensions despite user's repeated evidence
+- **Correct Approach**: Should have immediately requested DevTools Elements panel screenshot to see actual rendered HTML
+- **Root Cause**: TBD - needs DevTools inspection to diagnose
+- **Files Involved**:
+  - `frontend/src/components/weather/WeatherDashboard.jsx` (lines 381-389)
+  - `frontend/src/components/weather/WeatherDashboard.css` (.location-header, .location-name, .location-coords)
+  - `frontend/src/services/geolocationService.js` (displayName vs address)
+
+**Key Lesson**: When user provides thorough testing evidence, trust it and move to deeper code inspection.
+
 ## Project Overview
 
 Meteo App is a Weather Spark (weatherspark.com) clone - a comprehensive weather application focused on historical climate data, year-round weather patterns, and detailed visualizations.
