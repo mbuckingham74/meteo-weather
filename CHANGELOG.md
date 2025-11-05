@@ -42,6 +42,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `frontend/src/components/weather/WeatherDashboard.jsx` - Updated location name formatting logic (lines 299-337)
   - **Impact:** Users now see "Your Location" when geolocation returns coordinates or reverse geocoding fails, improving UX and readability
 
+- **Location Header Layout Stacking** (November 5, 2025)
+  - **Issue:** Location name and coordinates were displaying on the same line with broken formatting, causing text to run together (e.g., "Your Location47.9121, -124.5742")
+  - **Root Cause:** `.location-header` used horizontal flexbox (`justify-content: space-between`) which caused wrapping issues and concatenated text
+  - **Solution:**
+    - Changed `.location-header` to vertical stack (`flex-direction: column`, `align-items: flex-start`)
+    - Added `gap: 8px` for proper spacing between name and coordinates
+    - Changed coordinates text alignment from `right` to `left` for better readability
+  - **Files Changed:**
+    - `frontend/src/components/weather/WeatherDashboard.css` - Updated `.location-header` and `.location-coords` styles
+  - **Impact:** Location name now displays cleanly on its own line with coordinates neatly stacked below, eliminating text concatenation issues
+
 ### Added
 - **Production API Testing Script** (November 5, 2025)
   - Created `scripts/test-production-apis.sh` - Comprehensive automated testing for deployment verification
