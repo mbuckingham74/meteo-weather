@@ -35,6 +35,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Example:** "Seattle, WA, USA" → displays as "Seattle" in bold 42px/48px font
 
 ### Fixed
+- **Geolocation displayName Override** (November 5, 2025)
+  - **Issue:** When using "Use My Location", the city name would briefly appear correctly on page load, but then revert to "Your Location" as soon as geolocation completed
+  - **Root Cause:** `geolocationService.js` was setting `displayName: 'Your Location'` even when reverse geocoding succeeded with a valid city name (line 149)
+  - **Solution:** Removed hardcoded `displayName` when reverse geocoding succeeds - now only sets `address: 'Your Location'` as fallback when coordinates-only are returned
+  - **Files Changed:**
+    - `frontend/src/services/geolocationService.js` - Removed displayName override for successful geocoding (lines 142-163)
+  - **Impact:** City name now persists correctly after geolocation completes, improving user experience
+  - **Testing:** Verified that actual city name (e.g., "Seattle") displays and stays visible after browser geolocation
 - **Current Conditions Layout Regression** (November 5, 2025)
   - **Issue:** Weather data card in "Current Conditions" section was compressed to ~30% width instead of spanning full container width when using "Use My Location" feature
   - **Root Cause:** CSS Grid using percentage-based columns (`grid-template-columns: 65% 35%`) with missing flex container constraints
