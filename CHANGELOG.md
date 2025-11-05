@@ -20,6 +20,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## ![Unreleased](https://img.shields.io/badge/Unreleased-gray?style=flat-square)
 
+### Changed
+- **Code Quality Improvements - Priority 1 Fixes** (November 4, 2025)
+  - **Issue:** 13+ duplicate hardcoded API URLs across codebase, undocumented timeout values
+  - **Solution:** Centralized configuration for better maintainability
+  - **Changes:**
+    - Created `frontend/src/config/api.js` - Single source of truth for API configuration
+    - Created `backend/config/timeouts.js` - Documented backend timeout constants
+    - Created `frontend/src/config/timeouts.js` - Documented frontend timeout constants with helper functions
+    - Updated 11 files to use centralized API_CONFIG import
+    - Replaced all hardcoded `process.env.REACT_APP_API_URL || 'http://localhost:5001/api'` instances
+  - **Impact:**
+    - 92% reduction in API URL duplication (13+ files → 1 config file)
+    - All timeout values now self-documenting with clear purposes
+    - Easier environment-specific configuration
+    - Improved code maintainability and developer experience
+  - **Files Updated:**
+    - Frontend services: weatherApi.js, authApi.js, locationFinderService.js
+    - Frontend hooks: useClimateData.js
+    - Frontend components: AIWeatherPage.jsx, UniversalSearchBar.jsx, SharedAnswerPage.jsx, HistoricalRainTable.jsx, AirQualityCard.jsx, UserPreferencesPage.jsx
+  - **Reference:** See `docs/CODE_QUALITY_AUDIT.md` for complete analysis and recommendations
+
 ### Fixed
 - **Webpack Dev Server Not Starting** (November 4, 2025)
   - **Issue:** Home page broken on both local and beta environments
