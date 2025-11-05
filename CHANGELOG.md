@@ -20,6 +20,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## ![Unreleased](https://img.shields.io/badge/Unreleased-gray?style=flat-square)
 
+### Improved
+- **Location Name Display Enhancement** (November 5, 2025)
+  - **Change:** Location name now displays the actual city name (e.g., "Seattle") instead of generic "Your Location" text, with enhanced typography
+  - **Implementation:**
+    - Modified `getFormattedLocationName()` to extract city name from full address (first part before comma)
+    - Falls back to "Your Location" only when address is truly unavailable or contains raw coordinates
+    - Increased font size from 36px to 42px (base) and 42px to 48px (large screens)
+    - Increased font weight from 800 to 900 for bolder appearance
+  - **Files Changed:**
+    - `frontend/src/components/weather/WeatherDashboard.jsx` - Refactored location name extraction logic (lines 300-335)
+    - `frontend/src/components/weather/WeatherDashboard.css` - Updated `.location-name` styles (line 427-428, 898)
+  - **Impact:** More personalized and prominent location display, better visual hierarchy
+  - **Example:** "Seattle, WA, USA" → displays as "Seattle" in bold 42px/48px font
+
 ### Fixed
 - **Current Conditions Layout Regression** (November 5, 2025)
   - **Issue:** Weather data card in "Current Conditions" section was compressed to ~30% width instead of spanning full container width when using "Use My Location" feature

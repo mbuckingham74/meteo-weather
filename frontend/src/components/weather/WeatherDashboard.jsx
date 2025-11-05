@@ -297,48 +297,39 @@ function WeatherDashboard() {
     return cityName.length > 20 ? cityName.substring(0, 20) + '...' : cityName;
   };
 
-  // Capitalize location name for proper display (in case of cached lowercase data)
+  // Format location name to show city name (extracted from address)
   const getFormattedLocationName = () => {
-    // First priority: use displayName if explicitly set (e.g., "Your Location" from geolocation)
-    if (data?.location?.displayName) {
-      return data.location.displayName;
-    }
-    if (locationData?.displayName) {
-      return locationData.displayName;
-    }
-
-    // Second priority: use address, but check if it's just coordinates
+    // Get the full address from various sources
     const address =
       data?.location?.address || locationData?.address || location || 'Unknown Location';
 
-    // If it's coordinates (lat,lon pattern), show "Your Location" instead
+    // If it's coordinates (lat,lon pattern), show "Your Location" as fallback
     if (/^-?\d+\.\d+,\s*-?\d+\.\d+$/.test(address)) {
       return 'Your Location';
     }
 
-    // If it's all lowercase or has mixed capitalization issues, fix it
-    // Split by comma and capitalize each part
-    return address
-      .split(',')
-      .map((part) => {
-        part = part.trim();
-        // Split by spaces and capitalize each word
-        return part
-          .split(' ')
-          .map((word) => {
-            // Handle special cases (abbreviations)
-            const upper = word.toUpperCase();
-            if (
-              ['US', 'USA', 'UK', 'UAE', 'NSW', 'NY', 'CA', 'FL', 'TX', 'WA', 'DC'].includes(upper)
-            ) {
-              return upper;
-            }
-            // Capitalize first letter
-            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-          })
-          .join(' ');
+    // If address is the generic fallback, use displayName if available
+    if (address === 'Your Location' || address === 'Unknown Location') {
+      return data?.location?.displayName || locationData?.displayName || address;
+    }
+
+    // Extract just the city name (first part before comma) from the full address
+    // e.g., "Seattle, WA, USA" -> "Seattle"
+    const cityName = address.split(',')[0].trim();
+
+    // Capitalize properly (handle special cases)
+    return cityName
+      .split(' ')
+      .map((word) => {
+        // Handle special cases (abbreviations, prefixes)
+        const upper = word.toUpperCase();
+        if (['US', 'USA', 'UK', 'UAE', 'NSW', 'NY', 'CA', 'FL', 'TX', 'WA', 'DC'].includes(upper)) {
+          return upper;
+        }
+        // Capitalize first letter of each word
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
       })
-      .join(', ');
+      .join(' ');
   };
 
   // Count visible charts
