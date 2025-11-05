@@ -5,7 +5,7 @@ import {
   Route,
   Navigate,
   Link,
-  useLocation as useRouterLocation
+  useLocation as useRouterLocation,
 } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -96,10 +96,14 @@ function ComparePage() {
             color: '#374151',
             fontWeight: '600',
             fontSize: '14px',
-            transition: 'background 0.2s'
+            transition: 'background 0.2s',
           }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = '#e5e7eb'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = '#f3f4f6'; }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = '#e5e7eb';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = '#f3f4f6';
+          }}
         >
           ← Back to Dashboard
         </Link>

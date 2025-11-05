@@ -80,8 +80,6 @@ export function TemperatureUnitProvider({ children }) {
   };
 
   return (
-    <TemperatureUnitContext.Provider value={value}>
-      {children}
-    </TemperatureUnitContext.Provider>
+    <TemperatureUnitContext.Provider value={value}>{children}</TemperatureUnitContext.Provider>
   );
 }

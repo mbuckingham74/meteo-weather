@@ -96,14 +96,10 @@ export function ThemeProvider({ children }) {
 
   const value = {
     themePreference, // 'light', 'dark', 'auto'
-    actualTheme,     // 'light' or 'dark' (resolved)
+    actualTheme, // 'light' or 'dark' (resolved)
     setTheme,
     loading,
   };
 
-  return (
-    <ThemeContext.Provider value={value}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }

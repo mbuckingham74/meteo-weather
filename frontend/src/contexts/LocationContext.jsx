@@ -73,12 +73,8 @@ export function LocationProvider({ children }) {
     location,
     locationData,
     selectLocation,
-    clearLocation
+    clearLocation,
   };
 
-  return (
-    <LocationContext.Provider value={value}>
-      {children}
-    </LocationContext.Provider>
-  );
+  return <LocationContext.Provider value={value}>{children}</LocationContext.Provider>;
 }

@@ -4,7 +4,7 @@ import {
   registerUser as apiRegisterUser,
   getCurrentUser,
   logoutUser as apiLogoutUser,
-  refreshAccessToken
+  refreshAccessToken,
 } from '../services/authApi';
 
 /**
@@ -47,7 +47,8 @@ export function AuthProvider({ children }) {
             // Token might be expired, try to refresh
             if (storedRefreshToken) {
               try {
-                const { accessToken: newAccessToken } = await refreshAccessToken(storedRefreshToken);
+                const { accessToken: newAccessToken } =
+                  await refreshAccessToken(storedRefreshToken);
                 localStorage.setItem('accessToken', newAccessToken);
 
                 const userData = await getCurrentUser(newAccessToken);
@@ -78,7 +79,11 @@ export function AuthProvider({ children }) {
       setError(null);
       const response = await apiRegisterUser(email, password, name);
 
-      const { user: userData, accessToken: newAccessToken, refreshToken: newRefreshToken } = response;
+      const {
+        user: userData,
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+      } = response;
 
       // Store tokens
       localStorage.setItem('accessToken', newAccessToken);
@@ -101,7 +106,11 @@ export function AuthProvider({ children }) {
       setError(null);
       const response = await apiLoginUser(email, password);
 
-      const { user: userData, accessToken: newAccessToken, refreshToken: newRefreshToken } = response;
+      const {
+        user: userData,
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+      } = response;
 
       // Store tokens
       localStorage.setItem('accessToken', newAccessToken);
@@ -154,9 +163,5 @@ export function AuthProvider({ children }) {
     updateUser,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

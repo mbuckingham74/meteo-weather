@@ -1,27 +1,27 @@
 # Multi-stage build for optimized production image
 
-# Stage 1: Build React application
-FROM node:18-alpine AS builder
+# Stage 1: Build React application with Vite
+FROM node:24-alpine AS builder
 
 WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install --omit=dev
+# Install ALL dependencies (including devDependencies for build)
+RUN npm ci
 
 # Copy source code
 COPY . .
 
 # Build arguments (passed from docker-compose)
-ARG REACT_APP_API_URL
-ENV REACT_APP_API_URL=$REACT_APP_API_URL
+ARG VITE_API_URL
+ENV VITE_API_URL=$VITE_API_URL
 
-ARG REACT_APP_OPENWEATHER_API_KEY
-ENV REACT_APP_OPENWEATHER_API_KEY=$REACT_APP_OPENWEATHER_API_KEY
+ARG VITE_OPENWEATHER_API_KEY
+ENV VITE_OPENWEATHER_API_KEY=$VITE_OPENWEATHER_API_KEY
 
-# Build the React app for production
+# Build the React app for production with Vite
 RUN npm run build
 
 # Stage 2: Serve with Nginx

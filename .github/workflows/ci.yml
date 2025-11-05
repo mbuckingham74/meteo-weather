@@ -70,12 +70,12 @@ jobs:
       - name: Lint frontend code
         run: |
           cd frontend
-          npm run lint || echo "Linting not configured yet"
+          npm run lint
 
       - name: Run frontend tests with coverage
         run: |
           cd frontend
-          npm test -- --coverage --watchAll=false --collectCoverageFrom='src/**/*.{js,jsx}' --collectCoverageFrom='!src/**/*.test.{js,jsx}' --collectCoverageFrom='!src/index.js' --collectCoverageFrom='!src/reportWebVitals.js' --collectCoverageFrom='!src/setupTests.js'
+          npm run test:ci
         env:
           CI: true
 
@@ -210,7 +210,7 @@ jobs:
           cd frontend
           npm run build
         env:
-          REACT_APP_API_URL: http://localhost:5001/api
+          VITE_API_URL: http://localhost:5001/api
           CI: true
 
     # Docker build validation

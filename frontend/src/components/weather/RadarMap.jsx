@@ -6,12 +6,17 @@ import 'leaflet/dist/leaflet.css';
 import { getRadarMapData, getAllFrames, formatRadarTime } from '../../services/radarService';
 import './RadarMap.css';
 
-// Fix Leaflet default marker icon issue with webpack
+// Import marker images
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+
+// Fix Leaflet default marker icon issue with Vite
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-  iconUrl: require('leaflet/dist/images/marker-icon.png'),
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
 });
 
 /**
@@ -51,12 +56,12 @@ function MapReadyHandler({ onReady }) {
  */
 function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) {
   const center = [latitude, longitude];
-  const OPENWEATHER_API_KEY = process.env.REACT_APP_OPENWEATHER_API_KEY;
+  const OPENWEATHER_API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
 
   const [activeLayers, setActiveLayers] = useState({
     precipitation: true,
     clouds: true,
-    temp: false
+    temp: false,
   });
 
   const [isLoading, setIsLoading] = useState(true);
@@ -84,7 +89,7 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
       warning: '#ef4444',
       watch: '#f59e0b',
       advisory: '#3b82f6',
-      info: '#6b7280'
+      info: '#6b7280',
     };
 
     const color = colors[severity] || colors.info;
@@ -106,7 +111,7 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
       ">⚠️</div>`,
       iconSize: [32, 32],
       iconAnchor: [16, 16],
-      popupAnchor: [0, -16]
+      popupAnchor: [0, -16],
     });
   };
 
@@ -136,7 +141,7 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
 
     return {
       direction: randomDirection,
-      speed: Math.floor(Math.random() * 30) + 10 // 10-40 km/h
+      speed: Math.floor(Math.random() * 30) + 10, // 10-40 km/h
     };
   };
 
@@ -186,13 +191,13 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
       const frameDelay = 1000 / animationSpeed; // Delay between frames
 
       animationIntervalRef.current = setInterval(() => {
-        setCurrentFrame(prev => {
+        setCurrentFrame((prev) => {
           // Cycle through all available radar frames
           return (prev + 1) % radarFrames.length;
         });
 
         // Pulse effect - fade in/out to show updates
-        setOpacity(prev => {
+        setOpacity((prev) => {
           if (prev === 0.6) return 0.4;
           return 0.6;
         });
@@ -214,7 +219,9 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
 
   // Early return if API key missing - must be AFTER all hooks
   if (!OPENWEATHER_API_KEY) {
-    console.error('OpenWeather API key not found. Please add REACT_APP_OPENWEATHER_API_KEY to your .env file.');
+    console.error(
+      'OpenWeather API key not found. Please add VITE_OPENWEATHER_API_KEY to your .env file.'
+    );
     return (
       <div className="radar-map-error" style={{ height: `${height}px` }}>
         <p>⚠️ Radar map unavailable</p>
@@ -224,28 +231,28 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
   }
 
   const toggleLayer = (layer) => {
-    setActiveLayers(prev => ({
+    setActiveLayers((prev) => ({
       ...prev,
-      [layer]: !prev[layer]
+      [layer]: !prev[layer],
     }));
   };
 
   // Zoom control handlers
   const handleZoomIn = () => {
-    setCurrentZoom(prev => Math.min(prev + 1, 18)); // Max zoom 18
+    setCurrentZoom((prev) => Math.min(prev + 1, 18)); // Max zoom 18
   };
 
   const handleZoomOut = () => {
-    setCurrentZoom(prev => Math.max(prev - 1, 1)); // Min zoom 1
+    setCurrentZoom((prev) => Math.max(prev - 1, 1)); // Min zoom 1
   };
 
   // Animation control handlers
   const togglePlayPause = () => {
-    setIsPlaying(prev => !prev);
+    setIsPlaying((prev) => !prev);
   };
 
   const changeSpeed = () => {
-    setAnimationSpeed(prev => {
+    setAnimationSpeed((prev) => {
       if (prev === 0.5) return 1;
       if (prev === 1) return 2;
       return 0.5;
@@ -293,7 +300,7 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
     return date.toLocaleTimeString([], {
       hour: '2-digit',
       minute: '2-digit',
-      hour12: true
+      hour12: true,
     });
   };
 
@@ -304,13 +311,13 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
     setIsDownloading(true);
     try {
       // Wait a moment for any animations to complete
-      await new Promise(resolve => setTimeout(resolve, 300));
+      await new Promise((resolve) => setTimeout(resolve, 300));
 
       const canvas = await html2canvas(mapContainerRef.current, {
         useCORS: true,
         allowTaint: true,
         logging: false,
-        backgroundColor: null
+        backgroundColor: null,
       });
 
       // Convert to blob and download
@@ -343,8 +350,8 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
         index,
         time: new Date(frame.time * 1000).toISOString(),
         timestamp: frame.time,
-        path: frame.path
-      }))
+        path: frame.path,
+      })),
     };
 
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
@@ -427,41 +434,40 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
         )}
 
         {/* Weather Alert Markers */}
-        {showAlerts && alerts && alerts.length > 0 && alerts.map((alert, index) => {
-          // Use center location for alerts (API doesn't provide specific coordinates)
-          const alertPosition = [latitude, longitude];
-          const severity = getAlertSeverity(alert.event);
+        {showAlerts &&
+          alerts &&
+          alerts.length > 0 &&
+          alerts.map((alert, index) => {
+            // Use center location for alerts (API doesn't provide specific coordinates)
+            const alertPosition = [latitude, longitude];
+            const severity = getAlertSeverity(alert.event);
 
-          return (
-            <Marker
-              key={index}
-              position={alertPosition}
-              icon={createAlertIcon(severity)}
-            >
-              <Popup maxWidth={300}>
-                <div className="alert-popup">
-                  <h4 className="alert-popup-title">{alert.event}</h4>
-                  {alert.headline && (
-                    <p className="alert-popup-headline">{alert.headline}</p>
-                  )}
-                  {alert.onset && (
-                    <p className="alert-popup-time">
-                      <strong>Starts:</strong> {new Date(alert.onset).toLocaleString()}
-                    </p>
-                  )}
-                  {alert.ends && (
-                    <p className="alert-popup-time">
-                      <strong>Ends:</strong> {new Date(alert.ends).toLocaleString()}
-                    </p>
-                  )}
-                  {alert.description && (
-                    <p className="alert-popup-description">{alert.description.slice(0, 200)}...</p>
-                  )}
-                </div>
-              </Popup>
-            </Marker>
-          );
-        })}
+            return (
+              <Marker key={index} position={alertPosition} icon={createAlertIcon(severity)}>
+                <Popup maxWidth={300}>
+                  <div className="alert-popup">
+                    <h4 className="alert-popup-title">{alert.event}</h4>
+                    {alert.headline && <p className="alert-popup-headline">{alert.headline}</p>}
+                    {alert.onset && (
+                      <p className="alert-popup-time">
+                        <strong>Starts:</strong> {new Date(alert.onset).toLocaleString()}
+                      </p>
+                    )}
+                    {alert.ends && (
+                      <p className="alert-popup-time">
+                        <strong>Ends:</strong> {new Date(alert.ends).toLocaleString()}
+                      </p>
+                    )}
+                    {alert.description && (
+                      <p className="alert-popup-description">
+                        {alert.description.slice(0, 200)}...
+                      </p>
+                    )}
+                  </div>
+                </Popup>
+              </Marker>
+            );
+          })}
 
         {/* Update map view when location changes */}
         <ChangeMapView center={center} zoom={currentZoom} />
@@ -569,7 +575,10 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
         >
           🕐
         </button>
-        <div className="animation-timestamp" onClick={() => setShowFrameSelector(!showFrameSelector)}>
+        <div
+          className="animation-timestamp"
+          onClick={() => setShowFrameSelector(!showFrameSelector)}
+        >
           {getFrameTimestamp()}
         </div>
         <div
@@ -589,9 +598,10 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
           <div
             className="animation-progress-bar"
             style={{
-              width: radarFrames.length > 0
-                ? `${((currentFrame + 1) / radarFrames.length) * 100}%`
-                : '100%'
+              width:
+                radarFrames.length > 0
+                  ? `${((currentFrame + 1) / radarFrames.length) * 100}%`
+                  : '100%',
             }}
           ></div>
         </div>
@@ -613,9 +623,11 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
               >
                 <span className="frame-time">{getFrameLabel(frame)}</span>
                 <span className="frame-indicator">
-                  {index === radarFrames.length - 1 ? '(Latest)' :
-                   index < radarFrames.length - 6 ? '(Past)' :
-                   '(Forecast)'}
+                  {index === radarFrames.length - 1
+                    ? '(Latest)'
+                    : index < radarFrames.length - 6
+                      ? '(Past)'
+                      : '(Forecast)'}
                 </span>
               </button>
             ))}
@@ -637,31 +649,35 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
       )}
 
       {/* Storm Tracking Info */}
-      {showStormTracking && activeLayers.precipitation && (() => {
-        const stormInfo = getStormDirection();
-        return stormInfo && (
-          <div className="storm-tracking-panel">
-            <div className="storm-tracking-title">🌀 Storm Tracking</div>
-            <div className="storm-tracking-info">
-              <div className="storm-info-item">
-                <span className="storm-info-label">Direction:</span>
-                <span className="storm-info-value">{stormInfo.direction}</span>
+      {showStormTracking &&
+        activeLayers.precipitation &&
+        (() => {
+          const stormInfo = getStormDirection();
+          return (
+            stormInfo && (
+              <div className="storm-tracking-panel">
+                <div className="storm-tracking-title">🌀 Storm Tracking</div>
+                <div className="storm-tracking-info">
+                  <div className="storm-info-item">
+                    <span className="storm-info-label">Direction:</span>
+                    <span className="storm-info-value">{stormInfo.direction}</span>
+                  </div>
+                  <div className="storm-info-item">
+                    <span className="storm-info-label">Speed:</span>
+                    <span className="storm-info-value">{stormInfo.speed} km/h</span>
+                  </div>
+                  <div className="storm-info-item">
+                    <span className="storm-info-label">Frame:</span>
+                    <span className="storm-info-value">
+                      {currentFrame + 1} / {radarFrames.length}
+                    </span>
+                  </div>
+                </div>
+                <div className="storm-tracking-note">ℹ️ Tracking simulated from radar data</div>
               </div>
-              <div className="storm-info-item">
-                <span className="storm-info-label">Speed:</span>
-                <span className="storm-info-value">{stormInfo.speed} km/h</span>
-              </div>
-              <div className="storm-info-item">
-                <span className="storm-info-label">Frame:</span>
-                <span className="storm-info-value">{currentFrame + 1} / {radarFrames.length}</span>
-              </div>
-            </div>
-            <div className="storm-tracking-note">
-              ℹ️ Tracking simulated from radar data
-            </div>
-          </div>
-        );
-      })()}
+            )
+          );
+        })()}
 
       <div className="radar-legend">
         <span className="legend-label">

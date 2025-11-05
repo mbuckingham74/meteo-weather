@@ -20,9 +20,12 @@ if ('serviceWorker' in navigator) {
         console.log('✅ ServiceWorker registered:', registration);
 
         // Check for updates periodically
-        setInterval(() => {
-          registration.update();
-        }, 60 * 60 * 1000); // Check every hour
+        setInterval(
+          () => {
+            registration.update();
+          },
+          60 * 60 * 1000
+        ); // Check every hour
 
         // Listen for updates
         registration.addEventListener('updatefound', () => {

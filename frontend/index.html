@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
+
+    <!-- PWA Configuration -->
+    <meta name="theme-color" content="#667eea" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#667eea" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1f2937" />
+    <meta
+      name="description"
+      content="Meteo Weather App - Comprehensive weather forecasts, historical climate analysis, and location comparison tools"
+    />
+
+    <!-- iOS PWA Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Meteo Weather" />
+    <link rel="apple-touch-icon" href="/logo192.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/logo192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/logo192.png" />
+    <link rel="apple-touch-icon" sizes="167x167" href="/logo192.png" />
+
+    <!-- Android PWA Support -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Microsoft PWA Support -->
+    <meta name="msapplication-TileColor" content="#667eea" />
+    <meta name="msapplication-TileImage" content="/logo192.png" />
+
+    <!-- Splash Screen Background (iOS) -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+    <!-- Preconnect to external domains for performance -->
+    <link rel="preconnect" href="https://api.visualcrossing.com" />
+    <link rel="preconnect" href="https://api.openweathermap.org" />
+    <title>Meteo Weather App - Detailed Forecasts & Climate Analysis</title>
+
+    <!-- Matomo Analytics -->
+    <script>
+      var _paq = window._paq = window._paq || [];
+      /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+      _paq.push(['trackPageView']);
+      _paq.push(['enableLinkTracking']);
+      (function() {
+        var u="https://matomo.tachyonfuture.com/";
+        _paq.push(['setTrackerUrl', u+'matomo.php']);
+        _paq.push(['setSiteId', '4']);
+        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+        g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+      })();
+    </script>
+    <!-- End Matomo Code -->
+
+    <!-- Plausible Analytics (Beta site only) -->
+    <script defer data-domain="meteo-beta.tachyonfuture.com" src="https://plausible.tachyonfuture.com/js/script.js"></script>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/index.jsx"></script>
+  </body>
+</html>

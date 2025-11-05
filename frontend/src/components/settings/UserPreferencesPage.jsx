@@ -29,7 +29,7 @@ const UserPreferencesPage = () => {
     weather_alert_notifications: true,
     weekly_summary: false,
     report_time: '08:00',
-    report_locations: []
+    report_locations: [],
   });
 
   // Location search for adding report locations
@@ -51,11 +51,14 @@ const UserPreferencesPage = () => {
       setLoading(true);
       const token = localStorage.getItem('token');
 
-      const response = await fetch(`${API_CONFIG.BASE_URL.replace('/api', '')}/api/user-preferences`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
+      const response = await fetch(
+        `${API_CONFIG.BASE_URL.replace('/api', '')}/api/user-preferences`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      });
+      );
 
       if (!response.ok) {
         throw new Error('Failed to fetch preferences');
@@ -86,17 +89,20 @@ const UserPreferencesPage = () => {
     try {
       const token = localStorage.getItem('token');
 
-      const response = await fetch(`${API_CONFIG.BASE_URL.replace('/api', '')}/api/user-preferences`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          ...preferences,
-          report_time: preferences.report_time + ':00' // Convert HH:MM to HH:MM:SS
-        })
-      });
+      const response = await fetch(
+        `${API_CONFIG.BASE_URL.replace('/api', '')}/api/user-preferences`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            ...preferences,
+            report_time: preferences.report_time + ':00', // Convert HH:MM to HH:MM:SS
+          }),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -117,9 +123,9 @@ const UserPreferencesPage = () => {
   };
 
   const handleInputChange = (field, value) => {
-    setPreferences(prev => ({
+    setPreferences((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
@@ -133,7 +139,7 @@ const UserPreferencesPage = () => {
 
     try {
       const response = await fetch(
-        `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(query)}&limit=5&appid=${process.env.REACT_APP_OPENWEATHER_API_KEY}`
+        `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(query)}&limit=5&appid=${import.meta.env.VITE_OPENWEATHER_API_KEY}`
       );
       const data = await response.json();
       setSearchResults(data);
@@ -147,18 +153,18 @@ const UserPreferencesPage = () => {
       id: Date.now(),
       name: `${location.name}, ${location.state || location.country}`,
       latitude: location.lat,
-      longitude: location.lon
+      longitude: location.lon,
     };
 
     // Check if location already added
     const exists = preferences.report_locations.some(
-      loc => loc.latitude === newLocation.latitude && loc.longitude === newLocation.longitude
+      (loc) => loc.latitude === newLocation.latitude && loc.longitude === newLocation.longitude
     );
 
     if (!exists) {
-      setPreferences(prev => ({
+      setPreferences((prev) => ({
         ...prev,
-        report_locations: [...prev.report_locations, newLocation]
+        report_locations: [...prev.report_locations, newLocation],
       }));
     }
 
@@ -167,9 +173,9 @@ const UserPreferencesPage = () => {
   };
 
   const removeReportLocation = (id) => {
-    setPreferences(prev => ({
+    setPreferences((prev) => ({
       ...prev,
-      report_locations: prev.report_locations.filter(loc => loc.id !== id)
+      report_locations: prev.report_locations.filter((loc) => loc.id !== id),
     }));
   };
 
@@ -212,7 +218,9 @@ const UserPreferencesPage = () => {
               <select
                 id="default_forecast_days"
                 value={preferences.default_forecast_days}
-                onChange={(e) => handleInputChange('default_forecast_days', parseInt(e.target.value))}
+                onChange={(e) =>
+                  handleInputChange('default_forecast_days', parseInt(e.target.value))
+                }
               >
                 <option value={7}>7 days</option>
                 <option value={10}>10 days</option>
@@ -283,7 +291,9 @@ const UserPreferencesPage = () => {
                     <input
                       type="checkbox"
                       checked={preferences.weather_alert_notifications}
-                      onChange={(e) => handleInputChange('weather_alert_notifications', e.target.checked)}
+                      onChange={(e) =>
+                        handleInputChange('weather_alert_notifications', e.target.checked)
+                      }
                     />
                     <span>Weather Alert Notifications</span>
                   </label>
@@ -310,82 +320,79 @@ const UserPreferencesPage = () => {
                     value={preferences.report_time}
                     onChange={(e) => handleInputChange('report_time', e.target.value)}
                   />
-                  <p className="help-text">Time to receive daily/weekly reports (your local time)</p>
+                  <p className="help-text">
+                    Time to receive daily/weekly reports (your local time)
+                  </p>
                 </div>
               </>
             )}
           </section>
 
           {/* Report Locations */}
-          {preferences.email_notifications && (preferences.daily_weather_report || preferences.weekly_summary) && (
-            <section className="preferences-section">
-              <h2>Report Locations</h2>
-              <p className="section-description">
-                Add locations to include in your weather reports
-              </p>
+          {preferences.email_notifications &&
+            (preferences.daily_weather_report || preferences.weekly_summary) && (
+              <section className="preferences-section">
+                <h2>Report Locations</h2>
+                <p className="section-description">
+                  Add locations to include in your weather reports
+                </p>
 
-              <div className="form-group">
-                <label htmlFor="location_search">Add Location</label>
-                <input
-                  type="text"
-                  id="location_search"
-                  placeholder="Search for a city..."
-                  value={locationSearch}
-                  onChange={(e) => handleLocationSearch(e.target.value)}
-                  autoComplete="off"
-                />
+                <div className="form-group">
+                  <label htmlFor="location_search">Add Location</label>
+                  <input
+                    type="text"
+                    id="location_search"
+                    placeholder="Search for a city..."
+                    value={locationSearch}
+                    onChange={(e) => handleLocationSearch(e.target.value)}
+                    autoComplete="off"
+                  />
 
-                {searchResults.length > 0 && (
-                  <div className="search-results">
-                    {searchResults.map((result, index) => (
-                      <div
-                        key={index}
-                        className="search-result-item"
-                        onClick={() => addReportLocation(result)}
-                      >
-                        {result.name}, {result.state || result.country}
-                        <span className="coordinates">
-                          ({result.lat.toFixed(2)}, {result.lon.toFixed(2)})
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              <div className="report-locations-list">
-                {preferences.report_locations.length === 0 ? (
-                  <p className="no-locations">No locations added yet. Search above to add locations.</p>
-                ) : (
-                  preferences.report_locations.map((location) => (
-                    <div key={location.id} className="report-location-item">
-                      <span className="location-name">{location.name}</span>
-                      <button
-                        type="button"
-                        onClick={() => removeReportLocation(location.id)}
-                        className="remove-button"
-                      >
-                        Remove
-                      </button>
+                  {searchResults.length > 0 && (
+                    <div className="search-results">
+                      {searchResults.map((result, index) => (
+                        <div
+                          key={index}
+                          className="search-result-item"
+                          onClick={() => addReportLocation(result)}
+                        >
+                          {result.name}, {result.state || result.country}
+                          <span className="coordinates">
+                            ({result.lat.toFixed(2)}, {result.lon.toFixed(2)})
+                          </span>
+                        </div>
+                      ))}
                     </div>
-                  ))
-                )}
-              </div>
-            </section>
-          )}
+                  )}
+                </div>
+
+                <div className="report-locations-list">
+                  {preferences.report_locations.length === 0 ? (
+                    <p className="no-locations">
+                      No locations added yet. Search above to add locations.
+                    </p>
+                  ) : (
+                    preferences.report_locations.map((location) => (
+                      <div key={location.id} className="report-location-item">
+                        <span className="location-name">{location.name}</span>
+                        <button
+                          type="button"
+                          onClick={() => removeReportLocation(location.id)}
+                          className="remove-button"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </section>
+            )}
 
           {/* Messages */}
-          {message && (
-            <div className="message success-message">
-              {message}
-            </div>
-          )}
+          {message && <div className="message success-message">{message}</div>}
 
-          {error && (
-            <div className="message error-message">
-              {error}
-            </div>
-          )}
+          {error && <div className="message error-message">{error}</div>}
 
           {/* Actions */}
           <div className="preferences-actions">
@@ -396,11 +403,7 @@ const UserPreferencesPage = () => {
             >
               Cancel
             </button>
-            <button
-              type="submit"
-              disabled={saving}
-              className="button button-primary"
-            >
+            <button type="submit" disabled={saving} className="button button-primary">
               {saving ? 'Saving...' : 'Save Preferences'}
             </button>
           </div>

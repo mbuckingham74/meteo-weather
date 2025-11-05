@@ -5,7 +5,7 @@
  * This prevents duplication of API URLs across 13+ files.
  *
  * Environment Variables:
- * - REACT_APP_API_URL: Backend API base URL (set in .env for production)
+ * - VITE_API_URL: Backend API base URL (set in .env for production)
  *
  * Default: http://localhost:5001/api (development)
  */
@@ -16,7 +16,7 @@ const API_CONFIG = {
    * Automatically uses environment variable in production
    * Falls back to localhost for development
    */
-  BASE_URL: process.env.REACT_APP_API_URL || 'http://localhost:5001/api',
+  BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:5001/api',
 
   /**
    * API endpoint paths (relative to BASE_URL)
