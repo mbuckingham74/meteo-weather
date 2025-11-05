@@ -206,6 +206,12 @@ function WeatherDashboard() {
   // Get city name for button (extract first part of address, truncate if too long)
   const getCityName = () => {
     const address = data?.location?.address || locationData?.address || location || 'Location';
+
+    // If address is a placeholder, return "Your Location"
+    if (/^(old location|location|unknown|coordinates?|unnamed)$/i.test(address.trim())) {
+      return 'Your Location';
+    }
+
     const cityName = address.split(',')[0].trim();
     return cityName.length > 20 ? cityName.substring(0, 20) + '...' : cityName;
   };
@@ -217,6 +223,12 @@ function WeatherDashboard() {
 
     // If it's coordinates (lat,lon pattern), show "Your Location" as fallback
     if (/^-?\d+\.\d+,\s*-?\d+\.\d+$/.test(address)) {
+      return 'Your Location';
+    }
+
+    // If address is a placeholder or generic name (API couldn't resolve it)
+    // This fixes cached "Old Location" values from earlier API responses
+    if (/^(old location|location|unknown|coordinates?|unnamed)$/i.test(address.trim())) {
       return 'Your Location';
     }
 
