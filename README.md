@@ -625,6 +625,11 @@ Professional development workflow with automated testing, security scanning, and
 - **html2canvas** - Screenshot capture for radar exports
 - **CSS3** - Custom styling with CSS variables for theming and gradient designs
 - **localStorage** - Client-side preferences and theme storage (with cloud sync for authenticated users)
+- **Custom Utilities** (Nov 2025):
+  - `debugLogger` - Environment-aware logging system
+  - `errorHandler` - Standardized error management with 20+ error codes
+  - `useLocationConfirmation` - Reusable location confirmation hook
+  - `constants/` - Centralized configuration and helper functions
 
 ### Backend
 - **Node.js** - Runtime environment
