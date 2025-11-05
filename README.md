@@ -57,7 +57,7 @@ A comprehensive weather dashboard inspired by Weather Spark, providing detailed 
 ## 📋 Table of Contents
 
 **Quick Links:**
-- [🚀 Setup Instructions](#-setup-instructions) | [🌐 Live Demo](https://meteo-beta.tachyonfuture.com) | [📋 Changelog](CHANGELOG.md) | [🤝 Contributing](#-contributing)
+- [🚀 Setup Instructions](#-setup-instructions) | [🌐 Live Demo](https://meteo-beta.tachyonfuture.com) | [🏗️ Architecture](ARCHITECTURE.md) | [📋 Changelog](CHANGELOG.md) | [🤝 Contributing](#-contributing)
 
 **Getting Started:**
 - [🚀 **For Claude Code Users:** Start Here](/.claude/QUICK_START.md) - Copy-paste onboarding prompt for new sessions
@@ -82,6 +82,12 @@ A comprehensive weather dashboard inspired by Weather Spark, providing detailed 
   - [Theme System](#-theme-system)
 
 **Development:**
+- [🏗️ Architecture Documentation](ARCHITECTURE.md) - Comprehensive visual architecture guide
+  - System architecture overview with Mermaid diagrams
+  - Frontend & backend component structure
+  - Data flow diagrams
+  - API integration patterns
+  - Database schema documentation
 - [🤖 Development & Automation](#-development--automation)
   - [GitHub Actions CI/CD](#github-actions-cicd)
   - [Community Health Files](#community-health-files)
