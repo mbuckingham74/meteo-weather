@@ -103,6 +103,52 @@ Comprehensive guide to build validation and safety systems:
 
 ---
 
+### Security Documentation
+
+#### RATE_LIMITING_AND_SECURITY_AUDIT.md
+Comprehensive security audit and implementation guide (NEW - Jan 2025):
+- Complete security analysis with CVSS risk scores
+- Rate limiting strategy (100/15min API, 5/15min auth, 10/hour AI)
+- CORS configuration best practices
+- CSP (Content Security Policy) implementation
+- Drop-in code for backend/app.js with full security stack
+- Cost impact analysis (96% AI abuse reduction)
+- Testing procedures and validation checklist
+- Emergency rollback procedures
+
+**Audience:** Security engineers, backend developers, DevOps
+**Read time:** 20 minutes
+**Critical:** Implements protection against brute force, cost abuse, XSS, CSRF
+
+#### NGINX_SECURITY_DEPLOYMENT_GUIDE.md
+Step-by-step Nginx Proxy Manager security headers guide (NEW - Jan 2025):
+- Nginx configuration for frontend vs API
+- Security headers (HSTS, X-Frame-Options, CSP, etc.)
+- Verification and testing procedures
+- Security scanner setup (Mozilla Observatory, SecurityHeaders.com, SSL Labs)
+- Rollback plan (<30 seconds, no downtime)
+- Troubleshooting common issues
+- HSTS preload submission guide (optional)
+
+**Audience:** DevOps engineers, system administrators
+**Read time:** 15 minutes
+**Expected Security Scores:** A+ (Observatory), A (SecurityHeaders), A+ (SSL Labs)
+
+#### SECURITY_DEPLOYMENT_CHECKLIST.md
+Complete production deployment checklist (NEW - Jan 2025):
+- Pre-deployment testing (10+ items)
+- Step-by-step deployment (SSH, Docker, Nginx)
+- Post-deployment verification (9 test categories)
+- Security scanner validation (3 tools)
+- Functional testing checklist (15+ features)
+- 24-hour monitoring guide
+- Emergency rollback procedures
+- Maintenance schedule (daily/weekly/monthly/quarterly)
+
+**Audience:** All deployment personnel, QA engineers
+**Read time:** 10 minutes
+**Critical:** Must complete BEFORE production deployment
+
 ### Deployment & Operations Documentation
 
 #### DEPLOYMENT.md
@@ -252,9 +298,11 @@ Comprehensive repository audit conducted November 2025:
 **I want to...**
 
 - **...get the app running quickly** → Start with [QUICKSTART.md](QUICKSTART.md) or [../.env.example](../.env.example)
-- **...deploy to production** → Read [DEPLOYMENT_TESTING_CHECKLIST.md](DEPLOYMENT_TESTING_CHECKLIST.md), then [DEPLOYMENT.md](DEPLOYMENT.md)
+- **...implement security features** → Read [RATE_LIMITING_AND_SECURITY_AUDIT.md](RATE_LIMITING_AND_SECURITY_AUDIT.md) (NEW!)
+- **...deploy to production** → Follow [SECURITY_DEPLOYMENT_CHECKLIST.md](SECURITY_DEPLOYMENT_CHECKLIST.md), then [DEPLOYMENT.md](DEPLOYMENT.md)
+- **...configure Nginx security** → Read [NGINX_SECURITY_DEPLOYMENT_GUIDE.md](NGINX_SECURITY_DEPLOYMENT_GUIDE.md) (NEW!)
 - **...contribute code** → Read [development/AGENTS.md](development/AGENTS.md) and [CODE_QUALITY_AUDIT.md](CODE_QUALITY_AUDIT.md)
-- **...improve security** → Implement [SECURITY_HEADERS.md](SECURITY_HEADERS.md) recommendations
+- **...improve security headers** → Implement [SECURITY_HEADERS.md](SECURITY_HEADERS.md) recommendations
 - **...increase test coverage** → Follow [TESTING_ROADMAP.md](TESTING_ROADMAP.md) phases
 - **...promote the project** → Use templates in [PROMOTION.md](PROMOTION.md)
 - **...configure email notifications** → Read [USER_PREFERENCES_SYSTEM.md](USER_PREFERENCES_SYSTEM.md)
