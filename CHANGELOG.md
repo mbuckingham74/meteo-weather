@@ -160,7 +160,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Better browser navigation support (back/forward buttons)
   - Fixed circular dependencies in location synchronization
   - Dependency: react-router-dom@6.30.1
-- **Repository Guidelines** (AGENTS.md) ([e6db673](https://github.com/mbuckingham74/meteo-weather/commit/e6db673))
+- **Repository Guidelines** (docs/development/AGENTS.md) ([e6db673](https://github.com/mbuckingham74/meteo-weather/commit/e6db673))
   - Created comprehensive contributor guidelines for new developers
   - Project structure and module organization documentation
   - Build, test, and development command reference
@@ -191,8 +191,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated in all 5 occurrences:
     - `backend/services/aiWeatherAnalysisService.js` (2 locations)
     - `backend/services/aiLocationFinderService.js`
-    - `CLAUDE.md` documentation
-    - `REPOSITORY_AUDIT_REPORT.md` documentation
+    - `.claude/INSTRUCTIONS.md` documentation
+    - `docs/archive/REPOSITORY_AUDIT_REPORT.md` documentation
   - Ensures application uses latest AI capabilities
 - **Environment Variable Standardization** (November 4, 2025)
   - Renamed `ANTHROPIC_API_KEY` to `METEO_ANTHROPIC_API_KEY` in all configuration files
@@ -229,7 +229,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Fixed SharedAnswerPage route parameter access
   - Consistent routing patterns across all AI features
 - **Documentation Architecture** ([e6db673](https://github.com/mbuckingham74/meteo-weather/commit/e6db673))
-  - Refactored CLAUDE.md main-overview section with clearer system descriptions
+  - Refactored .claude/INSTRUCTIONS.md main-overview section with clearer system descriptions
   - Reorganized into 4 primary business logic systems (AI Weather Intelligence, Climate Analysis, Location Intelligence, Weather Data Integration)
   - Updated backend testing documentation (removed "not yet implemented" status)
   - Added integration points between systems
@@ -363,7 +363,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Highlighted security as #2 key feature in README
   - Added security badges (Security Scan, 0 Vulnerabilities)
   - Expanded security section to 180 lines with 9 subsections
-  - Added security architecture section to CLAUDE.md
+  - Added security architecture section to .claude/INSTRUCTIONS.md
   - Documented all security systems and processes
 
 - **Comprehensive Security Headers Guide** ([838fcee](https://github.com/mbuckingham74/meteo-weather/commit/838fcee))
@@ -378,7 +378,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated test coverage statistics
 
 - **PWA and Error Handling Documentation** ([5d1730a](https://github.com/mbuckingham74/meteo-weather/commit/5d1730a))
-  - Added PWA section to CLAUDE.md
+  - Added PWA section to .claude/INSTRUCTIONS.md
   - Documented error boundary implementation
   - Loading skeleton architecture details
 

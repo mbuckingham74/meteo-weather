@@ -540,8 +540,8 @@ Professional development workflow with automated testing, security scanning, and
 - 📝 Detailed README with setup instructions
 - 🎯 GITHUB_TOPICS.md (discovery strategy)
 - 📣 PROMOTION.md (launch content for multiple platforms)
-- 🗺️ CLAUDE.md (AI-assisted development guidelines)
-- 📘 AGENTS.md (Repository guidelines for new contributors and agents)
+- 🗺️ .claude/INSTRUCTIONS.md (AI-assisted development guidelines)
+- 📘 docs/development/AGENTS.md (Repository guidelines for new contributors and agents)
 
 ### Roadmap Ideas
 

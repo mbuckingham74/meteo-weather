@@ -10,8 +10,8 @@ This is the **Meteo Weather App** - a Weather Spark clone with React frontend, N
 
 ## Critical Instructions
 
-### 1. **Read CLAUDE.md First**
-Before doing ANYTHING, read `/Users/michaelbuckingham/Documents/meteo-app/CLAUDE.md` - it contains:
+### 1. **Read .claude/INSTRUCTIONS.md First**
+Before doing ANYTHING, read `/Users/michaelbuckingham/Documents/meteo-app/.claude/INSTRUCTIONS.md` - it contains:
 - Development workflow (STOP AND WAIT after pushing to GitHub)
 - Pre-deployment checklist (must verify localhost FIRST)
 - Project architecture and features
