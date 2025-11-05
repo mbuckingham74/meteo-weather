@@ -35,6 +35,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Example:** "Seattle, WA, USA" → displays as "Seattle" in bold 42px/48px font
 
 ### Fixed
+- **Backend Returning Placeholder Location Names** (November 5, 2025)
+  - **Issue:** Visual Crossing API was returning placeholder names like "Old Location" for some coordinates, especially in regions with poor address coverage (e.g., some areas in Africa)
+  - **Root Cause:** Backend `reverseGeocode` function blindly accepted `resolvedAddress` from Visual Crossing API without validation. API returns generic placeholders when it doesn't have proper address data
+  - **Solution:** Added placeholder detection in backend to identify generic names (`/^(old location|location|unknown|coordinates?|unnamed)$/i`) and fall back to coordinate display when detected
+  - **Files Changed:**
+    - `backend/services/geocodingService.js` - Added placeholder detection logic (lines 140-149)
+  - **Impact:** Users in regions with poor address coverage now see coordinates (`"47.9121, -124.5742"`) instead of confusing placeholder names like "Old Location"
+  - **Testing:** Verified with fresh browsers in multiple regions, placeholder names now correctly convert to coordinates
+
 - **Geolocation displayName Override** (November 5, 2025)
   - **Issue:** When using "Use My Location", the city name would briefly appear correctly on page load, but then revert to "Your Location" as soon as geolocation completed
   - **Root Cause:** `geolocationService.js` was setting `displayName: 'Your Location'` even when reverse geocoding succeeded with a valid city name (line 149)

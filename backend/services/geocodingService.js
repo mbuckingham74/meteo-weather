@@ -137,10 +137,21 @@ async function reverseGeocode(lat, lon) {
     });
 
     if (response.data) {
+      const resolvedAddress = response.data.resolvedAddress || '';
+
+      // Check if the resolved address is a placeholder or generic name
+      // These indicate the API doesn't have proper address data
+      const isPlaceholder = /^(old location|location|unknown|coordinates?|unnamed)$/i.test(resolvedAddress.trim());
+
+      // Use coordinates as address if we got a placeholder
+      const finalAddress = isPlaceholder
+        ? `${lat.toFixed(4)}, ${lon.toFixed(4)}`
+        : capitalizeAddress(resolvedAddress);
+
       return {
         success: true,
         location: {
-          address: capitalizeAddress(response.data.resolvedAddress),
+          address: finalAddress,
           latitude: response.data.latitude,
           longitude: response.data.longitude,
           timezone: response.data.timezone,
