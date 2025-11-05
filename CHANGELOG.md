@@ -20,6 +20,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## ![Unreleased](https://img.shields.io/badge/Unreleased-gray?style=flat-square)
 
+### Added
+- **Production API Testing Script** (November 5, 2025)
+  - Created `scripts/test-production-apis.sh` - Comprehensive automated testing for deployment verification
+  - Tests all critical backend endpoints (health, database, Visual Crossing API, weather, locations)
+  - Validates frontend environment variables baked into production bundle
+  - Verifies OpenWeather API key configuration for radar map functionality
+  - 8 automated tests with color-coded pass/fail output
+  - Exit code 0 if all pass, 1 if any fail (CI/CD ready)
+  - Usage: `bash scripts/test-production-apis.sh`
+
 ### Changed
 - **Code Quality Improvements - Priority 1 Fixes** (November 4, 2025)
   - **Issue:** 13+ duplicate hardcoded API URLs across codebase, undocumented timeout values
@@ -42,6 +52,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Reference:** See `docs/CODE_QUALITY_AUDIT.md` for complete analysis and recommendations
 
 ### Fixed
+- **Production OpenWeather API Key Configuration** (November 5, 2025)
+  - **Issue:** Frontend radar map failing with "OpenWeather API key not found" errors on beta deployment
+  - **Root Cause:** React environment variables must be prefixed with `REACT_APP_` AND present at build time
+  - **Solution:**
+    - Added `REACT_APP_OPENWEATHER_API_KEY` to production `.env.production` file
+    - Fixed `docker-compose.prod.yml` build args to reference `${REACT_APP_OPENWEATHER_API_KEY}`
+    - Created `.env` symlink to `.env.production` for Docker Compose default env loading
+    - Rebuilt frontend container with proper environment variables baked into static bundle
+  - **Impact:**
+    - ✅ Radar map now fully functional on beta site
+    - ✅ OpenWeather tile overlays (precipitation, clouds, temperature) working
+    - ✅ All 8 production API tests passing
+  - **Files Changed:**
+    - `docker-compose.prod.yml` - Fixed frontend build arg reference
+    - Production server `.env.production` - Added `REACT_APP_OPENWEATHER_API_KEY`
+    - Production server `.env` - Symlinked to `.env.production`
+  - **Lesson Learned:** Always verify environment variables with automated testing before declaring deployment complete
+
 - **Webpack Dev Server Not Starting** (November 4, 2025)
   - **Issue:** Home page broken on both local and beta environments
   - **Root Cause:** Missing `react-router-dom` dependency in Docker container due to out-of-sync package-lock.json

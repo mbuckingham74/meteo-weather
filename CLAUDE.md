@@ -41,6 +41,36 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Different CSS extraction, env vars, build processes
 - ALWAYS verify localhost FIRST before deploying to beta
 
+## 🧪 AFTER DEPLOYING - Automated Verification
+
+**CRITICAL: After EVERY production deployment, run the automated test suite:**
+
+```bash
+bash scripts/test-production-apis.sh
+```
+
+This script automatically verifies:
+- ✅ Backend health endpoint responding
+- ✅ Database connection active
+- ✅ Visual Crossing API configured
+- ✅ Weather API endpoints functional
+- ✅ Location search working
+- ✅ Frontend API URL baked into bundle
+- ✅ OpenWeather API key configured (radar map)
+
+**Exit codes:**
+- `0` = All tests passed → Deployment successful
+- `1` = Tests failed → Review errors and fix before user testing
+
+**Why This Matters:**
+- Catches environment variable issues (React build-time vars)
+- Detects API configuration problems early
+- Verifies database connectivity
+- Confirms all critical endpoints working
+- **Prevents user from discovering broken deployments**
+
+**DO NOT declare deployment complete until this test passes.**
+
 ## 🔍 CRITICAL DEBUGGING PROTOCOL
 
 **When user reports bugs, NEVER blame cache/browser/extensions if user says:**
