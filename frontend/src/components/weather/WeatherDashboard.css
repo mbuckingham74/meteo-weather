@@ -64,10 +64,10 @@
 .universal-search-hero {
   width: 100%;
   max-width: 1200px;
-  margin: 0 auto 32px auto;
-  padding: 40px 20px;
+  margin: 0 auto 20px auto;
+  padding: 24px 16px;
   background: var(--bg-elevated);
-  border-radius: 16px;
+  border-radius: 12px;
   box-shadow: var(--shadow-lg);
 }
 
@@ -75,8 +75,8 @@
 .dashboard-main-row {
   display: grid;
   grid-template-columns: 2fr 1fr;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 10px;
+  margin-bottom: 12px;
   align-items: stretch;
 }
 
@@ -84,10 +84,10 @@
 .dashboard-controls {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 12px;
+  gap: 8px;
+  padding: 10px;
   background: var(--bg-elevated);
-  border-radius: 12px;
+  border-radius: 8px;
   box-shadow: var(--shadow-md);
   border: 1px solid var(--border-light);
   height: 100%;
@@ -398,7 +398,7 @@
 
 /* Location Info */
 .location-info {
-  padding: 8px;
+  padding: 10px;
   background: var(--bg-elevated);
   border-radius: 8px;
   box-shadow: var(--shadow-md);
@@ -415,9 +415,9 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 8px;
-  margin-bottom: 20px;
-  padding-top: 12px;
+  gap: 4px;
+  margin-bottom: 12px;
+  padding-top: 6px;
   padding-bottom: 12px;
   border-bottom: 1px solid var(--border-light);
 }
@@ -446,7 +446,7 @@
 .current-conditions {
   background: var(--bg-tertiary);
   border-radius: 8px;
-  padding: 8px;
+  padding: 10px;
   border: 1px solid var(--border-light);
   display: flex;
   flex-direction: column;
@@ -547,15 +547,15 @@
 
 /* Today's Highlights */
 .todays-highlights {
-  margin-top: 8px;
-  padding-top: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
   border-top: 1px solid var(--border-light);
   width: 100%;
 }
 
 .highlights-title {
   margin: 0 0 8px 0;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-secondary);
   text-transform: uppercase;
@@ -565,14 +565,14 @@
 .highlights-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 6px;
+  gap: 8px;
 }
 
 .highlight-card {
   background: var(--bg-primary);
   border: 1px solid var(--border-light);
   border-radius: 6px;
-  padding: 8px;
+  padding: 10px;
   display: flex;
   gap: 6px;
   align-items: flex-start;
