@@ -88,7 +88,7 @@
 .hero-weather-display {
   padding: 20px;
   display: grid;
-  grid-template-columns: 1fr 450px;
+  grid-template-columns: 1fr 600px;
   gap: 20px;
   align-items: start;
 }

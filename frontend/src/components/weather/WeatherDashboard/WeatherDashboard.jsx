@@ -388,7 +388,7 @@ function WeatherDashboard() {
                       latitude={data.location.latitude}
                       longitude={data.location.longitude}
                       zoom={7.5}
-                      height={500}
+                      height={600}
                       alerts={data.alerts}
                     />
                   </div>
