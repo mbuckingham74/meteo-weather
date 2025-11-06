@@ -1,40 +1,52 @@
 import axios from 'axios';
 import API_CONFIG from '../config/api';
+import { handleAPIError, retryWithBackoff } from '../utils/errorHandler';
+import { debugInfo, debugError } from '../utils/debugLogger';
 
 const API_BASE_URL = API_CONFIG.BASE_URL;
 
 /**
  * Weather API Service
  * Communicates with the backend API
+ *
+ * All functions use:
+ * - Centralized error handling via errorHandler utility
+ * - Timeout protection (10s for data, 30s for AI endpoints)
+ * - Retry logic with exponential backoff for network failures
+ * - User-friendly error messages
  */
 
-// Add response interceptor for better error handling
-axios.interceptors.response.use(
-  response => response,
-  error => {
-    if (error.response?.status === 429) {
-      // Rate limit exceeded
-      const customError = new Error('Rate limit exceeded. Please wait a moment and try again.');
-      customError.rateLimitExceeded = true;
-      customError.response = error.response;
-      return Promise.reject(customError);
-    }
-    return Promise.reject(error);
-  }
-);
+// Timeout configuration
+const TIMEOUT_WEATHER_DATA = 10000; // 10 seconds for weather data
+const TIMEOUT_AI = 30000; // 30 seconds for AI endpoints
+
+// Create axios instance with default timeout
+const weatherClient = axios.create({
+  baseURL: API_BASE_URL,
+  timeout: TIMEOUT_WEATHER_DATA,
+});
 
 /**
  * Get current weather for a location
  * @param {string} location - City name (e.g., "London,UK")
  * @returns {Promise<Object>} Current weather data
+ * @throws {AppError} User-friendly error with recovery guidance
  */
 export async function getCurrentWeather(location) {
   try {
-    const response = await axios.get(`${API_BASE_URL}/weather/current/${encodeURIComponent(location)}`);
+    debugInfo('Weather API', `Fetching current weather for: ${location}`);
+
+    const response = await retryWithBackoff(
+      async () => weatherClient.get(`/weather/current/${encodeURIComponent(location)}`),
+      3,
+      1000,
+      `getCurrentWeather(${location})`
+    );
+
+    debugInfo('Weather API', `Successfully fetched current weather for: ${location}`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching current weather:', error);
-    throw error;
+    throw handleAPIError(error, `Loading current weather for ${location}`);
   }
 }
 
@@ -43,16 +55,24 @@ export async function getCurrentWeather(location) {
  * @param {string} location - City name
  * @param {number} days - Number of days (1-15)
  * @returns {Promise<Object>} Forecast data
+ * @throws {AppError} User-friendly error with recovery guidance
  */
 export async function getWeatherForecast(location, days = 7) {
   try {
-    const response = await axios.get(
-      `${API_BASE_URL}/weather/forecast/${encodeURIComponent(location)}?days=${days}`
+    debugInfo('Weather API', `Fetching ${days}-day forecast for: ${location}`);
+
+    const response = await retryWithBackoff(
+      async () =>
+        weatherClient.get(`/weather/forecast/${encodeURIComponent(location)}?days=${days}`),
+      3,
+      1000,
+      `getWeatherForecast(${location}, ${days} days)`
     );
+
+    debugInfo('Weather API', `Successfully fetched forecast for: ${location}`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching forecast:', error);
-    throw error;
+    throw handleAPIError(error, `Loading ${days}-day forecast for ${location}`);
   }
 }
 
@@ -61,16 +81,24 @@ export async function getWeatherForecast(location, days = 7) {
  * @param {string} location - City name
  * @param {number} hours - Number of hours (1-240)
  * @returns {Promise<Object>} Hourly forecast data
+ * @throws {AppError} User-friendly error with recovery guidance
  */
 export async function getHourlyForecast(location, hours = 48) {
   try {
-    const response = await axios.get(
-      `${API_BASE_URL}/weather/hourly/${encodeURIComponent(location)}?hours=${hours}`
+    debugInfo('Weather API', `Fetching ${hours}-hour forecast for: ${location}`);
+
+    const response = await retryWithBackoff(
+      async () =>
+        weatherClient.get(`/weather/hourly/${encodeURIComponent(location)}?hours=${hours}`),
+      3,
+      1000,
+      `getHourlyForecast(${location}, ${hours} hours)`
     );
+
+    debugInfo('Weather API', `Successfully fetched hourly forecast for: ${location}`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching hourly forecast:', error);
-    throw error;
+    throw handleAPIError(error, `Loading hourly forecast for ${location}`);
   }
 }
 
@@ -80,19 +108,32 @@ export async function getHourlyForecast(location, hours = 48) {
  * @param {string} startDate - Start date (YYYY-MM-DD)
  * @param {string} endDate - End date (YYYY-MM-DD)
  * @returns {Promise<Object>} Historical weather data
+ * @throws {AppError} User-friendly error with recovery guidance
  */
 export async function getHistoricalWeather(location, startDate, endDate) {
   try {
-    const response = await axios.get(
-      `${API_BASE_URL}/weather/historical/${encodeURIComponent(location)}`,
-      {
-        params: { start: startDate, end: endDate }
-      }
+    debugInfo(
+      'Weather API',
+      `Fetching historical data for: ${location} (${startDate} to ${endDate})`
     );
+
+    const response = await retryWithBackoff(
+      async () =>
+        weatherClient.get(`/weather/historical/${encodeURIComponent(location)}`, {
+          params: { start: startDate, end: endDate },
+        }),
+      3,
+      1000,
+      `getHistoricalWeather(${location}, ${startDate} - ${endDate})`
+    );
+
+    debugInfo('Weather API', `Successfully fetched historical data for: ${location}`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching historical weather:', error);
-    throw error;
+    throw handleAPIError(
+      error,
+      `Loading historical weather for ${location} (${startDate} to ${endDate})`
+    );
   }
 }
 
@@ -101,16 +142,27 @@ export async function getHistoricalWeather(location, startDate, endDate) {
  * @param {string} query - Search query
  * @param {number} limit - Max results
  * @returns {Promise<Array>} Matching locations
+ * @throws {AppError} User-friendly error with recovery guidance
  */
 export async function searchLocations(query, limit = 10) {
+  if (!query || query.trim() === '') {
+    debugError('Weather API', 'searchLocations called with empty query');
+    return [];
+  }
+
   try {
-    const response = await axios.get(`${API_BASE_URL}/locations/search`, {
-      params: { q: query, limit }
+    debugInfo('Weather API', `Searching locations: "${query}" (limit: ${limit})`);
+
+    const response = await weatherClient.get('/locations/search', {
+      params: { q: query, limit },
     });
-    return response.data.locations || [];
+
+    const locations = response.data.locations || [];
+    debugInfo('Weather API', `Found ${locations.length} locations for: "${query}"`);
+    return locations;
   } catch (error) {
-    console.error('Error searching locations:', error);
-    throw error;
+    // Don't retry search queries - they're user-initiated
+    throw handleAPIError(error, `Searching for "${query}"`);
   }
 }
 
@@ -119,16 +171,27 @@ export async function searchLocations(query, limit = 10) {
  * @param {number} limit - Max results
  * @param {number} offset - Offset for pagination
  * @returns {Promise<Array>} Locations
+ * @throws {AppError} User-friendly error with recovery guidance
  */
 export async function getAllLocations(limit = 100, offset = 0) {
   try {
-    const response = await axios.get(`${API_BASE_URL}/locations`, {
-      params: { limit, offset }
-    });
-    return response.data.locations || [];
+    debugInfo('Weather API', `Fetching all locations (limit: ${limit}, offset: ${offset})`);
+
+    const response = await retryWithBackoff(
+      async () =>
+        weatherClient.get('/locations', {
+          params: { limit, offset },
+        }),
+      2,
+      1000,
+      'getAllLocations'
+    );
+
+    const locations = response.data.locations || [];
+    debugInfo('Weather API', `Fetched ${locations.length} locations`);
+    return locations;
   } catch (error) {
-    console.error('Error fetching locations:', error);
-    throw error;
+    throw handleAPIError(error, 'Loading location list');
   }
 }
 
@@ -137,16 +200,28 @@ export async function getAllLocations(limit = 100, offset = 0) {
  * @param {string} query - Search query
  * @param {number} limit - Max results
  * @returns {Promise<Array>} Matching locations
+ * @throws {AppError} User-friendly error with recovery guidance
  */
 export async function geocodeLocation(query, limit = 5) {
+  if (!query || query.trim() === '') {
+    return [];
+  }
+
   try {
-    const response = await axios.get(`${API_BASE_URL}/locations/geocode`, {
-      params: { q: query, limit }
+    debugInfo('Weather API', `Geocoding: "${query}" (limit: ${limit})`);
+
+    const response = await weatherClient.get('/locations/geocode', {
+      params: { q: query, limit },
+      timeout: 5000, // Faster timeout for autocomplete
     });
-    return response.data.results || [];
+
+    const results = response.data.results || [];
+    debugInfo('Weather API', `Geocoded ${results.length} results for: "${query}"`);
+    return results;
   } catch (error) {
-    console.error('Error geocoding location:', error);
-    throw error;
+    // Don't throw errors for autocomplete - just return empty array
+    debugError('Weather API', `Geocode failed for "${query}"`, error);
+    return [];
   }
 }
 
@@ -155,43 +230,69 @@ export async function geocodeLocation(query, limit = 5) {
  * @param {number} lat - Latitude
  * @param {number} lon - Longitude
  * @returns {Promise<Object>} Location details
+ * @throws {AppError} User-friendly error with recovery guidance
  */
 export async function reverseGeocode(lat, lon) {
   try {
-    const response = await axios.get(`${API_BASE_URL}/locations/reverse`, {
-      params: { lat, lon }
-    });
+    debugInfo('Weather API', `Reverse geocoding: (${lat}, ${lon})`);
+
+    const response = await retryWithBackoff(
+      async () =>
+        weatherClient.get('/locations/reverse', {
+          params: { lat, lon },
+        }),
+      2,
+      1000,
+      `reverseGeocode(${lat}, ${lon})`
+    );
+
+    debugInfo('Weather API', `Successfully reverse geocoded: ${response.data.location?.address}`);
     return response.data.location;
   } catch (error) {
-    console.error('Error reverse geocoding:', error);
-    throw error;
+    throw handleAPIError(error, `Finding location at coordinates (${lat}, ${lon})`);
   }
 }
 
 /**
  * Get popular locations
  * @returns {Promise<Array>} Popular locations
+ * @throws {AppError} User-friendly error with recovery guidance
  */
 export async function getPopularLocations() {
   try {
-    const response = await axios.get(`${API_BASE_URL}/locations/popular`);
-    return response.data.locations || [];
+    debugInfo('Weather API', 'Fetching popular locations');
+
+    const response = await retryWithBackoff(
+      async () => weatherClient.get('/locations/popular'),
+      2,
+      1000,
+      'getPopularLocations'
+    );
+
+    const locations = response.data.locations || [];
+    debugInfo('Weather API', `Fetched ${locations.length} popular locations`);
+    return locations;
   } catch (error) {
-    console.error('Error fetching popular locations:', error);
-    throw error;
+    throw handleAPIError(error, 'Loading popular locations');
   }
 }
 
 /**
  * Test API connection
  * @returns {Promise<Object>} Connection status
+ * @throws {AppError} User-friendly error with recovery guidance
  */
 export async function testApiConnection() {
   try {
-    const response = await axios.get(`${API_BASE_URL}/weather/test`);
+    debugInfo('Weather API', 'Testing API connection');
+
+    const response = await weatherClient.get('/weather/test', {
+      timeout: 5000, // Short timeout for connection test
+    });
+
+    debugInfo('Weather API', 'API connection test successful');
     return response.data;
   } catch (error) {
-    console.error('Error testing API:', error);
-    throw error;
+    throw handleAPIError(error, 'Testing API connection');
   }
 }

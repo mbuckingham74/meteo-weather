@@ -5,17 +5,21 @@ on:
     branches: [main, develop]
     paths:
       - 'frontend/src/services/geolocationService.js'
+      - 'frontend/src/contexts/LocationContext.jsx'
       - 'backend/services/weatherService.js'
       - 'backend/services/geocodingService.js'
       - 'frontend/src/services/geolocationService.regression.test.js'
+      - 'frontend/src/contexts/LocationContext.regression.test.jsx'
       - 'backend/tests/services/weatherService.regression.test.js'
   pull_request:
     branches: [main, develop]
     paths:
       - 'frontend/src/services/geolocationService.js'
+      - 'frontend/src/contexts/LocationContext.jsx'
       - 'backend/services/weatherService.js'
       - 'backend/services/geocodingService.js'
       - 'frontend/src/services/geolocationService.regression.test.js'
+      - 'frontend/src/contexts/LocationContext.regression.test.jsx'
       - 'backend/tests/services/weatherService.regression.test.js'
   workflow_dispatch: # Allow manual triggers
 
@@ -40,10 +44,17 @@ jobs:
           cd frontend
           npm ci
 
-      - name: Run frontend regression tests
+      - name: Run geolocationService regression tests
         run: |
           cd frontend
           npm run test -- geolocationService.regression.test.js --run
+        env:
+          CI: true
+
+      - name: Run LocationContext regression tests
+        run: |
+          cd frontend
+          npm run test -- LocationContext.regression.test.jsx --run
         env:
           CI: true
 
@@ -141,4 +152,5 @@ jobs:
           echo "The 'Old Location' bug prevention system is working correctly."
           echo ""
           echo "Frontend: ✅ Geolocation service verified"
+          echo "Frontend: ✅ LocationContext localStorage verified"
           echo "Backend:  ✅ Weather service sanitization verified"

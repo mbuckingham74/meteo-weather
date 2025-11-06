@@ -70,6 +70,69 @@
   color: #dc2626;
 }
 
+/* Error notification (toast-style) */
+.radar-error-notification {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(239, 68, 68, 0.95);
+  color: white;
+  padding: 12px 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 2001;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+  animation: radar-error-slide-in 0.3s ease-out;
+  max-width: 90%;
+}
+
+@keyframes radar-error-slide-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -60%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.radar-error-notification .error-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.radar-error-notification .error-text {
+  font-size: 14px;
+  font-weight: 500;
+  flex: 1;
+}
+
+.radar-error-notification .error-dismiss {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.radar-error-notification .error-dismiss:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
 /* Leaflet map overrides */
 .radar-map-container .leaflet-container {
   background: #d4d4d4;
@@ -145,26 +208,26 @@
 }
 
 /* Dark mode support for zoom buttons */
-[data-theme="dark"] .layer-toggle.zoom-button {
+[data-theme='dark'] .layer-toggle.zoom-button {
   color: #f3f4f6;
   background: rgba(31, 41, 55, 0.95);
   border-color: rgba(255, 255, 255, 0.1);
 }
 
-[data-theme="dark"] .layer-toggle.zoom-button:hover {
+[data-theme='dark'] .layer-toggle.zoom-button:hover {
   color: #a5b4fc;
   background: rgba(55, 65, 81, 0.95);
 }
 
 /* System dark mode support */
 @media (prefers-color-scheme: dark) {
-  [data-theme="auto"] .layer-toggle.zoom-button {
+  [data-theme='auto'] .layer-toggle.zoom-button {
     color: #f3f4f6;
     background: rgba(31, 41, 55, 0.95);
     border-color: rgba(255, 255, 255, 0.1);
   }
 
-  [data-theme="auto"] .layer-toggle.zoom-button:hover {
+  [data-theme='auto'] .layer-toggle.zoom-button:hover {
     color: #a5b4fc;
     background: rgba(55, 65, 81, 0.95);
   }
@@ -390,7 +453,8 @@
 }
 
 @keyframes pulse-alert {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
     opacity: 1;
   }
@@ -571,142 +635,142 @@
 }
 
 /* Dark mode support */
-[data-theme="dark"] .precipitation-legend {
+[data-theme='dark'] .precipitation-legend {
   background: rgba(31, 41, 55, 0.95);
 }
 
-[data-theme="dark"] .precip-legend-title {
+[data-theme='dark'] .precip-legend-title {
   color: #f9fafb;
 }
 
-[data-theme="dark"] .precip-legend-labels {
+[data-theme='dark'] .precip-legend-labels {
   color: #d1d5db;
 }
 
-[data-theme="dark"] .radar-legend {
+[data-theme='dark'] .radar-legend {
   background: rgba(31, 41, 55, 0.95);
 }
 
-[data-theme="dark"] .layer-toggle {
+[data-theme='dark'] .layer-toggle {
   background: rgba(31, 41, 55, 0.95);
 }
 
-[data-theme="dark"] .layer-toggle.active {
+[data-theme='dark'] .layer-toggle.active {
   background: rgba(102, 126, 234, 0.25);
 }
 
-[data-theme="dark"] .radar-controls-divider {
+[data-theme='dark'] .radar-controls-divider {
   background: rgba(255, 255, 255, 0.2);
 }
 
-[data-theme="dark"] .radar-map-container .leaflet-container {
+[data-theme='dark'] .radar-map-container .leaflet-container {
   background: #374151;
 }
 
-[data-theme="dark"] .radar-map-container .leaflet-control-zoom a {
+[data-theme='dark'] .radar-map-container .leaflet-control-zoom a {
   background: #1f2937;
   color: #f9fafb;
   border-color: #4b5563;
 }
 
-[data-theme="dark"] .radar-map-container .leaflet-control-zoom a:hover {
+[data-theme='dark'] .radar-map-container .leaflet-control-zoom a:hover {
   background: #374151;
   color: #ffffff;
 }
 
-[data-theme="dark"] .radar-loading-overlay {
+[data-theme='dark'] .radar-loading-overlay {
   background: rgba(31, 41, 55, 0.95);
 }
 
-[data-theme="dark"] .radar-spinner {
+[data-theme='dark'] .radar-spinner {
   border-color: #4b5563;
   border-top-color: #818cf8;
 }
 
-[data-theme="dark"] .radar-loading-text {
+[data-theme='dark'] .radar-loading-text {
   color: #d1d5db;
 }
 
-[data-theme="dark"] .radar-map-error {
+[data-theme='dark'] .radar-map-error {
   background: #7f1d1d;
   border-color: #991b1b;
 }
 
-[data-theme="dark"] .radar-map-error p {
+[data-theme='dark'] .radar-map-error p {
   color: #fca5a5;
 }
 
-[data-theme="dark"] .radar-map-error .error-hint {
+[data-theme='dark'] .radar-map-error .error-hint {
   color: #fecaca;
 }
 
-[data-theme="dark"] .radar-animation-controls {
+[data-theme='dark'] .radar-animation-controls {
   background: rgba(31, 41, 55, 0.95);
 }
 
-[data-theme="dark"] .animation-button {
+[data-theme='dark'] .animation-button {
   background: #1f2937;
   border-color: #4b5563;
   color: #f9fafb;
 }
 
-[data-theme="dark"] .animation-button:hover {
+[data-theme='dark'] .animation-button:hover {
   border-color: #818cf8;
   background: #374151;
 }
 
-[data-theme="dark"] .speed-button {
+[data-theme='dark'] .speed-button {
   color: #d1d5db;
 }
 
-[data-theme="dark"] .animation-timestamp {
+[data-theme='dark'] .animation-timestamp {
   color: #f9fafb;
 }
 
-[data-theme="dark"] .animation-progress {
+[data-theme='dark'] .animation-progress {
   background: #4b5563;
 }
 
-[data-theme="dark"] .animation-progress-bar {
+[data-theme='dark'] .animation-progress-bar {
   background: linear-gradient(90deg, #818cf8 0%, #a5b4fc 100%);
 }
 
-[data-theme="dark"] .radar-frames-badge {
+[data-theme='dark'] .radar-frames-badge {
   background: #374151;
   color: #9ca3af;
 }
 
-[data-theme="dark"] .frame-selector-dropdown {
+[data-theme='dark'] .frame-selector-dropdown {
   background: rgba(31, 41, 55, 0.98);
 }
 
-[data-theme="dark"] .frame-selector-item {
+[data-theme='dark'] .frame-selector-item {
   color: #f9fafb;
 }
 
-[data-theme="dark"] .frame-time {
+[data-theme='dark'] .frame-time {
   color: #f9fafb;
 }
 
-[data-theme="dark"] .frame-indicator {
+[data-theme='dark'] .frame-indicator {
   color: #9ca3af;
 }
 
-[data-theme="dark"] .storm-tracking-panel {
+[data-theme='dark'] .storm-tracking-panel {
   background: rgba(31, 41, 55, 0.95);
   border-color: #818cf8;
 }
 
-[data-theme="dark"] .storm-tracking-title {
+[data-theme='dark'] .storm-tracking-title {
   color: #f9fafb;
 }
 
-[data-theme="dark"] .storm-info-value {
+[data-theme='dark'] .storm-info-value {
   background: #374151;
   color: #f9fafb;
 }
 
-[data-theme="dark"] .storm-tracking-note {
+[data-theme='dark'] .storm-tracking-note {
   color: #9ca3af;
   border-top-color: rgba(255, 255, 255, 0.1);
 }
@@ -726,7 +790,7 @@
   }
 
   .layer-toggle {
-    min-width: 44px;  /* iOS recommended minimum touch target */
+    min-width: 44px; /* iOS recommended minimum touch target */
     min-height: 44px;
     font-size: 20px;
     padding: 10px;
@@ -739,14 +803,14 @@
 
   .radar-controls-divider {
     height: 2px;
-    width: 100%;  /* Full width divider on mobile for visual clarity */
+    width: 100%; /* Full width divider on mobile for visual clarity */
     margin: 4px 0;
   }
 
   .radar-legend {
     font-size: 11px;
     padding: 6px 10px;
-    bottom: 60px;  /* Move up to avoid animation controls */
+    bottom: 60px; /* Move up to avoid animation controls */
   }
 
   .legend-gradient {
@@ -762,7 +826,7 @@
   .animation-button {
     padding: 6px 12px;
     font-size: 16px;
-    min-width: 44px;  /* Touch-friendly */
+    min-width: 44px; /* Touch-friendly */
     min-height: 44px;
   }
 
@@ -780,7 +844,7 @@
   }
 
   .animation-progress {
-    height: 6px;  /* Thicker for easier touch interaction */
+    height: 6px; /* Thicker for easier touch interaction */
     cursor: pointer;
   }
 

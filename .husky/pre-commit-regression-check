@@ -36,6 +36,36 @@ if git diff --cached --name-only | grep -q "frontend/src/services/geolocationSer
   cd ..
 fi
 
+# Check if LocationContext.jsx was modified (FRONTEND)
+if git diff --cached --name-only | grep -q "frontend/src/contexts/LocationContext.jsx"; then
+  echo "⚠️  Frontend LocationContext.jsx modified - running regression tests..."
+  FRONTEND_CHANGED=1
+
+  # Run LocationContext regression tests
+  cd frontend
+  npm run test -- LocationContext.regression.test.jsx --run
+
+  if [ $? -ne 0 ]; then
+    echo ""
+    echo "❌ CRITICAL REGRESSION DETECTED IN FRONTEND!"
+    echo ""
+    echo "The 'Old Location' bug has been re-introduced in LocationContext.jsx"
+    echo "Please fix the issues before committing."
+    echo ""
+    echo "Common fix:"
+    echo "  - Ensure 'your location' is in isPlaceholderAddress() pattern"
+    echo "  - Replace placeholders with coordinates, NOT 'Your Location'"
+    echo "  - Call sanitizeLocationData() when loading from localStorage"
+    echo ""
+    echo "See: docs/troubleshooting/OLD_LOCATION_BUG_FIX.md"
+    echo ""
+    exit 1
+  fi
+
+  echo "✅ LocationContext regression tests passed"
+  cd ..
+fi
+
 # Check if weatherService.js was modified (BACKEND)
 if git diff --cached --name-only | grep -q "backend/services/weatherService.js"; then
   echo "⚠️  Backend weatherService.js modified - running regression tests..."

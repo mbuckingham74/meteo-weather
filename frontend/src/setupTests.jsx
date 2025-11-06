@@ -3,68 +3,81 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
+import { vi } from 'vitest';
 
 // Mock window.matchMedia for theme tests
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
-  value: jest.fn().mockImplementation(query => ({
+  value: vi.fn().mockImplementation((query) => ({
     matches: false,
     media: query,
     onchange: null,
-    addListener: jest.fn(), // deprecated
-    removeListener: jest.fn(), // deprecated
-    addEventListener: jest.fn(),
-    removeEventListener: jest.fn(),
-    dispatchEvent: jest.fn(),
+    addListener: vi.fn(), // deprecated
+    removeListener: vi.fn(), // deprecated
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
   })),
 });
 
-// Mock localStorage
-const localStorageMock = {
-  getItem: jest.fn(),
-  setItem: jest.fn(),
-  removeItem: jest.fn(),
-  clear: jest.fn(),
-};
+// Mock localStorage with actual storage implementation
+// This is needed for versioning tests to work properly
+const localStorageMock = (() => {
+  let store = {};
+  return {
+    getItem: (key) => store[key] || null,
+    setItem: (key, value) => {
+      store[key] = value.toString();
+    },
+    removeItem: (key) => {
+      delete store[key];
+    },
+    clear: () => {
+      store = {};
+    },
+  };
+})();
 global.localStorage = localStorageMock;
 
 // Mock Leaflet for map tests
-jest.mock('leaflet', () => ({
-  map: jest.fn(),
-  tileLayer: jest.fn(),
-  marker: jest.fn(),
-  icon: jest.fn(),
-  divIcon: jest.fn(),
-  popup: jest.fn(),
+vi.mock('leaflet', () => ({
+  map: vi.fn(),
+  tileLayer: vi.fn(),
+  marker: vi.fn(),
+  icon: vi.fn(),
+  divIcon: vi.fn(),
+  popup: vi.fn(),
 }));
 
 // Mock react-leaflet components
-jest.mock('react-leaflet', () => ({
+vi.mock('react-leaflet', () => ({
   MapContainer: ({ children }) => <div data-testid="map-container">{children}</div>,
   TileLayer: () => <div data-testid="tile-layer" />,
   Marker: () => <div data-testid="marker" />,
   Popup: ({ children }) => <div data-testid="popup">{children}</div>,
-  useMap: jest.fn(() => ({
-    setView: jest.fn(),
-    invalidateSize: jest.fn(),
+  useMap: vi.fn(() => ({
+    setView: vi.fn(),
+    invalidateSize: vi.fn(),
   })),
 }));
 
 // Mock axios for API tests
-jest.mock('axios', () => ({
-  get: jest.fn(() => Promise.resolve({ data: {} })),
-  post: jest.fn(() => Promise.resolve({ data: {} })),
-  put: jest.fn(() => Promise.resolve({ data: {} })),
-  delete: jest.fn(() => Promise.resolve({ data: {} })),
-  create: jest.fn(function() { return this; }),
+vi.mock('axios', () => ({
+  get: vi.fn(() => Promise.resolve({ data: {} })),
+  post: vi.fn(() => Promise.resolve({ data: {} })),
+  put: vi.fn(() => Promise.resolve({ data: {} })),
+  delete: vi.fn(() => Promise.resolve({ data: {} })),
+  create: vi.fn(function () {
+    return this;
+  }),
   interceptors: {
-    request: { use: jest.fn(), eject: jest.fn() },
-    response: { use: jest.fn(), eject: jest.fn() }
-  }
+    request: { use: vi.fn(), eject: vi.fn() },
+    response: { use: vi.fn(), eject: vi.fn() },
+  },
 }));
 
 // Mock recharts for chart tests
-jest.mock('recharts', () => ({
+vi.mock('recharts', () => ({
   LineChart: ({ children }) => <div data-testid="line-chart">{children}</div>,
   Line: () => <div data-testid="line" />,
   AreaChart: ({ children }) => <div data-testid="area-chart">{children}</div>,
@@ -86,7 +99,7 @@ beforeAll(() => {
     if (
       typeof args[0] === 'string' &&
       (args[0].includes('Warning: ReactDOM.render') ||
-       args[0].includes('Not implemented: HTMLFormElement.prototype.submit'))
+        args[0].includes('Not implemented: HTMLFormElement.prototype.submit'))
     ) {
       return;
     }

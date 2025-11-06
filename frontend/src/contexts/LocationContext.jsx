@@ -1,9 +1,20 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
+import {
+  loadVersionedData,
+  saveVersionedData,
+  clearVersionedData,
+  getMigrationInfo,
+} from '../utils/localStorageVersion';
 
 /**
  * LocationContext
  * Manages the selected location state across the application
- * Persists location to localStorage for page refresh persistence
+ * Persists location to localStorage with versioning for safe data migration
+ *
+ * Version 2 (Nov 6, 2025):
+ * - Added version field to prevent "Old Location" bug from cached data
+ * - Automatic migration from v1 (pre-versioned) data
+ * - Sanitizes placeholder strings ("Your Location", "Old Location", etc.)
  */
 
 const LocationContext = createContext();
@@ -76,13 +87,25 @@ export function useLocation() {
 }
 
 export function LocationProvider({ children }) {
-  // Initialize state from localStorage if available
+  // Log migration status on mount (development only)
+  if (process.env.NODE_ENV === 'development') {
+    const migrationInfo = getMigrationInfo();
+    if (migrationInfo.needsMigration) {
+      console.log(
+        `📦 localStorage migration needed: v${migrationInfo.currentVersion} → v${migrationInfo.expectedVersion}`
+      );
+    } else if (migrationInfo.isUpToDate) {
+      console.log(`✅ localStorage is up to date (v${migrationInfo.currentVersion})`);
+    }
+  }
+
+  // Initialize state from versioned localStorage
   const [location, setLocation] = useState(() => {
     try {
-      const saved = localStorage.getItem(CURRENT_LOCATION_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        const sanitized = sanitizeLocationData(parsed);
+      // Load with automatic migration
+      const data = loadVersionedData(CURRENT_LOCATION_KEY);
+      if (data) {
+        const sanitized = sanitizeLocationData(data);
         if (sanitized) {
           return sanitized.address || sanitized.location_name || DEFAULT_LOCATION;
         }
@@ -95,10 +118,10 @@ export function LocationProvider({ children }) {
 
   const [locationData, setLocationData] = useState(() => {
     try {
-      const saved = localStorage.getItem(CURRENT_LOCATION_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        return sanitizeLocationData(parsed);
+      // Load with automatic migration
+      const data = loadVersionedData(CURRENT_LOCATION_KEY);
+      if (data) {
+        return sanitizeLocationData(data);
       }
     } catch (error) {
       console.error('Error loading saved location:', error);
@@ -113,12 +136,12 @@ export function LocationProvider({ children }) {
     setLocation(sanitized.address || sanitized.location_name);
     setLocationData(sanitized);
 
-    // Save sanitized version to localStorage
-    try {
-      localStorage.setItem(CURRENT_LOCATION_KEY, JSON.stringify(sanitized));
-      console.log('📍 Saved location to localStorage:', sanitized.address);
-    } catch (error) {
-      console.error('Error saving location to localStorage:', error);
+    // Save with version stamp
+    const success = saveVersionedData(CURRENT_LOCATION_KEY, sanitized);
+    if (success) {
+      console.log('📍 Saved location to localStorage (v2):', sanitized.address);
+    } else {
+      console.error('Error saving location to localStorage');
     }
   }, []);
 
@@ -126,12 +149,8 @@ export function LocationProvider({ children }) {
     setLocation(DEFAULT_LOCATION);
     setLocationData(null);
 
-    // Clear from localStorage
-    try {
-      localStorage.removeItem(CURRENT_LOCATION_KEY);
-    } catch (error) {
-      console.error('Error clearing location from localStorage:', error);
-    }
+    // Clear versioned data
+    clearVersionedData(CURRENT_LOCATION_KEY);
   }, []);
 
   const value = {

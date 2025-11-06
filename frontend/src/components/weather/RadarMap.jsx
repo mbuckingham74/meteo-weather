@@ -4,6 +4,7 @@ import L from 'leaflet';
 import html2canvas from 'html2canvas';
 import 'leaflet/dist/leaflet.css';
 import { getRadarMapData, getAllFrames, formatRadarTime } from '../../services/radarService';
+import { debugInfo, debugError } from '../../utils/debugLogger';
 import './RadarMap.css';
 
 // Import marker images
@@ -80,6 +81,7 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
   const [isDownloading, setIsDownloading] = useState(false);
   const [showAlerts, setShowAlerts] = useState(true);
   const [showStormTracking, setShowStormTracking] = useState(false);
+  const [screenshotError, setScreenshotError] = useState(null);
   const animationIntervalRef = React.useRef(null);
   const mapContainerRef = useRef(null);
 
@@ -164,10 +166,10 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
         if (isMounted) {
           setRadarFrames(frames);
           setRadarError(null);
-          console.log(`📡 Loaded ${frames.length} radar frames`);
+          debugInfo('Radar Map', `Loaded ${frames.length} radar frames`);
         }
       } catch (error) {
-        console.error('Failed to fetch radar data:', error);
+        debugError('Radar Map', 'Failed to fetch radar data', error);
         if (isMounted) {
           setRadarError('Unable to load radar data');
         }
@@ -219,7 +221,8 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
 
   // Early return if API key missing - must be AFTER all hooks
   if (!OPENWEATHER_API_KEY) {
-    console.error(
+    debugError(
+      'Radar Map',
       'OpenWeather API key not found. Please add VITE_OPENWEATHER_API_KEY to your .env file.'
     );
     return (
@@ -309,6 +312,8 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
     if (!mapContainerRef.current || isDownloading) return;
 
     setIsDownloading(true);
+    setScreenshotError(null); // Clear any previous errors
+
     try {
       // Wait a moment for any animations to complete
       await new Promise((resolve) => setTimeout(resolve, 300));
@@ -332,9 +337,14 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
         setIsDownloading(false);
       });
     } catch (error) {
-      console.error('Screenshot failed:', error);
+      debugError('Radar Map', 'Screenshot capture failed', error);
       setIsDownloading(false);
-      alert('Failed to capture screenshot. Please try again.');
+      setScreenshotError('Failed to capture screenshot. Please try again.');
+
+      // Auto-dismiss error after 5 seconds
+      setTimeout(() => {
+        setScreenshotError(null);
+      }, 5000);
     }
   };
 
@@ -378,6 +388,21 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
         <div className="radar-loading-overlay">
           <div className="radar-spinner"></div>
           <p className="radar-loading-text">Capturing screenshot...</p>
+        </div>
+      )}
+
+      {/* Screenshot error notification */}
+      {screenshotError && (
+        <div className="radar-error-notification">
+          <span className="error-icon">⚠️</span>
+          <span className="error-text">{screenshotError}</span>
+          <button
+            className="error-dismiss"
+            onClick={() => setScreenshotError(null)}
+            aria-label="Dismiss error"
+          >
+            ✕
+          </button>
         </div>
       )}
 

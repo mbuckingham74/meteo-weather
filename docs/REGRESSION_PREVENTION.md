@@ -18,7 +18,7 @@ The "Old Location" bug has been fixed multiple times but keeps coming back. This
 
 ### Automated Safeguards Implemented
 
-#### 1. **Frontend Regression Test Suite** ✅
+#### 1a. **Frontend Regression Test Suite (geolocationService)** ✅
 **File:** `frontend/src/services/geolocationService.regression.test.js`
 
 **What it does:**
@@ -38,7 +38,32 @@ npm run test -- geolocationService.regression.test.js
 - Pre-commit hook (if geolocationService.js is modified)
 - Manual testing: `npm test`
 
-#### 1b. **Backend Regression Test Suite** ✅ **NEW (Nov 6, 2025)**
+#### 1b. **Frontend Regression Test Suite (LocationContext)** ✅ **NEW (Nov 6, 2025)**
+**File:** `frontend/src/contexts/LocationContext.regression.test.jsx`
+
+**What it does:**
+- Tests that `isPlaceholderAddress()` detects "Your Location" (THE BUG from Nov 6!)
+- Tests that "Old Location", "Unknown", and other placeholders are detected
+- Tests that `sanitizeLocationData()` replaces placeholders with coordinates
+- Tests localStorage initialization sanitizes old cached data
+- Static analysis to prevent "Your Location" assignments
+- Verifies coordinates are NOT treated as placeholders (they're valid data!)
+
+**How to run:**
+```bash
+cd frontend
+npm run test -- LocationContext.regression.test.jsx
+```
+
+**When it runs:**
+- Automatically in CI/CD pipeline (`.github/workflows/regression-tests.yml`)
+- Pre-commit hook (if LocationContext.jsx is modified)
+- Manual testing: `npm test`
+
+**Why critical:**
+This test suite would have caught the Nov 6 localStorage bug where old cached data contained "Your Location" string that wasn't being detected as a placeholder!
+
+#### 1c. **Backend Regression Test Suite** ✅ **NEW (Nov 6, 2025)**
 **File:** `backend/tests/services/weatherService.regression.test.js`
 
 **What it does:**
@@ -64,11 +89,12 @@ npm test -- weatherService.regression.test.js
 
 **What it does:**
 - Automatically runs **frontend** regression tests when `geolocationService.js` is modified
+- Automatically runs **frontend** regression tests when `LocationContext.jsx` is modified
 - Automatically runs **backend** regression tests when `weatherService.js` is modified
 - Blocks commit if tests fail
 - Provides helpful error message with fix instructions
 
-**Example output if frontend regression detected:**
+**Example output if geolocationService.js regression detected:**
 ```
 ❌ CRITICAL REGRESSION DETECTED IN FRONTEND!
 
@@ -78,6 +104,21 @@ Please fix the issues before committing.
 Common fix:
   WRONG: address = 'Your Location'
   RIGHT: address = `${latitude}, ${longitude}`
+
+See: docs/troubleshooting/OLD_LOCATION_BUG_FIX.md
+```
+
+**Example output if LocationContext.jsx regression detected:**
+```
+❌ CRITICAL REGRESSION DETECTED IN FRONTEND!
+
+The 'Old Location' bug has been re-introduced in LocationContext.jsx
+Please fix the issues before committing.
+
+Common fix:
+  - Ensure 'your location' is in isPlaceholderAddress() pattern
+  - Replace placeholders with coordinates, NOT 'Your Location'
+  - Call sanitizeLocationData() when loading from localStorage
 
 See: docs/troubleshooting/OLD_LOCATION_BUG_FIX.md
 ```
@@ -131,13 +172,14 @@ module.exports = {
 
 **Triggers:**
 - Changes to `frontend/src/services/geolocationService.js`
+- Changes to `frontend/src/contexts/LocationContext.jsx`
 - Changes to `backend/services/weatherService.js`
 - Changes to `backend/services/geocodingService.js`
 - Changes to regression test files themselves
 - Manual workflow dispatch
 
 **Jobs:**
-1. `frontend-regression` - Runs frontend tests
+1. `frontend-regression` - Runs BOTH geolocationService AND LocationContext tests
 2. `backend-regression` - Runs backend tests with MySQL
 3. `report-success` - Reports when all tests pass
 
@@ -304,6 +346,134 @@ if (result.success && result.location) {
 
 ---
 
+## 🔢 localStorage Versioning System ✅ **IMPLEMENTED (Nov 6, 2025)**
+
+**File:** `frontend/src/utils/localStorageVersion.js`
+
+### Purpose
+Prevents bugs from old cached data with incompatible formats. Automatically migrates user data when app is updated.
+
+### How It Works
+```javascript
+// Version 1 (before Nov 6, 2025) - No version field, may contain "Your Location"
+{
+  address: "Your Location",
+  latitude: 47.6062,
+  longitude: -122.3321
+}
+
+// Version 2 (Nov 6, 2025+) - Has version field, sanitized placeholders
+{
+  version: 2,
+  address: "47.6062, -122.3321",  // Placeholders replaced with coordinates
+  latitude: 47.6062,
+  longitude: -122.3321
+}
+```
+
+### Features
+- **Automatic Migration**: Detects v1 data and converts to v2 on load
+- **Downgrade Protection**: Clears data if version is newer than expected (user downgraded app)
+- **Corruption Handling**: Gracefully handles invalid JSON, missing fields
+- **Placeholder Cleanup**: Replaces "Your Location", "Old Location", etc. with coordinates
+- **Logging**: Development mode shows migration status
+
+### API
+```javascript
+import {
+  loadVersionedData,
+  saveVersionedData,
+  clearVersionedData,
+  getMigrationInfo,
+} from '../utils/localStorageVersion';
+
+// Load with automatic migration
+const data = loadVersionedData('my_key');
+
+// Save with version stamp
+saveVersionedData('my_key', { address: 'Seattle, WA' });
+
+// Get migration status
+const info = getMigrationInfo();
+// { currentVersion: 1, expectedVersion: 2, needsMigration: true }
+```
+
+### Testing
+**File:** `frontend/src/utils/localStorageVersion.test.js`
+
+**Coverage:** 25 comprehensive tests
+- Version management (get/set)
+- Migration detection
+- V1 → V2 migration with placeholders
+- Save/load versioned data
+- Edge cases (corrupted data, downgrade, empty objects)
+- Integration tests (complete migration flow)
+
+**Run tests:**
+```bash
+cd frontend
+npm test -- localStorageVersion.test.js
+```
+
+### Migration Examples
+
+**Example 1: "Your Location" placeholder**
+```javascript
+// Before (v1)
+{ address: "Your Location", latitude: 40.7128, longitude: -74.006 }
+
+// After (v2)
+{ version: 2, address: "40.7128, -74.0060", latitude: 40.7128, longitude: -74.006 }
+```
+
+**Example 2: Valid city name**
+```javascript
+// Before (v1)
+{ address: "Seattle, WA", latitude: 47.6062, longitude: -122.3321 }
+
+// After (v2) - unchanged except version added
+{ version: 2, address: "Seattle, WA", latitude: 47.6062, longitude: -122.3321 }
+```
+
+**Example 3: Invalid data (no coordinates)**
+```javascript
+// Before (v1)
+{ address: "Your Location" }  // No coordinates!
+
+// After (v2)
+null  // Discarded as invalid, localStorage cleared
+```
+
+### Future Versions
+To add a new version (v3):
+
+1. **Update version constant:**
+   ```javascript
+   export const STORAGE_VERSION = 3;
+   ```
+
+2. **Add migration function:**
+   ```javascript
+   function migrateV2ToV3(data) {
+     return {
+       version: 3,
+       ...data,
+       newField: 'new value',
+     };
+   }
+   ```
+
+3. **Add migration call:**
+   ```javascript
+   if (currentVersion < 3) {
+     migrated = migrateV2ToV3(migrated);
+   }
+   ```
+
+4. **Write tests** for v2 → v3 migration
+
+---
+
 ## 🎓 Team Education
 
 ### For All Developers:
@@ -318,12 +488,16 @@ if (result.success && result.location) {
 
 ### Code Review Checklist:
 
-When reviewing PRs that touch geolocation:
+When reviewing PRs that touch geolocation or location state management:
 
 - [ ] Check for `"Your Location"` in `geolocationService.js`
+- [ ] Check for `"Your Location"` in `LocationContext.jsx`
+- [ ] Verify `isPlaceholderAddress()` includes "your location" pattern
 - [ ] Verify coordinates are used as fallback
+- [ ] Ensure `sanitizeLocationData()` is called when loading from localStorage
 - [ ] Ensure regression tests pass in CI
 - [ ] Test manually with missing city data
+- [ ] Test with old localStorage data (clear storage and reload with cached data)
 
 ---
 
@@ -345,21 +519,35 @@ When reviewing PRs that touch geolocation:
 - CI test failures: Monitor regression test failure rate
 - Production incidents: Should be zero after safeguards implemented
 
-**Current Status (Updated Nov 6, 2025):**
-- ✅ Frontend regression test suite created (Nov 5, 2025)
+**Current Status (Updated Nov 6, 2025 - All safeguards complete):**
+- ✅ Frontend regression test suite (geolocationService) created (Nov 5, 2025)
+- ✅ Frontend regression test suite (LocationContext) created (Nov 6, 2025) - **18 tests**
 - ✅ Backend regression test suite created (Nov 6, 2025)
-- ✅ Pre-commit hook installed (covers both frontend AND backend)
+- ✅ Pre-commit hook installed (covers geolocationService, LocationContext, AND weatherService)
 - ✅ ESLint rule defined
-- ✅ CI/CD integration complete (`.github/workflows/regression-tests.yml`)
+- ✅ CI/CD integration complete - runs ALL regression tests automatically
 - ✅ Production monitoring active (logs + error responses)
 - ⏳ Team training pending
 
 **Incident Report (Nov 6, 2025):**
+
+**Incident #1 (Backend):**
 - Bug returned in backend (Visual Crossing API placeholders)
 - Frontend regression tests worked perfectly - frontend was clean
 - Backend had NO regression tests - gap in coverage
-- Gap has been closed with comprehensive backend test suite
-- Pre-commit hooks, CI/CD, and production monitoring now cover both layers
+- Gap closed with comprehensive backend test suite
+
+**Incident #2 (localStorage):**
+- Bug returned from OLD localStorage data containing "Your Location" string
+- `isPlaceholderAddress()` didn't check for "your location" - only "old location"
+- Production monitoring caught it immediately with 🚨 alerts
+- Gap closed with:
+  - Added "your location" to placeholder pattern regex
+  - Created comprehensive LocationContext regression test suite (18 tests)
+  - Added pre-commit hook for LocationContext.jsx
+  - Added CI/CD trigger for LocationContext.jsx
+
+**Key Learning:** The bug can hide in MULTIPLE places - not just API responses, but also CACHED DATA!
 
 ---
 
@@ -369,11 +557,16 @@ When reviewing PRs that touch geolocation:
    - ✅ Run regression tests to verify they catch the bug
    - ✅ Test pre-commit hook by trying to commit bad code
    - ✅ Create backend regression test suite
-   - ✅ Update pre-commit hooks for backend coverage
-   - ✅ Add CI/CD workflow for automatic testing
+   - ✅ Create LocationContext regression test suite (18 tests)
+   - ✅ Update pre-commit hooks for backend AND LocationContext coverage
+   - ✅ Add CI/CD workflow for automatic testing (all 3 test suites)
    - ✅ Add production monitoring
+   - ✅ Fix localStorage bug (add "your location" to placeholder pattern)
 
-2. **Short-term (This Week):**
+2. **Short-term (COMPLETED Nov 6, 2025):**
+   - ✅ Implement localStorage versioning system (v2)
+   - ✅ Automatic migration from v1 (unversioned) to v2
+   - ✅ 25 comprehensive tests for versioning system
    - ⏳ Update `frontend/.eslintrc.cjs` to load custom rules (optional)
    - ⏳ Document in team wiki/Notion
    - ⏳ Train team members on new safeguards
@@ -384,6 +577,7 @@ When reviewing PRs that touch geolocation:
    - Add similar regression prevention for other critical bugs
    - Consider expanding to cover other API services (geocoding, etc.)
    - Set up alerting (Slack/email) for production regression detection
+   - Monitor localStorage version migration success rate
 
 ---
 
