@@ -300,18 +300,39 @@ function WeatherDashboard() {
                       <div className="hero-temperature">
                         {convertTemp(currentWeather.data.current.temperature)}°{unit}
                       </div>
-                      <div className="hero-conditions-text">
-                        <div className="hero-condition-primary">
-                          {currentWeather.data.current.conditions}
-                        </div>
-                        <div className="hero-feels-like">
-                          Feels like {convertTemp(currentWeather.data.current.feelsLike)}°{unit}
-                        </div>
+                      <div className="hero-feels-like">
+                        Feels like {convertTemp(currentWeather.data.current.feelsLike)}°{unit}
                       </div>
                     </div>
 
-                    {/* Quick Stats Bar - Compact 3 column */}
+                    {/* Quick Stats Bar - Compact 5 column with conditions */}
                     <div className="hero-quick-stats">
+                      <div className="hero-stat">
+                        <span className="hero-stat-icon">
+                          {currentWeather.data.current.conditions?.toLowerCase().includes('rain')
+                            ? '🌧️'
+                            : currentWeather.data.current.conditions
+                                  ?.toLowerCase()
+                                  .includes('cloud')
+                              ? '☁️'
+                              : currentWeather.data.current.conditions
+                                    ?.toLowerCase()
+                                    .includes('clear')
+                                ? '☀️'
+                                : '🌤️'}
+                        </span>
+                        <span className="hero-stat-value">
+                          {currentWeather.data.current.conditions}
+                        </span>
+                        <span className="hero-stat-label">Conditions</span>
+                      </div>
+                      <div className="hero-stat">
+                        <span className="hero-stat-icon">💧</span>
+                        <span className="hero-stat-value">
+                          {data.forecast?.[0]?.precipProbability ?? 0}%
+                        </span>
+                        <span className="hero-stat-label">Precip Chance</span>
+                      </div>
                       <div className="hero-stat">
                         <span className="hero-stat-icon">💨</span>
                         <span className="hero-stat-value">
