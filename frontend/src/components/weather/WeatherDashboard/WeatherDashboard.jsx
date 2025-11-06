@@ -256,17 +256,6 @@ function WeatherDashboard() {
 
   return (
     <div className="weather-dashboard">
-      {/* Header */}
-      <header className="dashboard-header">
-        <h1 className="dashboard-title">
-          <a href="/" className="dashboard-title-link">
-            <span className="title-icon">🌤️</span>
-            Meteo Weather
-          </a>
-        </h1>
-        <p className="dashboard-subtitle">Historical Weather Data & Forecasts</p>
-      </header>
-
       {/* Loading State */}
       {loading && <DashboardSkeleton />}
 
