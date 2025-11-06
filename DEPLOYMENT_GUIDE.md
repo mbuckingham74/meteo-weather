@@ -1,14 +1,14 @@
-# Deploy Security Update via VS Code
+# Deployment Guide
 
-**Since you're already connected to the server via VS Code, follow these steps:**
+**Follow these steps to deploy updates to the production server:**
 
 ---
 
-## Step 1: Open VS Code Terminal
+## Step 1: Connect to Production Server
 
-In VS Code (connected to remote server):
-1. Press `` Ctrl+` `` (or Terminal → New Terminal)
-2. You should already be on the production server
+```bash
+ssh michael@tachyonfuture.com
+```
 
 ---
 
@@ -255,57 +255,6 @@ docker compose -f docker-compose.prod.yml restart backend
 - [ ] Mozilla Observatory: A or A+
 - [ ] SecurityHeaders.com: A
 - [ ] SSL Labs: A or A+
-- [ ] **Documentation updated** (CHANGELOG.md, README.md, CLAUDE.md)
-
----
-
-## Documentation Updates (Post-Deployment)
-
-**After successful deployment, update project documentation:**
-
-### When to Update Documentation
-
-Update documentation **after deployment verification** (not before) to ensure:
-1. Changes are actually deployed and working
-2. Dates reflect actual deployment date
-3. No need to roll back documentation if deployment fails
-
-### Required Updates
-
-1. **CHANGELOG.md** - Add versioned release section:
-   ```markdown
-   ## ![Version](https://img.shields.io/badge/version-0.X.0-228B22?...) ![Date](https://img.shields.io/badge/date-Nov_DD,_YYYY-228B22?...)
-
-   **Release Highlights:** Brief summary of changes
-
-   ### Added / Changed / Fixed
-   - List all changes with file paths and commit hashes
-   ```
-
-2. **README.md** - Update "Recent Enhancements" section:
-   - Add new features to appropriate sections
-   - Update version numbers and dates
-   - Add any new configuration requirements
-
-3. **CLAUDE.md** - Update "Current Status" section:
-   - Add to "Recently Completed" list
-   - Update "as of [date]" header
-   - Include commit hashes for reference
-
-### Commit Message Format
-
-```bash
-docs: Update documentation for [feature name]
-
-Added comprehensive documentation for [date] deployment:
-- CHANGELOG.md: Added v0.X.0 release with [changes]
-- README.md: Updated [sections]
-- CLAUDE.md: Added [features] to recent work
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
-
-Co-Authored-By: Claude <noreply@anthropic.com>
-```
 
 ---
 
@@ -323,4 +272,4 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 ---
 
-**Ready to start? Open VS Code terminal and run the commands above!**
+**Ready to start? SSH to the server and run the commands above!**
