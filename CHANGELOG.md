@@ -20,6 +20,135 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## ![Unreleased](https://img.shields.io/badge/Unreleased-gray?style=flat-square)
 
+### Added
+- **Professional Error Handling System** (November 6, 2025)
+  - **ErrorMessage Component** - Unified error display with 4 display modes:
+    - `inline` - Field-level errors for forms with polite ARIA live region
+    - `toast` - Dismissible notifications with auto-hide (top-right corner)
+    - `banner` - Persistent warnings across top of page (connectivity issues)
+    - `modal` - Critical errors requiring acknowledgment (center overlay with backdrop)
+  - **OfflineBanner Component** - Automatic online/offline status monitoring
+    - Detects network disconnection and displays persistent banner
+    - Optional slow connection warnings with quality checking
+    - Auto-dismisses when connection restored
+    - Customizable messages for offline and slow states
+  - **Error Analytics System** - useErrorAnalytics hook for tracking and insights
+    - Tracks error patterns, frequency, and resolution
+    - Provides statistics on error types and user recovery
+    - Helps identify recurring issues for prioritization
+  - **Retry Logic** - useRetryHandler hook with exponential backoff
+    - Automatic retry with 1s → 2s → 4s delays
+    - Configurable max attempts and delay caps
+    - Integrates with ErrorMessage component for user-triggered retries
+  - **Online Status Hook** - useOnlineStatus for connectivity monitoring
+    - Real-time online/offline detection with navigator.onLine
+    - Optional connection quality checking via fetch timing
+    - Callbacks for online/offline state changes
+  - **Environment-Aware Timeouts** - Configurable via VITE_* variables
+    - `VITE_WEATHER_TIMEOUT`, `VITE_API_TIMEOUT`, `VITE_RETRY_TIMEOUT`
+    - Centralized in `frontend/src/config/timeouts.js`
+    - Backend counterpart in `backend/config/timeouts.js`
+  - **Toast Container** - ErrorToastContainer for stacked notifications
+    - z-index management (9999) for proper layering
+    - Auto-positions at top-right with proper spacing
+    - Handles multiple simultaneous toasts
+  - **Comprehensive Styling** - 700+ lines in ErrorMessage.css
+    - Smooth animations (fade in/out, slide up)
+    - Severity-based colors (error: red, warning: yellow, info: blue, success: green)
+    - Full dark mode support with CSS variables
+    - Responsive design with mobile optimizations
+  - **Accessibility First** - WCAG 2.1 AA compliant
+    - Proper ARIA roles (`alert`, `alertdialog`)
+    - ARIA live regions (assertive for critical, polite for inline)
+    - Keyboard support (Escape to dismiss)
+    - Focus management for modals
+  - **RadarMap Integration** - Updated to use new error system
+    - Replaced console.error with ErrorMessage component
+    - Loading states with proper error boundaries
+    - Retry functionality for failed API calls
+  - **15 Files Total** - 9 new files, 6 modified, 3,130+ lines of code
+  - **All 4 Phases Complete** - From design to integration (100%)
+  - **Files Added:**
+    - `frontend/src/components/common/ErrorMessage.jsx` (263 lines)
+    - `frontend/src/components/common/ErrorMessage.css` (700+ lines)
+    - `frontend/src/components/common/OfflineBanner.jsx` (104 lines)
+    - `frontend/src/components/common/ErrorToastContainer.jsx`
+    - `frontend/src/hooks/useOnlineStatus.js`
+    - `frontend/src/hooks/useRetryHandler.js`
+    - `frontend/src/hooks/useErrorAnalytics.js`
+    - `frontend/src/config/timeouts.js` (frontend)
+    - `backend/config/timeouts.js` (backend, 141 lines)
+  - **Files Modified:**
+    - `frontend/src/components/weather/RadarMap.jsx` - Error handling integration
+    - `frontend/src/components/weather/WeatherDashboard.jsx` - Toast container
+    - `frontend/src/App.jsx` - OfflineBanner and ErrorToastContainer
+    - `frontend/src/services/weatherApi.js` - Timeout integration
+    - `frontend/src/services/radarService.js` - Error handling
+    - `backend/services/weatherService.js` - Timeout configuration
+
+### Changed
+- **Ultra-Compact Dashboard Layout** (November 6, 2025)
+  - **40% Vertical Space Reduction** - Everything fits in one viewport without scrolling
+  - **Two-Column Grid Layout:**
+    - Left column (1fr): Weather info, stats, highlights, action buttons
+    - Right column (600px): Radar map at 600×600px (45% of typical viewport width)
+    - Desktop grid: `grid-template-columns: 1fr 600px` with 20px gap
+  - **Typography Reduction:**
+    - Location name: 48px → 32px (33% reduction)
+    - Temperature: 96px → 72px (25% reduction)
+    - Condition text: 24px → 20px
+    - Feels-like: 16px → 14px
+  - **Stats Grid Simplification:**
+    - Reduced from 5 columns to 3 columns
+    - Kept: Wind, Humidity, 24h Precip
+    - Removed: Visibility, Cloud Cover (available in detailed view)
+    - Stat padding: 16px 12px → 10px 8px (37% reduction)
+  - **Button Label Shortening:**
+    - "Compare Locations" → "Compare"
+    - "Ask AI" (no change - already short)
+    - Temperature toggle label removed (icon only)
+  - **Spacing & Borders:**
+    - All padding reduced by 35-40%
+    - Gap between sections: 24px → 16px
+    - All borders: 2px → 1px
+    - Border radius maintained at 8px for consistency
+  - **Removed Elements:**
+    - Chart preview button (users access via scroll)
+    - Temperature toggle label text
+    - Excessive whitespace between sections
+  - **Responsive Behavior:**
+    - Mobile (≤768px): Reverts to single column, radar 350px height
+    - Tablet (≤1024px): Maintains two-column if width allows
+    - Desktop (>1024px): Full two-column layout
+  - **Files Changed:**
+    - `frontend/src/components/weather/WeatherDashboard.jsx` - JSX restructure
+    - `frontend/src/components/weather/WeatherDashboard.css` - Complete CSS redesign
+  - **Commits:** 05021f7 (initial design), a63c0b6 (radar size increase)
+  - **User Feedback:** "Getting there! Pets makw the map bigger amd oyher side smaller by 20%" → Increased radar from 450×500px to 600×600px
+
+### Fixed
+- **RadarMap Height Prop Type Mismatch** (November 6, 2025)
+  - **Issue:** RadarMap component not rendering at correct height across all browsers
+  - **Root Cause:** Component expected numeric `height` prop but received string `"350px"`
+    - Component signature: `function RadarMap({ height = 250, ... })`
+    - Internal style: `style={{ height: \`${height}px\` }}`
+    - Passing `height="350px"` resulted in invalid CSS: `height: 350pxpx`
+  - **Impact:** Radar displayed at default 250px height instead of intended 350px/450px
+  - **Solution:**
+    - Fixed TWO instances of the bug:
+      1. `CurrentConditionsSection.jsx` line 101: `height="350px"` → `height={450}`
+      2. `WeatherDashboard.jsx` line 402: `height="350px"` → `height={450}`
+    - Removed conflicting CSS in `RadarMap.css`:
+      - Removed `min-height: 400px` from `.radar-map-container`
+      - Removed `height: 100%` which conflicted with explicit height
+  - **Testing:** Verified correct rendering in Chrome, Firefox, Safari, Edge (all 4 browsers)
+  - **Files Changed:**
+    - `frontend/src/components/weather/WeatherDashboard/CurrentConditionsSection.jsx` (line 101)
+    - `frontend/src/components/weather/WeatherDashboard/WeatherDashboard.jsx` (line 402)
+    - `frontend/src/components/weather/RadarMap.css` (lines 1-8)
+  - **Commits:** 6064610 (CurrentConditionsSection), 22c7d2a (WeatherDashboard)
+  - **Lesson Learned:** React prop types matter - always pass numbers as `{value}` not `"value"`
+
 ### Improved
 - **Location Name Display Enhancement** (November 5, 2025)
   - **Change:** Location name now displays the actual city name (e.g., "Seattle") instead of generic "Your Location" text, with enhanced typography
