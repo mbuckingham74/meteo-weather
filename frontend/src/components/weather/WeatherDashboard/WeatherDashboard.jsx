@@ -278,151 +278,121 @@ function WeatherDashboard() {
               <UniversalSearchBar />
             </div>
 
-            {/* Main Weather Display */}
+            {/* Main Weather Display - Two Column Layout */}
             <div className="hero-weather-display">
-              {/* Location Header */}
-              <div className="hero-location-header">
-                <h2 className="hero-location-name">{getFormattedLocationName()}</h2>
-                <p className="hero-location-coords">
-                  {data.location?.latitude?.toFixed(4) || locationData?.latitude?.toFixed(4)},{' '}
-                  {data.location?.longitude?.toFixed(4) || locationData?.longitude?.toFixed(4)}
-                  {(data.location?.timezone || locationData?.timezone) &&
-                    ` • ${data.location?.timezone || locationData?.timezone}`}
-                </p>
+              {/* LEFT COLUMN: Weather Info */}
+              <div className="hero-left-column">
+                {/* Location Header */}
+                <div className="hero-location-header">
+                  <h2 className="hero-location-name">{getFormattedLocationName()}</h2>
+                  <p className="hero-location-coords">
+                    {data.location?.latitude?.toFixed(4) || locationData?.latitude?.toFixed(4)},{' '}
+                    {data.location?.longitude?.toFixed(4) || locationData?.longitude?.toFixed(4)}
+                    {(data.location?.timezone || locationData?.timezone) &&
+                      ` • ${data.location?.timezone || locationData?.timezone}`}
+                  </p>
+                </div>
+
+                {/* Current Temperature & Conditions */}
+                {currentWeather?.data && !currentWeather.loading && (
+                  <div className="hero-current-conditions">
+                    <div className="hero-temp-main">
+                      <div className="hero-temperature">
+                        {convertTemp(currentWeather.data.current.temperature)}°{unit}
+                      </div>
+                      <div className="hero-conditions-text">
+                        <div className="hero-condition-primary">
+                          {currentWeather.data.current.conditions}
+                        </div>
+                        <div className="hero-feels-like">
+                          Feels like {convertTemp(currentWeather.data.current.feelsLike)}°{unit}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Quick Stats Bar - Compact 3 column */}
+                    <div className="hero-quick-stats">
+                      <div className="hero-stat">
+                        <span className="hero-stat-icon">💨</span>
+                        <span className="hero-stat-value">
+                          {Math.round(currentWeather.data.current.windSpeed)} mph
+                        </span>
+                        <span className="hero-stat-label">Wind</span>
+                      </div>
+                      <div className="hero-stat">
+                        <span className="hero-stat-icon">💧</span>
+                        <span className="hero-stat-value">
+                          {currentWeather.data.current.humidity}%
+                        </span>
+                        <span className="hero-stat-label">Humidity</span>
+                      </div>
+                      <div className="hero-stat">
+                        <span className="hero-stat-icon">🌧️</span>
+                        <span className="hero-stat-value">
+                          {hourlyData?.data?.hourly
+                            ? hourlyData.data.hourly
+                                .slice(0, 24)
+                                .reduce((sum, hour) => sum + (hour.precipitation || 0), 0)
+                                .toFixed(1)
+                            : '0.0'}{' '}
+                          mm
+                        </span>
+                        <span className="hero-stat-label">24h Precip</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Today's Highlights - Compact */}
+                {data.forecast && data.forecast.length > 0 && currentWeather?.data && (
+                  <div className="hero-highlights-section">
+                    <h4 className="hero-section-title">Today&apos;s Highlights</h4>
+                    <TodaysHighlights
+                      currentWeather={currentWeather.data}
+                      forecast={data.forecast}
+                      unit={unit}
+                    />
+                  </div>
+                )}
+
+                {/* Quick Actions - Compact */}
+                <div className="hero-actions-section">
+                  <div className="hero-action-buttons">
+                    <button
+                      className="hero-action-btn"
+                      onClick={handleDetectLocation}
+                      disabled={detectingLocation}
+                    >
+                      <span>{detectingLocation ? '🔄' : '📍'}</span>
+                      {detectingLocation ? 'Detecting...' : 'Use My Location'}
+                    </button>
+                    <a href="/compare" className="hero-action-btn">
+                      <span>📊</span> Compare
+                    </a>
+                    <a href="/ai-weather" className="hero-action-btn">
+                      <span>🤖</span> Ask AI
+                    </a>
+                    <div className="hero-temp-toggle">
+                      <TemperatureUnitToggle />
+                    </div>
+                  </div>
+                  {locationError && <div className="hero-location-error">⚠️ {locationError}</div>}
+                </div>
               </div>
 
-              {/* Current Temperature & Conditions */}
-              {currentWeather?.data && !currentWeather.loading && (
-                <div className="hero-current-conditions">
-                  <div className="hero-temp-main">
-                    <div className="hero-temperature">
-                      {convertTemp(currentWeather.data.current.temperature)}°{unit}
-                    </div>
-                    <div className="hero-conditions-text">
-                      <div className="hero-condition-primary">
-                        {currentWeather.data.current.conditions}
-                      </div>
-                      <div className="hero-feels-like">
-                        Feels like {convertTemp(currentWeather.data.current.feelsLike)}°{unit}
-                      </div>
-                    </div>
+              {/* RIGHT COLUMN: Radar Map */}
+              <div className="hero-right-column">
+                {data.location && (
+                  <div className="hero-radar-section">
+                    <RadarMap
+                      latitude={data.location.latitude}
+                      longitude={data.location.longitude}
+                      zoom={7.5}
+                      height={500}
+                      alerts={data.alerts}
+                    />
                   </div>
-
-                  {/* Quick Stats Bar */}
-                  <div className="hero-quick-stats">
-                    <div className="hero-stat">
-                      <span className="hero-stat-icon">💨</span>
-                      <span className="hero-stat-value">
-                        {Math.round(currentWeather.data.current.windSpeed)} mph
-                      </span>
-                      <span className="hero-stat-label">Wind</span>
-                    </div>
-                    <div className="hero-stat">
-                      <span className="hero-stat-icon">💧</span>
-                      <span className="hero-stat-value">
-                        {currentWeather.data.current.humidity}%
-                      </span>
-                      <span className="hero-stat-label">Humidity</span>
-                    </div>
-                    <div className="hero-stat">
-                      <span className="hero-stat-icon">👁️</span>
-                      <span className="hero-stat-value">
-                        {currentWeather.data.current.visibility} mi
-                      </span>
-                      <span className="hero-stat-label">Visibility</span>
-                    </div>
-                    <div className="hero-stat">
-                      <span className="hero-stat-icon">☁️</span>
-                      <span className="hero-stat-value">
-                        {currentWeather.data.current.cloudCover}%
-                      </span>
-                      <span className="hero-stat-label">Clouds</span>
-                    </div>
-                    <div className="hero-stat">
-                      <span className="hero-stat-icon">🌧️</span>
-                      <span className="hero-stat-value">
-                        {hourlyData?.data?.hourly
-                          ? hourlyData.data.hourly
-                              .slice(0, 24)
-                              .reduce((sum, hour) => sum + (hour.precipitation || 0), 0)
-                              .toFixed(1)
-                          : '0.0'}{' '}
-                        mm
-                      </span>
-                      <span className="hero-stat-label">24h Precip</span>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Today's Highlights - Integrated */}
-              {data.forecast && data.forecast.length > 0 && currentWeather?.data && (
-                <div className="hero-highlights-section">
-                  <h4 className="hero-section-title">Today&apos;s Highlights</h4>
-                  <TodaysHighlights
-                    currentWeather={currentWeather.data}
-                    forecast={data.forecast}
-                    unit={unit}
-                  />
-                </div>
-              )}
-
-              {/* Quick Actions - Integrated */}
-              <div className="hero-actions-section">
-                <div className="hero-action-buttons">
-                  <button
-                    className="hero-action-btn"
-                    onClick={handleDetectLocation}
-                    disabled={detectingLocation}
-                  >
-                    <span>{detectingLocation ? '🔄' : '📍'}</span>
-                    {detectingLocation ? 'Detecting...' : 'Use My Location'}
-                  </button>
-                  <a href="/compare" className="hero-action-btn">
-                    <span>📊</span> Compare Locations
-                  </a>
-                  <a href="/ai-weather" className="hero-action-btn">
-                    <span>🤖</span> Ask AI
-                  </a>
-                  <div className="hero-temp-toggle">
-                    <span className="temp-toggle-label">Temp:</span>
-                    <TemperatureUnitToggle />
-                  </div>
-                </div>
-                {locationError && <div className="hero-location-error">⚠️ {locationError}</div>}
-              </div>
-
-              {/* Radar Map - Integrated */}
-              {data.location && (
-                <div className="hero-radar-section">
-                  <RadarMap
-                    latitude={data.location.latitude}
-                    longitude={data.location.longitude}
-                    zoom={7.5}
-                    height={450}
-                    alerts={data.alerts}
-                  />
-                </div>
-              )}
-
-              {/* Chart Navigation Preview */}
-              <div className="hero-chart-preview">
-                <button
-                  className="hero-view-charts-btn"
-                  onClick={() =>
-                    document
-                      .getElementById('forecast-section')
-                      ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                  }
-                >
-                  <span className="charts-btn-icon">📊</span>
-                  <span className="charts-btn-text">
-                    <strong>View Detailed Forecast & Charts</strong>
-                    <span className="charts-btn-subtitle">
-                      Interactive visualizations for {getCityName()}
-                    </span>
-                  </span>
-                </button>
+                )}
               </div>
             </div>
           </div>

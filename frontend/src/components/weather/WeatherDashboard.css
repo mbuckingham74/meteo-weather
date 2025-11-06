@@ -61,57 +61,66 @@
 }
 
 /* ============================================
-   UNIFIED HERO CARD - New Design
-   Everything in one beautiful, cohesive card
+   UNIFIED HERO CARD - Compact Design
+   Everything in one viewport-optimized card
    ============================================ */
 
 .unified-hero-card {
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto 24px auto;
+  max-width: 1400px;
+  margin: 0 auto 16px auto;
   background: var(--bg-elevated);
-  border-radius: 20px;
+  border-radius: 16px;
   box-shadow: var(--shadow-xl);
   border: 1px solid var(--border-light);
   overflow: hidden;
   transition: all var(--transition-normal);
 }
 
-/* Search Section - Top of card */
+/* Search Section - Compact */
 .hero-search-section {
-  padding: 24px;
-  border-bottom: 2px solid var(--border-light);
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-light);
+  background: var(--bg-secondary);
 }
 
-/* Main Weather Display Container */
+/* Main Weather Display Container - TWO COLUMN LAYOUT */
 .hero-weather-display {
-  padding: 24px;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr 450px;
+  gap: 20px;
+  align-items: start;
+}
+
+/* LEFT COLUMN: Weather Info */
+.hero-left-column {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
-/* Location Header */
+/* Location Header - Compact */
 .hero-location-header {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding-bottom: 16px;
-  border-bottom: 2px solid var(--border-light);
+  gap: 4px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-light);
 }
 
 .hero-location-name {
   margin: 0;
-  font-size: 48px;
+  font-size: 32px;
   font-weight: 900;
   color: var(--text-primary);
   line-height: 1.1;
-  letter-spacing: -1px;
+  letter-spacing: -0.5px;
 }
 
 .hero-location-coords {
   margin: 0;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--text-secondary);
   font-family:
@@ -119,126 +128,141 @@
   letter-spacing: 0.3px;
 }
 
-/* Current Conditions */
+/* Current Conditions - Side by side temp and stats */
 .hero-current-conditions {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  gap: 20px;
+  align-items: center;
 }
 
 .hero-temp-main {
   display: flex;
-  align-items: center;
-  gap: 20px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--border-light);
+  flex-direction: column;
+  gap: 4px;
 }
 
 .hero-temperature {
-  font-size: 96px;
+  font-size: 72px;
   font-weight: 800;
   color: var(--text-primary);
   line-height: 1;
-  letter-spacing: -3px;
+  letter-spacing: -2px;
 }
 
 .hero-conditions-text {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 2px;
 }
 
 .hero-condition-primary {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1.2;
 }
 
 .hero-feels-like {
-  font-size: 16px;
+  font-size: 14px;
   color: var(--text-secondary);
   font-weight: 500;
 }
 
-/* Quick Stats Bar */
+/* Quick Stats Bar - Compact 3 column grid */
 .hero-quick-stats {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
 }
 
 .hero-stat {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  padding: 16px 12px;
+  gap: 4px;
+  padding: 10px 8px;
   background: var(--bg-tertiary);
-  border-radius: 12px;
+  border-radius: 8px;
   border: 1px solid var(--border-light);
   transition: all var(--transition-fast);
 }
 
 .hero-stat:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
   border-color: var(--accent-primary);
 }
 
 .hero-stat-icon {
-  font-size: 24px;
+  font-size: 20px;
 }
 
 .hero-stat-value {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1.2;
 }
 
 .hero-stat-label {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-tertiary);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
   font-weight: 600;
+}
+
+/* RIGHT COLUMN: Radar Map */
+.hero-right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  height: 100%;
+}
+
+.hero-radar-section {
+  padding: 0;
+  border: none;
+  height: 100%;
+  min-height: 500px;
 }
 
 /* Highlights Section */
 .hero-highlights-section {
-  padding: 20px 0;
-  border-top: 2px solid var(--border-light);
+  padding: 16px 0;
+  border-top: 1px solid var(--border-light);
+  margin-top: 12px;
 }
 
 .hero-section-title {
-  margin: 0 0 16px 0;
-  font-size: 18px;
+  margin: 0 0 12px 0;
+  font-size: 16px;
   font-weight: 700;
   color: var(--text-primary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-/* Quick Actions Section */
+/* Quick Actions Section - Compact */
 .hero-actions-section {
-  padding: 20px 0;
-  border-top: 2px solid var(--border-light);
+  padding: 12px 0 0 0;
+  border-top: 1px solid var(--border-light);
+  margin-top: 12px;
 }
 
 .hero-action-buttons {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
+  gap: 8px;
   align-items: center;
 }
 
 .hero-action-btn {
-  padding: 14px 20px;
+  padding: 10px 12px;
   background: var(--bg-tertiary);
-  border: 2px solid var(--border-light);
-  border-radius: 12px;
-  font-size: 14px;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-primary);
   cursor: pointer;
@@ -247,15 +271,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .hero-action-btn:hover {
   background: var(--accent-primary);
   color: white;
   border-color: var(--accent-primary);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
 .hero-action-btn:disabled {
@@ -267,16 +291,16 @@
 .hero-temp-toggle {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 14px 20px;
+  gap: 6px;
+  padding: 10px 12px;
   background: var(--bg-tertiary);
-  border: 2px solid var(--border-light);
-  border-radius: 12px;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
   justify-content: center;
 }
 
 .temp-toggle-label {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-secondary);
 }
