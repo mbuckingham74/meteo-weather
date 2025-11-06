@@ -14,7 +14,7 @@ router.get('/geocode', async (req, res) => {
     if (!q || q.trim().length === 0) {
       return res.status(400).json({
         success: false,
-        error: 'Query parameter "q" is required'
+        error: 'Query parameter "q" is required',
       });
     }
 
@@ -26,13 +26,13 @@ router.get('/geocode', async (req, res) => {
     } else {
       res.status(result.statusCode || 404).json({
         success: false,
-        error: result.error
+        error: result.error,
       });
     }
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -48,7 +48,7 @@ router.get('/reverse', async (req, res) => {
     if (!lat || !lon) {
       return res.status(400).json({
         success: false,
-        error: 'Latitude (lat) and longitude (lon) query parameters are required'
+        error: 'Latitude (lat) and longitude (lon) query parameters are required',
       });
     }
 
@@ -58,7 +58,7 @@ router.get('/reverse', async (req, res) => {
     if (isNaN(latitude) || isNaN(longitude)) {
       return res.status(400).json({
         success: false,
-        error: 'Invalid latitude or longitude'
+        error: 'Invalid latitude or longitude',
       });
     }
 
@@ -69,13 +69,13 @@ router.get('/reverse', async (req, res) => {
     } else {
       res.status(404).json({
         success: false,
-        error: result.error
+        error: result.error,
       });
     }
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -91,7 +91,7 @@ router.get('/popular', (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -107,7 +107,7 @@ router.get('/search', async (req, res) => {
     if (!q || q.trim().length === 0) {
       return res.status(400).json({
         success: false,
-        error: 'Query parameter "q" is required'
+        error: 'Query parameter "q" is required',
       });
     }
 
@@ -117,12 +117,12 @@ router.get('/search', async (req, res) => {
     res.json({
       success: true,
       count: locations.length,
-      locations
+      locations,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -140,7 +140,7 @@ router.get('/', async (req, res) => {
     if (limit > 500) {
       return res.status(400).json({
         success: false,
-        error: 'Limit cannot exceed 500'
+        error: 'Limit cannot exceed 500',
       });
     }
 
@@ -151,12 +151,12 @@ router.get('/', async (req, res) => {
       count: locations.length,
       limit,
       offset,
-      locations
+      locations,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -175,7 +175,7 @@ router.get('/:id', async (req, res) => {
     if (isNaN(locationId)) {
       return res.status(400).json({
         success: false,
-        error: 'Invalid location ID'
+        error: 'Invalid location ID',
       });
     }
 
@@ -184,18 +184,18 @@ router.get('/:id', async (req, res) => {
     if (!location) {
       return res.status(404).json({
         success: false,
-        error: 'Location not found'
+        error: 'Location not found',
       });
     }
 
     res.json({
       success: true,
-      location
+      location,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -213,7 +213,7 @@ router.post('/', async (req, res) => {
     if (!city_name || !country || latitude === undefined || longitude === undefined) {
       return res.status(400).json({
         success: false,
-        error: 'Required fields: city_name, country, latitude, longitude'
+        error: 'Required fields: city_name, country, latitude, longitude',
       });
     }
 
@@ -221,7 +221,7 @@ router.post('/', async (req, res) => {
     if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
       return res.status(400).json({
         success: false,
-        error: 'Invalid coordinates'
+        error: 'Invalid coordinates',
       });
     }
 
@@ -229,12 +229,12 @@ router.post('/', async (req, res) => {
 
     res.status(201).json({
       success: true,
-      location
+      location,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -252,7 +252,7 @@ router.patch('/:id', async (req, res) => {
     if (isNaN(locationId)) {
       return res.status(400).json({
         success: false,
-        error: 'Invalid location ID'
+        error: 'Invalid location ID',
       });
     }
 
@@ -261,18 +261,18 @@ router.patch('/:id', async (req, res) => {
     if (!location) {
       return res.status(404).json({
         success: false,
-        error: 'Location not found'
+        error: 'Location not found',
       });
     }
 
     res.json({
       success: true,
-      location
+      location,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -289,7 +289,7 @@ router.delete('/:id', async (req, res) => {
     if (isNaN(locationId)) {
       return res.status(400).json({
         success: false,
-        error: 'Invalid location ID'
+        error: 'Invalid location ID',
       });
     }
 
@@ -298,18 +298,18 @@ router.delete('/:id', async (req, res) => {
     if (!deleted) {
       return res.status(404).json({
         success: false,
-        error: 'Location not found'
+        error: 'Location not found',
       });
     }
 
     res.json({
       success: true,
-      message: 'Location deleted successfully'
+      message: 'Location deleted successfully',
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });
