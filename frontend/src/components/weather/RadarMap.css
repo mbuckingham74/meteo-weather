@@ -1,13 +1,10 @@
 .radar-map-container {
   position: relative;
   width: 100%;
-  height: 100%;
   border-radius: 8px;
   overflow: hidden;
   background: #e0e0e0;
   margin-top: 12px;
-  flex: 1;
-  min-height: 400px;
 }
 
 /* Loading overlay */
@@ -715,8 +712,7 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .radar-map-container {
-    min-height: 350px;
-    height: 350px;
+    height: 350px !important;
   }
 
   /* Touch-optimized controls */
@@ -803,8 +799,7 @@
 /* Extra small devices */
 @media (max-width: 480px) {
   .radar-map-container {
-    min-height: 300px;
-    height: 300px;
+    height: 300px !important;
   }
 
   .radar-controls {
