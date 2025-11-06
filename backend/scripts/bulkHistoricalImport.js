@@ -27,7 +27,8 @@ require('dotenv').config();
 
 // Configuration
 const VISUAL_CROSSING_API_KEY = process.env.VISUAL_CROSSING_API_KEY;
-const BASE_URL = 'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline';
+const BASE_URL =
+  'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline';
 
 // Parse command line arguments
 const args = process.argv.slice(2).reduce((acc, arg) => {
@@ -41,20 +42,20 @@ const CONFIG = {
   limit: args.limit ? parseInt(args.limit) : null,
   startYear: args['start-year'] || 2015,
   endYear: args['end-year'] || 2025,
-  dryRun: args['dry-run'] || false
+  dryRun: args['dry-run'] || false,
 };
 
 // Top 100 US cities by population
 const US_CITIES = [
-  { name: 'New York', state: 'NY', lat: 40.7128, lon: -74.0060 },
+  { name: 'New York', state: 'NY', lat: 40.7128, lon: -74.006 },
   { name: 'Los Angeles', state: 'CA', lat: 34.0522, lon: -118.2437 },
   { name: 'Chicago', state: 'IL', lat: 41.8781, lon: -87.6298 },
   { name: 'Houston', state: 'TX', lat: 29.7604, lon: -95.3698 },
-  { name: 'Phoenix', state: 'AZ', lat: 33.4484, lon: -112.0740 },
+  { name: 'Phoenix', state: 'AZ', lat: 33.4484, lon: -112.074 },
   { name: 'Philadelphia', state: 'PA', lat: 39.9526, lon: -75.1652 },
   { name: 'San Antonio', state: 'TX', lat: 29.4241, lon: -98.4936 },
   { name: 'San Diego', state: 'CA', lat: 32.7157, lon: -117.1611 },
-  { name: 'Dallas', state: 'TX', lat: 32.7767, lon: -96.7970 },
+  { name: 'Dallas', state: 'TX', lat: 32.7767, lon: -96.797 },
   { name: 'San Jose', state: 'CA', lat: 37.3382, lon: -121.8863 },
   { name: 'Austin', state: 'TX', lat: 30.2672, lon: -97.7431 },
   { name: 'Jacksonville', state: 'FL', lat: 30.3322, lon: -81.6557 },
@@ -67,13 +68,13 @@ const US_CITIES = [
   { name: 'Denver', state: 'CO', lat: 39.7392, lon: -104.9903 },
   { name: 'Washington', state: 'DC', lat: 38.9072, lon: -77.0369 },
   { name: 'Boston', state: 'MA', lat: 42.3601, lon: -71.0589 },
-  { name: 'El Paso', state: 'TX', lat: 31.7619, lon: -106.4850 },
+  { name: 'El Paso', state: 'TX', lat: 31.7619, lon: -106.485 },
   { name: 'Nashville', state: 'TN', lat: 36.1627, lon: -86.7816 },
   { name: 'Detroit', state: 'MI', lat: 42.3314, lon: -83.0458 },
   { name: 'Oklahoma City', state: 'OK', lat: 35.4676, lon: -97.5164 },
   { name: 'Portland', state: 'OR', lat: 45.5152, lon: -122.6784 },
   { name: 'Las Vegas', state: 'NV', lat: 36.1699, lon: -115.1398 },
-  { name: 'Memphis', state: 'TN', lat: 35.1495, lon: -90.0490 },
+  { name: 'Memphis', state: 'TN', lat: 35.1495, lon: -90.049 },
   { name: 'Louisville', state: 'KY', lat: 38.2527, lon: -85.7585 },
   { name: 'Baltimore', state: 'MD', lat: 39.2904, lon: -76.6122 },
   { name: 'Milwaukee', state: 'WI', lat: 43.0389, lon: -87.9065 },
@@ -82,17 +83,17 @@ const US_CITIES = [
   { name: 'Fresno', state: 'CA', lat: 36.7378, lon: -119.7871 },
   { name: 'Mesa', state: 'AZ', lat: 33.4152, lon: -111.8315 },
   { name: 'Sacramento', state: 'CA', lat: 38.5816, lon: -121.4944 },
-  { name: 'Atlanta', state: 'GA', lat: 33.7490, lon: -84.3880 },
+  { name: 'Atlanta', state: 'GA', lat: 33.749, lon: -84.388 },
   { name: 'Kansas City', state: 'MO', lat: 39.0997, lon: -94.5786 },
   { name: 'Colorado Springs', state: 'CO', lat: 38.8339, lon: -104.8214 },
   { name: 'Omaha', state: 'NE', lat: 41.2565, lon: -95.9345 },
   { name: 'Raleigh', state: 'NC', lat: 35.7796, lon: -78.6382 },
   { name: 'Miami', state: 'FL', lat: 25.7617, lon: -80.1918 },
   { name: 'Long Beach', state: 'CA', lat: 33.7701, lon: -118.1937 },
-  { name: 'Virginia Beach', state: 'VA', lat: 36.8529, lon: -75.9780 },
+  { name: 'Virginia Beach', state: 'VA', lat: 36.8529, lon: -75.978 },
   { name: 'Oakland', state: 'CA', lat: 37.8044, lon: -122.2712 },
-  { name: 'Minneapolis', state: 'MN', lat: 44.9778, lon: -93.2650 },
-  { name: 'Tulsa', state: 'OK', lat: 36.1540, lon: -95.9928 },
+  { name: 'Minneapolis', state: 'MN', lat: 44.9778, lon: -93.265 },
+  { name: 'Tulsa', state: 'OK', lat: 36.154, lon: -95.9928 },
   { name: 'Tampa', state: 'FL', lat: 27.9506, lon: -82.4572 },
   { name: 'Arlington', state: 'TX', lat: 32.7357, lon: -97.1081 },
   { name: 'New Orleans', state: 'LA', lat: 29.9511, lon: -90.0715 },
@@ -109,17 +110,17 @@ const US_CITIES = [
   { name: 'Lexington', state: 'KY', lat: 38.0406, lon: -84.5037 },
   { name: 'Stockton', state: 'CA', lat: 37.9577, lon: -121.2908 },
   { name: 'Henderson', state: 'NV', lat: 36.0395, lon: -114.9817 },
-  { name: 'Saint Paul', state: 'MN', lat: 44.9537, lon: -93.0900 },
-  { name: 'Cincinnati', state: 'OH', lat: 39.1031, lon: -84.5120 },
+  { name: 'Saint Paul', state: 'MN', lat: 44.9537, lon: -93.09 },
+  { name: 'Cincinnati', state: 'OH', lat: 39.1031, lon: -84.512 },
   { name: 'Pittsburgh', state: 'PA', lat: 40.4406, lon: -79.9959 },
-  { name: 'Greensboro', state: 'NC', lat: 36.0726, lon: -79.7920 },
+  { name: 'Greensboro', state: 'NC', lat: 36.0726, lon: -79.792 },
   { name: 'Anchorage', state: 'AK', lat: 61.2181, lon: -149.9003 },
   { name: 'Plano', state: 'TX', lat: 33.0198, lon: -96.6989 },
   { name: 'Lincoln', state: 'NE', lat: 40.8136, lon: -96.7026 },
   { name: 'Orlando', state: 'FL', lat: 28.5383, lon: -81.3792 },
   { name: 'Irvine', state: 'CA', lat: 33.6846, lon: -117.8265 },
   { name: 'Newark', state: 'NJ', lat: 40.7357, lon: -74.1724 },
-  { name: 'Durham', state: 'NC', lat: 35.9940, lon: -78.8986 },
+  { name: 'Durham', state: 'NC', lat: 35.994, lon: -78.8986 },
   { name: 'Chula Vista', state: 'CA', lat: 32.6401, lon: -117.0842 },
   { name: 'Toledo', state: 'OH', lat: 41.6528, lon: -83.5379 },
   { name: 'Fort Wayne', state: 'IN', lat: 41.0793, lon: -85.1394 },
@@ -132,19 +133,19 @@ const US_CITIES = [
   { name: 'Scottsdale', state: 'AZ', lat: 33.4942, lon: -111.9261 },
   { name: 'Reno', state: 'NV', lat: 39.5296, lon: -119.8138 },
   { name: 'Buffalo', state: 'NY', lat: 42.8864, lon: -78.8784 },
-  { name: 'Gilbert', state: 'AZ', lat: 33.3528, lon: -111.7890 },
-  { name: 'Glendale', state: 'AZ', lat: 33.5387, lon: -112.1860 },
+  { name: 'Gilbert', state: 'AZ', lat: 33.3528, lon: -111.789 },
+  { name: 'Glendale', state: 'AZ', lat: 33.5387, lon: -112.186 },
   { name: 'North Las Vegas', state: 'NV', lat: 36.1989, lon: -115.1175 },
   { name: 'Winston-Salem', state: 'NC', lat: 36.0999, lon: -80.2442 },
   { name: 'Chesapeake', state: 'VA', lat: 36.7682, lon: -76.2875 },
   { name: 'Norfolk', state: 'VA', lat: 36.8508, lon: -76.2859 },
   { name: 'Fremont', state: 'CA', lat: 37.5485, lon: -121.9886 },
   { name: 'Garland', state: 'TX', lat: 32.9126, lon: -96.6389 },
-  { name: 'Irving', state: 'TX', lat: 32.8140, lon: -96.9489 },
+  { name: 'Irving', state: 'TX', lat: 32.814, lon: -96.9489 },
   { name: 'Hialeah', state: 'FL', lat: 25.8576, lon: -80.2781 },
-  { name: 'Richmond', state: 'VA', lat: 37.5407, lon: -77.4360 },
-  { name: 'Boise', state: 'ID', lat: 43.6150, lon: -116.2023 },
-  { name: 'Spokane', state: 'WA', lat: 47.6588, lon: -117.4260 }
+  { name: 'Richmond', state: 'VA', lat: 37.5407, lon: -77.436 },
+  { name: 'Boise', state: 'ID', lat: 43.615, lon: -116.2023 },
+  { name: 'Spokane', state: 'WA', lat: 47.6588, lon: -117.426 },
 ];
 
 // Top 50 global cities (non-US)
@@ -152,15 +153,15 @@ const GLOBAL_CITIES = [
   { name: 'London', country: 'United Kingdom', lat: 51.5074, lon: -0.1278 },
   { name: 'Paris', country: 'France', lat: 48.8566, lon: 2.3522 },
   { name: 'Tokyo', country: 'Japan', lat: 35.6762, lon: 139.6503 },
-  { name: 'Berlin', country: 'Germany', lat: 52.5200, lon: 13.4050 },
+  { name: 'Berlin', country: 'Germany', lat: 52.52, lon: 13.405 },
   { name: 'Toronto', country: 'Canada', lat: 43.6532, lon: -79.3832 },
   { name: 'Sydney', country: 'Australia', lat: -33.8688, lon: 151.2093 },
   { name: 'Singapore', country: 'Singapore', lat: 1.3521, lon: 103.8198 },
   { name: 'Dubai', country: 'United Arab Emirates', lat: 25.2048, lon: 55.2708 },
   { name: 'Hong Kong', country: 'China', lat: 22.3193, lon: 114.1694 },
-  { name: 'Mumbai', country: 'India', lat: 19.0760, lon: 72.8777 },
+  { name: 'Mumbai', country: 'India', lat: 19.076, lon: 72.8777 },
   { name: 'Shanghai', country: 'China', lat: 31.2304, lon: 121.4737 },
-  { name: 'Seoul', country: 'South Korea', lat: 37.5665, lon: 126.9780 },
+  { name: 'Seoul', country: 'South Korea', lat: 37.5665, lon: 126.978 },
   { name: 'Mexico City', country: 'Mexico', lat: 19.4326, lon: -99.1332 },
   { name: 'São Paulo', country: 'Brazil', lat: -23.5505, lon: -46.6333 },
   { name: 'Moscow', country: 'Russia', lat: 55.7558, lon: 37.6173 },
@@ -198,7 +199,7 @@ const GLOBAL_CITIES = [
   { name: 'Brisbane', country: 'Australia', lat: -27.4698, lon: 153.0251 },
   { name: 'Auckland', country: 'New Zealand', lat: -36.8485, lon: 174.7633 },
   { name: 'Cape Town', country: 'South Africa', lat: -33.9249, lon: 18.4241 },
-  { name: 'Tel Aviv', country: 'Israel', lat: 32.0853, lon: 34.7818 }
+  { name: 'Tel Aviv', country: 'Israel', lat: 32.0853, lon: 34.7818 },
 ];
 
 // Statistics
@@ -207,7 +208,7 @@ const stats = {
   citiesSkipped: 0,
   apiCallsMade: 0,
   recordsInserted: 0,
-  errors: []
+  errors: [],
 };
 
 /**
@@ -221,7 +222,8 @@ async function fetchHistoricalData(city, startDate, endDate) {
     key: VISUAL_CROSSING_API_KEY,
     unitGroup: 'metric',
     include: 'days',
-    elements: 'datetime,tempmax,tempmin,temp,feelslike,humidity,precip,precipprob,precipcover,preciptype,snow,snowdepth,windgust,windspeed,winddir,pressure,cloudcover,visibility,solarradiation,solarenergy,uvindex,sunrise,sunset,conditions,description,icon'
+    elements:
+      'datetime,tempmax,tempmin,temp,feelslike,humidity,precip,precipprob,precipcover,preciptype,snow,snowdepth,windgust,windspeed,winddir,pressure,cloudcover,visibility,solarradiation,solarenergy,uvindex,sunrise,sunset,conditions,description,icon',
   };
 
   try {
@@ -259,7 +261,7 @@ async function upsertLocation(city) {
     city.lat,
     city.lon,
     null, // Will be populated from API response
-    null  // Will be populated from API response
+    null, // Will be populated from API response
   ];
 
   const [result] = await pool.query(query, values);
@@ -278,12 +280,27 @@ async function upsertLocation(city) {
 }
 
 /**
+ * Validate that location_id exists (referential integrity check)
+ * Foreign keys were dropped in migration 005, so we validate in application code
+ */
+async function validateLocationExists(locationId) {
+  const [rows] = await pool.query('SELECT id FROM locations WHERE id = ?', [locationId]);
+
+  if (rows.length === 0) {
+    throw new Error(`Location ID ${locationId} does not exist. Cannot insert weather data.`);
+  }
+}
+
+/**
  * Insert weather data for a location
  */
 async function insertWeatherData(locationId, weatherData) {
   if (!weatherData.days || weatherData.days.length === 0) {
     return 0;
   }
+
+  // Validate location exists (foreign keys dropped in migration 005)
+  await validateLocationExists(locationId);
 
   const query = `
     INSERT INTO weather_data (
@@ -336,7 +353,7 @@ async function insertWeatherData(locationId, weatherData) {
       day.description || null,
       day.sunrise || null,
       day.sunset || null,
-      'visualcrossing'
+      'visualcrossing',
     ];
 
     try {
@@ -357,9 +374,7 @@ async function insertWeatherData(locationId, weatherData) {
  * Process a single city
  */
 async function processCity(city, index, total) {
-  const cityLabel = city.state
-    ? `${city.name}, ${city.state}`
-    : `${city.name}, ${city.country}`;
+  const cityLabel = city.state ? `${city.name}, ${city.state}` : `${city.name}, ${city.country}`;
 
   console.log(`\n[${index + 1}/${total}] Processing: ${cityLabel}`);
 
@@ -376,7 +391,8 @@ async function processCity(city, index, total) {
     const expectedDays = (CONFIG.endYear - CONFIG.startYear + 1) * 365;
     const existingDays = existingData[0].count;
 
-    if (existingDays >= expectedDays * 0.95) { // 95% threshold to account for leap years
+    if (existingDays >= expectedDays * 0.95) {
+      // 95% threshold to account for leap years
       console.log(`  ✓ Already populated (${existingDays} days), skipping...`);
       stats.citiesSkipped++;
       return;
@@ -399,9 +415,10 @@ async function processCity(city, index, total) {
 
     for (let year = CONFIG.startYear; year <= CONFIG.endYear; year++) {
       const startDate = `${year}-01-01`;
-      const endDate = year === CONFIG.endYear ?
-        new Date().toISOString().split('T')[0] : // Today if current year
-        `${year}-12-31`;
+      const endDate =
+        year === CONFIG.endYear
+          ? new Date().toISOString().split('T')[0] // Today if current year
+          : `${year}-12-31`;
 
       console.log(`  📅 Fetching ${year}...`);
 
@@ -412,7 +429,7 @@ async function processCity(city, index, total) {
         console.log(`    ✓ Inserted ${inserted} days`);
 
         // Rate limiting: wait 200ms between API calls to be respectful
-        await new Promise(resolve => setTimeout(resolve, 200));
+        await new Promise((resolve) => setTimeout(resolve, 200));
       } catch (error) {
         console.error(`    ✗ Error fetching ${year}: ${error.message}`);
         stats.errors.push({ city: cityLabel, year, error: error.message });
@@ -422,7 +439,6 @@ async function processCity(city, index, total) {
     console.log(`  ✅ Complete: ${totalInserted} total records inserted`);
     stats.citiesProcessed++;
     stats.recordsInserted += totalInserted;
-
   } catch (error) {
     console.error(`  ✗ Failed: ${error.message}`);
     stats.errors.push({ city: cityLabel, error: error.message });
@@ -477,11 +493,13 @@ async function main() {
   console.log(`📞 API calls made: ${stats.apiCallsMade}`);
   console.log(`📝 Records inserted: ${stats.recordsInserted}`);
   console.log(`⏱️  Duration: ${duration} minutes`);
-  console.log(`🔢 Remaining API calls this month: ~${(9997560 - stats.apiCallsMade).toLocaleString()}`);
+  console.log(
+    `🔢 Remaining API calls this month: ~${(9997560 - stats.apiCallsMade).toLocaleString()}`
+  );
 
   if (stats.errors.length > 0) {
     console.log(`\n⚠️  Errors encountered: ${stats.errors.length}`);
-    stats.errors.forEach(err => {
+    stats.errors.forEach((err) => {
       console.log(`  • ${err.city}${err.year ? ` (${err.year})` : ''}: ${err.error}`);
     });
   }
@@ -494,7 +512,7 @@ async function main() {
 
 // Run if called directly
 if (require.main === module) {
-  main().catch(error => {
+  main().catch((error) => {
     console.error('\n💥 Fatal error:', error);
     process.exit(1);
   });

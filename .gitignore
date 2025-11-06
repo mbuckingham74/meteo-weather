@@ -35,3 +35,4 @@ Thumbs.db
 
 # Docker
 docker-compose.override.yml
+database/backups/*.sql
