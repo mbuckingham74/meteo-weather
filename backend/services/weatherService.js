@@ -1,6 +1,7 @@
 const axios = require('axios');
 const { withCache, CACHE_TTL } = require('./cacheService');
 const historicalDataService = require('./historicalDataService');
+const { reverseGeocodeNominatim } = require('./geocodingService');
 
 /**
  * Visual Crossing Weather API Service
@@ -16,13 +17,13 @@ if (!API_KEY) {
 
 /**
  * Sanitize resolved address from Visual Crossing API
- * Replaces placeholder values with coordinates
+ * Uses Nominatim for reverse geocoding if Visual Crossing returns placeholder
  * @param {string} resolvedAddress - Address from Visual Crossing API
  * @param {number} latitude - Latitude
  * @param {number} longitude - Longitude
- * @returns {string} Sanitized address
+ * @returns {Promise<string>} Sanitized address
  */
-function sanitizeResolvedAddress(resolvedAddress, latitude, longitude) {
+async function sanitizeResolvedAddress(resolvedAddress, latitude, longitude) {
   // If no coordinates available, return address as-is or a fallback
   if (latitude == null || longitude == null) {
     return resolvedAddress || 'Unknown Location';
@@ -38,8 +39,23 @@ function sanitizeResolvedAddress(resolvedAddress, latitude, longitude) {
   // when it doesn't have proper address data
   const isPlaceholder = /^(old location|location|unknown|coordinates?|unnamed)$/i.test(trimmed);
 
-  if (isPlaceholder) {
-    // Return coordinates instead of placeholder
+  // Check if Visual Crossing returned raw coordinates (pattern: "lat,lon" or "lat, lon")
+  const isCoordinates = /^-?\d+\.\d+,\s*-?\d+\.\d+$/.test(trimmed);
+
+  if (isPlaceholder || isCoordinates) {
+    // Try Nominatim reverse geocoding first
+    try {
+      const nominatimResult = await reverseGeocodeNominatim(latitude, longitude);
+      if (nominatimResult && nominatimResult.address) {
+        console.log(`🌍 Nominatim reverse geocoded "${trimmed}" → "${nominatimResult.address}"`);
+        return nominatimResult.address;
+      }
+    } catch (error) {
+      console.warn('⚠️  Nominatim reverse geocoding failed:', error.message);
+    }
+
+    // Fallback to coordinates if Nominatim fails
+    console.log(`📍 Using coordinates as fallback: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
     return `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
   }
 
@@ -204,7 +220,7 @@ async function testApiConnection() {
       return {
         success: true,
         message: 'Visual Crossing API connection successful',
-        location: sanitizeResolvedAddress(result.data.resolvedAddress, result.data.latitude, result.data.longitude),
+        location: await sanitizeResolvedAddress(result.data.resolvedAddress, result.data.latitude, result.data.longitude),
         currentTemp: result.data.currentConditions?.temp,
         queryCost: result.queryCost
       };
@@ -245,7 +261,7 @@ async function getCurrentWeather(location) {
       return {
         success: true,
         location: {
-          address: sanitizeResolvedAddress(data.resolvedAddress, data.latitude, data.longitude),
+          address: await sanitizeResolvedAddress(data.resolvedAddress, data.latitude, data.longitude),
           latitude: data.latitude,
           longitude: data.longitude,
           timezone: data.timezone
@@ -306,7 +322,7 @@ async function getForecast(location, days = 7) {
       return {
         success: true,
         location: {
-          address: sanitizeResolvedAddress(data.resolvedAddress, data.latitude, data.longitude),
+          address: await sanitizeResolvedAddress(data.resolvedAddress, data.latitude, data.longitude),
           latitude: data.latitude,
           longitude: data.longitude,
           timezone: data.timezone

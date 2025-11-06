@@ -296,5 +296,6 @@ function getPopularLocations() {
 module.exports = {
   searchLocations,
   reverseGeocode,
+  reverseGeocodeNominatim,
   getPopularLocations
 };
