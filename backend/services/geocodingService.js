@@ -110,7 +110,59 @@ async function searchLocations(query, limit = 5) {
 }
 
 /**
+ * Reverse geocode using OpenStreetMap Nominatim (free, no API key)
+ * @param {number} lat - Latitude
+ * @param {number} lon - Longitude
+ * @returns {Promise<object|null>} Location address or null if failed
+ */
+async function reverseGeocodeNominatim(lat, lon) {
+  try {
+    const response = await axios.get('https://nominatim.openstreetmap.org/reverse', {
+      params: {
+        lat,
+        lon,
+        format: 'json',
+        addressdetails: 1,
+        zoom: 10 // City level
+      },
+      headers: {
+        'User-Agent': 'Meteo-Weather-App/1.0'
+      },
+      timeout: 5000
+    });
+
+    if (response.data && response.data.address) {
+      const addr = response.data.address;
+
+      // Build a clean address string from OSM data
+      const parts = [];
+      if (addr.city) parts.push(addr.city);
+      else if (addr.town) parts.push(addr.town);
+      else if (addr.village) parts.push(addr.village);
+      else if (addr.county) parts.push(addr.county);
+
+      if (addr.state) parts.push(addr.state);
+      if (addr.country) parts.push(addr.country);
+
+      if (parts.length > 0) {
+        console.log(`✅ Nominatim reverse geocoding successful: ${parts.join(', ')}`);
+        return {
+          address: parts.join(', '),
+          source: 'nominatim'
+        };
+      }
+    }
+
+    return null;
+  } catch (error) {
+    console.warn(`⚠️ Nominatim reverse geocoding failed: ${error.message}`);
+    return null;
+  }
+}
+
+/**
  * Get location details by coordinates
+ * Uses Nominatim first (free, reliable), falls back to Visual Crossing
  * @param {number} lat - Latitude
  * @param {number} lon - Longitude
  * @returns {Promise<object>} Location details
@@ -122,6 +174,9 @@ async function reverseGeocode(lat, lon) {
       error: 'Latitude and longitude are required'
     };
   }
+
+  // Try Nominatim first (free, no rate limits, no API key)
+  const nominatimResult = await reverseGeocodeNominatim(lat, lon);
 
   try {
     const url = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${lat},${lon}`;
@@ -143,10 +198,22 @@ async function reverseGeocode(lat, lon) {
       // These indicate the API doesn't have proper address data
       const isPlaceholder = /^(old location|location|unknown|coordinates?|unnamed)$/i.test(resolvedAddress.trim());
 
-      // Use coordinates as address if we got a placeholder
-      const finalAddress = isPlaceholder
-        ? `${lat.toFixed(4)}, ${lon.toFixed(4)}`
-        : capitalizeAddress(resolvedAddress);
+      // Prefer Nominatim result if Visual Crossing returned a placeholder
+      let finalAddress;
+      if (isPlaceholder && nominatimResult) {
+        finalAddress = nominatimResult.address;
+        console.log(`🌍 Using Nominatim address instead of Visual Crossing placeholder`);
+      } else if (isPlaceholder) {
+        finalAddress = `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+        console.log(`⚠️ Both services failed, using coordinates`);
+      } else {
+        // Visual Crossing returned a good address, but prefer Nominatim if available
+        // as it's more reliable for city names
+        finalAddress = nominatimResult ? nominatimResult.address : capitalizeAddress(resolvedAddress);
+        if (nominatimResult) {
+          console.log(`🌍 Using Nominatim address (more reliable)`);
+        }
+      }
 
       return {
         success: true,
@@ -166,6 +233,21 @@ async function reverseGeocode(lat, lon) {
     };
   } catch (error) {
     console.error('Reverse geocoding error:', error.message);
+
+    // If we have Nominatim data, use it even if Visual Crossing failed
+    if (nominatimResult) {
+      console.log(`🌍 Visual Crossing failed, but Nominatim succeeded`);
+      return {
+        success: true,
+        location: {
+          address: nominatimResult.address,
+          latitude: parseFloat(lat),
+          longitude: parseFloat(lon),
+          timezone: 'UTC', // Default timezone when VC fails
+          tzOffset: 0
+        }
+      };
+    }
 
     // If rate limited (429) or any other error, return a fallback with coordinates
     if (error.response?.status === 429) {
