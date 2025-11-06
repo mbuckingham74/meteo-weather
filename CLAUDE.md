@@ -102,6 +102,18 @@ docker ps | grep meteo
 ## 🎯 Current Status (as of November 5, 2025)
 
 ### ✅ Recently Completed
+- **UI Density Optimization & Regression Prevention** (Nov 5, 2025)
+  - Created ultra-compact density mode (50-70% size reduction)
+  - Disabled dev server caching to prevent cache-related confusion
+  - Fixed CSS specificity issues (import order matters!)
+  - Implemented 4-layer regression prevention system for "Old Location" bug:
+    - Automated regression tests (geolocationService.regression.test.js)
+    - Pre-commit hooks (.husky/pre-commit-regression-check)
+    - Custom ESLint rules (.eslintrc-custom-rules.js)
+    - Comprehensive documentation (docs/REGRESSION_PREVENTION.md)
+  - Fixed false VPN/proxy warnings (only trigger for accuracy > 10km)
+  - **Files:** frontend/src/styles/density-compact.css, vite.config.js
+
 - **Major Code Refactoring** (Nov 5, 2025)
   - Split WeatherDashboard.jsx (1,250 lines → 5 focused components)
   - Split LocationComparisonView.jsx (1,032 lines → 4 focused components)
@@ -243,6 +255,9 @@ meteo-app/
 4. **Documentation is comprehensive** - Check docs/ folder before asking
 5. **Tests must pass** - All 476 tests before deploying
 6. **Environment-aware code** - Handle both dev and production correctly
+7. **CSS import order matters** - density-compact.css MUST be imported last in App.jsx
+8. **Dev caching disabled** - vite.config.js has no-cache headers to prevent confusion
+9. **Regression prevention** - Pre-commit hooks and tests prevent "Old Location" bug
 
 ---
 

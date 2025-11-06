@@ -221,7 +221,9 @@ function WeatherDashboard() {
     const address =
       data?.location?.address || locationData?.address || location || 'Unknown Location';
 
-    // If it's coordinates (lat,lon pattern), show "Your Location" as fallback
+    // If it's coordinates (lat,lon pattern), show "Your Location" as user-friendly display
+    // NOTE: This is for DISPLAY ONLY - the coordinates are still sent to the API for accurate weather
+    // See docs/troubleshooting/OLD_LOCATION_BUG_FIX.md for full context
     if (/^-?\d+\.\d+,\s*-?\d+\.\d+$/.test(address)) {
       return 'Your Location';
     }

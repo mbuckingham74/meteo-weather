@@ -20,6 +20,12 @@ export default defineConfig({
   server: {
     port: 3000,
     host: true,
+    headers: {
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      Pragma: 'no-cache',
+      Expires: '0',
+      'Surrogate-Control': 'no-store',
+    },
     proxy: {
       '/api': {
         target: process.env.VITE_API_URL || 'http://localhost:5001',

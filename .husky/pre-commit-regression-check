@@ -1,0 +1,35 @@
+#!/bin/sh
+# Pre-commit hook: Run critical regression tests
+# Prevents "Old Location" bug from being re-introduced
+
+echo "🔍 Running critical regression tests..."
+
+# Check if geolocationService.js was modified
+if git diff --cached --name-only | grep -q "geolocationService.js"; then
+  echo "⚠️  geolocationService.js modified - running regression tests..."
+
+  # Run regression tests
+  cd frontend
+  npm run test -- geolocationService.regression.test.js --run
+
+  if [ $? -ne 0 ]; then
+    echo ""
+    echo "❌ CRITICAL REGRESSION DETECTED!"
+    echo ""
+    echo "The 'Old Location' bug has been re-introduced in geolocationService.js"
+    echo "Please fix the issues before committing."
+    echo ""
+    echo "Common fix:"
+    echo "  WRONG: address = 'Your Location'"
+    echo "  RIGHT: address = \`\${latitude}, \${longitude}\`"
+    echo ""
+    echo "See: docs/troubleshooting/OLD_LOCATION_BUG_FIX.md"
+    echo ""
+    exit 1
+  fi
+
+  echo "✅ Regression tests passed"
+  cd ..
+fi
+
+echo "✅ Pre-commit checks complete"

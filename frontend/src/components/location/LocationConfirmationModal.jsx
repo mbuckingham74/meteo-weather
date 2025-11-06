@@ -32,11 +32,7 @@ function LocationConfirmationModal({ location, onConfirm, onReject, onClose }) {
       <div className="location-modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="location-modal-header">
           <h3>📍 Confirm Your Location</h3>
-          <button
-            className="modal-close-btn"
-            onClick={onClose}
-            aria-label="Close"
-          >
+          <button className="modal-close-btn" onClick={onClose} aria-label="Close">
             ✕
           </button>
         </div>
@@ -59,14 +55,15 @@ function LocationConfirmationModal({ location, onConfirm, onReject, onClose }) {
               </div>
             </div>
 
-            {location?.method === 'ip' && (
+            {/* Only show VPN warning if location seems suspicious - not for normal IP geolocation */}
+            {location?.method === 'ip' && location?.accuracy > 10000 && (
               <div className="vpn-warning">
                 <span className="warning-icon">🔒</span>
                 <div className="warning-content">
                   <strong>VPN/Proxy Detected?</strong>
                   <p>
-                    This location was detected using your IP address. If you're using a VPN or proxy,
-                    this might not be your actual location. Please verify it's correct.
+                    Location accuracy is very low. If you&apos;re using a VPN or proxy, this might
+                    not be your actual location. Please verify it&apos;s correct.
                   </p>
                 </div>
               </div>
@@ -79,16 +76,10 @@ function LocationConfirmationModal({ location, onConfirm, onReject, onClose }) {
         </div>
 
         <div className="location-modal-footer">
-          <button
-            className="modal-btn modal-btn-secondary"
-            onClick={onReject}
-          >
+          <button className="modal-btn modal-btn-secondary" onClick={onReject}>
             ❌ No, let me search
           </button>
-          <button
-            className="modal-btn modal-btn-primary"
-            onClick={onConfirm}
-          >
+          <button className="modal-btn modal-btn-primary" onClick={onConfirm}>
             ✅ Yes, this is correct
           </button>
         </div>

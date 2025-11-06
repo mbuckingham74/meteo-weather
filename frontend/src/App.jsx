@@ -25,6 +25,7 @@ import { parseLocationSlug } from './utils/urlHelpers';
 import { geocodeLocation } from './services/weatherApi';
 import './styles/themes.css';
 import './App.css';
+import './styles/density-compact.css'; // MUST be last to override component styles
 
 function RouteAwareLocationManager() {
   const routerLocation = useRouterLocation();
