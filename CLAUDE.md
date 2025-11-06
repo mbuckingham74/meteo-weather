@@ -44,6 +44,7 @@
 - **[docs/DEPLOYMENT_GUIDE_PRIVATE.md](docs/DEPLOYMENT_GUIDE_PRIVATE.md)** - Server-specific deployment info
 
 ### Recent Work (Nov 2025)
+- **[docs/REGRESSION_PREVENTION.md](docs/REGRESSION_PREVENTION.md)** - **CRITICAL:** Regression prevention for "Old Location" bug (Nov 6, 2025) - READ THIS BEFORE MODIFYING GEOLOCATION/WEATHER SERVICES
 - **[REDESIGN_SUMMARY.md](REDESIGN_SUMMARY.md)** - Unified Hero Card UI redesign (Nov 5, 2025)
 - **[REFACTORING_SUMMARY.md](REFACTORING_SUMMARY.md)** - Major code organization overhaul (Nov 5, 2025)
 - **[SECURITY_IMPLEMENTATION_SUMMARY.md](SECURITY_IMPLEMENTATION_SUMMARY.md)** - Latest security update (rate limiting, CORS, CSP)
@@ -100,9 +101,21 @@ docker ps | grep meteo
 
 ---
 
-## 🎯 Current Status (as of November 5, 2025)
+## 🎯 Current Status (as of November 6, 2025)
 
 ### ✅ Recently Completed
+
+- **"Old Location" Bug Fix & Backend Regression Prevention** (Nov 6, 2025)
+  - **CRITICAL FIX:** Backend now catches Visual Crossing API placeholders
+  - Added Nominatim reverse geocoding for when VC returns "Old Location" or raw coordinates
+  - Created comprehensive backend regression test suite (309 lines)
+  - Expanded pre-commit hooks to cover backend weatherService.js
+  - Added CI/CD workflow for both frontend AND backend regression tests
+  - Added production logging to detect regression in real-time
+  - **Lesson Learned:** Frontend regression tests worked perfectly, but backend was unprotected
+  - **Files:** backend/services/weatherService.js, backend/tests/services/weatherService.regression.test.js
+  - **Commits:** b69b1d7 (fix), 92929ec (tests)
+
 - **Unified Hero Card UI Redesign** (Nov 5, 2025)
   - Consolidated scattered dashboard layout into single unified card
   - Everything in one place: search, weather, highlights, actions, radar, charts
