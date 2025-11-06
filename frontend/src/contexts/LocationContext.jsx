@@ -22,8 +22,9 @@ function isPlaceholderAddress(address) {
   const trimmed = address.trim();
   if (trimmed === '') return true;
 
-  // Check for known placeholder values from API
-  if (/^(old location|location|unknown|coordinates?|unnamed)$/i.test(trimmed)) {
+  // Check for known placeholder values from API or cached UI strings
+  // CRITICAL: "Your Location" can be cached in old localStorage data and must be replaced
+  if (/^(old location|your location|location|unknown|coordinates?|unnamed)$/i.test(trimmed)) {
     return true;
   }
 
