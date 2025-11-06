@@ -10,7 +10,11 @@
     "db:schema": "mysql -h ${DB_HOST:-localhost} -P ${DB_PORT:-3307} -u ${DB_USER:-root} -p${DB_PASSWORD} ${DB_NAME} < ../database/schema.sql",
     "db:seed": "mysql -h ${DB_HOST:-localhost} -P ${DB_PORT:-3307} -u ${DB_USER:-root} -p${DB_PASSWORD} ${DB_NAME} < ../database/seed.sql",
     "test": "cross-env NODE_ENV=test jest --runInBand",
-    "test:watch": "cross-env NODE_ENV=test jest --watch"
+    "test:watch": "cross-env NODE_ENV=test jest --watch",
+    "lint": "eslint . --ext .js --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint . --ext .js --fix",
+    "format": "prettier --write \"**/*.{js,json,md}\"",
+    "format:check": "prettier --check \"**/*.{js,json,md}\""
   },
   "keywords": [],
   "author": "",
@@ -30,9 +34,11 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
+    "eslint": "^8.57.1",
     "jest": "^29.7.0",
     "nock": "^13.5.4",
     "nodemon": "^3.1.7",
+    "prettier": "^3.4.2",
     "supertest": "^7.1.1"
   }
 }
