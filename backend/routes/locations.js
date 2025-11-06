@@ -130,6 +130,7 @@ router.get('/search', async (req, res) => {
 /**
  * Get all locations (paginated)
  * GET /api/locations?limit=50&offset=0
+ * IMPORTANT: This route MUST come before /:id to avoid being caught by the param route
  */
 router.get('/', async (req, res) => {
   try {
@@ -163,6 +164,8 @@ router.get('/', async (req, res) => {
 /**
  * Get location by ID
  * GET /api/locations/:id
+ * IMPORTANT: This route MUST come after all specific routes (/reverse, /search, /popular, /)
+ * because it's a catch-all pattern that matches any path
  */
 router.get('/:id', async (req, res) => {
   try {

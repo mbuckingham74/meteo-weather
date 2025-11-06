@@ -54,6 +54,8 @@ export default defineConfig({
   build: {
     outDir: 'build',
     sourcemap: true,
+    // Enable CSS code splitting for faster initial render
+    cssCodeSplit: true,
     rollupOptions: {
       output: {
         manualChunks: {
@@ -61,6 +63,13 @@ export default defineConfig({
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
           'chart-vendor': ['recharts'],
           'map-vendor': ['leaflet', 'react-leaflet'],
+        },
+        // Ensure CSS loads before JS to prevent FOUC
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name.endsWith('.css')) {
+            return 'assets/[name]-[hash][extname]';
+          }
+          return 'assets/[name]-[hash][extname]';
         },
       },
     },
