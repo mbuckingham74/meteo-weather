@@ -24,12 +24,12 @@ _No unreleased changes at this time._
 
 ---
 
-## ![Version](https://img.shields.io/badge/version-0.3.0-228B22?style=flat-square&labelColor=228B22&color=228B22) ![Date](https://img.shields.io/badge/date-Nov_06,_2025-228B22?style=flat-square&labelColor=228B22&color=228B22) ![Release Type](https://img.shields.io/badge/Feature_Release-228B22?style=flat-square&labelColor=228B22&color=228B22)
+## ![Version](https://img.shields.io/badge/version-0.3.0-228B22?style=flat-square&labelColor=228B22&color=228B22) ![Date](https://img.shields.io/badge/date-Nov_05,_2025-228B22?style=flat-square&labelColor=228B22&color=228B22) ![Release Type](https://img.shields.io/badge/Feature_Release-228B22?style=flat-square&labelColor=228B22&color=228B22)
 
 **Release Highlights:** Professional error handling system, ultra-compact dashboard layout, and RadarMap bug fixes.
 
 ### Added
-- **Professional Error Handling System** (November 6, 2025)
+- **Professional Error Handling System** (November 5, 2025)
   - **ErrorMessage Component** - Unified error display with 4 display modes:
     - `inline` - Field-level errors for forms with polite ARIA live region
     - `toast` - Dismissible notifications with auto-hide (top-right corner)
@@ -95,7 +95,7 @@ _No unreleased changes at this time._
     - `backend/services/weatherService.js` - Timeout configuration
 
 ### Changed
-- **Ultra-Compact Dashboard Layout** (November 6, 2025)
+- **Ultra-Compact Dashboard Layout** (November 5, 2025)
   - **40% Vertical Space Reduction** - Everything fits in one viewport without scrolling
   - **Two-Column Grid Layout:**
     - Left column (1fr): Weather info, stats, highlights, action buttons
@@ -135,7 +135,7 @@ _No unreleased changes at this time._
   - **User Feedback:** "Getting there! Pets makw the map bigger amd oyher side smaller by 20%" → Increased radar from 450×500px to 600×600px
 
 ### Fixed
-- **RadarMap Height Prop Type Mismatch** (November 6, 2025)
+- **RadarMap Height Prop Type Mismatch** (November 5, 2025)
   - **Issue:** RadarMap component not rendering at correct height across all browsers
   - **Root Cause:** Component expected numeric `height` prop but received string `"350px"`
     - Component signature: `function RadarMap({ height = 250, ... })`

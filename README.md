@@ -1521,7 +1521,7 @@ MIT License - feel free to use this project for learning and development.
 - [x] Graceful API rate limit handling
 
 **Recent Enhancements (November 2025)**
-- [x] **Ultra-Compact Dashboard Layout** - Revolutionary two-column design (Nov 6, 2025)
+- [x] **Ultra-Compact Dashboard Layout** - Revolutionary two-column design (Nov 5, 2025)
   - Everything fits in one viewport without scrolling (~40% vertical space reduction)
   - Two-column grid: weather info left (1fr), radar map right (600×600px)
   - Reduced font sizes: location 48px→32px, temperature 96px→72px, condition 24px→20px
@@ -1532,13 +1532,13 @@ MIT License - feel free to use this project for learning and development.
   - Radar map prominence increased from 450×500px to 600×600px (~45% of viewport width)
   - **Files:** WeatherDashboard.css, WeatherDashboard.jsx, RadarMap.css
   - **Commits:** 6064610, 22c7d2a, 05021f7, a63c0b6
-- [x] **RadarMap Height Bug Fix** - Fixed prop type mismatch (Nov 6, 2025)
+- [x] **RadarMap Height Bug Fix** - Fixed prop type mismatch (Nov 5, 2025)
   - Component expected numeric height but received string "350px"
   - Result: Invalid CSS "350pxpx" prevented proper rendering
   - Fixed both instances in CurrentConditionsSection.jsx and WeatherDashboard.jsx
   - Removed conflicting min-height and height: 100% from RadarMap.css
   - Now renders correctly at specified height across all browsers
-- [x] **Professional Error Handling System** - Complete overhaul (Nov 6, 2025)
+- [x] **Professional Error Handling System** - Complete overhaul (Nov 5, 2025)
   - ErrorMessage component with 4 display modes (inline, toast, banner, modal)
   - OfflineBanner for connectivity monitoring with slow connection detection
   - Error analytics system with tracking and statistics
