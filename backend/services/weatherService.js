@@ -15,6 +15,38 @@ if (!API_KEY) {
 }
 
 /**
+ * Sanitize resolved address from Visual Crossing API
+ * Replaces placeholder values with coordinates
+ * @param {string} resolvedAddress - Address from Visual Crossing API
+ * @param {number} latitude - Latitude
+ * @param {number} longitude - Longitude
+ * @returns {string} Sanitized address
+ */
+function sanitizeResolvedAddress(resolvedAddress, latitude, longitude) {
+  // If no coordinates available, return address as-is or a fallback
+  if (latitude == null || longitude == null) {
+    return resolvedAddress || 'Unknown Location';
+  }
+
+  if (!resolvedAddress || typeof resolvedAddress !== 'string') {
+    return `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+  }
+
+  const trimmed = resolvedAddress.trim();
+
+  // Check for placeholder patterns that Visual Crossing returns
+  // when it doesn't have proper address data
+  const isPlaceholder = /^(old location|location|unknown|coordinates?|unnamed)$/i.test(trimmed);
+
+  if (isPlaceholder) {
+    // Return coordinates instead of placeholder
+    return `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+  }
+
+  return resolvedAddress;
+}
+
+/**
  * Request throttling to prevent too many concurrent API calls
  */
 const MAX_CONCURRENT_REQUESTS = 3;
@@ -172,7 +204,7 @@ async function testApiConnection() {
       return {
         success: true,
         message: 'Visual Crossing API connection successful',
-        location: result.data.resolvedAddress,
+        location: sanitizeResolvedAddress(result.data.resolvedAddress, result.data.latitude, result.data.longitude),
         currentTemp: result.data.currentConditions?.temp,
         queryCost: result.queryCost
       };
@@ -213,7 +245,7 @@ async function getCurrentWeather(location) {
       return {
         success: true,
         location: {
-          address: data.resolvedAddress,
+          address: sanitizeResolvedAddress(data.resolvedAddress, data.latitude, data.longitude),
           latitude: data.latitude,
           longitude: data.longitude,
           timezone: data.timezone
@@ -274,7 +306,7 @@ async function getForecast(location, days = 7) {
       return {
         success: true,
         location: {
-          address: data.resolvedAddress,
+          address: sanitizeResolvedAddress(data.resolvedAddress, data.latitude, data.longitude),
           latitude: data.latitude,
           longitude: data.longitude,
           timezone: data.timezone
@@ -375,7 +407,7 @@ async function getHourlyForecast(location, hours = 48) {
   return {
     success: true,
     location: {
-      address: data.resolvedAddress,
+      address: sanitizeResolvedAddress(data.resolvedAddress, data.latitude, data.longitude),
       latitude: data.latitude,
       longitude: data.longitude,
       timezone: data.timezone
@@ -447,7 +479,7 @@ async function getHistoricalWeather(location, startDate, endDate) {
     success: true,
     source: 'api',
     location: {
-      address: data.resolvedAddress,
+      address: sanitizeResolvedAddress(data.resolvedAddress, data.latitude, data.longitude),
       latitude: data.latitude,
       longitude: data.longitude,
       timezone: data.timezone
