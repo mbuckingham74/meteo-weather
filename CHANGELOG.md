@@ -20,6 +20,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## ![Unreleased](https://img.shields.io/badge/Unreleased-gray?style=flat-square)
 
+_No unreleased changes at this time._
+
+---
+
+## ![Version](https://img.shields.io/badge/version-0.3.0-228B22?style=flat-square&labelColor=228B22&color=228B22) ![Date](https://img.shields.io/badge/date-Nov_06,_2025-228B22?style=flat-square&labelColor=228B22&color=228B22) ![Release Type](https://img.shields.io/badge/Feature_Release-228B22?style=flat-square&labelColor=228B22&color=228B22)
+
+**Release Highlights:** Professional error handling system, ultra-compact dashboard layout, and RadarMap bug fixes.
+
 ### Added
 - **Professional Error Handling System** (November 6, 2025)
   - **ErrorMessage Component** - Unified error display with 4 display modes:
