@@ -20,9 +20,10 @@ async function getLocationFromIP() {
       url: 'https://ipapi.co/json/',
       parser: (data) => {
         const hasValidCity = data.city && data.city !== 'Unknown' && data.city.trim() !== '';
+        // Return coordinates if no city name available (API needs coordinates, not "Your Location")
         const address = hasValidCity
           ? `${data.city}, ${data.region_code || data.region}, ${data.country_name}`
-          : 'Your Location';
+          : `${data.latitude}, ${data.longitude}`;
 
         return {
           address,
@@ -40,16 +41,18 @@ async function getLocationFromIP() {
       name: 'geojs.io',
       url: 'https://get.geojs.io/v1/ip/geo.json',
       parser: (data) => {
-        // Use city name if available, otherwise fall back to "Your Location"
+        // Use city name if available, otherwise return coordinates (API needs them)
         const hasValidCity = data.city && data.city !== 'Unknown' && data.city.trim() !== '';
+        const latitude = parseFloat(data.latitude);
+        const longitude = parseFloat(data.longitude);
         const address = hasValidCity
           ? `${data.city}, ${data.region}, ${data.country}`
-          : 'Your Location';
+          : `${latitude}, ${longitude}`;
 
         return {
           address,
-          latitude: parseFloat(data.latitude),
-          longitude: parseFloat(data.longitude),
+          latitude,
+          longitude,
           timezone: data.timezone,
           accuracy: 5000,
           method: 'ip',
