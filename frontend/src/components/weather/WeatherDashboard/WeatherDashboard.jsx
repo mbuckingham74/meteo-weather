@@ -1,8 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useLocation as useRouterLocation } from 'react-router-dom';
 import { useLocation } from '../../../contexts/LocationContext';
 import { useTemperatureUnit } from '../../../contexts/TemperatureUnitContext';
-import { useAuth } from '../../../contexts/AuthContext';
 import { useForecast, useHourlyForecast, useCurrentWeather } from '../../../hooks/useWeatherData';
 import {
   useThisDayInHistory,
@@ -22,8 +21,9 @@ import WeatherAlertsBanner from '../WeatherAlertsBanner';
 import DashboardSkeleton from '../../common/DashboardSkeleton';
 import UniversalSearchBar from '../../ai/UniversalSearchBar';
 import LocationConfirmationModal from '../../location/LocationConfirmationModal';
-import CurrentConditionsSection from './CurrentConditionsSection';
-import QuickActionsPanel from './QuickActionsPanel';
+import TemperatureUnitToggle from '../../units/TemperatureUnitToggle';
+import RadarMap from '../RadarMap';
+import TodaysHighlights from './TodaysHighlights';
 import ChartsGrid from './ChartsGrid';
 import '../WeatherDashboard.css';
 
@@ -37,7 +37,6 @@ function WeatherDashboard() {
   // Use shared location state from context
   const { location, locationData, selectLocation } = useLocation();
   const { unit } = useTemperatureUnit();
-  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const routerLocation = useRouterLocation();
 
@@ -51,7 +50,7 @@ function WeatherDashboard() {
   const locationConfirmation = useLocationConfirmation(selectLocation);
 
   // Chart visibility state
-  const [visibleCharts, setVisibleCharts] = useState({
+  const [visibleCharts] = useState({
     hourly: true,
     temperature: true,
     precipitation: true,
@@ -280,37 +279,163 @@ function WeatherDashboard() {
         </div>
       )}
 
-      {/* Universal Search Hero - Full Width */}
-      <div className="universal-search-hero">
-        <UniversalSearchBar />
-      </div>
-
       {/* Data Display */}
       {!loading && !error && data && (
         <>
-          {/* City Box and Lookup Controls - Side by Side */}
-          <div className="dashboard-main-row">
-            {/* Location Info with Current Conditions - 75% */}
-            <CurrentConditionsSection
-              locationData={locationData}
-              data={data}
-              currentWeather={currentWeather}
-              hourlyData={hourlyData}
-              unit={unit}
-              convertTemp={convertTemp}
-              getFormattedLocationName={getFormattedLocationName}
-            />
+          {/* UNIFIED HERO CARD - Everything in one place */}
+          <div className="unified-hero-card">
+            {/* Search Section */}
+            <div className="hero-search-section">
+              <UniversalSearchBar />
+            </div>
 
-            {/* Lookup Controls - 25% */}
-            <QuickActionsPanel
-              detectingLocation={detectingLocation}
-              locationError={locationError}
-              isAuthenticated={isAuthenticated}
-              visibleCharts={visibleCharts}
-              handleDetectLocation={handleDetectLocation}
-              setVisibleCharts={setVisibleCharts}
-              getCityName={getCityName}
-            />
+            {/* Main Weather Display */}
+            <div className="hero-weather-display">
+              {/* Location Header */}
+              <div className="hero-location-header">
+                <h2 className="hero-location-name">{getFormattedLocationName()}</h2>
+                <p className="hero-location-coords">
+                  {data.location?.latitude?.toFixed(4) || locationData?.latitude?.toFixed(4)},{' '}
+                  {data.location?.longitude?.toFixed(4) || locationData?.longitude?.toFixed(4)}
+                  {(data.location?.timezone || locationData?.timezone) &&
+                    ` • ${data.location?.timezone || locationData?.timezone}`}
+                </p>
+              </div>
+
+              {/* Current Temperature & Conditions */}
+              {currentWeather?.data && !currentWeather.loading && (
+                <div className="hero-current-conditions">
+                  <div className="hero-temp-main">
+                    <div className="hero-temperature">
+                      {convertTemp(currentWeather.data.current.temperature)}°{unit}
+                    </div>
+                    <div className="hero-conditions-text">
+                      <div className="hero-condition-primary">
+                        {currentWeather.data.current.conditions}
+                      </div>
+                      <div className="hero-feels-like">
+                        Feels like {convertTemp(currentWeather.data.current.feelsLike)}°{unit}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Quick Stats Bar */}
+                  <div className="hero-quick-stats">
+                    <div className="hero-stat">
+                      <span className="hero-stat-icon">💨</span>
+                      <span className="hero-stat-value">
+                        {Math.round(currentWeather.data.current.windSpeed)} mph
+                      </span>
+                      <span className="hero-stat-label">Wind</span>
+                    </div>
+                    <div className="hero-stat">
+                      <span className="hero-stat-icon">💧</span>
+                      <span className="hero-stat-value">
+                        {currentWeather.data.current.humidity}%
+                      </span>
+                      <span className="hero-stat-label">Humidity</span>
+                    </div>
+                    <div className="hero-stat">
+                      <span className="hero-stat-icon">👁️</span>
+                      <span className="hero-stat-value">
+                        {currentWeather.data.current.visibility} mi
+                      </span>
+                      <span className="hero-stat-label">Visibility</span>
+                    </div>
+                    <div className="hero-stat">
+                      <span className="hero-stat-icon">☁️</span>
+                      <span className="hero-stat-value">
+                        {currentWeather.data.current.cloudCover}%
+                      </span>
+                      <span className="hero-stat-label">Clouds</span>
+                    </div>
+                    <div className="hero-stat">
+                      <span className="hero-stat-icon">🌧️</span>
+                      <span className="hero-stat-value">
+                        {hourlyData?.data?.hourly
+                          ? hourlyData.data.hourly
+                              .slice(0, 24)
+                              .reduce((sum, hour) => sum + (hour.precipitation || 0), 0)
+                              .toFixed(1)
+                          : '0.0'}{' '}
+                        mm
+                      </span>
+                      <span className="hero-stat-label">24h Precip</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Today's Highlights - Integrated */}
+              {data.forecast && data.forecast.length > 0 && currentWeather?.data && (
+                <div className="hero-highlights-section">
+                  <h4 className="hero-section-title">Today&apos;s Highlights</h4>
+                  <TodaysHighlights
+                    currentWeather={currentWeather.data}
+                    forecast={data.forecast}
+                    unit={unit}
+                  />
+                </div>
+              )}
+
+              {/* Quick Actions - Integrated */}
+              <div className="hero-actions-section">
+                <div className="hero-action-buttons">
+                  <button
+                    className="hero-action-btn"
+                    onClick={handleDetectLocation}
+                    disabled={detectingLocation}
+                  >
+                    <span>{detectingLocation ? '🔄' : '📍'}</span>
+                    {detectingLocation ? 'Detecting...' : 'Use My Location'}
+                  </button>
+                  <a href="/compare" className="hero-action-btn">
+                    <span>📊</span> Compare Locations
+                  </a>
+                  <a href="/ai-weather" className="hero-action-btn">
+                    <span>🤖</span> Ask AI
+                  </a>
+                  <div className="hero-temp-toggle">
+                    <span className="temp-toggle-label">Temp:</span>
+                    <TemperatureUnitToggle />
+                  </div>
+                </div>
+                {locationError && <div className="hero-location-error">⚠️ {locationError}</div>}
+              </div>
+
+              {/* Radar Map - Integrated */}
+              {data.location && (
+                <div className="hero-radar-section">
+                  <RadarMap
+                    latitude={data.location.latitude}
+                    longitude={data.location.longitude}
+                    zoom={7.5}
+                    height="350px"
+                    alerts={data.alerts}
+                  />
+                </div>
+              )}
+
+              {/* Chart Navigation Preview */}
+              <div className="hero-chart-preview">
+                <button
+                  className="hero-view-charts-btn"
+                  onClick={() =>
+                    document
+                      .getElementById('forecast-section')
+                      ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                  }
+                >
+                  <span className="charts-btn-icon">📊</span>
+                  <span className="charts-btn-text">
+                    <strong>View Detailed Forecast & Charts</strong>
+                    <span className="charts-btn-subtitle">
+                      Interactive visualizations for {getCityName()}
+                    </span>
+                  </span>
+                </button>
+              </div>
+            </div>
           </div>
 
           {/* Weather Alerts */}
