@@ -146,13 +146,13 @@ export async function getCurrentLocation() {
 
             if (isCoordinatesOnly) {
               console.warn(
-                '⚠️ Reverse geocoding returned coordinates as address, using friendly fallback'
+                '⚠️ Reverse geocoding returned coordinates as address, will use coords for API'
               );
               // Keep coordinates as address (API understands "lat,lon" format)
-              // Set address to city name for UI
+              // DO NOT replace with "Your Location" - the weather API needs the coordinates!
               resolve({
                 ...location,
-                address: 'Your Location', // Fallback when we only have coordinates
+                // location.address already contains coordinates, keep it
                 accuracy: position.coords.accuracy,
                 method: options.enableHighAccuracy ? 'gps' : 'browser',
                 requiresConfirmation: position.coords.accuracy > 1000, // Confirm if accuracy is poor
@@ -176,10 +176,10 @@ export async function getCurrentLocation() {
           } catch (error) {
             console.warn('⚠️ Reverse geocoding failed, using coordinates only:', error.message);
 
-            // If reverse geocoding fails (e.g., API rate limit), return user-friendly fallback
-            // The weather API can still work with lat,lon coordinates
+            // If reverse geocoding fails (e.g., API rate limit), return coordinates
+            // The weather API understands "lat,lon" format
             const fallbackLocation = {
-              address: 'Your Location', // User-friendly display instead of raw coordinates
+              address: `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`, // Coordinates for API
               latitude: latitude,
               longitude: longitude,
               timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,

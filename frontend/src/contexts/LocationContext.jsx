@@ -27,10 +27,9 @@ function isPlaceholderAddress(address) {
     return true;
   }
 
-  // Check if it's just raw coordinates (lat,lon pattern)
-  if (/^-?\d+\.\d+,\s*-?\d+\.\d+$/.test(trimmed)) {
-    return true;
-  }
+  // NOTE: Do NOT treat coordinates as placeholders!
+  // The weather API needs coordinates when we don't have a city name
+  // If it's coordinates, it's valid data, not a placeholder
 
   return false;
 }
@@ -46,16 +45,22 @@ function sanitizeLocationData(locationObj) {
 
   const address = locationObj.address || locationObj.location_name;
 
-  // If address is a placeholder, replace it with a fallback
+  // If address is a placeholder, replace it with coordinates (NOT "Your Location")
+  // The weather API needs actual coordinates to work
   if (isPlaceholderAddress(address)) {
     const hasCoords = locationObj.latitude != null && locationObj.longitude != null;
 
-    return {
-      ...locationObj,
-      address: hasCoords
-        ? `${locationObj.latitude.toFixed(4)}, ${locationObj.longitude.toFixed(4)}`
-        : 'Your Location',
-    };
+    if (hasCoords) {
+      // Return coordinates for API to use
+      return {
+        ...locationObj,
+        address: `${locationObj.latitude.toFixed(4)}, ${locationObj.longitude.toFixed(4)}`,
+      };
+    } else {
+      // No coordinates available, this shouldn't happen but return null to trigger default
+      console.warn('Location has placeholder address and no coordinates');
+      return null;
+    }
   }
 
   return locationObj;
