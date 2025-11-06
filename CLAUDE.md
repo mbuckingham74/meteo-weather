@@ -105,6 +105,28 @@ docker ps | grep meteo
 
 ### ✅ Recently Completed
 
+- **Ultra-Compact Dashboard Layout & RadarMap Fixes** (Nov 6, 2025)
+  - Redesigned hero section with two-column layout (weather info left, radar right)
+  - Fixed RadarMap height prop bug (string vs number causing "350pxpx")
+  - Radar map increased to 600px width × 600px height for better visibility
+  - Reduced font sizes: location 48px→32px, temp 96px→72px
+  - Simplified stats grid from 5 to 3 columns (Wind, Humidity, 24h Precip)
+  - All critical info now fits in one viewport without scrolling
+  - 40% reduction in vertical space usage
+  - **Files:** WeatherDashboard.css, WeatherDashboard.jsx, RadarMap.css
+  - **Commits:** 6064610, 22c7d2a, 05021f7, a63c0b6
+
+- **Error Message Improvement Initiative (Phases 1-4)** (Nov 6, 2025)
+  - Created comprehensive ErrorMessage component with 4 display modes (inline, toast, banner, modal)
+  - Implemented error analytics system with tracking and statistics
+  - Added offline detection with OfflineBanner component
+  - Created useOnlineStatus and useRetryHandler hooks
+  - Enhanced timeout configuration with environment variables (VITE_*)
+  - Comprehensive error message style guide (700+ lines)
+  - Updated RadarMap to use new error system
+  - **Files:** 15 files total (9 new, 6 modified), 3,130+ lines of code
+  - **Status:** All 4 phases complete (100%)
+
 - **"Old Location" Bug Fix & Backend Regression Prevention** (Nov 6, 2025)
   - **CRITICAL FIX:** Backend now catches Visual Crossing API placeholders
   - Added Nominatim reverse geocoding for when VC returns "Old Location" or raw coordinates
