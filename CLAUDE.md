@@ -107,7 +107,7 @@ docker ps | grep meteo
   - Consolidated scattered dashboard layout into single unified card
   - Everything in one place: search, weather, highlights, actions, radar, charts
   - Massive temperature display (96px font, up from 32px)
-  - Gradient search header with purple accent
+  - Clean, minimal design with consistent spacing and borders
   - Modern card design with 20px rounded corners and elevated shadows
   - Fully responsive (desktop → tablet → mobile)
   - Better visual hierarchy and information flow
