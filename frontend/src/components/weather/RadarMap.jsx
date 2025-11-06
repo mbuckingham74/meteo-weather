@@ -5,6 +5,7 @@ import html2canvas from 'html2canvas';
 import 'leaflet/dist/leaflet.css';
 import { getRadarMapData, getAllFrames, formatRadarTime } from '../../services/radarService';
 import { debugInfo, debugError } from '../../utils/debugLogger';
+import ErrorMessage from '../common/ErrorMessage';
 import './RadarMap.css';
 
 // Import marker images
@@ -393,17 +394,15 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
 
       {/* Screenshot error notification */}
       {screenshotError && (
-        <div className="radar-error-notification">
-          <span className="error-icon">⚠️</span>
-          <span className="error-text">{screenshotError}</span>
-          <button
-            className="error-dismiss"
-            onClick={() => setScreenshotError(null)}
-            aria-label="Dismiss error"
-          >
-            ✕
-          </button>
-        </div>
+        <ErrorMessage
+          error={screenshotError}
+          mode="toast"
+          severity="error"
+          onDismiss={() => setScreenshotError(null)}
+          autoHideDuration={5000}
+          dismissible={true}
+          showIcon={true}
+        />
       )}
 
       <MapContainer

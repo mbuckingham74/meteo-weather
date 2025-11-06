@@ -1,0 +1,454 @@
+/**
+ * ErrorMessage Component Styles
+ *
+ * Comprehensive styling for all error display modes.
+ * Part of Error Message Improvement Initiative (Phase 3).
+ */
+
+/* ==================== BASE STYLES ==================== */
+
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
+    'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  border-radius: 8px;
+  transition:
+    opacity 0.3s ease-out,
+    transform 0.3s ease-out;
+}
+
+.error-message__icon {
+  flex-shrink: 0;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.error-message__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.error-message__text {
+  color: inherit;
+  font-weight: 500;
+}
+
+.error-message__code {
+  font-size: 12px;
+  opacity: 0.7;
+  font-family: 'Courier New', monospace;
+}
+
+.error-message__actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.error-message__button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: transparent;
+  color: inherit;
+}
+
+.error-message__button:hover {
+  opacity: 0.8;
+  transform: translateY(-1px);
+}
+
+.error-message__button:active {
+  transform: translateY(0);
+}
+
+.error-message__button:focus {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.error-message__button--retry {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.error-message__button--dismiss {
+  padding: 4px 8px;
+  font-size: 16px;
+  line-height: 1;
+  opacity: 0.6;
+}
+
+.error-message__button--dismiss:hover {
+  opacity: 1;
+}
+
+/* ==================== SEVERITY COLORS ==================== */
+
+/* Error (Red) */
+.error-message--error {
+  background: rgba(239, 68, 68, 0.95);
+  color: white;
+  border: 1px solid rgba(220, 38, 38, 0.5);
+}
+
+/* Warning (Orange/Yellow) */
+.error-message--warning {
+  background: rgba(245, 158, 11, 0.95);
+  color: white;
+  border: 1px solid rgba(217, 119, 6, 0.5);
+}
+
+/* Info (Blue) */
+.error-message--info {
+  background: rgba(59, 130, 246, 0.95);
+  color: white;
+  border: 1px solid rgba(37, 99, 235, 0.5);
+}
+
+/* Success (Green) */
+.error-message--success {
+  background: rgba(34, 197, 94, 0.95);
+  color: white;
+  border: 1px solid rgba(22, 163, 74, 0.5);
+}
+
+/* ==================== MODE: INLINE ==================== */
+
+.error-message--inline {
+  padding: 12px 16px;
+  width: 100%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.error-message--inline .error-message__text {
+  font-size: 13px;
+}
+
+/* Inline error variant with lighter background for forms */
+.error-message--inline.error-message--error {
+  background: rgba(254, 242, 242, 1);
+  color: rgb(185, 28, 28);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.error-message--inline.error-message--warning {
+  background: rgba(254, 252, 232, 1);
+  color: rgb(146, 64, 14);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+/* ==================== MODE: TOAST ==================== */
+
+.error-message--toast {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 14px 18px;
+  min-width: 300px;
+  max-width: 500px;
+  z-index: 2000;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  animation: toast-slide-in 0.3s ease-out;
+  backdrop-filter: blur(10px);
+}
+
+@keyframes toast-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.error-message--toast.error-message--exiting {
+  animation: toast-slide-out 0.3s ease-out forwards;
+}
+
+@keyframes toast-slide-out {
+  from {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+}
+
+/* ==================== MODE: BANNER ==================== */
+
+.error-message--banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 16px 24px;
+  border-radius: 0;
+  z-index: 1500;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  animation: banner-slide-down 0.3s ease-out;
+}
+
+@keyframes banner-slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.error-message--banner.error-message--exiting {
+  animation: banner-slide-up 0.3s ease-out forwards;
+}
+
+@keyframes banner-slide-up {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+}
+
+/* ==================== MODE: MODAL ==================== */
+
+.error-message-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+  animation: backdrop-fade-in 0.3s ease-out;
+}
+
+@keyframes backdrop-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.error-message--modal {
+  position: relative;
+  padding: 24px 28px;
+  min-width: 400px;
+  max-width: 600px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  animation: modal-scale-in 0.3s ease-out;
+}
+
+@keyframes modal-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.error-message--modal.error-message--exiting {
+  animation: modal-scale-out 0.3s ease-out forwards;
+}
+
+@keyframes modal-scale-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+
+.error-message--modal .error-message__icon {
+  font-size: 32px;
+}
+
+.error-message--modal .error-message__text {
+  font-size: 16px;
+}
+
+.error-message--modal .error-message__actions {
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.error-message--modal .error-message__button {
+  padding: 10px 20px;
+  font-size: 14px;
+}
+
+.error-message--modal .error-message__button--retry {
+  background: rgba(255, 255, 255, 0.9);
+  color: #1f2937;
+}
+
+.error-message--modal .error-message__button--retry:hover {
+  background: white;
+}
+
+/* ==================== RESPONSIVE ==================== */
+
+@media (max-width: 640px) {
+  .error-message--toast {
+    left: 16px;
+    right: 16px;
+    transform: none;
+    min-width: auto;
+    max-width: none;
+    top: 60px;
+  }
+
+  @keyframes toast-slide-in {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .error-message--toast.error-message--exiting {
+    animation: toast-slide-out-mobile 0.3s ease-out forwards;
+  }
+
+  @keyframes toast-slide-out-mobile {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+  }
+
+  .error-message--modal {
+    min-width: auto;
+    max-width: calc(100% - 32px);
+    padding: 20px 24px;
+  }
+
+  .error-message--banner {
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+
+  .error-message__actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .error-message--modal .error-message__actions {
+    flex-direction: row;
+  }
+
+  .error-message__button {
+    width: 100%;
+  }
+
+  .error-message--modal .error-message__button {
+    width: auto;
+  }
+}
+
+/* ==================== ACCESSIBILITY ==================== */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .error-message {
+    border-width: 2px;
+  }
+
+  .error-message__button:focus {
+    outline-width: 3px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .error-message,
+  .error-message-backdrop,
+  .error-message__button {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .error-message--toast,
+  .error-message--banner,
+  .error-message--modal {
+    animation: none;
+  }
+}
+
+/* Focus visible (keyboard navigation) */
+.error-message:focus-visible {
+  outline: 3px solid rgba(59, 130, 246, 0.5);
+  outline-offset: 2px;
+}
+
+/* Screen reader only text */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ==================== DARK MODE (Optional) ==================== */
+
+@media (prefers-color-scheme: dark) {
+  .error-message--inline.error-message--error {
+    background: rgba(127, 29, 29, 0.9);
+    color: rgb(254, 202, 202);
+    border-color: rgba(239, 68, 68, 0.4);
+  }
+
+  .error-message--inline.error-message--warning {
+    background: rgba(120, 53, 15, 0.9);
+    color: rgb(253, 230, 138);
+    border-color: rgba(245, 158, 11, 0.4);
+  }
+}

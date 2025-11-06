@@ -257,15 +257,52 @@ export function useErrorHandler() {
 }
 
 /**
- * Error retry utility
- * Retries a function with exponential backoff
+ * Error retry utility with progress tracking
+ * Retries a function with exponential backoff and optional progress callbacks
+ *
+ * @param {Function} fn - Async function to retry
+ * @param {number} maxRetries - Maximum number of retry attempts
+ * @param {number} initialDelay - Initial delay in ms before first retry
+ * @param {string} context - Context for logging
+ * @param {Object} options - Additional options
+ * @param {Function} options.onRetry - Callback when retry starts (attempt, maxRetries, delay)
+ * @param {Function} options.onSuccess - Callback when operation succeeds (attempt)
+ * @param {Function} options.onFailure - Callback when all retries fail (error, attempts)
+ * @returns {Promise} Result of fn()
+ *
+ * @example
+ * const result = await retryWithBackoff(
+ *   async () => fetch('/api/data'),
+ *   3,
+ *   1000,
+ *   'API Call',
+ *   {
+ *     onRetry: (attempt, max, delay) => {
+ *       console.log(`Retrying... (${attempt} of ${max})`);
+ *     }
+ *   }
+ * );
  */
-export async function retryWithBackoff(fn, maxRetries = 3, initialDelay = 1000, context = 'Retry') {
+export async function retryWithBackoff(
+  fn,
+  maxRetries = 3,
+  initialDelay = 1000,
+  context = 'Retry',
+  options = {}
+) {
+  const { onRetry, onSuccess, onFailure } = options;
   let lastError;
 
   for (let i = 0; i < maxRetries; i++) {
     try {
-      return await fn();
+      const result = await fn();
+
+      // Success callback
+      if (onSuccess && i > 0) {
+        onSuccess(i);
+      }
+
+      return result;
     } catch (error) {
       lastError = error;
       debugError(context, {
@@ -276,12 +313,109 @@ export async function retryWithBackoff(fn, maxRetries = 3, initialDelay = 1000, 
 
       if (i < maxRetries - 1) {
         const delay = initialDelay * Math.pow(2, i);
+
+        // Retry callback
+        if (onRetry) {
+          onRetry(i + 1, maxRetries, delay);
+        }
+
         await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }
   }
 
+  // Failure callback
+  if (onFailure) {
+    onFailure(lastError, maxRetries);
+  }
+
   throw lastError;
+}
+
+/**
+ * React hook for retry state management with UI indicators
+ * Provides retry progress tracking for displaying to users
+ *
+ * @example
+ * const { retryState, executeWithRetry, resetRetry } = useRetryHandler();
+ *
+ * <button onClick={() => executeWithRetry(fetchData)}>
+ *   {retryState.isRetrying ? `Retrying (${retryState.attempt}/${retryState.maxAttempts})...` : 'Load Data'}
+ * </button>
+ */
+export function useRetryHandler(maxRetries = 3, initialDelay = 1000) {
+  const [retryState, setRetryState] = useState({
+    isRetrying: false,
+    attempt: 0,
+    maxAttempts: maxRetries,
+    delay: 0,
+    error: null,
+    success: false,
+  });
+
+  const resetRetry = () => {
+    setRetryState({
+      isRetrying: false,
+      attempt: 0,
+      maxAttempts: maxRetries,
+      delay: 0,
+      error: null,
+      success: false,
+    });
+  };
+
+  const executeWithRetry = async (fn, context = 'Operation') => {
+    resetRetry();
+
+    try {
+      const result = await retryWithBackoff(fn, maxRetries, initialDelay, context, {
+        onRetry: (attempt, max, delay) => {
+          setRetryState({
+            isRetrying: true,
+            attempt,
+            maxAttempts: max,
+            delay,
+            error: null,
+            success: false,
+          });
+        },
+        onSuccess: (attempt) => {
+          setRetryState({
+            isRetrying: false,
+            attempt,
+            maxAttempts: maxRetries,
+            delay: 0,
+            error: null,
+            success: true,
+          });
+        },
+        onFailure: (error, attempts) => {
+          setRetryState({
+            isRetrying: false,
+            attempt: attempts,
+            maxAttempts: maxRetries,
+            delay: 0,
+            error: handleAPIError(error, context),
+            success: false,
+          });
+        },
+      });
+
+      return result;
+    } catch (error) {
+      throw handleAPIError(error, context);
+    }
+  };
+
+  return {
+    retryState,
+    executeWithRetry,
+    resetRetry,
+    isRetrying: retryState.isRetrying,
+    retryMessage: retryState.isRetrying
+      ? `Retrying... (${retryState.attempt} of ${retryState.maxAttempts})`
+      : null,
+  };
 }
 
 export default {
@@ -293,4 +427,5 @@ export default {
   handleGeolocationError,
   useErrorHandler,
   retryWithBackoff,
+  useRetryHandler,
 };
