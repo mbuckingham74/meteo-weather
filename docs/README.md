@@ -42,9 +42,10 @@ Welcome to the Meteo Weather App documentation! This guide will help you find ex
 **Production deployment guides** - Server setup, Docker deployment, CI/CD integration
 
 **Key Files:**
-- [DEPLOY_NOW.md](deployment/DEPLOY_NOW.md) - Quick deploy guide
-- [DEPLOYMENT_GUIDE.md](deployment/DEPLOYMENT_GUIDE.md) - Complete deployment docs
-- [DEPLOYMENT_TESTING_CHECKLIST.md](deployment/DEPLOYMENT_TESTING_CHECKLIST.md) - Verification steps
+- [DEPLOYMENT_WORKFLOW.md](deployment/DEPLOYMENT_WORKFLOW.md) - **MANDATORY workflow with CHANGELOG updates**
+- [DEPLOY_NOW.md](deployment/DEPLOY_NOW.md) - Quick deploy reference
+- [DEPLOYMENT_GUIDE.md](deployment/DEPLOYMENT_GUIDE.md) - Step-by-step guide
+- [DEPLOYMENT_TESTING_CHECKLIST.md](deployment/DEPLOYMENT_TESTING_CHECKLIST.md) - Post-deploy verification
 
 ---
 
