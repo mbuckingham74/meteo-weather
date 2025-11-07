@@ -1,3 +1,5 @@
+<div align="center">
+
 # Meteo Weather App
 
 A comprehensive weather dashboard inspired by Weather Spark, providing detailed weather forecasts, historical climate data analysis, air quality monitoring, and AI-powered location comparison tools.
@@ -6,7 +8,7 @@ A comprehensive weather dashboard inspired by Weather Spark, providing detailed 
 
 **Built by:** [Michael Buckingham](https://github.com/mbuckingham74) &nbsp;&nbsp;|&nbsp;&nbsp; **Repository:** [meteo-weather](https://github.com/mbuckingham74/meteo-weather) &nbsp;&nbsp;|&nbsp;&nbsp; **Changelog:** [View Updates](CHANGELOG.md)
 
-<div align="center">
+---
 
 [![Deployment Status](https://img.shields.io/github/actions/workflow/status/mbuckingham74/meteo-weather/deploy.yml?branch=main&label=deployment&logo=github-actions&logoColor=white)](https://github.com/mbuckingham74/meteo-weather/actions)
 [![Security](https://img.shields.io/badge/vulnerabilities-0-brightgreen?logo=dependabot&logoColor=white)](https://github.com/mbuckingham74/meteo-weather/security)
