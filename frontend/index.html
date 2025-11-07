@@ -37,6 +37,7 @@
     <!-- Preconnect to external domains for performance -->
     <link rel="preconnect" href="https://api.visualcrossing.com" />
     <link rel="preconnect" href="https://api.openweathermap.org" />
+
     <title>Meteo Weather App - Detailed Forecasts & Climate Analysis</title>
 
     <!-- Matomo Analytics -->
@@ -60,14 +61,18 @@
 
     <!-- Critical CSS to prevent FOUC (Flash of Unstyled Content) -->
     <style>
-      /* Hide content until React loads to prevent double-blink */
-      #root:empty {
-        opacity: 0;
+      /* Prevent font loading flash */
+      @font-face {
+        font-display: swap;
       }
 
-      /* Show loading state while React initializes */
-      #root:empty::before {
-        content: '';
+      /* Hide content until React loads AND CSS loads to prevent blink */
+      html {
+        background-color: #f8fafc;
+      }
+
+      #root:empty {
+        display: block;
         position: fixed;
         top: 0;
         left: 0;
@@ -77,10 +82,33 @@
         z-index: 9999;
       }
 
-      /* Smooth fade-in when React mounts */
-      #root {
-        opacity: 1;
-        transition: opacity 0.15s ease-in;
+      /* Loading indicator while React initializes */
+      #root:empty::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 40px;
+        height: 40px;
+        margin: -20px 0 0 -20px;
+        border: 3px solid #e5e7eb;
+        border-top-color: #667eea;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+
+      /* Ensure smooth transition when React mounts */
+      #root:not(:empty) {
+        animation: fadeIn 0.2s ease-in;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
       }
 
       /* Base styles to prevent layout shift */
@@ -98,8 +126,24 @@
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         background-color: #f8fafc;
+        overflow-x: hidden;
+      }
+
+      /* Prevent flash during CSS load */
+      body:not(.loaded) {
+        visibility: hidden;
+      }
+
+      body.loaded {
+        visibility: visible;
       }
     </style>
+    <script>
+      // Mark body as loaded once CSS is ready
+      document.addEventListener('DOMContentLoaded', function() {
+        document.body.classList.add('loaded');
+      });
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
