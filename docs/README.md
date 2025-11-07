@@ -13,6 +13,7 @@ Welcome to the Meteo Weather App documentation! This guide will help you find ex
 |-------------|----------|
 | 🚀 **Get the app running quickly** | [Getting Started](getting-started/) |
 | 💻 **Start developing features** | [Development](development/) |
+| 📡 **Understand the API** | [API Reference](api/) |
 | 🚀 **Deploy to production** | [Deployment](deployment/) |
 | 🔐 **Understand security** | [Security](security/) |
 | ♿ **Learn about accessibility** | [Accessibility](accessibility/) |
@@ -124,6 +125,16 @@ Welcome to the Meteo Weather App documentation! This guide will help you find ex
 - [AGENTS.md](development/AGENTS.md) - Repository guidelines
 - [VITE_MIGRATION_GUIDE.md](development/VITE_MIGRATION_GUIDE.md) - CRA → Vite migration
 - [CODE_QUALITY_AUDIT.md](development/CODE_QUALITY_AUDIT.md) - Code quality analysis
+
+---
+
+### [📡 API Reference](api/)
+**Complete API documentation** - All endpoints, request/response examples, authentication
+
+**Key Files:**
+- [API_REFERENCE.md](api/API_REFERENCE.md) - Complete endpoint documentation with examples
+- Authentication, Weather, Climate, Locations, Air Quality, AI Features
+- Rate limiting, caching, error handling, and pagination guides
 
 ---
 
