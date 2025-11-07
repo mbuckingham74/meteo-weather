@@ -215,20 +215,35 @@ function WeatherDashboard() {
 
   // Format location name to show city name (extracted from address)
   const getFormattedLocationName = () => {
-    const address =
-      data?.location?.address || locationData?.address || location || 'Unknown Location';
+    // CRITICAL FIX: Prioritize API-resolved address over stored coordinates
+    // The API (via Nominatim reverse geocoding) resolves coordinates to city names
+    // We should use that resolved name, not fall back to showing "Your Location"
+    // See docs/troubleshooting/OLD_LOCATION_BUG_FIX.md for context
+
+    // Check if API has returned a resolved address (not coordinates)
+    const apiAddress = data?.location?.address;
+    const isApiAddressResolved = apiAddress && !/^-?\d+\.\d+,\s*-?\d+\.\d+$/.test(apiAddress);
+
+    // Use API-resolved address if available, otherwise fall back to stored data
+    const address = isApiAddressResolved
+      ? apiAddress
+      : locationData?.address || location || 'Unknown Location';
 
     // If it's coordinates (lat,lon pattern), show "Your Location" as user-friendly display
     // NOTE: This is for DISPLAY ONLY - the coordinates are still sent to the API for accurate weather
     // See docs/troubleshooting/OLD_LOCATION_BUG_FIX.md for full context
     if (/^-?\d+\.\d+,\s*-?\d+\.\d+$/.test(address)) {
+      // If API has a displayName, use that instead of "Your Location"
+      if (data?.location?.displayName) {
+        return data.location.displayName;
+      }
       return 'Your Location';
     }
 
     // If address is a placeholder or generic name (API couldn't resolve it)
     // This fixes cached "Old Location" values from earlier API responses
     if (/^(old location|location|unknown|coordinates?|unnamed)$/i.test(address.trim())) {
-      return 'Your Location';
+      return data?.location?.displayName || locationData?.displayName || 'Your Location';
     }
 
     // If address is the generic fallback, use displayName if available
