@@ -80,60 +80,46 @@ docker-compose up
 
 ## 📋 Table of Contents
 
-**Quick Links:**
-- [⚡ Quick Start](#-quick-start) | [🚀 Setup Instructions](#-setup-instructions) | [🌐 Live Demo](https://meteo-beta.tachyonfuture.com) | [🏗️ Architecture](docs/getting-started/ARCHITECTURE.md) | [📋 Changelog](CHANGELOG.md) | [🤝 Contributing](#-contributing)
+### Quick Navigation
+- [⚡ Quick Start](#-quick-start) - Get running in 3 minutes
+- [🌐 Live Demo](https://meteo-beta.tachyonfuture.com) - Try it now
+- [✨ Features](#-key-features) - What it does
+- [🚀 Setup Guide](#-setup-instructions) - Detailed installation
+- [📚 Full Documentation](docs/README.md) - **Complete docs hub**
+- [🤝 Contributing](CONTRIBUTING.md) - Help improve this project
+- [❓ FAQ & Support](SUPPORT.md) - Get help
 
-**Getting Started:**
-- [🚀 **For Claude Code Users:** Start Here](/.claude/QUICK_START.md) - Copy-paste onboarding prompt for new sessions
-- [💻 Minimum Server Requirements](#-minimum-server-requirements)
-- [🔑 Required External APIs](#-required-external-apis)
-  - [Visual Crossing Weather API](#1-visual-crossing-weather-api-required)
-  - [RainViewer API](#2-rainviewer-api-required-for-radar)
-  - [OpenWeather API](#3-openweather-api-required-for-map-overlays)
-  - [Anthropic Claude API (Optional)](#4-anthropic-claude-api-optional---ai-features)
-  - [Cost Summary](#cost-summary)
+### 📚 Documentation Hub
 
-**Features:**
-- [✨ Features Overview](#-features)
-  - [Weather Forecasts](#️-weather-forecasts)
-  - [Interactive Radar Map](#️-interactive-radar-map)
-  - [Interactive Charts](#-interactive-charts)
-  - [Location Management](#-location-management)
-  - [URL Routing & Navigation](#-url-routing--navigation)
-  - [AI-Powered Location Finder](#-ai-powered-location-finder)
-  - [Air Quality Monitoring](#-air-quality-index-aqi)
-  - [User Authentication](#-user-authentication--profiles)
-  - [Theme System](#-theme-system)
+**All documentation is organized in the [docs/](docs/) folder:**
 
-**Development:**
-- [🏗️ Architecture Documentation](docs/getting-started/ARCHITECTURE.md) - Comprehensive visual architecture guide
-  - System architecture overview with Mermaid diagrams
-  - Frontend & backend component structure
-  - Data flow diagrams
-  - API integration patterns
-  - Database schema documentation
-- [🤖 Development & Automation](#-development--automation)
-  - [GitHub Actions CI/CD](#github-actions-cicd)
-  - [Community Health Files](#community-health-files)
-  - [Issue & PR Templates](#issue--pr-templates)
-  - [Roadmap Ideas](#roadmap-ideas)
-- [🛠️ Tech Stack](#️-tech-stack)
-- [🚀 Setup Instructions](#-setup-instructions)
-- [🌐 API Endpoints](#-api-endpoints)
-- [📁 Project Structure](#-project-structure)
+| Category | Description | Link |
+|----------|-------------|------|
+| 📖 **Getting Started** | Quick start, architecture, onboarding | [View →](docs/getting-started/) |
+| 📡 **API Reference** | Complete API docs (3 formats) | [View →](docs/api/) |
+| 🚀 **Deployment** | Production deployment guides | [View →](docs/deployment/) |
+| 🔐 **Security** | Security features & audits | [View →](docs/security/) |
+| ♿ **Accessibility** | WCAG compliance documentation | [View →](docs/accessibility/) |
+| ⚙️ **CI/CD** | Pipeline optimization & guides | [View →](docs/cicd/) |
+| 💾 **Database** | Schema, ERD, optimizations | [View →](docs/database/) |
+| 🎨 **UI/UX** | Design system & guidelines | [View →](docs/ui-ux/) |
+| ⚠️ **Troubleshooting** | Common issues & solutions | [View →](docs/troubleshooting/) |
+| 💻 **Development** | Code guides & conventions | [View →](docs/development/) |
 
-**Additional Information:**
-- [📖 Usage](#-usage)
-- [🔍 Features in Detail](#-features-in-detail)
-- [🚀 Performance & Caching](#-performance--caching)
-- [⚠️ API Rate Limiting](#️-api-rate-limiting)
-- [🔒 Recommended Security Practices](#-recommended-security-practices)
-- [📋 Changelog](CHANGELOG.md)
-- [🗺️ Project Status & Roadmap](#️-project-status--roadmap)
-- [🤝 Contributing](#-contributing)
-- [📄 License](#-license)
-- [🙏 Data Attribution](#-data-attribution)
-- [👨‍💻 Author](#-author)
+**Most Popular Docs:**
+- 🎯 [3-Minute Quick Start](docs/getting-started/QUICKSTART.md)
+- 📡 [API Reference](docs/api/API_REFERENCE.md) (with OpenAPI & Postman)
+- 🗄️ [Database Schema with ERD](docs/database/SCHEMA.md)
+- 🎥 [Video Tutorial Scripts](docs/getting-started/VIDEO_TUTORIAL_GUIDE.md)
+- ❓ [FAQ (50+ Questions)](SUPPORT.md)
+- 🔐 [Security Score: 9.4/10](docs/security/SECURITY_IMPLEMENTATION_SUMMARY.md)
+
+### For Developers
+- [🏗️ Architecture](docs/getting-started/ARCHITECTURE.md) - System design with diagrams
+- [📡 OpenAPI Spec](docs/api/openapi.yaml) - Generate API clients
+- [📦 Postman Collection](docs/api/postman_collection.json) - Test all endpoints
+- [🗄️ Database ERD](docs/database/SCHEMA.md) - Visual schema
+- [🔧 Developer Setup](docs/getting-started/DEVELOPER_ONBOARDING.md) - Complete onboarding
 
 ---
 
