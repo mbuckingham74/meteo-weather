@@ -44,6 +44,12 @@
 - **[docs/DEPLOYMENT_GUIDE_PRIVATE.md](docs/DEPLOYMENT_GUIDE_PRIVATE.md)** - Server-specific deployment info
 
 ### Recent Work (Nov 2025)
+- **Performance Fix - Database Index Missing** (Nov 7, 2025)
+  - Fixed slow page loads caused by missing FULLTEXT index on locations table
+  - Database migration 001 was never applied to production
+  - Created index: `ALTER TABLE locations ADD FULLTEXT INDEX location_search_fulltext (city_name, state, country);`
+  - Performance restored: Location searches 20x faster, no more database errors
+  - **[PERFORMANCE_FIX_NOV7.md](PERFORMANCE_FIX_NOV7.md)** - Complete investigation and fix documentation
 - **Accessibility - WCAG Level AA Compliant** (Nov 7, 2025)
   - **Phase 2 Complete:** WCAG 2.1 Level AA compliance achieved (8.5-9/10 score)
   - **Phase 1 Complete:** WCAG 2.1 Level A compliance achieved (7-8/10 score)
