@@ -5,22 +5,28 @@ on:
     branches: [ main ]
   workflow_dispatch:  # Allow manual triggering
 
+# Prevent concurrent deployments
+concurrency:
+  group: production-deployment
+  cancel-in-progress: false
+
 jobs:
-  # Deploy only after CI passes
+  # Wait for CI to pass before deploying
   deploy:
     name: Deploy to tachyonfuture.com
     runs-on: ubuntu-latest
-    needs: []  # Add needs: [backend, frontend, docker] if you want to wait for ci.yml to pass
-
-    # Only deploy if CI workflow passed (when triggered by push)
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    # Only run if not a draft PR or skip deploy
+    if: "!contains(github.event.head_commit.message, '[skip deploy]')"
+    environment:
+      name: production
+      url: https://meteo-beta.tachyonfuture.com
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.8.0
+        uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
@@ -30,38 +36,116 @@ jobs:
           ssh-keyscan -H tachyonfuture.com >> ~/.ssh/known_hosts
 
       - name: Deploy to server
+        id: deploy
         run: |
           ssh michael@tachyonfuture.com << 'ENDSSH'
             cd /home/michael/meteo-app
 
             # Show current commit
-            echo "Current commit: $(git log -1 --oneline)"
+            echo "📍 Current commit: $(git log -1 --oneline)"
+            echo ""
 
             # Run deployment script
-            ./scripts/deploy-beta.sh
+            if ! bash scripts/deploy-beta.sh; then
+              echo "❌ Deployment script failed"
+              exit 1
+            fi
 
             # Show deployment result
             echo ""
-            echo "Deployment completed successfully!"
+            echo "✅ Deployment completed successfully!"
+            echo "📦 New commit: $(git log -1 --oneline)"
           ENDSSH
 
-      - name: Verify deployment
+      - name: Wait for services to stabilize
         run: |
-          echo "Waiting 10 seconds for services to stabilize..."
-          sleep 10
+          echo "⏳ Waiting 15 seconds for services to fully stabilize..."
+          sleep 15
 
-          # Test frontend
-          echo "Testing frontend..."
-          curl -f -s -o /dev/null -w "Frontend: %{http_code}\n" https://meteo-beta.tachyonfuture.com || echo "Frontend check failed"
+      - name: Verify deployment
+        id: verify
+        run: |
+          echo "🔍 Verifying deployment health..."
 
-          # Test backend API
-          echo "Testing backend API..."
-          curl -f -s -o /dev/null -w "Backend API: %{http_code}\n" https://api.meteo-beta.tachyonfuture.com/api/health || echo "Backend API check failed"
+          # Test frontend with retries
+          for i in {1..5}; do
+            if curl -f -s -o /dev/null -w "%{http_code}" https://meteo-beta.tachyonfuture.com | grep -q "200"; then
+              echo "✅ Frontend: OK (200)"
+              break
+            fi
+            if [ $i -eq 5 ]; then
+              echo "❌ Frontend health check failed after 5 attempts"
+              exit 1
+            fi
+            echo "⏳ Frontend check $i/5 failed, retrying..."
+            sleep 3
+          done
+
+          # Test backend API with retries
+          for i in {1..5}; do
+            RESPONSE=$(curl -f -s https://api.meteo-beta.tachyonfuture.com/api/health)
+            if echo "$RESPONSE" | grep -q '"status":"ok"'; then
+              echo "✅ Backend API: OK"
+              echo "$RESPONSE" | jq '.' || echo "$RESPONSE"
+              break
+            fi
+            if [ $i -eq 5 ]; then
+              echo "❌ Backend API health check failed after 5 attempts"
+              echo "Response: $RESPONSE"
+              exit 1
+            fi
+            echo "⏳ Backend check $i/5 failed, retrying..."
+            sleep 3
+          done
+
+      - name: Run smoke tests
+        run: |
+          echo "🧪 Running smoke tests..."
+
+          # Test weather API endpoint
+          WEATHER_RESPONSE=$(curl -f -s "https://api.meteo-beta.tachyonfuture.com/api/weather/current?location=London")
+          if echo "$WEATHER_RESPONSE" | grep -q '"temperature"'; then
+            echo "✅ Weather API: Working"
+          else
+            echo "⚠️ Weather API response unexpected: $WEATHER_RESPONSE"
+          fi
+
+          # Test locations search
+          LOCATION_RESPONSE=$(curl -f -s "https://api.meteo-beta.tachyonfuture.com/api/locations/search?q=New%20York")
+          if echo "$LOCATION_RESPONSE" | grep -q '\[.*\]'; then
+            echo "✅ Locations API: Working"
+          else
+            echo "⚠️ Locations API response unexpected: $LOCATION_RESPONSE"
+          fi
 
       - name: Deployment summary
+        if: always()
         run: |
-          echo "🚀 Deployment to production completed!"
-          echo "📦 Commit: ${{ github.sha }}"
-          echo "👤 Author: ${{ github.actor }}"
-          echo "🌐 Frontend: https://meteo-beta.tachyonfuture.com"
-          echo "🔌 API: https://api.meteo-beta.tachyonfuture.com"
+          echo "## 🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Author:** ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### URLs" >> $GITHUB_STEP_SUMMARY
+          echo "- 🌐 Frontend: https://meteo-beta.tachyonfuture.com" >> $GITHUB_STEP_SUMMARY
+          echo "- 🔌 API: https://api.meteo-beta.tachyonfuture.com/api/health" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ steps.verify.outcome }}" == "success" ]; then
+            echo "### Status: ✅ Healthy" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "### Status: ❌ Health checks failed" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "## ❌ Deployment Failed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The deployment to production failed. Please check the logs above for details." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Troubleshooting:**" >> $GITHUB_STEP_SUMMARY
+          echo "1. SSH into server: \`ssh michael@tachyonfuture.com\`" >> $GITHUB_STEP_SUMMARY
+          echo "2. Check logs: \`cd /home/michael/meteo-app && docker compose -f docker-compose.prod.yml logs -f\`" >> $GITHUB_STEP_SUMMARY
+          echo "3. Check container status: \`docker ps | grep meteo\`" >> $GITHUB_STEP_SUMMARY

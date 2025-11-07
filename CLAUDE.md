@@ -38,35 +38,62 @@
 
 ## 📚 Key Documentation (Read When Needed)
 
-### Architecture & Setup
-- **[README.md](README.md)** - Main overview, features, setup instructions
-- **[ARCHITECTURE.md](ARCHITECTURE.md)** - System architecture with Mermaid diagrams
-- **[docs/DEPLOYMENT_GUIDE_PRIVATE.md](docs/DEPLOYMENT_GUIDE_PRIVATE.md)** - Server-specific deployment info
+**📖 Documentation Hub:** [docs/README.md](docs/README.md) - Complete organized documentation with categories
+
+### Quick Links by Category
+
+**🚀 Getting Started:**
+- [README.md](README.md) - Main overview, features, setup instructions
+- [docs/getting-started/](docs/getting-started/) - Architecture, quickstart, developer onboarding
+
+**🚀 Deployment:**
+- [docs/deployment/](docs/deployment/) - Production deployment guides
+- [docs/deployment/DEPLOYMENT_GUIDE_PRIVATE.md](docs/deployment/DEPLOYMENT_GUIDE_PRIVATE.md) - Server-specific deployment info
+
+**🔐 Security:**
+- [docs/security/](docs/security/) - Security implementation & audits (Score: 9.4/10)
+- [docs/security/SECURITY_IMPLEMENTATION_SUMMARY.md](docs/security/SECURITY_IMPLEMENTATION_SUMMARY.md) - Latest security features
+- [docs/security/RATE_LIMITING_AND_SECURITY_AUDIT.md](docs/security/RATE_LIMITING_AND_SECURITY_AUDIT.md) - Full audit
+
+**♿ Accessibility:**
+- [docs/accessibility/](docs/accessibility/) - WCAG 2.1 Level AA compliance (Score: 8.5-9/10)
+- [docs/accessibility/AUDIT_SUMMARY.md](docs/accessibility/AUDIT_SUMMARY.md) - Quick reference (20 issues)
+- [docs/accessibility/PHASE1_COMPLETE.md](docs/accessibility/PHASE1_COMPLETE.md) - Level A implementation
+- [docs/accessibility/PHASE2_COMPLETE.md](docs/accessibility/PHASE2_COMPLETE.md) - Level AA implementation
+
+**⚙️ CI/CD:**
+- [docs/cicd/](docs/cicd/) - CI/CD pipeline docs (50-70% faster, 9 parallel jobs)
+- [docs/cicd/DEVELOPER_GUIDE.md](docs/cicd/DEVELOPER_GUIDE.md) - Complete pipeline guide
+- [docs/cicd/QUICK_REFERENCE.md](docs/cicd/QUICK_REFERENCE.md) - One-page cheat sheet
+
+**💾 Database:**
+- [docs/database/](docs/database/) - Database optimization (20-50x faster queries)
+- [docs/database/PERFORMANCE_FIX_NOV7.md](docs/database/PERFORMANCE_FIX_NOV7.md) - FULLTEXT index fix
+- [docs/database/OPTIMIZATION_COMPLETE.md](docs/database/OPTIMIZATION_COMPLETE.md) - All phases summary
+
+**🎨 UI/UX:**
+- [docs/ui-ux/](docs/ui-ux/) - Material Design 3 implementation (50-60% space reduction)
+- [docs/ui-ux/REDESIGN_SUMMARY.md](docs/ui-ux/REDESIGN_SUMMARY.md) - Unified Hero Card redesign
+- [docs/ui-ux/UI_OPTIMIZATION_SUMMARY.md](docs/ui-ux/UI_OPTIMIZATION_SUMMARY.md) - Material Design 3
+
+**⚠️ Troubleshooting:**
+- [docs/troubleshooting/](docs/troubleshooting/) - Common issues & solutions
+- [docs/troubleshooting/TROUBLESHOOTING.md](docs/troubleshooting/TROUBLESHOOTING.md) - Common issues and fixes
+- [docs/troubleshooting/REGRESSION_PREVENTION.md](docs/troubleshooting/REGRESSION_PREVENTION.md) - **CRITICAL:** "Old Location" bug prevention
+
+**💻 Development:**
+- [docs/development/](docs/development/) - Developer guides & tools
+- [docs/development/AGENTS.md](docs/development/AGENTS.md) - Repository guidelines
+- [docs/development/VITE_MIGRATION_GUIDE.md](docs/development/VITE_MIGRATION_GUIDE.md) - CRA to Vite migration
+- [docs/development/REFACTORING_SUMMARY.md](docs/development/REFACTORING_SUMMARY.md) - Code organization overhaul
 
 ### Recent Work (Nov 2025)
-- **Performance Fix - Database Index Missing** (Nov 7, 2025)
-  - Fixed slow page loads caused by missing FULLTEXT index on locations table
-  - Database migration 001 was never applied to production
-  - Created index: `ALTER TABLE locations ADD FULLTEXT INDEX location_search_fulltext (city_name, state, country);`
-  - Performance restored: Location searches 20x faster, no more database errors
-  - **[PERFORMANCE_FIX_NOV7.md](PERFORMANCE_FIX_NOV7.md)** - Complete investigation and fix documentation
-- **Accessibility - WCAG Level AA Compliant** (Nov 7, 2025)
-  - **Phase 2 Complete:** WCAG 2.1 Level AA compliance achieved (8.5-9/10 score)
-  - **Phase 1 Complete:** WCAG 2.1 Level A compliance achieved (7-8/10 score)
-  - See commit history for Phase 2 implementation details
-- **[ACCESSIBILITY_PHASE1_COMPLETE.md](ACCESSIBILITY_PHASE1_COMPLETE.md)** - Phase 1 (WCAG Level A) documentation
-- **[ACCESSIBILITY_AUDIT_SUMMARY.md](ACCESSIBILITY_AUDIT_SUMMARY.md)** - Quick reference guide with all 20 issues
-- **[ACCESSIBILITY_AUDIT_REPORT.md](ACCESSIBILITY_AUDIT_REPORT.md)** - Complete 1,180-line detailed audit
-- **[docs/REGRESSION_PREVENTION.md](docs/REGRESSION_PREVENTION.md)** - **CRITICAL:** Regression prevention for "Old Location" bug (Nov 6, 2025) - READ THIS BEFORE MODIFYING GEOLOCATION/WEATHER SERVICES
-- **[REDESIGN_SUMMARY.md](REDESIGN_SUMMARY.md)** - Unified Hero Card UI redesign (Nov 5, 2025)
-- **[REFACTORING_SUMMARY.md](REFACTORING_SUMMARY.md)** - Major code organization overhaul (Nov 5, 2025)
-- **[SECURITY_IMPLEMENTATION_SUMMARY.md](SECURITY_IMPLEMENTATION_SUMMARY.md)** - Latest security update (rate limiting, CORS, CSP)
-- **[docs/RATE_LIMITING_AND_SECURITY_AUDIT.md](docs/RATE_LIMITING_AND_SECURITY_AUDIT.md)** - Security audit & implementation
-- **[VITE_MIGRATION_GUIDE.md](VITE_MIGRATION_GUIDE.md)** - CRA to Vite migration (Nov 4, 2025)
-
-### Troubleshooting
-- **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Common issues and fixes
-- **[docs/BUILD_VALIDATION.md](docs/BUILD_VALIDATION.md)** - Build config validation
+- ✅ **Documentation Reorganization** (Nov 7, 2025) - Organized 60+ docs into 10 clear categories
+- ✅ **CI/CD Pipeline Optimization** (Nov 7, 2025) - 50-70% faster with aggressive caching
+- ✅ **Database Performance Fix** (Nov 7, 2025) - Missing FULLTEXT index restored (20x faster)
+- ✅ **Accessibility Phase 2** (Nov 7, 2025) - WCAG 2.1 Level AA compliance (8.5-9/10 score)
+- ✅ **UI Optimization** (Nov 6, 2025) - Material Design 3 implementation (50-60% space reduction)
+- ✅ **Security Hardening** (Nov 5, 2025) - 9.4/10 score, 0 vulnerabilities
 
 ---
 
