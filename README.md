@@ -4,7 +4,7 @@ A comprehensive weather dashboard inspired by Weather Spark, providing detailed 
 
 **🌐 Live Demo:** [https://meteo-beta.tachyonfuture.com](https://meteo-beta.tachyonfuture.com)
 
-**Built by:** [Michael Buckingham](https://github.com/mbuckingham74) | **Repository:** [meteo-weather](https://github.com/mbuckingham74/meteo-weather)
+**Built by:** [Michael Buckingham](https://github.com/mbuckingham74) &nbsp;&nbsp;|&nbsp;&nbsp; **Repository:** [meteo-weather](https://github.com/mbuckingham74/meteo-weather) &nbsp;&nbsp;|&nbsp;&nbsp; **Changelog:** [View Updates](CHANGELOG.md)
 
 <div align="center">
 
