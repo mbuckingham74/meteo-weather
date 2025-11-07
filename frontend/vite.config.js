@@ -54,8 +54,9 @@ export default defineConfig({
   build: {
     outDir: 'build',
     sourcemap: true,
-    // Enable CSS code splitting for faster initial render
-    cssCodeSplit: true,
+    // Disable CSS code splitting to prevent FOUC (Flash of Unstyled Content)
+    // All CSS will be bundled into a single file that loads before JS
+    cssCodeSplit: false,
     rollupOptions: {
       output: {
         manualChunks: {

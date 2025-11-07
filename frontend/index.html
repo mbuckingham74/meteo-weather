@@ -57,6 +57,49 @@
 
     <!-- Plausible Analytics (Beta site only) -->
     <script defer data-domain="meteo-beta.tachyonfuture.com" src="https://plausible.tachyonfuture.com/js/script.js"></script>
+
+    <!-- Critical CSS to prevent FOUC (Flash of Unstyled Content) -->
+    <style>
+      /* Hide content until React loads to prevent double-blink */
+      #root:empty {
+        opacity: 0;
+      }
+
+      /* Show loading state while React initializes */
+      #root:empty::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: #f8fafc;
+        z-index: 9999;
+      }
+
+      /* Smooth fade-in when React mounts */
+      #root {
+        opacity: 1;
+        transition: opacity 0.15s ease-in;
+      }
+
+      /* Base styles to prevent layout shift */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+          'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background-color: #f8fafc;
+      }
+    </style>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
