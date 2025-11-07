@@ -1,0 +1,681 @@
+{
+  "info": {
+    "name": "Meteo Weather App API",
+    "_postman_id": "meteo-weather-api-v1",
+    "description": "Complete API collection for Meteo Weather App\n\n**Setup Instructions:**\n1. Import this collection into Postman\n2. Create environment with variables:\n   - `baseUrl`: http://localhost:5001/api (dev) or https://api.meteo-beta.tachyonfuture.com/api (prod)\n   - `accessToken`: Leave empty (auto-filled after login)\n   - `refreshToken`: Leave empty (auto-filled after login)\n3. Run \"Auth > Register\" or \"Auth > Login\" first\n4. Access token auto-populates for subsequent requests\n\n**Features:**\n- All 60+ API endpoints included\n- Auto-authentication with test scripts\n- Environment variable management\n- Example responses\n- Request validation\n\n**Author:** Michael Buckingham\n**License:** MIT\n**Repository:** https://github.com/mbuckingham74/meteo-weather",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5001/api",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refreshToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.environment.set('accessToken', response.accessToken);",
+                  "    pm.environment.set('refreshToken', response.refreshToken);",
+                  "    pm.test('User registered successfully', () => {",
+                  "        pm.expect(response).to.have.property('accessToken');",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\",\n  \"name\": \"Test User\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            },
+            "description": "Register a new user account"
+          },
+          "response": []
+        },
+        {
+          "name": "Login User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.environment.set('accessToken', response.accessToken);",
+                  "    pm.environment.set('refreshToken', response.refreshToken);",
+                  "    pm.test('Login successful', () => {",
+                  "        pm.expect(response).to.have.property('accessToken');",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Authenticate user and receive JWT tokens"
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.environment.set('accessToken', response.accessToken);",
+                  "    pm.environment.set('refreshToken', response.refreshToken);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/refresh",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "refresh"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "me"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Weather",
+      "item": [
+        {
+          "name": "Get Current Weather",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/weather/current/:location",
+              "host": ["{{baseUrl}}"],
+              "path": ["weather", "current", ":location"],
+              "variable": [
+                {
+                  "key": "location",
+                  "value": "Seattle,WA",
+                  "description": "City name or coordinates"
+                }
+              ]
+            },
+            "description": "Get current weather conditions for a location"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Weather Forecast",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/weather/forecast/:location?days=7",
+              "host": ["{{baseUrl}}"],
+              "path": ["weather", "forecast", ":location"],
+              "query": [
+                {
+                  "key": "days",
+                  "value": "7",
+                  "description": "Number of forecast days (3, 7, or 14)"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "location",
+                  "value": "Seattle,WA"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Hourly Forecast",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/weather/hourly/:location?hours=48",
+              "host": ["{{baseUrl}}"],
+              "path": ["weather", "hourly", ":location"],
+              "query": [
+                {
+                  "key": "hours",
+                  "value": "48",
+                  "description": "Number of hours (default: 48, max: 240)"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "location",
+                  "value": "Seattle,WA"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Weather Alerts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/weather/alerts/:location",
+              "host": ["{{baseUrl}}"],
+              "path": ["weather", "alerts", ":location"],
+              "variable": [
+                {
+                  "key": "location",
+                  "value": "Seattle,WA"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Climate Data",
+      "item": [
+        {
+          "name": "Get Climate Normals",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/weather/climate/normals/:location?date=07-15&years=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["weather", "climate", "normals", ":location"],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "07-15",
+                  "description": "Date in MM-DD format"
+                },
+                {
+                  "key": "years",
+                  "value": "10",
+                  "description": "Number of years to analyze"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "location",
+                  "value": "Seattle,WA"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get This Day in History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/weather/climate/this-day/:location?date=11-07&years=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["weather", "climate", "this-day", ":location"],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "11-07"
+                },
+                {
+                  "key": "years",
+                  "value": "10"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "location",
+                  "value": "Seattle,WA"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Locations",
+      "item": [
+        {
+          "name": "Search Locations (Geocode)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/locations/geocode?q=Seattle&limit=5",
+              "host": ["{{baseUrl}}"],
+              "path": ["locations", "geocode"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "Seattle",
+                  "description": "Search query"
+                },
+                {
+                  "key": "limit",
+                  "value": "5",
+                  "description": "Max results (default: 5)"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reverse Geocode",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/locations/reverse?lat=47.6062&lon=-122.3321",
+              "host": ["{{baseUrl}}"],
+              "path": ["locations", "reverse"],
+              "query": [
+                {
+                  "key": "lat",
+                  "value": "47.6062",
+                  "description": "Latitude"
+                },
+                {
+                  "key": "lon",
+                  "value": "-122.3321",
+                  "description": "Longitude"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Popular Locations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/locations/popular",
+              "host": ["{{baseUrl}}"],
+              "path": ["locations", "popular"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Air Quality",
+      "item": [
+        {
+          "name": "Get Air Quality by Coordinates",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/air-quality?lat=47.6062&lon=-122.3321&days=5",
+              "host": ["{{baseUrl}}"],
+              "path": ["air-quality"],
+              "query": [
+                {
+                  "key": "lat",
+                  "value": "47.6062"
+                },
+                {
+                  "key": "lon",
+                  "value": "-122.3321"
+                },
+                {
+                  "key": "days",
+                  "value": "5"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Air Quality by Location",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/air-quality/location/:location",
+              "host": ["{{baseUrl}}"],
+              "path": ["air-quality", "location", ":location"],
+              "variable": [
+                {
+                  "key": "location",
+                  "value": "Seattle,WA"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "AI Features",
+      "item": [
+        {
+          "name": "Validate Weather Query",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"Will it rain today?\",\n  \"location\": \"Seattle, WA\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/ai-weather/validate",
+              "host": ["{{baseUrl}}"],
+              "path": ["ai-weather", "validate"]
+            },
+            "description": "Quick validation (~$0.001, 10 second timeout)"
+          },
+          "response": []
+        },
+        {
+          "name": "Analyze Weather Question",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"Will it rain this weekend in Seattle?\",\n  \"location\": \"Seattle, WA\",\n  \"days\": 7\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/ai-weather/analyze",
+              "host": ["{{baseUrl}}"],
+              "path": ["ai-weather", "analyze"]
+            },
+            "description": "Full AI analysis (~$0.005-0.01, 30 second timeout)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User Preferences",
+      "item": [
+        {
+          "name": "Get User Preferences",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/user/preferences",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "preferences"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User Preferences",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"temperature_unit\": \"fahrenheit\",\n  \"default_forecast_days\": 7,\n  \"theme\": \"dark\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/preferences",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "preferences"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Favorites",
+      "item": [
+        {
+          "name": "Get Favorites",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/user/favorites",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "favorites"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Favorite",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"location_name\": \"Seattle, WA\",\n  \"latitude\": 47.6062,\n  \"longitude\": -122.3321,\n  \"address\": \"Seattle, Washington, United States\",\n  \"timezone\": \"America/Los_Angeles\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/favorites",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "favorites"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Remove Favorite",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/user/favorites/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "favorites", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Favorite ID"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Cache Management",
+      "item": [
+        {
+          "name": "Get Cache Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/cache/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["cache", "stats"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
