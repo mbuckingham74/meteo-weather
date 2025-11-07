@@ -358,13 +358,13 @@ docker ps | grep meteo
 
 | Task | Documentation |
 |------|--------------|
-| Deploy to production | [DEPLOY_VIA_VSCODE.md](DEPLOY_VIA_VSCODE.md) or `scripts/deploy-beta.sh` |
+| Deploy to production | [docs/deployment/DEPLOY_NOW.md](docs/deployment/DEPLOY_NOW.md) or `scripts/deploy-beta.sh` |
 | Add new features | [docs/development/AGENTS.md](docs/development/AGENTS.md) |
-| Fix bugs | [TROUBLESHOOTING.md](TROUBLESHOOTING.md) |
-| Improve security | [docs/RATE_LIMITING_AND_SECURITY_AUDIT.md](docs/RATE_LIMITING_AND_SECURITY_AUDIT.md) |
+| Fix bugs | [docs/troubleshooting/TROUBLESHOOTING.md](docs/troubleshooting/TROUBLESHOOTING.md) |
+| Improve security | [docs/security/RATE_LIMITING_AND_SECURITY_AUDIT.md](docs/security/RATE_LIMITING_AND_SECURITY_AUDIT.md) |
 | Update dependencies | Check package.json, run `npm audit`, test thoroughly |
 | Database changes | `database/schema.sql` + migrations |
-| Frontend build issues | [VITE_MIGRATION_GUIDE.md](VITE_MIGRATION_GUIDE.md) |
+| Frontend build issues | [docs/development/VITE_MIGRATION_GUIDE.md](docs/development/VITE_MIGRATION_GUIDE.md) |
 | Environment config | `.env.example` for reference |
 
 ---

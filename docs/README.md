@@ -153,7 +153,7 @@ Welcome to the Meteo Weather App documentation! This guide will help you find ex
 
 **Setting up locally:**
 1. [Getting Started → QUICKSTART.md](getting-started/QUICKSTART.md)
-2. [Development → SETUP_GUIDE.md](development/SETUP_GUIDE.md)
+2. [Getting Started → SETUP_GUIDE.md](getting-started/SETUP_GUIDE.md)
 
 **Deploying to production:**
 1. [Deployment → DEPLOY_NOW.md](deployment/DEPLOY_NOW.md)

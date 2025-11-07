@@ -81,7 +81,7 @@ docker-compose up
 ## 📋 Table of Contents
 
 **Quick Links:**
-- [⚡ Quick Start](#-quick-start) | [🚀 Setup Instructions](#-setup-instructions) | [🌐 Live Demo](https://meteo-beta.tachyonfuture.com) | [🏗️ Architecture](ARCHITECTURE.md) | [📋 Changelog](CHANGELOG.md) | [🤝 Contributing](#-contributing)
+- [⚡ Quick Start](#-quick-start) | [🚀 Setup Instructions](#-setup-instructions) | [🌐 Live Demo](https://meteo-beta.tachyonfuture.com) | [🏗️ Architecture](docs/getting-started/ARCHITECTURE.md) | [📋 Changelog](CHANGELOG.md) | [🤝 Contributing](#-contributing)
 
 **Getting Started:**
 - [🚀 **For Claude Code Users:** Start Here](/.claude/QUICK_START.md) - Copy-paste onboarding prompt for new sessions
@@ -106,7 +106,7 @@ docker-compose up
   - [Theme System](#-theme-system)
 
 **Development:**
-- [🏗️ Architecture Documentation](ARCHITECTURE.md) - Comprehensive visual architecture guide
+- [🏗️ Architecture Documentation](docs/getting-started/ARCHITECTURE.md) - Comprehensive visual architecture guide
   - System architecture overview with Mermaid diagrams
   - Frontend & backend component structure
   - Data flow diagrams
@@ -586,8 +586,8 @@ Meteo Weather App is built with accessibility as a core priority, ensuring every
 ### 📚 Accessibility Documentation
 
 For detailed implementation information, see:
-- **[ACCESSIBILITY_AUDIT_SUMMARY.md](ACCESSIBILITY_AUDIT_SUMMARY.md)** - Quick reference guide
-- **[ACCESSIBILITY_PHASE1_COMPLETE.md](ACCESSIBILITY_PHASE1_COMPLETE.md)** - Phase 1 (WCAG Level A) implementation
+- **[Accessibility Audit Summary](docs/accessibility/AUDIT_SUMMARY.md)** - Quick reference guide
+- **[Accessibility Phase 1 Complete](docs/accessibility/PHASE1_COMPLETE.md)** - Phase 1 (WCAG Level A) implementation
 - Phase 2 (WCAG Level AA) implementation details included in commit history
 
 ### 🎓 Learn More
