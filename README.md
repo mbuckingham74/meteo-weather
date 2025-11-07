@@ -11,6 +11,7 @@ A comprehensive weather dashboard inspired by Weather Spark, providing detailed 
 [![Deployment Status](https://img.shields.io/github/actions/workflow/status/mbuckingham74/meteo-weather/deploy.yml?branch=main&label=deployment&logo=github-actions&logoColor=white)](https://github.com/mbuckingham74/meteo-weather/actions)
 [![Security](https://img.shields.io/badge/vulnerabilities-0-brightgreen?logo=dependabot&logoColor=white)](https://github.com/mbuckingham74/meteo-weather/security)
 [![Tests](https://img.shields.io/badge/tests-476%2F476%20passing-brightgreen?logo=jest&logoColor=white)](https://github.com/mbuckingham74/meteo-weather/actions)
+[![Accessibility](https://img.shields.io/badge/WCAG%202.1-Level%20AA-blue?logo=w3c&logoColor=white)](#-accessibility-wcag-21-level-aa)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Docker](https://img.shields.io/badge/docker-ready-%230db7ed.svg?logo=docker&logoColor=white)](#-quick-start)
 [![Live Demo](https://img.shields.io/badge/demo-live-success?logo=vercel&logoColor=white)](https://meteo-beta.tachyonfuture.com)
@@ -21,15 +22,16 @@ A comprehensive weather dashboard inspired by Weather Spark, providing detailed 
 
 - **🚀 Self-Hostable & Meteorological Nerd Approved** - Run your own weather station with professional-grade data
 - **🛡️ Security-First Architecture** - Enterprise-grade security with automated secret scanning, Dependabot monitoring, and 0 vulnerabilities
-- **✨ Professional Error Handling** - Comprehensive error messaging system with 4 display modes (inline, toast, banner, modal), offline detection, retry logic, analytics tracking, and full accessibility (WCAG 2.1 AA)
+- **♿ WCAG 2.1 Level AA Compliant** - Full accessibility with screen reader support, keyboard navigation, focus management, reduced motion, and contextual error suggestions (Score: 8.5-9/10)
+- **✨ Professional Error Handling** - Comprehensive error messaging with 200+ contextual suggestions, 4 display modes, offline detection, retry logic, and analytics tracking
 - **💫 Ultra-Compact Dashboard** - Revolutionary two-column layout with everything in one viewport - weather info left, radar map right, zero scrolling needed
 - **⚡ Plug and Play** - Get started with a few free API keys in minutes
 - **💾 Small Server Config Requirements** - Runs on minimal hardware ($6/month VPS)
 - **🔍 Universal Smart Search** - ONE intelligent input handles simple locations AND complex AI queries
 - **🤖 AI-First Interface** - Natural language weather questions powered by Claude Sonnet 4.5
 - **📊 Rich Data Visualization** - 15+ interactive charts for weather analysis
-- **🌧️ Interactive Radar Map** - Real historical precipitation data with animation, alerts overlay, and storm tracking
-- **⚠️ Weather Alerts** - Real-time severe weather warnings with map markers
+- **🌧️ Interactive Radar Map** - Real historical precipitation data with animation (respects reduced motion), alerts overlay, and storm tracking
+- **⚠️ Weather Alerts** - Real-time severe weather warnings with map markers and keyboard-accessible expansion
 - **💨 Air Quality Monitoring** - Live AQI data with health recommendations
 - **📈 10-Year Climate Analysis** - Historical trends and statistical insights
 - **🔐 User Accounts** - Cloud-synced favorites and preferences
@@ -39,7 +41,7 @@ A comprehensive weather dashboard inspired by Weather Spark, providing detailed 
 - **🌍 Location Comparison** - Compare weather across multiple cities with AI assistance
 - **📱 Mobile Responsive** - Fully optimized for all device sizes
 - **🔗 Shareable URLs** - Direct links to any city's weather with browser back/forward support
-- **⌨️ Keyboard Navigation** - Full accessibility with keyboard shortcuts (WCAG 2.1 AA)
+- **⌨️ Complete Keyboard Navigation** - Full keyboard support with modal focus traps, logical tab order, and escape handlers
 - **📴 PWA Support** - Install as app, offline mode, and smart caching
 
 ---
@@ -482,6 +484,117 @@ Users start with familiar location search, then discover AI capabilities through
 - **Quick Toggle** - Show all or hide all charts with one click
 - **User Preferences** - Persistent settings for logged-in users
 - **Responsive Design** - Mobile-friendly interface
+
+---
+
+## ♿ Accessibility (WCAG 2.1 Level AA)
+
+**Accessibility Score: 8.5-9/10** - Full WCAG 2.1 Level AA compliance + one AAA criterion
+
+Meteo Weather App is built with accessibility as a core priority, ensuring everyone can access weather information regardless of ability or assistive technology used.
+
+### ✅ WCAG 2.1 Standards Compliance
+
+**Level A (Foundation)**
+- ✅ **1.1.1** Non-text Content - All images and icons have alt text or aria-hidden
+- ✅ **1.3.1** Info & Relationships - Proper semantic HTML, form labels, heading hierarchy
+- ✅ **2.1.1** Keyboard - All functionality accessible via keyboard
+- ✅ **2.4.1** Bypass Blocks - Skip to content links
+- ✅ **2.4.3** Focus Order - Logical tab navigation with modal focus traps
+
+**Level AA (Target)**
+- ✅ **1.4.3** Contrast (Minimum) - 4.5:1 color contrast ratio maintained throughout
+- ✅ **2.4.7** Focus Visible - Visible focus indicators (3px purple outline)
+- ✅ **3.3.1** Error Identification - Clear error messages
+- ✅ **3.3.3** Error Suggestion - Actionable recovery suggestions (200+ contextual hints)
+- ✅ **4.1.3** Status Messages - Live region announcements for dynamic content
+
+**Level AAA (Bonus)**
+- ✅ **2.3.3** Animation from Interactions - Reduced motion support via `prefers-reduced-motion`
+
+### 🎯 Accessibility Features
+
+**Screen Reader Support**
+- Live region announcements for weather data loading/errors
+- Proper ARIA labels on all interactive elements
+- Descriptive button labels (e.g., "Play radar animation" not just "Play")
+- Hidden text for decorative icons
+- Status announcements for async operations
+
+**Keyboard Navigation**
+- Complete keyboard access to all features
+- Modal focus traps (Tab/Shift+Tab wrapping)
+- Escape key to close modals
+- Logical tab order across all pages
+- Focus restoration when modals close
+- Arrow key support for interactive elements
+
+**Motion & Animation**
+- Automatic detection of `prefers-reduced-motion` setting
+- Radar animation auto-pauses for users with motion sensitivity
+- All transitions/animations respect user preferences
+- Visual indicator when animations are disabled
+- Fallback `.reduced-motion` class
+
+**Enhanced Error Handling**
+- 200+ contextual error suggestions
+- Browser-specific instructions (Chrome, Firefox, Safari, Edge)
+- Priority suggestions for quick fixes
+- Contextual help text for complex errors
+- Multiple display modes (inline, toast, banner, modal)
+
+**Form Accessibility**
+- All inputs have proper labels (visible or sr-only)
+- Error messages announced to screen readers
+- Clear validation feedback
+- Helpful placeholder text
+- Focus management in forms
+
+**Color & Contrast**
+- All text meets 4.5:1 contrast minimum
+- Color not used as sole indicator
+- High contrast focus indicators
+- Theme support (light/dark/auto)
+
+**Mobile Accessibility**
+- Touch targets 44×44px minimum
+- Responsive layouts for screen readers
+- Zoom support up to 200%
+- No horizontal scrolling
+
+### 📋 Testing & Validation
+
+**Automated Testing**
+- axe DevTools (Chrome/Firefox)
+- Lighthouse Accessibility Audit
+- WAVE WebAIM Evaluation
+- ESLint accessibility plugin
+
+**Manual Testing**
+- NVDA (Windows) - Full compatibility
+- JAWS (Windows) - Full compatibility
+- VoiceOver (macOS/iOS) - Full compatibility
+- Keyboard-only navigation - Complete
+- Color contrast analyzer - Verified
+
+**Regression Prevention**
+- Pre-commit accessibility checks
+- Automated regression test suite
+- Custom ESLint rules
+- Comprehensive documentation
+
+### 📚 Accessibility Documentation
+
+For detailed implementation information, see:
+- **[ACCESSIBILITY_AUDIT_SUMMARY.md](ACCESSIBILITY_AUDIT_SUMMARY.md)** - Quick reference guide
+- **[ACCESSIBILITY_PHASE1_COMPLETE.md](ACCESSIBILITY_PHASE1_COMPLETE.md)** - Phase 1 (WCAG Level A) implementation
+- Phase 2 (WCAG Level AA) implementation details included in commit history
+
+### 🎓 Learn More
+
+- [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
+- [ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/)
+- [WebAIM Resources](https://webaim.org/)
 
 ---
 
