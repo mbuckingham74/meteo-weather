@@ -202,19 +202,6 @@ function WeatherDashboard() {
     return unit === 'F' ? Math.round(celsiusToFahrenheit(tempCelsius)) : Math.round(tempCelsius);
   };
 
-  // Get city name for button (extract first part of address, truncate if too long)
-  const getCityName = () => {
-    const address = data?.location?.address || locationData?.address || location || 'Location';
-
-    // If address is a placeholder, return "Your Location"
-    if (/^(old location|location|unknown|coordinates?|unnamed)$/i.test(address.trim())) {
-      return 'Your Location';
-    }
-
-    const cityName = address.split(',')[0].trim();
-    return cityName.length > 20 ? cityName.substring(0, 20) + '...' : cityName;
-  };
-
   // Format location name to show city name (extracted from address)
   const getFormattedLocationName = () => {
     const address =
@@ -256,6 +243,9 @@ function WeatherDashboard() {
 
   return (
     <div className="weather-dashboard">
+      {/* Main page heading for accessibility */}
+      <h1 className="sr-only">Meteo Weather Dashboard</h1>
+
       {/* Loading State */}
       {loading && <DashboardSkeleton />}
 
@@ -308,7 +298,7 @@ function WeatherDashboard() {
                     {/* Quick Stats Bar - Compact 5 column with conditions */}
                     <div className="hero-quick-stats">
                       <div className="hero-stat">
-                        <span className="hero-stat-icon">
+                        <span className="hero-stat-icon" aria-hidden="true">
                           {currentWeather.data.current.conditions?.toLowerCase().includes('rain')
                             ? '🌧️'
                             : currentWeather.data.current.conditions
@@ -327,28 +317,36 @@ function WeatherDashboard() {
                         <span className="hero-stat-label">Conditions</span>
                       </div>
                       <div className="hero-stat">
-                        <span className="hero-stat-icon">💧</span>
+                        <span className="hero-stat-icon" aria-hidden="true">
+                          💧
+                        </span>
                         <span className="hero-stat-value">
                           {data.forecast?.[0]?.precipProbability ?? 0}%
                         </span>
                         <span className="hero-stat-label">Precip Chance</span>
                       </div>
                       <div className="hero-stat">
-                        <span className="hero-stat-icon">💨</span>
+                        <span className="hero-stat-icon" aria-hidden="true">
+                          💨
+                        </span>
                         <span className="hero-stat-value">
                           {Math.round(currentWeather.data.current.windSpeed)} mph
                         </span>
                         <span className="hero-stat-label">Wind</span>
                       </div>
                       <div className="hero-stat">
-                        <span className="hero-stat-icon">💧</span>
+                        <span className="hero-stat-icon" aria-hidden="true">
+                          💧
+                        </span>
                         <span className="hero-stat-value">
                           {currentWeather.data.current.humidity}%
                         </span>
                         <span className="hero-stat-label">Humidity</span>
                       </div>
                       <div className="hero-stat">
-                        <span className="hero-stat-icon">🌧️</span>
+                        <span className="hero-stat-icon" aria-hidden="true">
+                          🌧️
+                        </span>
                         <span className="hero-stat-value">
                           {hourlyData?.data?.hourly
                             ? hourlyData.data.hourly
@@ -383,15 +381,22 @@ function WeatherDashboard() {
                       className="hero-action-btn"
                       onClick={handleDetectLocation}
                       disabled={detectingLocation}
+                      aria-label={
+                        detectingLocation ? 'Detecting location...' : 'Use my current location'
+                      }
                     >
-                      <span>{detectingLocation ? '🔄' : '📍'}</span>
+                      <span aria-hidden="true">{detectingLocation ? '🔄' : '📍'}</span>
                       {detectingLocation ? 'Detecting...' : 'Use My Location'}
                     </button>
-                    <a href="/compare" className="hero-action-btn">
-                      <span>📊</span> Compare
+                    <a href="/compare" className="hero-action-btn" aria-label="Compare locations">
+                      <span aria-hidden="true">📊</span> Compare
                     </a>
-                    <a href="/ai-weather" className="hero-action-btn">
-                      <span>🤖</span> Ask AI
+                    <a
+                      href="/ai-weather"
+                      className="hero-action-btn"
+                      aria-label="Ask AI weather assistant"
+                    >
+                      <span aria-hidden="true">🤖</span> Ask AI
                     </a>
                     <div className="hero-temp-toggle">
                       <TemperatureUnitToggle />
@@ -424,52 +429,68 @@ function WeatherDashboard() {
           {/* Forecast Section Header */}
           <div id="forecast-section" className="section-header forecast-header">
             <h3 className="section-title">
-              <span className="section-icon">📊</span>
+              <span className="section-icon" aria-hidden="true">
+                📊
+              </span>
               Forecast & Charts
             </h3>
           </div>
 
           {/* Tab Navigation */}
-          <div className="chart-tabs">
+          <div className="chart-tabs" role="tablist" aria-label="Chart categories">
             <button
               className={`chart-tab ${activeTab === 'forecast' ? 'active' : ''}`}
               onClick={() => setActiveTab('forecast')}
+              role="tab"
+              aria-selected={activeTab === 'forecast'}
+              aria-controls="chart-content"
             >
-              📈 Forecast
+              <span aria-hidden="true">📈</span> Forecast
             </button>
             <button
               className={`chart-tab ${activeTab === 'details' ? 'active' : ''}`}
               onClick={() => setActiveTab('details')}
+              role="tab"
+              aria-selected={activeTab === 'details'}
+              aria-controls="chart-content"
             >
-              🔍 Details
+              <span aria-hidden="true">🔍</span> Details
             </button>
             <button
               className={`chart-tab ${activeTab === 'historical' ? 'active' : ''}`}
               onClick={() => setActiveTab('historical')}
+              role="tab"
+              aria-selected={activeTab === 'historical'}
+              aria-controls="chart-content"
             >
-              📅 Historical
+              <span aria-hidden="true">📅</span> Historical
             </button>
             <button
               className={`chart-tab ${activeTab === 'air-quality' ? 'active' : ''}`}
               onClick={() => setActiveTab('air-quality')}
+              role="tab"
+              aria-selected={activeTab === 'air-quality'}
+              aria-controls="chart-content"
             >
-              💨 Air Quality
+              <span aria-hidden="true">💨</span> Air Quality
             </button>
           </div>
 
           {/* Charts */}
-          <ChartsGrid
-            activeTab={activeTab}
-            visibleCharts={visibleCharts}
-            data={data}
-            hourlyData={hourlyData}
-            thisDayHistory={thisDayHistory}
-            forecastComparison={forecastComparison}
-            recordTemps={recordTemps}
-            tempProbability={tempProbability}
-            unit={unit}
-            days={days}
-          />
+          <div id="chart-content" role="tabpanel" aria-labelledby={`tab-${activeTab}`}>
+            <ChartsGrid
+              activeTab={activeTab}
+              visibleCharts={visibleCharts}
+              data={data}
+              hourlyData={hourlyData}
+              thisDayHistory={thisDayHistory}
+              forecastComparison={forecastComparison}
+              recordTemps={recordTemps}
+              tempProbability={tempProbability}
+              unit={unit}
+              days={days}
+            />
+          </div>
 
           {/* API Cost Info */}
           {data.queryCost && (

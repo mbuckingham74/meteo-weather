@@ -1025,7 +1025,7 @@
 
 .toggle-all-button:hover {
   background: var(--hover-bg, #e5e7eb);
-  border-color: var(--text-tertiary, #9ca3af);
+  border-color: var(--text-tertiary, #6b7280);
 }
 
 .chart-nav-list {
@@ -1116,7 +1116,7 @@
 .dashboard-footer {
   text-align: center;
   padding: 16px;
-  color: #9ca3af;
+  color: #6b7280;
   font-size: 14px;
   border-top: 1px solid #e5e7eb;
   margin-top: 24px;

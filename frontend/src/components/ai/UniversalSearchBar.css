@@ -44,7 +44,9 @@
 
 .universal-input-wrapper:focus-within {
   border-color: #667eea;
-  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15), 0 8px 20px rgba(102, 126, 234, 0.2);
+  box-shadow:
+    0 0 0 4px rgba(102, 126, 234, 0.15),
+    0 8px 20px rgba(102, 126, 234, 0.2);
   transform: translateY(-2px);
 }
 
@@ -232,49 +234,51 @@
 }
 
 /* Light Theme Support */
-[data-theme="light"] .universal-hero-title {
+[data-theme='light'] .universal-hero-title {
   color: #1a1a1a;
 }
 
-[data-theme="light"] .universal-hero-subtitle {
+[data-theme='light'] .universal-hero-subtitle {
   color: #666;
 }
 
-[data-theme="light"] .universal-input-wrapper {
+[data-theme='light'] .universal-input-wrapper {
   background: white;
   border-color: #e0e0e0;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-[data-theme="light"] .universal-input-wrapper:focus-within {
+[data-theme='light'] .universal-input-wrapper:focus-within {
   border-color: #667eea;
-  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1), 0 8px 20px rgba(102, 126, 234, 0.15);
+  box-shadow:
+    0 0 0 4px rgba(102, 126, 234, 0.1),
+    0 8px 20px rgba(102, 126, 234, 0.15);
 }
 
-[data-theme="light"] .universal-search-input {
+[data-theme='light'] .universal-search-input {
   color: #333;
 }
 
-[data-theme="light"] .universal-search-input::placeholder {
+[data-theme='light'] .universal-search-input::placeholder {
   color: #666;
 }
 
-[data-theme="light"] .universal-examples {
+[data-theme='light'] .universal-examples {
   background: #f8f9fa;
   border-color: #dee2e6;
 }
 
-[data-theme="light"] .universal-example-chip {
+[data-theme='light'] .universal-example-chip {
   background: white;
   border-color: #dee2e6;
   color: #333;
 }
 
-[data-theme="light"] .universal-hint {
+[data-theme='light'] .universal-hint {
   background: #f8f9fa;
 }
 
-[data-theme="light"] .universal-examples-label {
+[data-theme='light'] .universal-examples-label {
   color: rgba(0, 0, 0, 0.87);
 }
 
@@ -473,7 +477,7 @@
 
 .tokens-used {
   font-size: 12px;
-  color: var(--text-tertiary, #9ca3af);
+  color: var(--text-tertiary, #6b7280);
   font-weight: 500;
 }
 
@@ -556,43 +560,43 @@
 }
 
 /* Light Theme for Inline Answer */
-[data-theme="light"] .ai-answer-inline {
+[data-theme='light'] .ai-answer-inline {
   background: white;
   border-color: #e5e7eb;
 }
 
-[data-theme="light"] .ai-answer-header {
+[data-theme='light'] .ai-answer-header {
   border-bottom-color: #e5e7eb;
 }
 
-[data-theme="light"] .ai-answer-title h3 {
+[data-theme='light'] .ai-answer-title h3 {
   color: #111827;
 }
 
-[data-theme="light"] .ai-answer-text p {
+[data-theme='light'] .ai-answer-text p {
   color: #111827;
 }
 
-[data-theme="light"] .visualization-card {
+[data-theme='light'] .visualization-card {
   background: #f9fafb;
   border-color: #e5e7eb;
 }
 
-[data-theme="light"] .follow-up-questions-inline {
+[data-theme='light'] .follow-up-questions-inline {
   border-top-color: #e5e7eb;
 }
 
-[data-theme="light"] .follow-up-label {
+[data-theme='light'] .follow-up-label {
   color: #6b7280;
 }
 
-[data-theme="light"] .follow-up-chip {
+[data-theme='light'] .follow-up-chip {
   background: #f3f4f6;
   border-color: #d1d5db;
   color: #111827;
 }
 
-[data-theme="light"] .follow-up-chip:hover {
+[data-theme='light'] .follow-up-chip:hover {
   background: #667eea;
   border-color: #667eea;
   color: white;

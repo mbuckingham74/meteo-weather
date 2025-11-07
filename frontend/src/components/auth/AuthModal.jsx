@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import './AuthModal.css';
 
@@ -76,16 +76,27 @@ function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
   };
 
   return (
-    <div className="auth-modal-overlay" onClick={handleClose}>
-      <div className="auth-modal" onClick={(e) => e.stopPropagation()}>
+    <div className="auth-modal-overlay" onClick={handleClose} role="presentation">
+      <div
+        className="auth-modal"
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="auth-modal-title"
+        aria-describedby="auth-modal-subtitle"
+      >
         <div className="auth-modal-header">
-          <button className="auth-modal-close" onClick={handleClose}>
-            ×
+          <button
+            className="auth-modal-close"
+            onClick={handleClose}
+            aria-label="Close authentication dialog"
+          >
+            <span aria-hidden="true">×</span>
           </button>
-          <h2 className="auth-modal-title">
+          <h2 id="auth-modal-title" className="auth-modal-title">
             {mode === 'login' ? 'Welcome Back' : 'Create Account'}
           </h2>
-          <p className="auth-modal-subtitle">
+          <p id="auth-modal-subtitle" className="auth-modal-subtitle">
             {mode === 'login'
               ? 'Sign in to access your weather preferences'
               : 'Join us to save your favorite locations and preferences'}
@@ -162,18 +173,26 @@ function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
               </div>
             )}
 
-            {error && <p className="form-error">{error}</p>}
-            {success && <p className="form-success">{success}</p>}
+            {error && (
+              <p className="form-error" role="alert" aria-live="polite">
+                {error}
+              </p>
+            )}
+            {success && (
+              <p className="form-success" role="alert" aria-live="polite">
+                {success}
+              </p>
+            )}
 
-            <button
-              type="submit"
-              className="auth-submit-button"
-              disabled={loading}
-            >
+            <button type="submit" className="auth-submit-button" disabled={loading}>
               {loading && <span className="auth-loading-spinner"></span>}
               {loading
-                ? mode === 'login' ? 'Signing in...' : 'Creating account...'
-                : mode === 'login' ? 'Sign In' : 'Create Account'}
+                ? mode === 'login'
+                  ? 'Signing in...'
+                  : 'Creating account...'
+                : mode === 'login'
+                  ? 'Sign In'
+                  : 'Create Account'}
             </button>
           </form>
         </div>

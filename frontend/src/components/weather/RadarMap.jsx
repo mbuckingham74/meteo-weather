@@ -506,28 +506,35 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
           className={`layer-toggle ${activeLayers.precipitation ? 'active' : ''}`}
           onClick={() => toggleLayer('precipitation')}
           title="Precipitation"
+          aria-label={`Toggle precipitation layer ${activeLayers.precipitation ? 'off' : 'on'}`}
+          aria-pressed={activeLayers.precipitation}
         >
-          💧
+          <span aria-hidden="true">💧</span>
         </button>
         <button
           className={`layer-toggle ${activeLayers.clouds ? 'active' : ''}`}
           onClick={() => toggleLayer('clouds')}
           title="Clouds"
+          aria-label={`Toggle clouds layer ${activeLayers.clouds ? 'off' : 'on'}`}
+          aria-pressed={activeLayers.clouds}
         >
-          ☁️
+          <span aria-hidden="true">☁️</span>
         </button>
         <button
           className={`layer-toggle ${activeLayers.temp ? 'active' : ''}`}
           onClick={() => toggleLayer('temp')}
           title="Temperature"
+          aria-label={`Toggle temperature layer ${activeLayers.temp ? 'off' : 'on'}`}
+          aria-pressed={activeLayers.temp}
         >
-          🌡️
+          <span aria-hidden="true">🌡️</span>
         </button>
         <div className="radar-controls-divider"></div>
         <button
           className="layer-toggle zoom-button"
           onClick={handleZoomIn}
           title="Zoom In"
+          aria-label="Zoom in on map"
           disabled={currentZoom >= 18}
         >
           +
@@ -536,6 +543,7 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
           className="layer-toggle zoom-button"
           onClick={handleZoomOut}
           title="Zoom Out"
+          aria-label="Zoom out on map"
           disabled={currentZoom <= 1}
         >
           −
@@ -546,33 +554,39 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
             className={`layer-toggle ${showAlerts ? 'active' : ''}`}
             onClick={() => setShowAlerts(!showAlerts)}
             title="Weather Alerts"
+            aria-label={`${showAlerts ? 'Hide' : 'Show'} weather alerts on map`}
+            aria-pressed={showAlerts}
           >
-            ⚠️
+            <span aria-hidden="true">⚠️</span>
           </button>
         )}
         <button
           className={`layer-toggle ${showStormTracking ? 'active' : ''}`}
           onClick={() => setShowStormTracking(!showStormTracking)}
           title="Storm Tracking"
+          aria-label={`${showStormTracking ? 'Disable' : 'Enable'} storm tracking`}
+          aria-pressed={showStormTracking}
           disabled={radarFrames.length < 2 || !activeLayers.precipitation}
         >
-          🌀
+          <span aria-hidden="true">🌀</span>
         </button>
         <button
           className="layer-toggle"
           onClick={handleDownloadScreenshot}
           title="Download Screenshot"
+          aria-label="Download radar map screenshot"
           disabled={isDownloading}
         >
-          📷
+          <span aria-hidden="true">📷</span>
         </button>
         <button
           className="layer-toggle"
           onClick={handleExportData}
           title="Export Frame Data"
+          aria-label="Export radar frame data as JSON"
           disabled={radarFrames.length === 0}
         >
-          💾
+          <span aria-hidden="true">💾</span>
         </button>
       </div>
 
@@ -582,13 +596,16 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
           className="animation-button"
           onClick={togglePlayPause}
           title={isPlaying ? 'Pause' : 'Play animation'}
+          aria-label={isPlaying ? 'Pause radar animation' : 'Play radar animation'}
+          aria-pressed={isPlaying}
         >
-          {isPlaying ? '⏸' : '▶'}
+          <span aria-hidden="true">{isPlaying ? '⏸' : '▶'}</span>
         </button>
         <button
           className="animation-button speed-button"
           onClick={changeSpeed}
           title={`Speed: ${animationSpeed}x`}
+          aria-label={`Change animation speed, current speed is ${animationSpeed}x`}
         >
           {animationSpeed}x
         </button>
@@ -596,8 +613,10 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
           className="animation-button"
           onClick={() => setShowFrameSelector(!showFrameSelector)}
           title="Select specific time"
+          aria-label="Select specific radar time frame"
+          aria-expanded={showFrameSelector}
         >
-          🕐
+          <span aria-hidden="true">🕐</span>
         </button>
         <div
           className="animation-timestamp"
@@ -617,6 +636,13 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
               setIsPlaying(false);
             }
           }}
+          role="slider"
+          aria-label="Radar animation progress"
+          aria-valuemin={0}
+          aria-valuemax={radarFrames.length - 1}
+          aria-valuenow={currentFrame}
+          aria-valuetext={getFrameTimestamp()}
+          tabIndex={0}
           style={{ cursor: 'pointer' }}
         >
           <div
@@ -633,10 +659,19 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
 
       {/* Frame Selector Dropdown */}
       {showFrameSelector && radarFrames.length > 0 && (
-        <div className="frame-selector-dropdown">
+        <div
+          className="frame-selector-dropdown"
+          role="dialog"
+          aria-label="Radar time frame selector"
+        >
           <div className="frame-selector-header">
             <span>Select Time</span>
-            <button onClick={() => setShowFrameSelector(false)}>✕</button>
+            <button
+              onClick={() => setShowFrameSelector(false)}
+              aria-label="Close time frame selector"
+            >
+              <span aria-hidden="true">✕</span>
+            </button>
           </div>
           <div className="frame-selector-list">
             {radarFrames.map((frame, index) => (

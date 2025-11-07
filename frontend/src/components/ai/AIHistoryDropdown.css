@@ -97,7 +97,7 @@
 .history-empty-hint {
   font-size: 14px !important;
   font-weight: 400 !important;
-  color: var(--text-tertiary, #9ca3af) !important;
+  color: var(--text-tertiary, #6b7280) !important;
 }
 
 .history-items {
@@ -135,7 +135,7 @@
 
 .history-timestamp {
   font-size: 11px;
-  color: var(--text-tertiary, #9ca3af);
+  color: var(--text-tertiary, #6b7280);
 }
 
 .history-question {
@@ -178,7 +178,7 @@
   padding: 0;
   font-size: 18px;
   line-height: 1;
-  color: var(--text-tertiary, #9ca3af);
+  color: var(--text-tertiary, #6b7280);
   background: transparent;
   border: none;
   border-radius: 4px;
@@ -192,34 +192,34 @@
 }
 
 /* Dark mode */
-[data-theme="dark"] .history-toggle-button {
+[data-theme='dark'] .history-toggle-button {
   background: var(--bg-elevated, #1f2937);
   color: var(--text-primary, #f9fafb);
   border-color: var(--border-color, #374151);
 }
 
-[data-theme="dark"] .history-dropdown-menu {
+[data-theme='dark'] .history-dropdown-menu {
   background: var(--bg-elevated, #1f2937);
   border-color: var(--border-color, #374151);
 }
 
-[data-theme="dark"] .history-dropdown-header {
+[data-theme='dark'] .history-dropdown-header {
   border-bottom-color: var(--border-color, #374151);
 }
 
-[data-theme="dark"] .history-dropdown-header h3 {
+[data-theme='dark'] .history-dropdown-header h3 {
   color: var(--text-primary, #f9fafb);
 }
 
-[data-theme="dark"] .history-item {
+[data-theme='dark'] .history-item {
   border-bottom-color: var(--border-color, #374151);
 }
 
-[data-theme="dark"] .history-item:hover {
+[data-theme='dark'] .history-item:hover {
   background: var(--bg-tertiary, #111827);
 }
 
-[data-theme="dark"] .history-question {
+[data-theme='dark'] .history-question {
   color: var(--text-primary, #f9fafb);
 }
 

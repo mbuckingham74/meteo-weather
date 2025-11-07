@@ -123,19 +123,19 @@
   display: inline-block;
 }
 
-.location-accuracy[data-accuracy-color="green"] {
+.location-accuracy[data-accuracy-color='green'] {
   background: var(--success-bg, #d1fae5);
   color: var(--success-text, #065f46);
   border: 1px solid var(--success-border, #6ee7b7);
 }
 
-.location-accuracy[data-accuracy-color="blue"] {
+.location-accuracy[data-accuracy-color='blue'] {
   background: var(--info-bg, #dbeafe);
   color: var(--info-text, #1e40af);
   border: 1px solid var(--info-border, #93c5fd);
 }
 
-.location-accuracy[data-accuracy-color="orange"] {
+.location-accuracy[data-accuracy-color='orange'] {
   background: var(--warning-bg, #fef3c7);
   color: var(--warning-text, #92400e);
   border: 1px solid var(--warning-border, #fcd34d);
@@ -238,7 +238,7 @@
 
 .modal-btn-secondary:hover {
   background: var(--bg-secondary, #e5e7eb);
-  border-color: var(--text-tertiary, #9ca3af);
+  border-color: var(--text-tertiary, #6b7280);
 }
 
 .modal-btn-secondary:active {

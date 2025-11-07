@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import './WeatherAlertsBanner.css';
 
 /**
@@ -31,6 +31,13 @@ function WeatherAlertsBanner({ alerts }) {
     setExpandedAlert(expandedAlert === index ? null : index);
   };
 
+  const handleKeyDown = (e, index) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      toggleAlert(index);
+    }
+  };
+
   return (
     <div className="weather-alerts-container">
       {alerts.map((alert, index) => {
@@ -46,34 +53,33 @@ function WeatherAlertsBanner({ alerts }) {
             <div
               className="alert-header"
               onClick={() => toggleAlert(index)}
+              onKeyDown={(e) => handleKeyDown(e, index)}
+              role="button"
+              tabIndex={0}
+              aria-expanded={isExpanded}
+              aria-label={`${alert.event} alert. ${isExpanded ? 'Collapse' : 'Expand'} for more details`}
               style={{ cursor: 'pointer' }}
             >
               <div className="alert-header-content">
-                <span className="alert-icon" style={{ color: style.color }}>
+                <span className="alert-icon" style={{ color: style.color }} aria-hidden="true">
                   {style.icon}
                 </span>
                 <div className="alert-title-section">
                   <h4 className="alert-title">{alert.event}</h4>
                   {alert.onset && (
-                    <span className="alert-time">
-                      {new Date(alert.onset).toLocaleString()}
-                    </span>
+                    <span className="alert-time">{new Date(alert.onset).toLocaleString()}</span>
                   )}
                 </div>
               </div>
-              <button className="alert-expand-button">
+              <span className="alert-expand-button" aria-hidden="true">
                 {isExpanded ? '▼' : '▶'}
-              </button>
+              </span>
             </div>
 
             {isExpanded && (
               <div className="alert-body">
-                {alert.headline && (
-                  <p className="alert-headline">{alert.headline}</p>
-                )}
-                {alert.description && (
-                  <p className="alert-description">{alert.description}</p>
-                )}
+                {alert.headline && <p className="alert-headline">{alert.headline}</p>}
+                {alert.description && <p className="alert-description">{alert.description}</p>}
                 {alert.ends && (
                   <p className="alert-ends">
                     <strong>Ends:</strong> {new Date(alert.ends).toLocaleString()}

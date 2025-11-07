@@ -10,11 +10,11 @@
   --text-primary: #111827;
   --text-secondary: #374151;
   --text-tertiary: #6b7280;
-  --text-disabled: #9ca3af;
+  --text-disabled: #6b7280;
 
   --border-light: #e5e7eb;
   --border-medium: #d1d5db;
-  --border-dark: #9ca3af;
+  --border-dark: #6b7280;
 
   --accent-primary: #667eea;
   --accent-secondary: #764ba2;
@@ -82,7 +82,7 @@
   --text-primary: #f9fafb;
   --text-secondary: #e5e7eb;
   --text-tertiary: #d1d5db;
-  --text-disabled: #9ca3af;
+  --text-disabled: #6b7280;
 
   --border-light: #374151;
   --border-medium: #4b5563;
@@ -144,7 +144,9 @@
 body {
   background-color: var(--bg-secondary);
   color: var(--text-primary);
-  transition: background-color var(--transition-normal), color var(--transition-normal);
+  transition:
+    background-color var(--transition-normal),
+    color var(--transition-normal);
 }
 
 /* Smooth transitions for theme changes */

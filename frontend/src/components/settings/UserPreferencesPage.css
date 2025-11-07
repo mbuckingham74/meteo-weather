@@ -76,8 +76,8 @@
   color: var(--text-primary, #111827);
 }
 
-.form-group input[type="text"],
-.form-group input[type="time"],
+.form-group input[type='text'],
+.form-group input[type='time'],
 .form-group select {
   padding: 0.75rem;
   font-size: 1rem;
@@ -97,7 +97,7 @@
 
 .help-text {
   font-size: 0.875rem;
-  color: var(--text-tertiary, #9ca3af);
+  color: var(--text-tertiary, #6b7280);
   margin: 0;
 }
 
@@ -119,7 +119,7 @@
   margin: 0;
 }
 
-.checkbox-label input[type="checkbox"] {
+.checkbox-label input[type='checkbox'] {
   width: 20px;
   height: 20px;
   cursor: pointer;
@@ -159,7 +159,7 @@
 
 .search-result-item .coordinates {
   font-size: 0.85rem;
-  color: var(--text-tertiary, #9ca3af);
+  color: var(--text-tertiary, #6b7280);
 }
 
 /* Report Locations List */
@@ -173,7 +173,7 @@
 .no-locations {
   text-align: center;
   padding: 2rem;
-  color: var(--text-tertiary, #9ca3af);
+  color: var(--text-tertiary, #6b7280);
   font-style: italic;
 }
 
