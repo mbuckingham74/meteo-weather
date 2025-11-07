@@ -1,5 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
+import {
+  formatErrorWithSuggestions,
+  getContextualHelp,
+  getPrioritySuggestion,
+} from '../../utils/errorSuggestions';
 import './ErrorMessage.css';
 
 /**
@@ -45,6 +50,8 @@ const ErrorMessage = ({
   dismissible = true,
   showIcon = true,
   showCode = false,
+  showSuggestions = true,
+  maxSuggestions = 3,
   className = '',
   retryLabel = 'Retry',
   dismissLabel = '✕',
@@ -57,6 +64,22 @@ const ErrorMessage = ({
   // Extract error message and code
   const errorMessage = typeof error === 'string' ? error : error?.message || 'An error occurred';
   const errorCode = error?.code || null;
+
+  // Get error suggestions and contextual help
+  const errorWithSuggestions = errorCode
+    ? formatErrorWithSuggestions(errorMessage, errorCode)
+    : { message: errorMessage, suggestions: [] };
+
+  const contextualHelp = errorCode ? getContextualHelp(errorCode) : null;
+  const prioritySuggestion = errorCode ? getPrioritySuggestion(errorCode) : null;
+
+  // Determine which suggestions to show based on mode
+  const suggestionsToShow =
+    mode === 'toast' || mode === 'inline'
+      ? prioritySuggestion
+        ? [prioritySuggestion]
+        : []
+      : errorWithSuggestions.suggestions?.slice(0, maxSuggestions) || [];
 
   // Auto-dismiss logic
   useEffect(() => {
@@ -156,6 +179,29 @@ const ErrorMessage = ({
         <div className="error-message__content">
           <span className="error-message__text">{errorMessage}</span>
           {showCode && errorCode && <span className="error-message__code">({errorCode})</span>}
+
+          {/* Contextual help text */}
+          {contextualHelp && mode !== 'toast' && (
+            <p className="error-message__help" role="note">
+              {contextualHelp}
+            </p>
+          )}
+
+          {/* Error suggestions */}
+          {showSuggestions && suggestionsToShow.length > 0 && (
+            <div className="error-message__suggestions" role="region" aria-label="Suggestions">
+              <p className="error-message__suggestions-label">
+                {mode === 'toast' || mode === 'inline' ? 'Try this:' : 'Try these solutions:'}
+              </p>
+              <ul className="error-message__suggestions-list">
+                {suggestionsToShow.map((suggestion, index) => (
+                  <li key={index} className="error-message__suggestion-item">
+                    {suggestion}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
         <div className="error-message__actions">
           {onRetry && (
@@ -248,6 +294,12 @@ ErrorMessage.propTypes = {
 
   /** Show error code (development mode) */
   showCode: PropTypes.bool,
+
+  /** Show error suggestions (WCAG 3.3.3 Level AA) */
+  showSuggestions: PropTypes.bool,
+
+  /** Maximum number of suggestions to show */
+  maxSuggestions: PropTypes.number,
 
   /** Additional CSS class name */
   className: PropTypes.string,

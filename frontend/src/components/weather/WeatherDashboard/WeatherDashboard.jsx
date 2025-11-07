@@ -97,6 +97,17 @@ function WeatherDashboard() {
     }
   }, [locationData?.address, announce]);
 
+  // Announce weather data loading status to screen readers
+  useEffect(() => {
+    if (loading) {
+      announce('Loading weather data...');
+    } else if (error) {
+      announce(`Error loading weather data: ${error}`);
+    } else if (data) {
+      announce('Weather data loaded successfully');
+    }
+  }, [loading, error, data, announce]);
+
   // Auto-detect location on home page if no location saved
   useEffect(() => {
     const isHomePage = routerLocation.pathname === '/';
@@ -245,6 +256,13 @@ function WeatherDashboard() {
     <div className="weather-dashboard">
       {/* Main page heading for accessibility */}
       <h1 className="sr-only">Meteo Weather Dashboard</h1>
+
+      {/* Live region for screen reader announcements */}
+      <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
+        {loading && 'Loading weather data...'}
+        {error && `Error: ${error}`}
+        {!loading && !error && data && 'Weather data loaded'}
+      </div>
 
       {/* Loading State */}
       {loading && <DashboardSkeleton />}

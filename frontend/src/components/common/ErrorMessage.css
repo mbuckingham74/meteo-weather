@@ -322,6 +322,108 @@
   background: white;
 }
 
+/* ==================== SUGGESTIONS (WCAG 3.3.3 Level AA) ==================== */
+
+.error-message__help {
+  margin: 8px 0 0 0;
+  font-size: 13px;
+  color: #6b7280;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.error-message__suggestions {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.error-message__suggestions-label {
+  margin: 0 0 8px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.error-message__suggestions-list {
+  margin: 0;
+  padding: 0 0 0 20px;
+  list-style: none;
+}
+
+.error-message__suggestion-item {
+  position: relative;
+  margin: 6px 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.85);
+  padding-left: 0;
+}
+
+.error-message__suggestion-item::before {
+  content: '•';
+  position: absolute;
+  left: -16px;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: bold;
+}
+
+/* Toast mode - compact suggestions */
+.error-message--toast .error-message__suggestions {
+  margin-top: 8px;
+  padding-top: 8px;
+}
+
+.error-message--toast .error-message__suggestions-label {
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.error-message--toast .error-message__suggestion-item {
+  font-size: 12px;
+  margin: 4px 0;
+}
+
+/* Inline mode - minimal suggestions */
+.error-message--inline .error-message__suggestions {
+  border-top: 1px solid #e5e7eb;
+  margin-top: 8px;
+  padding-top: 8px;
+}
+
+.error-message--inline .error-message__suggestions-label {
+  color: #374151;
+}
+
+.error-message--inline .error-message__suggestion-item {
+  color: #4b5563;
+}
+
+.error-message--inline .error-message__suggestion-item::before {
+  color: #9ca3af;
+}
+
+/* Banner mode - full suggestions */
+.error-message--banner .error-message__suggestions {
+  margin-top: 12px;
+}
+
+/* Modal mode - prominent suggestions */
+.error-message--modal .error-message__suggestions {
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  margin-top: 16px;
+  padding-top: 16px;
+}
+
+.error-message--modal .error-message__suggestions-label {
+  font-size: 14px;
+}
+
+.error-message--modal .error-message__suggestion-item {
+  font-size: 14px;
+  margin: 8px 0;
+}
+
 /* ==================== RESPONSIVE ==================== */
 
 @media (max-width: 640px) {

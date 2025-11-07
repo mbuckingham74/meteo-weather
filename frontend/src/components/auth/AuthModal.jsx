@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import './AuthModal.css';
 
@@ -19,7 +19,9 @@ function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
   const [name, setName] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  if (!isOpen) return null;
+  // Refs for focus management
+  const modalRef = useRef(null);
+  const previousFocusRef = useRef(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -75,9 +77,65 @@ function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
     setSuccess(null);
   };
 
+  // Focus trap and keyboard navigation
+  useEffect(() => {
+    if (!isOpen || !modalRef.current) return;
+
+    // Store the element that had focus before opening modal
+    previousFocusRef.current = document.activeElement;
+
+    // Get all focusable elements in the modal
+    const focusableElements = modalRef.current.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    // Focus the first element when modal opens
+    setTimeout(() => firstElement?.focus(), 100);
+
+    // Handle keyboard navigation
+    const handleKeyDown = (e) => {
+      // Close on Escape
+      if (e.key === 'Escape' && !loading) {
+        handleClose();
+        return;
+      }
+
+      // Tab key focus trap
+      if (e.key === 'Tab') {
+        if (e.shiftKey) {
+          // Shift + Tab: wrap to last element
+          if (document.activeElement === firstElement) {
+            lastElement.focus();
+            e.preventDefault();
+          }
+        } else {
+          // Tab: wrap to first element
+          if (document.activeElement === lastElement) {
+            firstElement.focus();
+            e.preventDefault();
+          }
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    // Cleanup: restore focus when modal closes
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      previousFocusRef.current?.focus();
+    };
+  }, [isOpen, loading]);
+
+  // Return null if modal is not open - MUST be after all hooks
+  if (!isOpen) return null;
+
   return (
     <div className="auth-modal-overlay" onClick={handleClose} role="presentation">
       <div
+        ref={modalRef}
         className="auth-modal"
         onClick={(e) => e.stopPropagation()}
         role="dialog"

@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect, useRef } from 'react';
 import './LocationConfirmationModal.css';
 
 /**
@@ -7,6 +7,8 @@ import './LocationConfirmationModal.css';
  * Helps catch VPN/IP geolocation errors
  */
 function LocationConfirmationModal({ location, onConfirm, onReject, onClose }) {
+  const modalRef = useRef(null);
+  const previousFocusRef = useRef(null);
   const getAccuracyLabel = (accuracy, method) => {
     if (method === 'ip') {
       return { icon: '🌐', label: 'City-level (IP)', color: 'orange' };
@@ -27,12 +29,76 @@ function LocationConfirmationModal({ location, onConfirm, onReject, onClose }) {
 
   const accuracyInfo = getAccuracyLabel(location?.accuracy, location?.method);
 
+  // Focus trap and keyboard navigation
+  useEffect(() => {
+    if (!modalRef.current) return;
+
+    // Store the element that had focus before opening modal
+    previousFocusRef.current = document.activeElement;
+
+    // Get all focusable elements in the modal
+    const focusableElements = modalRef.current.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    // Focus the first element when modal opens
+    setTimeout(() => firstElement?.focus(), 100);
+
+    // Handle keyboard navigation
+    const handleKeyDown = (e) => {
+      // Close on Escape
+      if (e.key === 'Escape') {
+        onClose();
+        return;
+      }
+
+      // Tab key focus trap
+      if (e.key === 'Tab') {
+        if (e.shiftKey) {
+          // Shift + Tab: wrap to last element
+          if (document.activeElement === firstElement) {
+            lastElement.focus();
+            e.preventDefault();
+          }
+        } else {
+          // Tab: wrap to first element
+          if (document.activeElement === lastElement) {
+            firstElement.focus();
+            e.preventDefault();
+          }
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    // Cleanup: restore focus when modal closes
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      previousFocusRef.current?.focus();
+    };
+  }, [onClose]);
+
   return (
-    <div className="location-modal-overlay" onClick={onClose}>
-      <div className="location-modal-content" onClick={(e) => e.stopPropagation()}>
+    <div className="location-modal-overlay" onClick={onClose} role="presentation">
+      <div
+        ref={modalRef}
+        className="location-modal-content"
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="location-modal-title"
+        aria-describedby="location-modal-description"
+      >
         <div className="location-modal-header">
-          <h3>📍 Confirm Your Location</h3>
-          <button className="modal-close-btn" onClick={onClose} aria-label="Close">
+          <h3 id="location-modal-title">📍 Confirm Your Location</h3>
+          <button
+            className="modal-close-btn"
+            onClick={onClose}
+            aria-label="Close location confirmation dialog"
+          >
             ✕
           </button>
         </div>
@@ -71,7 +137,7 @@ function LocationConfirmationModal({ location, onConfirm, onReject, onClose }) {
           </div>
 
           <div className="confirmation-question">
-            <p>Is this your current location?</p>
+            <p id="location-modal-description">Is this your current location?</p>
           </div>
         </div>
 

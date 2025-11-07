@@ -60,6 +60,10 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
   const center = [latitude, longitude];
   const OPENWEATHER_API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
 
+  // Check for user's motion preference
+  const prefersReducedMotion =
+    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   const [activeLayers, setActiveLayers] = useState({
     precipitation: true,
     clouds: true,
@@ -73,7 +77,7 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
   // Zoom state
   const [currentZoom, setCurrentZoom] = useState(zoom);
 
-  // Animation state
+  // Animation state - default to paused if user prefers reduced motion
   const [isPlaying, setIsPlaying] = useState(false);
   const [animationSpeed, setAnimationSpeed] = useState(1); // 1x, 2x, 0.5x
   const [currentFrame, setCurrentFrame] = useState(0);
@@ -188,8 +192,14 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
     };
   }, []);
 
-  // Animation loop effect
+  // Animation loop effect - respects reduced motion preference
   useEffect(() => {
+    // Disable animation if user prefers reduced motion
+    if (prefersReducedMotion && isPlaying) {
+      setIsPlaying(false);
+      return;
+    }
+
     if (isPlaying && radarFrames.length > 0) {
       const frameDelay = 1000 / animationSpeed; // Delay between frames
 
@@ -199,11 +209,13 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
           return (prev + 1) % radarFrames.length;
         });
 
-        // Pulse effect - fade in/out to show updates
-        setOpacity((prev) => {
-          if (prev === 0.6) return 0.4;
-          return 0.6;
-        });
+        // Pulse effect - fade in/out to show updates (disabled for reduced motion)
+        if (!prefersReducedMotion) {
+          setOpacity((prev) => {
+            if (prev === 0.6) return 0.4;
+            return 0.6;
+          });
+        }
       }, frameDelay);
     } else {
       if (animationIntervalRef.current) {
@@ -218,7 +230,7 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
         clearInterval(animationIntervalRef.current);
       }
     };
-  }, [isPlaying, animationSpeed, radarFrames.length]);
+  }, [isPlaying, animationSpeed, radarFrames.length, prefersReducedMotion]);
 
   // Early return if API key missing - must be AFTER all hooks
   if (!OPENWEATHER_API_KEY) {
@@ -595,9 +607,23 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
         <button
           className="animation-button"
           onClick={togglePlayPause}
-          title={isPlaying ? 'Pause' : 'Play animation'}
-          aria-label={isPlaying ? 'Pause radar animation' : 'Play radar animation'}
+          title={
+            prefersReducedMotion
+              ? 'Animation disabled (reduced motion preference)'
+              : isPlaying
+                ? 'Pause'
+                : 'Play animation'
+          }
+          aria-label={
+            prefersReducedMotion
+              ? 'Animation disabled due to reduced motion preference'
+              : isPlaying
+                ? 'Pause radar animation'
+                : 'Play radar animation'
+          }
           aria-pressed={isPlaying}
+          disabled={prefersReducedMotion}
+          style={{ opacity: prefersReducedMotion ? 0.5 : 1 }}
         >
           <span aria-hidden="true">{isPlaying ? '⏸' : '▶'}</span>
         </button>

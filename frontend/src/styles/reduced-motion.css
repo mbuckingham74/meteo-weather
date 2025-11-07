@@ -1,0 +1,157 @@
+/**
+ * Reduced Motion Support
+ * Respects user's prefers-reduced-motion setting
+ * WCAG 2.1 Level AAA - 2.3.3 Animation from Interactions
+ * Phase 2 Accessibility Enhancement
+ */
+
+@media (prefers-reduced-motion: reduce) {
+  /* Global animation and transition reset */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Modal animations - instant display instead of fading/sliding */
+  .auth-modal-overlay,
+  .location-modal-overlay,
+  .error-modal-backdrop {
+    animation: none !important;
+  }
+
+  .auth-modal,
+  .location-modal-content,
+  .error-modal-dialog {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  /* Toast/Banner animations - instant display */
+  .error-toast,
+  .error-banner {
+    animation: none !important;
+    transform: translateX(-50%) translateY(0) !important;
+  }
+
+  /* Alert expansion - instant instead of sliding */
+  .alert-body {
+    animation: none !important;
+  }
+
+  /* Loading spinners - reduced to simple pulsing opacity */
+  .loading-spinner,
+  .auth-loading-spinner,
+  .radar-loading-spinner {
+    animation: reduced-pulse 2s ease-in-out infinite !important;
+  }
+
+  @keyframes reduced-pulse {
+    0%,
+    100% {
+      opacity: 0.6;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  /* Radar map - disable rotation animation */
+  .radar-loading-spinner {
+    animation: reduced-pulse 2s ease-in-out infinite !important;
+  }
+
+  /* Pulse animations - reduce to subtle fade */
+  .pulse-alert,
+  .favorite-item.loading {
+    animation: reduced-pulse 2s ease-in-out infinite !important;
+  }
+
+  /* Hover/focus transitions - instant instead of smooth */
+  button:hover,
+  a:hover,
+  .card:hover {
+    transition: none !important;
+  }
+
+  /* Chart animations - instant rendering */
+  .recharts-wrapper {
+    animation: none !important;
+  }
+
+  /* Comparison view animations - instant */
+  .comparison-card,
+  .comparison-chart {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  /* Skip to content link - instant appearance */
+  .skip-to-content:focus {
+    transition: none !important;
+  }
+
+  /* Progress bars - instant updates */
+  .radar-progress-bar,
+  .loading-bar {
+    transition: none !important;
+  }
+
+  /* Tooltip/dropdown appearances - instant */
+  .tooltip,
+  .dropdown-menu,
+  .ai-history-dropdown {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* Error shake animations - disable completely */
+  .form-error,
+  .error-message {
+    animation: none !important;
+  }
+
+  /* Background gradients - static instead of animated */
+  .animated-gradient {
+    background-attachment: scroll !important;
+    animation: none !important;
+  }
+
+  /* Scale/transform animations - instant */
+  .scale-animation,
+  .transform-animation {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  /* Parallax scrolling - disable */
+  .parallax {
+    background-attachment: scroll !important;
+    transform: none !important;
+  }
+}
+
+/**
+ * Fallback for browsers that don't support prefers-reduced-motion
+ * Provide a .reduced-motion class that can be toggled by user preference
+ */
+.reduced-motion,
+.reduced-motion *,
+.reduced-motion *::before,
+.reduced-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+.reduced-motion .loading-spinner,
+.reduced-motion .auth-loading-spinner,
+.reduced-motion .radar-loading-spinner,
+.reduced-motion .pulse-alert,
+.reduced-motion .favorite-item.loading {
+  animation: reduced-pulse 2s ease-in-out infinite !important;
+}

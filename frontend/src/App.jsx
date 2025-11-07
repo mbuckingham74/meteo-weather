@@ -25,6 +25,7 @@ import { parseLocationSlug } from './utils/urlHelpers';
 import { geocodeLocation } from './services/weatherApi';
 import './styles/themes.css';
 import './App.css';
+import './styles/reduced-motion.css'; // Accessibility: reduced motion support
 import './styles/density-compact.css'; // MUST be last to override component styles
 
 function RouteAwareLocationManager() {
