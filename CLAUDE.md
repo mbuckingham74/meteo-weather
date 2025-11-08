@@ -106,6 +106,17 @@
 
 ### Recent Work (Nov 2025)
 
+- ✅ **Global CSS Refactor - Phase 3.2 Part 2 Complete** (Nov 8, 2025)
+  - **Fixed 6 Critical CSS Issues:** Responsive bugs, keyframe collisions, performance, ITCSS violations, accessibility, dark theme
+  - **Responsive:** Hero grid now fluid (minmax(320px, 600px)), collapses to single column @ 960px
+  - **Animations:** Resolved fadeIn collision (aiAnswerFadeIn vs searchHintFadeIn)
+  - **Performance:** Removed global `* { transition }` selector, created opt-in `.theme-transition` class
+  - **ITCSS:** Split themes.css → theme-variables.css (Settings) + theme-base.css (Elements)
+  - **Accessibility:** Raised font minimums to 12px (was 7-11px), WCAG compliant
+  - **Dark Theme:** RadarMap now fully themed with CSS variables, removed 130 lines of dark mode overrides
+  - **Impact:** Better UX, cleaner architecture, improved performance, full accessibility
+  - **Documentation:** CSS_PHASE_3.2_PART2_COMPLETE.md (comprehensive guide)
+
 - ✅ **Global CSS Refactor - Phase 3.1 Complete** (Nov 8, 2025)
   - **Phase 3.1:** PurgeCSS Integration (-33.73 kB, -18.1% CSS bundle reduction)
   - **CSS Bundle:** 186.83 kB → 153.10 kB (gzip: 34.68 kB → 28.93 kB, -16.6%)
@@ -113,7 +124,6 @@
   - **Preserved:** All ITCSS utilities (.u-*), objects (.o-*), third-party (Leaflet), dynamic classes
   - **Impact:** Faster page loads, reduced bandwidth, automatic unused CSS removal
   - **Documentation:** CSS_PHASE_3.1_COMPLETE.md (comprehensive 500+ line guide)
-  - **Next:** Phase 3.2 (Remove global transitions), Phase 3.3 (CSS linting)
 
 - ✅ **Global CSS Refactor - Phase 2 Complete** (Nov 8, 2025)
   - **Phase 2.1:** ITCSS architecture (+5.73 kB, organized CSS by specificity)

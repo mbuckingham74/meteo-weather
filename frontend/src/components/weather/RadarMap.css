@@ -3,7 +3,8 @@
   width: 100%;
   border-radius: var(--radius-md);
   overflow: hidden;
-  background: #e0e0e0;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-light);
   margin-top: 12px;
 }
 
@@ -14,7 +15,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg-elevated);
+  opacity: 0.95;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -26,8 +28,8 @@
 .radar-spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid #e5e7eb;
-  border-top-color: #10b981;
+  border: 4px solid var(--border-light);
+  border-top-color: var(--accent-primary);
   border-radius: 50%;
   animation: radar-spin 0.8s linear infinite;
 }
@@ -51,25 +53,25 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
+  background: var(--error-bg);
+  border: 1px solid var(--error-border);
   border-radius: var(--radius-md);
   margin-top: 12px;
 }
 
 .radar-map-error p {
   margin: var(--spacing-xs) 0;
-  color: #991b1b;
+  color: var(--error-text);
 }
 
 .radar-map-error .error-hint {
   font-size: 12px;
-  color: #dc2626;
+  color: var(--error-text);
 }
 
 /* Leaflet map overrides */
 .radar-map-container .leaflet-container {
-  background: #d4d4d4;
+  background: var(--bg-secondary);
   font-family: inherit;
 }
 
@@ -101,7 +103,8 @@
 }
 
 .layer-toggle {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg-elevated);
+  opacity: 0.95;
   border: 2px solid transparent;
   border-radius: var(--radius-sm);
   padding: var(--spacing-sm) 10px;
@@ -110,18 +113,20 @@
   transition:
     transform 0.2s,
     box-shadow 0.2s;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-sm);
   backdrop-filter: blur(4px);
+  color: var(--text-primary);
 }
 
 .layer-toggle:hover {
   transform: translateY(-1px);
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-md);
 }
 
 .layer-toggle.active {
-  border-color: #10b981;
-  background: rgba(102, 126, 234, 0.15);
+  border-color: var(--accent-primary);
+  background: var(--accent-bg);
+  opacity: 1;
 }
 
 .layer-toggle:disabled {
@@ -133,40 +138,14 @@
 .layer-toggle.zoom-button {
   font-size: 22px;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--text-primary);
   line-height: 1;
   padding: 6px 12px;
   min-width: 38px;
 }
 
 .layer-toggle.zoom-button:hover {
-  color: #10b981;
-}
-
-/* Dark mode support for zoom buttons */
-[data-theme='dark'] .layer-toggle.zoom-button {
-  color: #f3f4f6;
-  background: rgba(31, 41, 55, 0.95);
-  border-color: rgba(255, 255, 255, 0.1);
-}
-
-[data-theme='dark'] .layer-toggle.zoom-button:hover {
-  color: #a5b4fc;
-  background: rgba(55, 65, 81, 0.95);
-}
-
-/* System dark mode support */
-@media (prefers-color-scheme: dark) {
-  [data-theme='auto'] .layer-toggle.zoom-button {
-    color: #f3f4f6;
-    background: rgba(31, 41, 55, 0.95);
-    border-color: rgba(255, 255, 255, 0.1);
-  }
-
-  [data-theme='auto'] .layer-toggle.zoom-button:hover {
-    color: #a5b4fc;
-    background: rgba(55, 65, 81, 0.95);
-  }
+  color: var(--accent-primary);
 }
 
 .radar-controls-divider {
@@ -185,20 +164,22 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg-elevated);
+  opacity: 0.95;
   padding: var(--spacing-sm) 12px;
   border-radius: var(--radius-sm);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-sm);
   backdrop-filter: blur(4px);
   z-index: 1000;
 }
 
 .animation-button {
-  background: white;
-  border: 2px solid #e5e7eb;
+  background: var(--bg-primary);
+  border: 2px solid var(--border-light);
   border-radius: var(--radius-sm);
   padding: 6px 12px;
   font-size: var(--font-lg);
+  color: var(--text-primary);
   cursor: pointer;
   transition:
     border-color 0.2s,
@@ -210,8 +191,8 @@
 }
 
 .animation-button:hover {
-  border-color: #10b981;
-  background: #f9fafb;
+  border-color: var(--accent-primary);
+  background: var(--bg-tertiary);
 }
 
 .animation-button:active {
@@ -221,13 +202,13 @@
 .speed-button {
   font-size: 12px;
   font-weight: 600;
-  color: #4b5563;
+  color: var(--text-secondary);
 }
 
 .animation-timestamp {
   font-size: var(--font-md);
   font-weight: 600;
-  color: var(--text-primary, #1f2937);
+  color: var(--text-primary);
   padding: 0 8px;
   white-space: nowrap;
 }
@@ -235,7 +216,7 @@
 .animation-progress {
   flex: 1;
   height: 6px;
-  background: #e5e7eb;
+  background: var(--bg-tertiary);
   border-radius: 3px;
   overflow: hidden;
   position: relative;
@@ -243,7 +224,7 @@
 
 .animation-progress-bar {
   height: 100%;
-  background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
+  background: var(--gradient-primary);
   border-radius: 3px;
   transition: width 0.3s ease;
 }
@@ -263,9 +244,10 @@
   left: 10px;
   right: 10px;
   max-width: 300px;
-  background: rgba(255, 255, 255, 0.98);
+  background: var(--bg-elevated);
+  opacity: 0.98;
   border-radius: var(--radius-md);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-lg);
   z-index: 1100;
   backdrop-filter: blur(8px);
   overflow: hidden;
@@ -276,7 +258,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px 12px;
-  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+  background: var(--gradient-primary);
   color: white;
   font-weight: 600;
   font-size: 12px;
@@ -316,30 +298,27 @@
   transition: background 0.2s;
   margin-bottom: 2px;
   text-align: left;
+  color: var(--text-primary);
 }
 
 .frame-selector-item:hover {
-  background: rgba(102, 126, 234, 0.1);
+  background: var(--bg-tertiary);
 }
 
 .frame-selector-item.active {
-  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+  background: var(--gradient-primary);
   color: white;
 }
 
 .frame-time {
   font-weight: 600;
   font-size: var(--font-md);
-  color: var(--text-primary, #1f2937);
-}
-
-.frame-selector-item.active .frame-time {
-  color: white;
+  color: inherit;
 }
 
 .frame-indicator {
   font-size: 10px;
-  color: var(--text-tertiary, #6b7280);
+  color: var(--text-tertiary);
   font-weight: 500;
 }
 
@@ -407,14 +386,15 @@
   position: absolute;
   top: 10px;
   left: 10px;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg-elevated);
+  opacity: 0.95;
   padding: var(--spacing-md);
   border-radius: var(--radius-sm);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-sm);
   z-index: 1000;
   backdrop-filter: blur(4px);
   min-width: 180px;
-  border: 2px solid #10b981;
+  border: 2px solid var(--accent-primary);
 }
 
 .storm-tracking-title {
@@ -467,10 +447,11 @@
   position: absolute;
   top: 10px;
   left: 10px;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg-elevated);
+  opacity: 0.95;
   padding: 10px 12px;
   border-radius: var(--radius-sm);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-sm);
   z-index: 1000;
   backdrop-filter: blur(4px);
   min-width: 160px;
@@ -514,10 +495,11 @@
   position: absolute;
   bottom: 10px;
   left: 10px;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg-elevated);
+  opacity: 0.95;
   padding: var(--spacing-sm) 12px;
   border-radius: var(--radius-sm);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-sm);
   font-size: var(--font-sm);
   z-index: 1000;
   backdrop-filter: blur(4px);
@@ -572,146 +554,7 @@
   font-size: 10px;
 }
 
-/* Dark mode support */
-[data-theme='dark'] .precipitation-legend {
-  background: rgba(31, 41, 55, 0.95);
-}
-
-[data-theme='dark'] .precip-legend-title {
-  color: #f9fafb;
-}
-
-[data-theme='dark'] .precip-legend-labels {
-  color: #d1d5db;
-}
-
-[data-theme='dark'] .radar-legend {
-  background: rgba(31, 41, 55, 0.95);
-}
-
-[data-theme='dark'] .layer-toggle {
-  background: rgba(31, 41, 55, 0.95);
-}
-
-[data-theme='dark'] .layer-toggle.active {
-  background: rgba(102, 126, 234, 0.25);
-}
-
-[data-theme='dark'] .radar-controls-divider {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-[data-theme='dark'] .radar-map-container .leaflet-container {
-  background: #374151;
-}
-
-[data-theme='dark'] .radar-map-container .leaflet-control-zoom a {
-  background: #1f2937;
-  color: #f9fafb;
-  border-color: #4b5563;
-}
-
-[data-theme='dark'] .radar-map-container .leaflet-control-zoom a:hover {
-  background: #374151;
-  color: #ffffff;
-}
-
-[data-theme='dark'] .radar-loading-overlay {
-  background: rgba(31, 41, 55, 0.95);
-}
-
-[data-theme='dark'] .radar-spinner {
-  border-color: #4b5563;
-  border-top-color: #34d399;
-}
-
-[data-theme='dark'] .radar-loading-text {
-  color: #d1d5db;
-}
-
-[data-theme='dark'] .radar-map-error {
-  background: #7f1d1d;
-  border-color: #991b1b;
-}
-
-[data-theme='dark'] .radar-map-error p {
-  color: #fca5a5;
-}
-
-[data-theme='dark'] .radar-map-error .error-hint {
-  color: #fecaca;
-}
-
-[data-theme='dark'] .radar-animation-controls {
-  background: rgba(31, 41, 55, 0.95);
-}
-
-[data-theme='dark'] .animation-button {
-  background: #1f2937;
-  border-color: #4b5563;
-  color: #f9fafb;
-}
-
-[data-theme='dark'] .animation-button:hover {
-  border-color: #34d399;
-  background: #374151;
-}
-
-[data-theme='dark'] .speed-button {
-  color: #d1d5db;
-}
-
-[data-theme='dark'] .animation-timestamp {
-  color: #f9fafb;
-}
-
-[data-theme='dark'] .animation-progress {
-  background: #4b5563;
-}
-
-[data-theme='dark'] .animation-progress-bar {
-  background: linear-gradient(90deg, #34d399 0%, #a5b4fc 100%);
-}
-
-[data-theme='dark'] .radar-frames-badge {
-  background: #374151;
-  color: #6b7280;
-}
-
-[data-theme='dark'] .frame-selector-dropdown {
-  background: rgba(31, 41, 55, 0.98);
-}
-
-[data-theme='dark'] .frame-selector-item {
-  color: #f9fafb;
-}
-
-[data-theme='dark'] .frame-time {
-  color: #f9fafb;
-}
-
-[data-theme='dark'] .frame-indicator {
-  color: #6b7280;
-}
-
-[data-theme='dark'] .storm-tracking-panel {
-  background: rgba(31, 41, 55, 0.95);
-  border-color: #34d399;
-}
-
-[data-theme='dark'] .storm-tracking-title {
-  color: #f9fafb;
-}
-
-[data-theme='dark'] .storm-info-value {
-  background: #374151;
-  color: #f9fafb;
-}
-
-[data-theme='dark'] .storm-tracking-note {
-  color: #6b7280;
-  border-top-color: rgba(255, 255, 255, 0.1);
-}
+/* Dark mode support is now handled automatically via CSS variables */
 
 /* Responsive adjustments */
 @media (max-width: 768px) {

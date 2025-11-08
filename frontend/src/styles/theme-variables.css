@@ -1,13 +1,5 @@
-/*
- * DEPRECATED: This file has been split into two files for ITCSS compliance
- * - theme-variables.css (Settings layer - variables only)
- * - theme-base.css (Elements layer - structural styles)
- *
- * This file is kept for backwards compatibility but should not be imported
- * in new code. Use the split files instead.
- */
-
-/* Theme Variables */
+/* Theme Variables Only - ITCSS Settings Layer */
+/* No selectors, only CSS custom properties */
 
 :root {
   /* Light Theme (Default) */
@@ -191,24 +183,6 @@
 
   --gradient-primary: linear-gradient(135deg, #34d399 0%, #6ee7b7 100%);
   --gradient-warm: linear-gradient(135deg, #fb923c 0%, #f59e0b 100%);
-}
-
-/* Base Styles */
-body {
-  background-color: var(--bg-secondary);
-  color: var(--text-primary);
-}
-
-/* Theme transition helper class - apply to components that need smooth theme transitions */
-.theme-transition {
-  transition-property: background-color, border-color, color, fill, stroke;
-  transition-duration: var(--transition-normal);
-  transition-timing-function: ease;
-}
-
-/* Prevent transitions on page load */
-.preload * {
-  transition: none !important;
 }
 
 /* ============================================

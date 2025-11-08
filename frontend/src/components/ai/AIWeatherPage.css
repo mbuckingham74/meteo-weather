@@ -128,10 +128,10 @@
   border: 2px solid var(--accent-primary, #10b981);
   border-radius: var(--radius-xl);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  animation: fadeIn 0.3s ease-in;
+  animation: aiAnswerFadeIn 0.3s ease-in;
 }
 
-@keyframes fadeIn {
+@keyframes aiAnswerFadeIn {
   from {
     opacity: 0;
     transform: translateY(10px);
@@ -337,7 +337,7 @@
 }
 
 .fade-in {
-  animation: fadeIn 0.3s ease-in;
+  animation: aiAnswerFadeIn 0.3s ease-in;
 }
 
 @supports (prefers-reduced-motion: reduce) {

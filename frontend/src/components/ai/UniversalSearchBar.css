@@ -216,10 +216,10 @@
   align-items: center;
   justify-content: center;
   gap: var(--spacing-sm);
-  animation: fadeIn 0.3s ease;
+  animation: searchHintFadeIn 0.3s ease;
 }
 
-@keyframes fadeIn {
+@keyframes searchHintFadeIn {
   from {
     opacity: 0;
     transform: translateY(-4px);
@@ -402,7 +402,7 @@
   border-radius: var(--radius-lg);
   color: var(--error-text, #991b1b);
   text-align: center;
-  animation: fadeIn 0.3s ease;
+  animation: searchHintFadeIn 0.3s ease;
 }
 
 .ai-error-inline p {
@@ -419,7 +419,7 @@
   border: 2px solid var(--border-color, #374151);
   border-radius: var(--radius-xl);
   text-align: left;
-  animation: fadeIn 0.3s ease;
+  animation: searchHintFadeIn 0.3s ease;
 }
 
 /* Answer Header */
@@ -523,7 +523,7 @@
 
 .visualization-card.loaded {
   opacity: 1;
-  animation: fadeIn 0.3s ease;
+  animation: searchHintFadeIn 0.3s ease;
 }
 
 /* Follow-up Questions */

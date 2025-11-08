@@ -89,7 +89,7 @@
 .hero-weather-display {
   padding: 16px;
   display: grid;
-  grid-template-columns: 1fr 600px;
+  grid-template-columns: 1fr minmax(320px, 600px);
   gap: 16px;
   align-items: start;
 }
@@ -1199,6 +1199,13 @@
 @media (max-width: 900px) {
   .hero-quick-stats {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 960px) {
+  /* Collapse two-column layout to single column */
+  .hero-weather-display {
+    grid-template-columns: 1fr;
   }
 }
 

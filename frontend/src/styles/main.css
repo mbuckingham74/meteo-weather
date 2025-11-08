@@ -32,6 +32,7 @@
    LAYER 4: ELEMENTS
    Base HTML element styles (no classes)
    ============================================ */
+@import './theme-base.css';
 @import './itcss/elements/_base.css';
 
 /* ============================================
