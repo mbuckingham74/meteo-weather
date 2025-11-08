@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import {
   BrowserRouter,
   Routes,
@@ -37,7 +37,7 @@ function RouteAwareLocationManager() {
   useEffect(() => {
     // Skip location management for non-weather routes
     const skipRoutes = ['/admin', '/compare', '/about', '/privacy', '/preferences', '/ai-weather'];
-    if (skipRoutes.some(route => routerLocation.pathname.startsWith(route))) {
+    if (skipRoutes.some((route) => routerLocation.pathname.startsWith(route))) {
       return;
     }
 
