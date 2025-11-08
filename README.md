@@ -6,7 +6,7 @@ A comprehensive weather dashboard inspired by Weather Spark, providing detailed 
 
 **🌐 Live Demo:** [https://meteo-beta.tachyonfuture.com](https://meteo-beta.tachyonfuture.com)
 
-**Built by:** [Michael Buckingham](https://github.com/mbuckingham74) &nbsp;&nbsp;|&nbsp;&nbsp; **Repository:** [meteo-weather](https://github.com/mbuckingham74/meteo-weather) &nbsp;&nbsp;|&nbsp;&nbsp; **Changelog:** [View Updates](CHANGELOG.md)
+**Built by:** [Michael Buckingham](https://github.com/mbuckingham74) &nbsp;&nbsp;|&nbsp;&nbsp; **Repository:** [meteo-weather](https://github.com/mbuckingham74/meteo-weather) &nbsp;&nbsp;|&nbsp;&nbsp; **Roadmap:** [View Features](ROADMAP.md) &nbsp;&nbsp;|&nbsp;&nbsp; **Changelog:** [View Updates](CHANGELOG.md)
 
 ---
 
@@ -230,6 +230,7 @@ docker-compose up
 - [⚡ Quick Start](#-quick-start) - Get running in 3 minutes
 - [🌐 Live Demo](https://meteo-beta.tachyonfuture.com) - Try it now
 - [✨ Features](#-key-features) - What it does
+- [🗺️ **Product Roadmap**](ROADMAP.md) - **Planned features & timeline**
 - [🚀 Setup Guide](#-setup-instructions) - Detailed installation
 - [📚 Full Documentation](docs/README.md) - **Complete docs hub**
 - [🤝 Contributing](CONTRIBUTING.md) - Help improve this project
