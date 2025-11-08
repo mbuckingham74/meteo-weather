@@ -31,18 +31,20 @@ CREATE TABLE IF NOT EXISTS locations (
     state VARCHAR(100),
     latitude DECIMAL(10, 8) NOT NULL,
     longitude DECIMAL(11, 8) NOT NULL,
+    coordinates POINT NOT NULL SRID 4326 COMMENT 'Spatial point for fast geo lookups',
     timezone VARCHAR(100),
     elevation INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_city_country (city_name, country),
     INDEX idx_coordinates (latitude, longitude),
-    UNIQUE KEY unique_location (latitude, longitude)
+    UNIQUE KEY unique_location (latitude, longitude),
+    SPATIAL INDEX idx_spatial_coordinates (coordinates)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Weather data table: stores historical and current weather observations
 CREATE TABLE IF NOT EXISTS weather_data (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id BIGINT AUTO_INCREMENT,
     location_id INT NOT NULL,
     observation_date DATE NOT NULL,
     observation_time TIME,
@@ -65,12 +67,27 @@ CREATE TABLE IF NOT EXISTS weather_data (
     sunset TIME,
     data_source VARCHAR(50) COMMENT 'openweather or visualcrossing',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (location_id) REFERENCES locations(id) ON DELETE CASCADE,
+    PRIMARY KEY (id, observation_date),
     INDEX idx_location_date (location_id, observation_date),
     INDEX idx_date (observation_date),
     INDEX idx_source (data_source),
     UNIQUE KEY unique_observation (location_id, observation_date, observation_time)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+PARTITION BY RANGE (YEAR(observation_date)) (
+    PARTITION p2015 VALUES LESS THAN (2016),
+    PARTITION p2016 VALUES LESS THAN (2017),
+    PARTITION p2017 VALUES LESS THAN (2018),
+    PARTITION p2018 VALUES LESS THAN (2019),
+    PARTITION p2019 VALUES LESS THAN (2020),
+    PARTITION p2020 VALUES LESS THAN (2021),
+    PARTITION p2021 VALUES LESS THAN (2022),
+    PARTITION p2022 VALUES LESS THAN (2023),
+    PARTITION p2023 VALUES LESS THAN (2024),
+    PARTITION p2024 VALUES LESS THAN (2025),
+    PARTITION p2025 VALUES LESS THAN (2026),
+    PARTITION p2026 VALUES LESS THAN (2027),
+    PARTITION p_future VALUES LESS THAN MAXVALUE
+);
 
 -- Climate statistics table: stores monthly/yearly averages
 CREATE TABLE IF NOT EXISTS climate_stats (
@@ -101,10 +118,12 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     name VARCHAR(100) NOT NULL,
+    is_admin BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     last_login TIMESTAMP NULL,
-    INDEX idx_email (email)
+    INDEX idx_email (email),
+    INDEX idx_is_admin (is_admin)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- User preferences table
@@ -115,10 +134,18 @@ CREATE TABLE IF NOT EXISTS user_preferences (
     default_forecast_days INT DEFAULT 7,
     default_location VARCHAR(255),
     theme VARCHAR(20) DEFAULT 'light',
+    language VARCHAR(10) DEFAULT 'en',
+    email_notifications BOOLEAN DEFAULT FALSE,
+    daily_weather_report BOOLEAN DEFAULT FALSE,
+    weather_alert_notifications BOOLEAN DEFAULT TRUE,
+    weekly_summary BOOLEAN DEFAULT FALSE,
+    report_time TIME DEFAULT '08:00:00',
+    report_locations JSON COMMENT 'Array of location IDs for weather reports',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    UNIQUE KEY unique_user_preferences (user_id)
+    UNIQUE KEY unique_user_preferences (user_id),
+    INDEX idx_email_notifications (email_notifications, daily_weather_report, weekly_summary)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- User favorite locations table
@@ -153,14 +180,13 @@ CREATE TABLE IF NOT EXISTS refresh_tokens (
 -- API cache table: cache API responses to reduce API calls
 CREATE TABLE IF NOT EXISTS api_cache (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    cache_key VARCHAR(255) NOT NULL UNIQUE,
+    cache_key CHAR(32) NOT NULL UNIQUE,
     location_id INT,
     api_source VARCHAR(50) NOT NULL,
     request_params JSON,
     response_data JSON NOT NULL,
     expires_at TIMESTAMP NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (location_id) REFERENCES locations(id) ON DELETE CASCADE,
     INDEX idx_cache_key (cache_key),
     INDEX idx_expiry (expires_at),
     INDEX idx_location_source (location_id, api_source)

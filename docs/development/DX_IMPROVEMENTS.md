@@ -57,7 +57,7 @@ npm run security:scan        # Security checks
 
 **Created 5 comprehensive guides:**
 
-1. **[SETUP_GUIDE.md](docs/development/SETUP_GUIDE.md)** (500 lines)
+1. **[SETUP_GUIDE.md](docs/getting-started/SETUP_GUIDE.md)** (500 lines)
    - Complete installation walkthrough
    - API key setup instructions
    - IDE recommendations
@@ -137,7 +137,7 @@ npm run security:scan        # Security checks
 
 ### After
 1. Clone repo
-2. Read [SETUP_GUIDE.md](docs/development/SETUP_GUIDE.md)
+2. Read [SETUP_GUIDE.md](docs/getting-started/SETUP_GUIDE.md)
 3. Run `npm run install:all`
 4. Run `npm run dev`
 5. Read [ARCHITECTURE_WALKTHROUGH.md](docs/development/ARCHITECTURE_WALKTHROUGH.md)
@@ -153,7 +153,7 @@ npm run security:scan        # Security checks
 ## 📁 Files Created/Modified
 
 ### Created (8 files)
-1. `docs/development/SETUP_GUIDE.md` - Complete setup walkthrough
+1. `docs/getting-started/SETUP_GUIDE.md` - Complete setup walkthrough
 2. `docs/development/ARCHITECTURE_WALKTHROUGH.md` - Codebase tour
 3. `docs/development/DEVELOPER_CHEATSHEET.md` - Quick reference
 4. `docs/development/README.md` - Documentation hub
@@ -244,7 +244,7 @@ npm run deploy:beta         # Deploy to beta
 
 ### For New Contributors
 
-**Start Here:** [docs/development/SETUP_GUIDE.md](docs/development/SETUP_GUIDE.md)
+**Start Here:** [docs/getting-started/SETUP_GUIDE.md](docs/getting-started/SETUP_GUIDE.md)
 - Prerequisites with download links
 - 5-minute quick start
 - API key setup
@@ -362,7 +362,7 @@ npm run deploy:beta         # Deploy to beta
    - See auto-formatting in action
 
 4. **Share with potential contributors:**
-   - Point new developers to [SETUP_GUIDE.md](docs/development/SETUP_GUIDE.md)
+   - Point new developers to [SETUP_GUIDE.md](docs/getting-started/SETUP_GUIDE.md)
    - Collect feedback on clarity
    - Iterate based on real usage
 

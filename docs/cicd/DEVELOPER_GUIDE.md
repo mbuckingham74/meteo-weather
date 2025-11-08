@@ -225,7 +225,7 @@ Lines:      25%
   - `backend/services/geocodingService.js`
 
 **Purpose:**
-Prevents the "Old Location" bug from being reintroduced (see [docs/REGRESSION_PREVENTION.md](REGRESSION_PREVENTION.md))
+Prevents the "Old Location" bug from being reintroduced (see [docs/troubleshooting/REGRESSION_PREVENTION.md](REGRESSION_PREVENTION.md))
 
 **Jobs:**
 - `frontend-regression`: Tests geolocationService + LocationContext

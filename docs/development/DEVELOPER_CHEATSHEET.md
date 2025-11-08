@@ -261,7 +261,7 @@ Modifying these files triggers automatic regression tests:
 - `frontend/src/contexts/LocationContext.jsx`
 - `backend/services/weatherService.js`
 
-See [docs/REGRESSION_PREVENTION.md](../REGRESSION_PREVENTION.md)
+See [docs/troubleshooting/REGRESSION_PREVENTION.md](../REGRESSION_PREVENTION.md)
 
 ---
 
@@ -344,7 +344,7 @@ npm audit fix --force  # Use with caution
 
 ## 📚 Additional Resources
 
-- **Setup Guide:** [docs/development/SETUP_GUIDE.md](SETUP_GUIDE.md)
+- **Setup Guide:** [docs/getting-started/SETUP_GUIDE.md](SETUP_GUIDE.md)
 - **Contributing:** [CONTRIBUTING.md](../../CONTRIBUTING.md)
 - **Architecture:** [ARCHITECTURE.md](../../ARCHITECTURE.md)
 - **Troubleshooting:** [TROUBLESHOOTING.md](../../TROUBLESHOOTING.md)

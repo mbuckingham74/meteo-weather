@@ -35,7 +35,7 @@ npm run install:all
 ## 📚 New Documentation
 
 ### For New Contributors
-1. **[Setup Guide](docs/development/SETUP_GUIDE.md)** - Complete installation walkthrough
+1. **[Setup Guide](docs/getting-started/SETUP_GUIDE.md)** - Complete installation walkthrough
 2. **[Architecture Walkthrough](docs/development/ARCHITECTURE_WALKTHROUGH.md)** - How everything works
 3. **[Developer Cheat Sheet](docs/development/DEVELOPER_CHEATSHEET.md)** - Quick reference
 
@@ -157,7 +157,7 @@ git commit  # Auto-formats code, runs tests, blocks bad commits ✓
 
 ### Created (2,100+ lines of new docs)
 
-1. **[SETUP_GUIDE.md](docs/development/SETUP_GUIDE.md)** (500 lines)
+1. **[SETUP_GUIDE.md](docs/getting-started/SETUP_GUIDE.md)** (500 lines)
    - Prerequisites with download links
    - 5-minute quick start
    - API key setup instructions
@@ -217,7 +217,7 @@ git commit  # Auto-formats code, runs tests, blocks bad commits ✓
 ## 🔍 Where to Find Things
 
 ### Documentation
-- **Setup instructions:** [docs/development/SETUP_GUIDE.md](docs/development/SETUP_GUIDE.md)
+- **Setup instructions:** [docs/getting-started/SETUP_GUIDE.md](docs/getting-started/SETUP_GUIDE.md)
 - **Architecture explanation:** [docs/development/ARCHITECTURE_WALKTHROUGH.md](docs/development/ARCHITECTURE_WALKTHROUGH.md)
 - **Quick reference:** [docs/development/DEVELOPER_CHEATSHEET.md](docs/development/DEVELOPER_CHEATSHEET.md)
 - **Contributing guide:** [CONTRIBUTING.md](CONTRIBUTING.md)
@@ -259,7 +259,7 @@ git commit -m "test: Testing new pre-commit hooks"
 
 ## 🎓 For New Contributors
 
-**Start here:** [docs/development/SETUP_GUIDE.md](docs/development/SETUP_GUIDE.md)
+**Start here:** [docs/getting-started/SETUP_GUIDE.md](docs/getting-started/SETUP_GUIDE.md)
 
 **Typical flow:**
 1. Read setup guide (5 min)
@@ -355,7 +355,7 @@ All developer docs are in [docs/development/](docs/development/)
    ```
 
 2. **Read the new docs:**
-   - [Setup Guide](docs/development/SETUP_GUIDE.md)
+   - [Setup Guide](docs/getting-started/SETUP_GUIDE.md)
    - [Architecture Walkthrough](docs/development/ARCHITECTURE_WALKTHROUGH.md)
    - [Developer Cheat Sheet](docs/development/DEVELOPER_CHEATSHEET.md)
 
@@ -372,7 +372,7 @@ All developer docs are in [docs/development/](docs/development/)
    ```
 
 4. **Share with potential contributors:**
-   - Point them to [SETUP_GUIDE.md](docs/development/SETUP_GUIDE.md)
+   - Point them to [SETUP_GUIDE.md](docs/getting-started/SETUP_GUIDE.md)
    - They'll be up and running in < 1 hour
 
 ---

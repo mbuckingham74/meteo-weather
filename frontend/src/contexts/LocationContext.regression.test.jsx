@@ -8,7 +8,7 @@
  * which wasn't detected as a placeholder, causing it to be sent to the API.
  *
  * See: docs/troubleshooting/OLD_LOCATION_BUG_FIX.md
- * See: docs/REGRESSION_PREVENTION.md
+ * See: docs/troubleshooting/REGRESSION_PREVENTION.md
  *
  * ⚠️ IF THESE TESTS FAIL, THE BUG HAS RETURNED! ⚠️
  */
@@ -254,7 +254,7 @@ describe('🚨 REGRESSION PREVENTION: LocationContext Placeholder Detection', ()
             'FIX: Call sanitizeLocationData() when loading from localStorage:\n' +
             '  const parsed = JSON.parse(saved);\n' +
             '  const sanitized = sanitizeLocationData(parsed);\n\n' +
-            'See: docs/REGRESSION_PREVENTION.md'
+            'See: docs/troubleshooting/REGRESSION_PREVENTION.md'
         );
       }
 
@@ -490,7 +490,7 @@ describe('🚨 PRODUCTION MONITORING: Backend Integration', () => {
       throw new Error(
         '🚨 CRITICAL: LocationContext does NOT properly sanitize before API calls!\n' +
           'The backend production monitoring (in weather.js) will trigger alerts.\n\n' +
-          'See: docs/REGRESSION_PREVENTION.md - Production Monitoring section'
+          'See: docs/troubleshooting/REGRESSION_PREVENTION.md - Production Monitoring section'
       );
     }
 

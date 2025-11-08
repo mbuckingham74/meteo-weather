@@ -467,7 +467,7 @@ The CI/CD pipeline optimization delivers:
 - [CICD_DEVELOPER_GUIDE.md](docs/CICD_DEVELOPER_GUIDE.md) - Complete developer guide
 - [CICD_QUICK_REFERENCE.md](docs/CICD_QUICK_REFERENCE.md) - Quick reference cheat sheet
 - [CLAUDE.md](CLAUDE.md) - Project context (updated with CI/CD info)
-- [docs/REGRESSION_PREVENTION.md](docs/REGRESSION_PREVENTION.md) - Regression test strategy
+- [docs/troubleshooting/REGRESSION_PREVENTION.md](docs/troubleshooting/REGRESSION_PREVENTION.md) - Regression test strategy
 
 ---
 

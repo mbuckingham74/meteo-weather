@@ -8,7 +8,7 @@
  * - v1 (Pre-Nov 6, 2025): No version field, may contain "Your Location" string
  * - v2 (Nov 6, 2025): Added version field, sanitizes placeholders, ensures coordinates
  *
- * See: docs/REGRESSION_PREVENTION.md
+ * See: docs/troubleshooting/REGRESSION_PREVENTION.md
  */
 
 export const STORAGE_VERSION = 2;

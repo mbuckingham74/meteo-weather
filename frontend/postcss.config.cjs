@@ -1,9 +1,15 @@
-const { purgeCSSPlugin } = require('@fullhuman/postcss-purgecss');
+let purgeCSSPlugin = null;
+
+try {
+  ({ purgeCSSPlugin } = require('@fullhuman/postcss-purgecss'));
+} catch (error) {
+  console.warn('[postcss] @fullhuman/postcss-purgecss not found – PurgeCSS disabled.'); // eslint-disable-line no-console
+}
 
 module.exports = {
   plugins: [
     // Only run PurgeCSS in production builds
-    ...(process.env.NODE_ENV === 'production'
+    ...(process.env.NODE_ENV === 'production' && purgeCSSPlugin
       ? [
           purgeCSSPlugin({
             // Content files to scan for used CSS classes

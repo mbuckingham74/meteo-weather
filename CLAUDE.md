@@ -384,7 +384,7 @@ docker ps | grep meteo
     - Automated regression tests (geolocationService.regression.test.js)
     - Pre-commit hooks (.husky/pre-commit-regression-check)
     - Custom ESLint rules (.eslintrc-custom-rules.js)
-    - Comprehensive documentation (docs/REGRESSION_PREVENTION.md)
+    - Comprehensive documentation (docs/troubleshooting/REGRESSION_PREVENTION.md)
   - Fixed false VPN/proxy warnings (only trigger for accuracy > 10km)
   - **Files:** frontend/src/styles/density-compact.css, vite.config.js
 

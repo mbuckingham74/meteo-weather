@@ -321,7 +321,7 @@ npm run test:backend
 
 - Read [ARCHITECTURE.md](../../ARCHITECTURE.md) to understand the system design
 - Review [CONTRIBUTING.md](../../CONTRIBUTING.md) for contribution guidelines
-- Check [docs/REGRESSION_PREVENTION.md](../REGRESSION_PREVENTION.md) before modifying geolocation code
+- Check [docs/troubleshooting/REGRESSION_PREVENTION.md](../REGRESSION_PREVENTION.md) before modifying geolocation code
 - Explore [TROUBLESHOOTING.md](../../TROUBLESHOOTING.md) for common issues
 
 ---
