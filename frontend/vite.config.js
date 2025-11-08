@@ -33,6 +33,8 @@ export default defineConfig({
         secure: false,
       },
     },
+    // Enable SPA fallback for client-side routing
+    historyApiFallback: true,
   },
 
   // esbuild configuration for JSX in .js files

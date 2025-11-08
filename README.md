@@ -42,7 +42,7 @@ A comprehensive weather dashboard inspired by Weather Spark, providing detailed 
 | **Performance** | 20-50x faster | Optimized database queries with spatial indexes |
 | **CI/CD Speed** | 50-70% faster | Aggressive caching with 9 parallel jobs |
 | **Deployment** | Zero-downtime | Automated deployment with health checks |
-| **Documentation** | 78 docs | Organized in 10 categories with OpenAPI spec |
+| **Documentation** | 82 docs | Organized in 11 categories with OpenAPI spec |
 
 **Key Achievements:**
 - 🚀 Production-ready with [live demo](https://meteo-beta.tachyonfuture.com)
@@ -52,6 +52,7 @@ A comprehensive weather dashboard inspired by Weather Spark, providing detailed 
 - 📈 Advanced UI/UX with Material Design 3 (50-60% space reduction)
 - 🤖 AI-powered features with Claude Sonnet 4.5
 - ♿ Industry-leading accessibility (8.5-9/10 score)
+- 🔧 Admin panel for site owners with comprehensive system monitoring
 
 </div>
 
@@ -82,6 +83,7 @@ A comprehensive weather dashboard inspired by Weather Spark, providing detailed 
 - **🔗 Shareable URLs** - Direct links to any city's weather with browser back/forward support
 - **⌨️ Complete Keyboard Navigation** - Full keyboard support with modal focus traps, logical tab order, and escape handlers
 - **📴 PWA Support** - Install as app, offline mode, and smart caching
+- **🔧 Admin Panel** - Comprehensive dashboard for site owners with 6 tabs: system stats, user analytics, weather data insights, AI usage & cost tracking, cache management, and database monitoring
 
 ---
 
@@ -591,6 +593,41 @@ Users start with familiar location search, then discover AI capabilities through
   - Weather alerts and air quality cards
   - User profile and authentication modals
   - Consistent theming across all UI elements
+
+### 🔧 Admin Panel (Site Owners)
+
+- **Comprehensive Dashboard** - 6-tab admin interface for system monitoring and management:
+  - **📊 Overview** - System health, most queried locations, top-level metrics
+  - **👥 Users** - Total users, active users (30 days), new signups (7 days), user engagement
+  - **🌤️ Weather Data** - Location statistics, weather records, most queried cities, data sources
+  - **🤖 AI Usage** - Total AI queries, token usage, **estimated costs in USD**, confidence breakdown, popular shared answers
+  - **💾 Cache** - Cache hit rate, valid/expired entries, one-click cleanup tools, performance metrics
+  - **🗄️ Database** - Total size, table statistics, largest tables, storage optimization
+- **Access Control** - Database-based admin system (first user = auto-admin), JWT-protected routes
+- **Privacy-First Design** - Admins can only see aggregated, anonymized data:
+  - ✅ Total user counts, system metrics, aggregated statistics
+  - ❌ Cannot view passwords, private AI conversations, individual user activity
+- **AI Cost Tracking** - Real-time cost estimation for Claude Sonnet 4.5 usage:
+  - Input tokens: $3 per million tokens
+  - Output tokens: $15 per million tokens
+  - Average query cost: ~$0.005-0.01
+  - Budget monitoring and trend analysis
+- **Cache Management** - One-click tools to optimize performance:
+  - Clear expired cache entries (safe, frees space)
+  - Clear all cache (emergency only, slower next requests)
+  - Cache hit rate monitoring
+  - Source-by-source breakdown
+- **System Health Monitoring** - Real-time performance metrics:
+  - Database size and growth trends
+  - API usage statistics
+  - Cache efficiency
+  - User activity patterns
+- **Security & Transparency** - Full documentation of admin capabilities:
+  - Privacy policy updated with admin data disclosures
+  - Security audit documentation (9.4/10 score)
+  - Clear separation between admin access and user privacy
+- **Route:** `http://localhost:3000/admin` (requires authentication + admin status)
+- **Documentation:** 4 comprehensive guides (2,100+ lines) in `docs/admin/`
 
 ### 🛡️ Error Handling & Connectivity
 

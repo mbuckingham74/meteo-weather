@@ -21,6 +21,7 @@ import AIWeatherPage from './components/ai/AIWeatherPage';
 import SharedAnswerPage from './components/ai/SharedAnswerPage';
 import UserPreferencesPage from './components/settings/UserPreferencesPage';
 import AboutPage from './components/about/AboutPage';
+import AdminPanel from './components/admin/AdminPanel';
 import { parseLocationSlug } from './utils/urlHelpers';
 import { geocodeLocation } from './services/weatherApi';
 import './styles/themes.css';
@@ -34,6 +35,12 @@ function RouteAwareLocationManager() {
   const lastSyncedRef = useRef(null);
 
   useEffect(() => {
+    // Skip location management for non-weather routes
+    const skipRoutes = ['/admin', '/compare', '/about', '/privacy', '/preferences', '/ai-weather'];
+    if (skipRoutes.some(route => routerLocation.pathname.startsWith(route))) {
+      return;
+    }
+
     const locationState = routerLocation.state?.location;
     if (locationState && locationState.address) {
       const key = `state:${locationState.latitude},${locationState.longitude}`;
@@ -131,6 +138,7 @@ function AppShell() {
           <Route path="/preferences" element={<UserPreferencesPage />} />
           <Route path="/ai-weather" element={<AIWeatherPage />} />
           <Route path="/ai-weather/shared/:shareId" element={<SharedAnswerPage />} />
+          <Route path="/admin" element={<AdminPanel />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>

@@ -59,8 +59,51 @@ function PrivacyPolicy() {
                   <strong>Preferences:</strong> Your temperature unit and theme preferences are synced
                   across devices when logged in.
                 </li>
+                <li>
+                  <strong>Usage Statistics:</strong> We collect anonymized usage data including weather
+                  query counts, AI assistant usage, and cache performance metrics to improve service quality.
+                  This data is aggregated and cannot be traced back to individual users.
+                </li>
               </ul>
             </div>
+          </section>
+
+          {/* Admin Panel & Site Management */}
+          <section className="privacy-section">
+            <h2>Admin Panel & Site Management</h2>
+            <p>
+              For self-hosted instances, site administrators have access to an admin panel to monitor
+              and maintain the service. The admin panel displays:
+            </p>
+            <ul className="privacy-list">
+              <li>
+                <strong>Aggregated Statistics:</strong> Total user count, total weather queries, most
+                queried locations, and database size. These are system-level metrics and do not reveal
+                individual user activity.
+              </li>
+              <li>
+                <strong>Performance Metrics:</strong> Cache hit rates, API usage statistics, and system
+                health indicators to ensure optimal service performance.
+              </li>
+              <li>
+                <strong>AI Usage & Costs:</strong> Total AI queries, token usage, and estimated API costs
+                for budget monitoring. Individual queries are not linked to specific users.
+              </li>
+              <li>
+                <strong>Cache Management:</strong> Administrators can clear expired cache entries to free
+                up storage space. This does not affect your personal data or preferences.
+              </li>
+            </ul>
+            <p>
+              <strong>Important:</strong> Administrators cannot view your passwords (stored as secure hashes),
+              read your private conversations with the AI assistant, or access your personal weather preferences
+              beyond what is necessary for system maintenance. The admin panel is designed for system monitoring
+              and optimization, not user surveillance.
+            </p>
+            <p className="privacy-highlight">
+              For official Meteo Weather instances, only authorized maintainers have admin access.
+              If you self-host Meteo Weather, you control who has admin privileges.
+            </p>
           </section>
 
           {/* How We Use Cookies */}
@@ -185,7 +228,7 @@ function PrivacyPolicy() {
               indicates your acceptance of the updated policy.
             </p>
             <p className="privacy-meta">
-              <strong>Last Updated:</strong> October 28, 2025
+              <strong>Last Updated:</strong> November 7, 2025
             </p>
           </section>
 
