@@ -81,9 +81,10 @@
 - [frontend/BEM_NAMING_CONVENTION.md](frontend/BEM_NAMING_CONVENTION.md) - BEM standard for new components (512 lines)
 - [frontend/BREAKPOINT_SYSTEM.md](frontend/BREAKPOINT_SYSTEM.md) - Responsive breakpoint system (600+ lines)
 - [frontend/DENSITY_SYSTEM.md](frontend/DENSITY_SYSTEM.md) - Density mode implementation
-- [frontend/CSS_PHASE_1_COMPLETE.md](frontend/CSS_PHASE1_COMPLETE.md) - Phase 1 summary (CSS Modules, variables, scale)
+- [frontend/CSS_PHASE1_COMPLETE.md](frontend/CSS_PHASE1_COMPLETE.md) - Phase 1 summary (CSS Modules, variables, scale)
 - [frontend/CSS_PHASE_2.2_COMPLETE.md](frontend/CSS_PHASE_2.2_COMPLETE.md) - BEM documentation phase
 - [frontend/CSS_PHASE_2.3_COMPLETE.md](frontend/CSS_PHASE_2.3_COMPLETE.md) - Breakpoint system phase
+- [frontend/CSS_PHASE_3.1_COMPLETE.md](frontend/CSS_PHASE_3.1_COMPLETE.md) - PurgeCSS integration phase (500+ lines)
 
 **⚠️ Troubleshooting:**
 - [docs/troubleshooting/](docs/troubleshooting/) - Common issues & solutions
@@ -105,6 +106,15 @@
 
 ### Recent Work (Nov 2025)
 
+- ✅ **Global CSS Refactor - Phase 3.1 Complete** (Nov 8, 2025)
+  - **Phase 3.1:** PurgeCSS Integration (-33.73 kB, -18.1% CSS bundle reduction)
+  - **CSS Bundle:** 186.83 kB → 153.10 kB (gzip: 34.68 kB → 28.93 kB, -16.6%)
+  - **Method:** Integrated PurgeCSS as PostCSS plugin with comprehensive safelist
+  - **Preserved:** All ITCSS utilities (.u-*), objects (.o-*), third-party (Leaflet), dynamic classes
+  - **Impact:** Faster page loads, reduced bandwidth, automatic unused CSS removal
+  - **Documentation:** CSS_PHASE_3.1_COMPLETE.md (comprehensive 500+ line guide)
+  - **Next:** Phase 3.2 (Remove global transitions), Phase 3.3 (CSS linting)
+
 - ✅ **Global CSS Refactor - Phase 2 Complete** (Nov 8, 2025)
   - **Phase 2.1:** ITCSS architecture (+5.73 kB, organized CSS by specificity)
   - **Phase 2.2:** BEM naming convention standard (documentation-based, zero risk)
@@ -112,7 +122,6 @@
   - **CSS Bundle:** 167 kB → 186.83 kB (+19.92 kB, +11.9%) - acceptable for value gained
   - **Impact:** Organized architecture, responsive system, clear standards
   - **Documentation:** 2,000+ lines across BEM_NAMING_CONVENTION.md, BREAKPOINT_SYSTEM.md, ITCSS_ARCHITECTURE.md
-  - **Next:** Phase 3 (PurgeCSS, performance optimization, CSS linting)
 
 - ✅ **Admin Panel Implementation** (Nov 7, 2025) - Comprehensive admin dashboard with 6 tabs, statistics, AI cost tracking, cache management
   - **Features:** System stats, user analytics, weather data insights, AI usage & cost tracking, cache management, database monitoring

@@ -6,6 +6,11 @@ import path from 'path';
 export default defineConfig({
   plugins: [react()],
 
+  // PostCSS configuration (includes PurgeCSS in production)
+  css: {
+    postcss: './postcss.config.cjs',
+  },
+
   // Path resolution
   resolve: {
     alias: {
