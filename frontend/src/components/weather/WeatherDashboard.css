@@ -74,7 +74,9 @@
   box-shadow: var(--shadow-xl);
   border: 1px solid var(--border-light);
   overflow: hidden;
-  transition: all var(--transition-normal);
+  transition:
+    box-shadow var(--transition-normal),
+    border-color var(--transition-normal);
 }
 
 /* Search Section - Compact */
@@ -173,7 +175,10 @@
   background: var(--bg-tertiary);
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-light);
-  transition: all var(--transition-fast);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
 .hero-stat:hover {
@@ -258,7 +263,12 @@
   font-weight: 600;
   color: var(--text-primary);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast),
+    border-color var(--transition-fast),
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -326,7 +336,9 @@
   border: none;
   border-radius: var(--radius-lg);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
   display: flex;
   align-items: center;
   gap: var(--spacing-md);
@@ -425,7 +437,12 @@
   font-size: var(--font-base);
   font-weight: 600;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition:
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    background var(--transition-fast),
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
   background: var(--bg-primary);
   color: var(--text-secondary);
   text-decoration: none;
@@ -469,7 +486,9 @@
   border: none;
   border-radius: var(--radius-lg);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -666,7 +685,10 @@
   font-weight: 600;
   color: var(--text-primary, white);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast),
+    border-color var(--transition-fast);
   position: relative;
   bottom: -2px;
 }
@@ -882,7 +904,10 @@
   align-items: center;
   text-align: center;
   gap: 3px;
-  transition: all var(--transition-fast);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
 .highlight-card:hover {
@@ -1025,7 +1050,9 @@
   font-size: var(--font-md);
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
   color: var(--text-secondary, #374151);
 }
 
@@ -1052,7 +1079,11 @@
   font-weight: 500;
   color: var(--text-secondary);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    transform var(--transition-fast);
   text-align: left;
   width: 100%;
 }
