@@ -15,6 +15,7 @@
   --border-light: #e5e7eb;
   --border-medium: #d1d5db;
   --border-dark: #6b7280;
+  --border-color: #d1d5db; /* Alias for border-medium */
 
   --accent-primary: #10b981;
   --accent-secondary: #059669;
@@ -87,6 +88,7 @@
   --border-light: #374151;
   --border-medium: #4b5563;
   --border-dark: #6b7280;
+  --border-color: #4b5563; /* Alias for border-medium */
 
   --accent-primary: #34d399;
   --accent-secondary: #10b981;
