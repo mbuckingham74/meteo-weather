@@ -88,14 +88,14 @@
   text-decoration: none;
   display: inline-flex;
   align-items: center;
-  border-color: #8b5cf6 !important;
-  color: #8b5cf6 !important;
+  border-color: var(--accent-primary) !important;
+  color: var(--accent-primary) !important;
 }
 
 .auth-header-admin-button:hover {
-  border-color: #7c3aed !important;
-  color: #7c3aed !important;
-  background: #f5f3ff !important;
+  border-color: var(--accent-secondary) !important;
+  color: var(--accent-secondary) !important;
+  background: var(--accent-bg) !important;
 }
 
 .auth-header-buttons {

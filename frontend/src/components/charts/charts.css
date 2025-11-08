@@ -43,12 +43,12 @@
 .chart-summary-card:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-md);
-  border-color: var(--accent-primary, #10b981);
+  border-color: var(--accent-primary);
 }
 
 .chart-summary-card.active {
-  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
-  border-color: var(--accent-primary, #10b981);
+  background: var(--gradient-primary);
+  border-color: var(--accent-primary);
   transform: scale(1.05);
   box-shadow: var(--shadow-lg);
 }
@@ -108,7 +108,7 @@
 }
 
 .chart-control-button.active {
-  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+  background: var(--gradient-primary);
   color: white;
 }
 

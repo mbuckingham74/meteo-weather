@@ -130,8 +130,8 @@
 }
 
 .favorite-item.active {
-  background: var(--accent-bg, #eff6ff);
-  border-color: var(--accent-primary, #3b82f6);
+  background: var(--accent-bg);
+  border-color: var(--accent-primary);
 }
 
 .favorite-info {
@@ -153,7 +153,7 @@
 }
 
 .current-badge {
-  background: var(--accent-primary, #3b82f6);
+  background: var(--accent-primary);
   color: white;
   font-size: 10px;
   padding: 2px 6px;
