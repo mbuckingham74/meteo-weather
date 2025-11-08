@@ -24,7 +24,7 @@
   border-left: 4px solid;
   box-shadow: var(--shadow-md);
   overflow: hidden;
-  transition: all var(--transition-fast);
+  transition: box-shadow var(--transition-fast);
 }
 
 .alert:hover {

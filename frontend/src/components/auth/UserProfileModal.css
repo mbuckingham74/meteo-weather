@@ -83,7 +83,7 @@
   font-weight: 600;
   color: var(--text-tertiary);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: color var(--transition-fast);
 }
 
 .profile-tab:hover {
@@ -330,7 +330,9 @@
   background: var(--bg-tertiary);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
-  transition: all var(--transition-fast);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
 .favorite-item-profile:hover {
@@ -376,7 +378,9 @@
   font-size: var(--font-lg);
   font-weight: 600;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
   flex-shrink: 0;
 }
 

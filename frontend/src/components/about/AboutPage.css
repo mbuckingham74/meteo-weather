@@ -341,7 +341,10 @@
   font-weight: 700;
   border-radius: var(--radius-lg);
   text-decoration: none;
-  transition: all 0.3s;
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s,
+    background 0.3s;
   display: inline-block;
   min-width: 220px;
 }

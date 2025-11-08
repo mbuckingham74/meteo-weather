@@ -59,7 +59,9 @@
   background: var(--bg-elevated, #ffffff);
   border: 2px solid var(--border-light, #e5e7eb);
   border-radius: var(--radius-lg);
-  transition: all 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .question-input:focus {
@@ -82,7 +84,9 @@
   border: none;
   border-radius: var(--radius-lg);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   white-space: nowrap;
 }
 
@@ -173,7 +177,9 @@
   border: none;
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   white-space: nowrap;
 }
 
@@ -256,7 +262,10 @@
   border-radius: 10px;
   cursor: pointer;
   text-align: left;
-  transition: all 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .example-button:hover:not(:disabled) {
@@ -283,7 +292,9 @@
   text-decoration: none;
   border: 2px solid var(--accent-primary, #10b981);
   border-radius: 10px;
-  transition: all 0.2s ease;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
 .back-link a:hover {
@@ -380,7 +391,11 @@
   border: 2px solid var(--accent-primary, #10b981);
   border-radius: 20px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   white-space: nowrap;
 }
 

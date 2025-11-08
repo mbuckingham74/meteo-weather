@@ -257,7 +257,11 @@
   color: var(--text-primary, #111827);
   text-align: left;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   display: block;
 }
 
@@ -921,7 +925,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 16px;
-  transition: all 0.2s ease;
+  transition: box-shadow 0.2s ease;
 }
 
 .ai-quick-prompt-card:hover {
@@ -968,7 +972,9 @@
   font-weight: 600;
   color: white;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   white-space: nowrap;
   box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
   line-height: 1.4;
@@ -1057,7 +1063,9 @@
   cursor: pointer;
   padding: var(--spacing-xs) 8px;
   border-radius: 4px;
-  transition: all 0.2s ease;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
   line-height: 1;
 }
 
@@ -1095,7 +1103,9 @@
   font-size: 15px;
   font-family: inherit;
   resize: vertical;
-  transition: all 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
   background: var(--bg-primary, white);
   color: var(--text-primary, #111827);
 }
@@ -1131,7 +1141,10 @@
   font-weight: 600;
   color: var(--text-primary, #111827);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
   white-space: nowrap;
 }
 
@@ -1165,7 +1178,9 @@
   font-weight: 700;
   color: white;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   white-space: nowrap;
   margin-left: auto;
 }

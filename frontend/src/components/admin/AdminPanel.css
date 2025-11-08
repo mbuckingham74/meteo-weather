@@ -243,7 +243,9 @@
   font-size: var(--font-base);
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition:
+    background 0.2s,
+    transform 0.2s;
 }
 
 .btn-warning:hover {
@@ -260,7 +262,9 @@
   font-size: var(--font-base);
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition:
+    background 0.2s,
+    transform 0.2s;
 }
 
 .btn-danger:hover {
@@ -344,7 +348,7 @@
   font-size: var(--font-base);
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background 0.2s;
 }
 
 .admin-error button:hover {
@@ -474,7 +478,10 @@
   font-size: var(--font-md);
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition:
+    background 0.2s,
+    transform 0.2s,
+    box-shadow 0.2s;
   display: inline-flex;
   align-items: center;
   gap: 6px;
