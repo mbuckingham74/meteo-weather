@@ -14,7 +14,9 @@
   border: 2px solid var(--border-light, #e5e7eb);
   border-radius: var(--radius-lg);
   padding: 0 12px;
-  transition: all 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
 .search-input-wrapper:focus-within {
@@ -126,7 +128,9 @@
   cursor: pointer;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  transition: all 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s;
   border-radius: 4px;
 }
 

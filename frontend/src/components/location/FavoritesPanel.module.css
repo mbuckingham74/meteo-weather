@@ -92,7 +92,9 @@
   font-size: var(--font-base);
   color: var(--warning-text, #92400e);
   font-weight: 500;
-  transition: all 0.2s;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
 }
 
 .add-current-button:hover {
@@ -120,7 +122,9 @@
   background: var(--bg-primary, #f9fafb);
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: all 0.2s;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
   border: 2px solid transparent;
 }
 

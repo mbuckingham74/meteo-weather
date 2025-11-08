@@ -206,7 +206,9 @@
   border: 1px solid #dc2626;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: all 0.2s;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
 }
 
 .remove-button:hover {
@@ -249,7 +251,9 @@
   font-weight: 600;
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: all 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
   border: none;
 }
 

@@ -60,7 +60,9 @@
   font-size: var(--font-md);
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
   background: transparent;
   color: inherit;
 }

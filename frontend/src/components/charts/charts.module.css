@@ -36,7 +36,10 @@
   padding: 16px;
   text-align: center;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
   border: 2px solid transparent;
 }
 
@@ -97,7 +100,9 @@
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -132,7 +137,9 @@
   padding: var(--spacing-sm) 12px;
   background: var(--bg-elevated, white);
   border-radius: var(--radius-sm);
-  transition: all 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .chart-legend-item:hover {

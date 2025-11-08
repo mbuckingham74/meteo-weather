@@ -32,7 +32,9 @@
   font-size: var(--font-base);
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition:
+    background 0.2s,
+    transform 0.2s;
 }
 
 .refresh-btn:hover:not(:disabled) {
@@ -62,7 +64,9 @@
   font-weight: 600;
   color: var(--text-secondary, #6b7280);
   cursor: pointer;
-  transition: all 0.2s;
+  transition:
+    border-color 0.2s,
+    color 0.2s;
 }
 
 .admin-tabs button:hover {

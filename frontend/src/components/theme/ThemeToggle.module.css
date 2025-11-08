@@ -18,7 +18,10 @@
   font-size: var(--font-base);
   font-weight: 600;
   cursor: pointer;
-  transition: all var(--transition-normal);
+  transition:
+    border-color var(--transition-normal),
+    color var(--transition-normal),
+    background var(--transition-normal);
   background: var(--bg-primary);
   color: var(--text-secondary);
   white-space: nowrap;
