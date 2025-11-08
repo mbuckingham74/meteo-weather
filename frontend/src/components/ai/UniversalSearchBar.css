@@ -159,12 +159,12 @@
 }
 
 .universal-example-chip.question {
-  border-color: var(--info-text);
+  border-color: var(--accent-primary);
 }
 
 .universal-example-chip.question:hover {
-  background: var(--info-text);
-  border-color: var(--info-text);
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
   color: white;
 }
 
@@ -179,12 +179,12 @@
 }
 
 .universal-example-chip.comparison {
-  border-color: var(--info-border);
+  border-color: var(--accent-primary);
 }
 
 .universal-example-chip.comparison:hover {
-  background: var(--info-border);
-  border-color: var(--info-border);
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
   color: white;
 }
 
