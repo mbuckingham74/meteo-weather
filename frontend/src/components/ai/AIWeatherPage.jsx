@@ -7,7 +7,7 @@ import HistoricalRainTable from '../weather/HistoricalRainTable';
 import TemperatureBandChart from '../charts/TemperatureBandChart';
 import WindChart from '../charts/WindChart';
 import HourlyForecastChart from '../charts/HourlyForecastChart';
-import { ChartSkeleton, TableSkeleton, MapSkeleton } from '../common/Skeleton';
+import ChartSkeleton from '../common/ChartSkeleton';
 import AIHistoryDropdown from './AIHistoryDropdown';
 import { addToAIHistory } from '../../utils/aiHistoryStorage';
 import API_CONFIG from '../../config/api';
@@ -95,9 +95,9 @@ function AIWeatherPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           query: question,
-          location
+          location,
         }),
-        signal: validateController.signal
+        signal: validateController.signal,
       });
 
       clearTimeout(validateTimeout);
@@ -120,9 +120,9 @@ function AIWeatherPage() {
         body: JSON.stringify({
           query: question,
           location,
-          days: 7
+          days: 7,
         }),
-        signal: analyzeController.signal
+        signal: analyzeController.signal,
       });
 
       clearTimeout(analyzeTimeout);
@@ -143,7 +143,7 @@ function AIWeatherPage() {
           confidence: analysis.confidence,
           tokensUsed: analysis.tokensUsed,
           visualizations: analysis.suggestedVisualizations,
-          followUpQuestions: analysis.followUpQuestions
+          followUpQuestions: analysis.followUpQuestions,
         });
       }
     } catch (err) {
@@ -169,23 +169,24 @@ function AIWeatherPage() {
       locationValue: JSON.stringify(location),
       autoSubmitted,
       loading,
-      urlSearch: routerLocation.search
+      urlSearch: routerLocation.search,
     });
 
     // Check that location is actually a non-empty string
-    const shouldAutoSubmit = question &&
-                            question.trim() &&
-                            location &&
-                            typeof location === 'string' &&
-                            location.trim() &&
-                            !autoSubmitted &&
-                            !loading;
+    const shouldAutoSubmit =
+      question &&
+      question.trim() &&
+      location &&
+      typeof location === 'string' &&
+      location.trim() &&
+      !autoSubmitted &&
+      !loading;
 
     console.log('[Auto-submit] Should auto-submit?', shouldAutoSubmit, {
       hasQuestion: !!(question && question.trim()),
       hasLocation: !!(location && typeof location === 'string' && location.trim()),
       notAutoSubmitted: !autoSubmitted,
-      notLoading: !loading
+      notLoading: !loading,
     });
 
     if (shouldAutoSubmit) {
@@ -202,7 +203,7 @@ function AIWeatherPage() {
         clearTimeout(timer);
       };
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [question, location, autoSubmitted, loading]);
   // Note: handleAskQuestion is intentionally omitted from dependencies to avoid circular updates
 
@@ -221,13 +222,13 @@ function AIWeatherPage() {
         followUpQuestions: answer.followUpQuestions,
         confidence: answer.confidence,
         tokensUsed: answer.tokensUsed,
-        model: answer.model
+        model: answer.model,
       };
 
       const response = await fetch(`${API_BASE_URL}/share/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(shareData)
+        body: JSON.stringify(shareData),
       });
 
       const result = await response.json();
@@ -262,138 +263,148 @@ function AIWeatherPage() {
       weatherData: {
         location: historyItem.location,
         currentConditions: '', // Not cached
-        temperature: '' // Not cached
+        temperature: '', // Not cached
       },
       suggestedVisualizations: historyItem.visualizations || [],
-      followUpQuestions: historyItem.followUpQuestions || []
+      followUpQuestions: historyItem.followUpQuestions || [],
     });
     setAutoSubmitted(false);
   }, []);
 
   // Pre-cached answers for example questions (instant responses)
-  const exampleQuestionsWithAnswers = React.useMemo(() => ({
-    "Will it rain today?": {
-      answer: "Based on current weather data, I'll analyze the precipitation forecast for today. Check the radar map and historical precipitation data below to see rain patterns in your area.",
-      confidence: "High",
-      tokensUsed: 0,
-      suggestedVisualizations: [
-        {
-          type: 'radar',
-          reason: 'Live precipitation radar showing current rain patterns'
-        },
-        {
-          type: 'historical-precipitation',
-          reason: 'Historical precipitation data for context',
-          params: { date: new Date().toISOString().split('T')[0], years: 5 }
-        }
-      ],
-      followUpQuestions: [
-        "When will the rain stop?",
-        "How much rain is expected today?",
-        "Will it rain tomorrow?"
-      ]
-    },
-    "What's the temperature trend this week?": {
-      answer: "I'll show you the temperature trends for the next 7 days. The chart below displays daily high and low temperatures, helping you plan your week ahead.",
-      confidence: "High",
-      tokensUsed: 0,
-      suggestedVisualizations: [
-        {
-          type: 'chart-temperature',
-          reason: 'Temperature trend chart showing daily highs and lows'
-        }
-      ],
-      followUpQuestions: [
-        "What's the warmest day this week?",
-        "Will temperatures drop this weekend?",
-        "How does this compare to normal temperatures?"
-      ]
-    },
-    "How windy will it be tomorrow?": {
-      answer: "Let me show you the wind forecast for tomorrow. The chart below displays wind speed and direction patterns, helping you prepare for outdoor activities.",
-      confidence: "High",
-      tokensUsed: 0,
-      suggestedVisualizations: [
-        {
-          type: 'chart-wind',
-          reason: 'Wind speed and direction forecast'
-        }
-      ],
-      followUpQuestions: [
-        "What's the peak wind speed tomorrow?",
-        "Will winds be gusty?",
-        "Is it safe to fly a drone tomorrow?"
-      ]
-    },
-    "What's the 48-hour forecast?": {
-      answer: "Here's your detailed 48-hour weather forecast showing hourly temperature, precipitation, and wind conditions. This helps you plan the next two days with precision.",
-      confidence: "High",
-      tokensUsed: 0,
-      suggestedVisualizations: [
-        {
-          type: 'chart-hourly',
-          reason: 'Comprehensive 48-hour hourly forecast'
-        }
-      ],
-      followUpQuestions: [
-        "What's the best time to go outside tomorrow?",
-        "When will conditions be worst?",
-        "Should I plan indoor or outdoor activities?"
-      ]
-    }
-  }), []); // Empty deps - this data never changes
+  const exampleQuestionsWithAnswers = React.useMemo(
+    () => ({
+      'Will it rain today?': {
+        answer:
+          "Based on current weather data, I'll analyze the precipitation forecast for today. Check the radar map and historical precipitation data below to see rain patterns in your area.",
+        confidence: 'High',
+        tokensUsed: 0,
+        suggestedVisualizations: [
+          {
+            type: 'radar',
+            reason: 'Live precipitation radar showing current rain patterns',
+          },
+          {
+            type: 'historical-precipitation',
+            reason: 'Historical precipitation data for context',
+            params: { date: new Date().toISOString().split('T')[0], years: 5 },
+          },
+        ],
+        followUpQuestions: [
+          'When will the rain stop?',
+          'How much rain is expected today?',
+          'Will it rain tomorrow?',
+        ],
+      },
+      "What's the temperature trend this week?": {
+        answer:
+          "I'll show you the temperature trends for the next 7 days. The chart below displays daily high and low temperatures, helping you plan your week ahead.",
+        confidence: 'High',
+        tokensUsed: 0,
+        suggestedVisualizations: [
+          {
+            type: 'chart-temperature',
+            reason: 'Temperature trend chart showing daily highs and lows',
+          },
+        ],
+        followUpQuestions: [
+          "What's the warmest day this week?",
+          'Will temperatures drop this weekend?',
+          'How does this compare to normal temperatures?',
+        ],
+      },
+      'How windy will it be tomorrow?': {
+        answer:
+          'Let me show you the wind forecast for tomorrow. The chart below displays wind speed and direction patterns, helping you prepare for outdoor activities.',
+        confidence: 'High',
+        tokensUsed: 0,
+        suggestedVisualizations: [
+          {
+            type: 'chart-wind',
+            reason: 'Wind speed and direction forecast',
+          },
+        ],
+        followUpQuestions: [
+          "What's the peak wind speed tomorrow?",
+          'Will winds be gusty?',
+          'Is it safe to fly a drone tomorrow?',
+        ],
+      },
+      "What's the 48-hour forecast?": {
+        answer:
+          "Here's your detailed 48-hour weather forecast showing hourly temperature, precipitation, and wind conditions. This helps you plan the next two days with precision.",
+        confidence: 'High',
+        tokensUsed: 0,
+        suggestedVisualizations: [
+          {
+            type: 'chart-hourly',
+            reason: 'Comprehensive 48-hour hourly forecast',
+          },
+        ],
+        followUpQuestions: [
+          "What's the best time to go outside tomorrow?",
+          'When will conditions be worst?',
+          'Should I plan indoor or outdoor activities?',
+        ],
+      },
+    }),
+    []
+  ); // Empty deps - this data never changes
 
   const exampleQuestions = Object.keys(exampleQuestionsWithAnswers);
 
   // Handle clicking an example question - show animation then instant answer
-  const handleExampleClick = React.useCallback(async (exampleQuestion) => {
-    if (!location) {
-      setError('Please select a location first');
-      return;
-    }
+  const handleExampleClick = React.useCallback(
+    async (exampleQuestion) => {
+      if (!location) {
+        setError('Please select a location first');
+        return;
+      }
 
-    setQuestion(exampleQuestion);
-    setLoading(true);
-    setError(null);
-    setAnswer(null);
-    setVisualizationsLoaded({}); // Reset visualization loading states
+      setQuestion(exampleQuestion);
+      setLoading(true);
+      setError(null);
+      setAnswer(null);
+      setVisualizationsLoaded({}); // Reset visualization loading states
 
-    // Simulate "Analyzing..." animation for 500ms for better UX
-    await new Promise(resolve => setTimeout(resolve, 500));
+      // Simulate "Analyzing..." animation for 500ms for better UX
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
-    // Get the pre-cached answer
-    const cachedAnswer = exampleQuestionsWithAnswers[exampleQuestion];
+      // Get the pre-cached answer
+      const cachedAnswer = exampleQuestionsWithAnswers[exampleQuestion];
 
-    // Build the complete answer object with weather data
-    const completeAnswer = {
-      answer: cachedAnswer.answer,
-      confidence: cachedAnswer.confidence,
-      tokensUsed: cachedAnswer.tokensUsed,
-      weatherData: {
+      // Build the complete answer object with weather data
+      const completeAnswer = {
+        answer: cachedAnswer.answer,
+        confidence: cachedAnswer.confidence,
+        tokensUsed: cachedAnswer.tokensUsed,
+        weatherData: {
+          location: location,
+          currentConditions: 'See visualizations below',
+          temperature: unit === 'F' ? '(see chart)' : '(see chart)',
+          coordinates: null, // Will be populated by visualizations if needed
+        },
+        suggestedVisualizations: cachedAnswer.suggestedVisualizations,
+        followUpQuestions: cachedAnswer.followUpQuestions,
+        model: 'Cached (instant response)',
+      };
+
+      setAnswer(completeAnswer);
+      setLoading(false);
+
+      // Add to AI history
+      addToAIHistory({
+        question: exampleQuestion,
+        answer: cachedAnswer.answer,
         location: location,
-        currentConditions: 'See visualizations below',
-        temperature: unit === 'F' ? '(see chart)' : '(see chart)',
-        coordinates: null // Will be populated by visualizations if needed
-      },
-      suggestedVisualizations: cachedAnswer.suggestedVisualizations,
-      followUpQuestions: cachedAnswer.followUpQuestions,
-      model: 'Cached (instant response)'
-    };
-
-    setAnswer(completeAnswer);
-    setLoading(false);
-
-    // Add to AI history
-    addToAIHistory({
-      question: exampleQuestion,
-      answer: cachedAnswer.answer,
-      location: location,
-      confidence: cachedAnswer.confidence,
-      tokensUsed: cachedAnswer.tokensUsed,
-      visualizations: cachedAnswer.suggestedVisualizations,
-      followUpQuestions: cachedAnswer.followUpQuestions
-    });
-  }, [location, unit, exampleQuestionsWithAnswers]);
+        confidence: cachedAnswer.confidence,
+        tokensUsed: cachedAnswer.tokensUsed,
+        visualizations: cachedAnswer.suggestedVisualizations,
+        followUpQuestions: cachedAnswer.followUpQuestions,
+      });
+    },
+    [location, unit, exampleQuestionsWithAnswers]
+  );
 
   return (
     <div className="ai-weather-page">
@@ -403,11 +414,7 @@ function AIWeatherPage() {
           <AIHistoryDropdown onSelectHistory={handleSelectHistory} />
         </div>
         <p>Get instant answers to your weather questions powered by Claude AI</p>
-        {location && (
-          <div className="current-location-badge">
-            📍 {location}
-          </div>
-        )}
+        {location && <div className="current-location-badge">📍 {location}</div>}
       </div>
 
       <div className="ai-question-section">
@@ -437,11 +444,7 @@ function AIWeatherPage() {
           </div>
         )}
 
-        {error && (
-          <div className="error-message">
-            ❌ {error}
-          </div>
-        )}
+        {error && <div className="error-message">❌ {error}</div>}
       </div>
 
       {answer && (
@@ -463,12 +466,11 @@ function AIWeatherPage() {
               </button>
             </div>
           </div>
-          <div className="answer-text">
-            {answer.answer}
-          </div>
+          <div className="answer-text">{answer.answer}</div>
           <div className="answer-context">
             <strong>Location:</strong> {answer.weatherData.location} <br />
-            <strong>Current Conditions:</strong> {answer.weatherData.currentConditions}, {answer.weatherData.temperature}°C
+            <strong>Current Conditions:</strong> {answer.weatherData.currentConditions},{' '}
+            {answer.weatherData.temperature}°C
           </div>
 
           {/* Render Suggested Visualizations */}
@@ -484,10 +486,15 @@ function AIWeatherPage() {
                   {/* Radar Map with skeleton */}
                   {viz.type === 'radar' && answer.weatherData.coordinates && (
                     <>
-                      {!visualizationsLoaded[`radar-${index}`] && <MapSkeleton height={350} />}
-                      <div className={visualizationsLoaded[`radar-${index}`] ? 'fade-in' : 'hidden'}>
+                      {!visualizationsLoaded[`radar-${index}`] && <ChartSkeleton height="350px" />}
+                      <div
+                        className={visualizationsLoaded[`radar-${index}`] ? 'fade-in' : 'hidden'}
+                      >
                         <RadarMap
-                          center={[answer.weatherData.coordinates.lat, answer.weatherData.coordinates.lon]}
+                          center={[
+                            answer.weatherData.coordinates.lat,
+                            answer.weatherData.coordinates.lon,
+                          ]}
                           zoom={8}
                         />
                       </div>
@@ -498,9 +505,15 @@ function AIWeatherPage() {
                   {viz.type === 'historical-precipitation' && viz.params && (
                     <>
                       {!visualizationsLoaded[`historical-precipitation-${index}`] && (
-                        <TableSkeleton rows={10} columns={4} height={500} />
+                        <ChartSkeleton height="500px" />
                       )}
-                      <div className={visualizationsLoaded[`historical-precipitation-${index}`] ? 'fade-in' : 'hidden'}>
+                      <div
+                        className={
+                          visualizationsLoaded[`historical-precipitation-${index}`]
+                            ? 'fade-in'
+                            : 'hidden'
+                        }
+                      >
                         <HistoricalRainTable
                           location={location}
                           date={viz.params.date}
@@ -513,8 +526,14 @@ function AIWeatherPage() {
                   {/* Temperature Chart with skeleton */}
                   {viz.type === 'chart-temperature' && answer.weatherData.forecast && (
                     <>
-                      {!visualizationsLoaded[`chart-temperature-${index}`] && <ChartSkeleton height={400} />}
-                      <div className={visualizationsLoaded[`chart-temperature-${index}`] ? 'fade-in' : 'hidden'}>
+                      {!visualizationsLoaded[`chart-temperature-${index}`] && (
+                        <ChartSkeleton height={400} />
+                      )}
+                      <div
+                        className={
+                          visualizationsLoaded[`chart-temperature-${index}`] ? 'fade-in' : 'hidden'
+                        }
+                      >
                         <TemperatureBandChart
                           data={answer.weatherData.forecast}
                           unit={unit}
@@ -527,12 +546,15 @@ function AIWeatherPage() {
                   {/* Wind Chart with skeleton */}
                   {viz.type === 'chart-wind' && answer.weatherData.forecast && (
                     <>
-                      {!visualizationsLoaded[`chart-wind-${index}`] && <ChartSkeleton height={350} />}
-                      <div className={visualizationsLoaded[`chart-wind-${index}`] ? 'fade-in' : 'hidden'}>
-                        <WindChart
-                          data={answer.weatherData.forecast}
-                          height={350}
-                        />
+                      {!visualizationsLoaded[`chart-wind-${index}`] && (
+                        <ChartSkeleton height={350} />
+                      )}
+                      <div
+                        className={
+                          visualizationsLoaded[`chart-wind-${index}`] ? 'fade-in' : 'hidden'
+                        }
+                      >
+                        <WindChart data={answer.weatherData.forecast} height={350} />
                       </div>
                     </>
                   )}
@@ -540,8 +562,14 @@ function AIWeatherPage() {
                   {/* Hourly Forecast Chart with skeleton */}
                   {viz.type === 'chart-hourly' && answer.weatherData.hourly && (
                     <>
-                      {!visualizationsLoaded[`chart-hourly-${index}`] && <ChartSkeleton height={400} />}
-                      <div className={visualizationsLoaded[`chart-hourly-${index}`] ? 'fade-in' : 'hidden'}>
+                      {!visualizationsLoaded[`chart-hourly-${index}`] && (
+                        <ChartSkeleton height={400} />
+                      )}
+                      <div
+                        className={
+                          visualizationsLoaded[`chart-hourly-${index}`] ? 'fade-in' : 'hidden'
+                        }
+                      >
                         <HourlyForecastChart
                           hourlyData={answer.weatherData.hourly}
                           unit={unit}
@@ -590,7 +618,7 @@ function AIWeatherPage() {
               className="example-button"
               disabled={loading}
             >
-              "{q}"
+              &ldquo;{q}&rdquo;
             </button>
           ))}
         </div>

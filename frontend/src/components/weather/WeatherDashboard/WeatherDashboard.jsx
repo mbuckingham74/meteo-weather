@@ -18,7 +18,6 @@ import useKeyboardShortcuts, {
 import useLocationConfirmation from '../../../hooks/useLocationConfirmation';
 import { WEATHER_CONFIG } from '../../../constants/weather';
 import WeatherAlertsBanner from '../WeatherAlertsBanner';
-import DashboardSkeleton from '../../common/DashboardSkeleton';
 import UniversalSearchBar from '../../ai/UniversalSearchBar';
 import LocationConfirmationModal from '../../location/LocationConfirmationModal';
 import TemperatureUnitToggle from '../../units/TemperatureUnitToggle';
@@ -280,7 +279,12 @@ function WeatherDashboard() {
       </div>
 
       {/* Loading State */}
-      {loading && <DashboardSkeleton />}
+      {loading && (
+        <div className="loading-state">
+          <div className="spinner"></div>
+          <p>Loading weather data...</p>
+        </div>
+      )}
 
       {/* Error State */}
       {error && (

@@ -2,6 +2,14 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../common/ToastContainer';
 import AdminPanelSkeleton from './AdminPanelSkeleton';
+import {
+  exportOverviewStats,
+  exportUserStats,
+  exportWeatherStats,
+  exportAIStats,
+  exportCacheStats,
+  exportDatabaseStats,
+} from '../../utils/csvExport';
 import './AdminPanel.css';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
@@ -208,6 +216,11 @@ const AdminPanel = () => {
 const OverviewTab = ({ stats }) => {
   return (
     <div className="overview-tab">
+      <div className="tab-header">
+        <button onClick={() => exportOverviewStats(stats)} className="export-btn">
+          📥 Export Overview
+        </button>
+      </div>
       <div className="stats-grid">
         <StatCard
           icon="👥"
@@ -278,6 +291,11 @@ const OverviewTab = ({ stats }) => {
 const UsersTab = ({ stats }) => {
   return (
     <div className="users-tab">
+      <div className="tab-header">
+        <button onClick={() => exportUserStats(stats)} className="export-btn">
+          📥 Export User Stats
+        </button>
+      </div>
       <div className="stats-grid">
         <StatCard icon="👥" title="Total Users" value={stats.total} />
         <StatCard icon="✨" title="New Users (7 days)" value={stats.recentSignups} />
@@ -293,6 +311,11 @@ const UsersTab = ({ stats }) => {
 const WeatherTab = ({ stats }) => {
   return (
     <div className="weather-tab">
+      <div className="tab-header">
+        <button onClick={() => exportWeatherStats(stats)} className="export-btn">
+          📥 Export Top Locations
+        </button>
+      </div>
       <div className="stats-grid">
         <StatCard icon="🌍" title="Total Locations" value={stats.totalLocations.toLocaleString()} />
         <StatCard
@@ -377,6 +400,11 @@ const WeatherTab = ({ stats }) => {
 const AITab = ({ stats }) => {
   return (
     <div className="ai-tab">
+      <div className="tab-header">
+        <button onClick={() => exportAIStats(stats)} className="export-btn">
+          📥 Export AI Stats
+        </button>
+      </div>
       <div className="stats-grid">
         <StatCard icon="🤖" title="Total Queries" value={stats.totalQueries.toLocaleString()} />
         <StatCard icon="📅" title="Last 7 Days" value={stats.queriesLast7Days} />
@@ -451,6 +479,11 @@ const AITab = ({ stats }) => {
 const CacheTab = ({ stats, onClearExpired, onClearAll }) => {
   return (
     <div className="cache-tab">
+      <div className="tab-header">
+        <button onClick={() => exportCacheStats(stats)} className="export-btn">
+          📥 Export Cache Stats
+        </button>
+      </div>
       <div className="stats-grid">
         <StatCard icon="💾" title="Total Entries" value={stats.totalEntries.toLocaleString()} />
         <StatCard icon="✅" title="Valid Entries" value={stats.validEntries.toLocaleString()} />
@@ -518,6 +551,11 @@ const CacheTab = ({ stats, onClearExpired, onClearAll }) => {
 const DatabaseTab = ({ stats }) => {
   return (
     <div className="database-tab">
+      <div className="tab-header">
+        <button onClick={() => exportDatabaseStats(stats)} className="export-btn">
+          📥 Export Database Tables
+        </button>
+      </div>
       <div className="stats-grid">
         <StatCard icon="🗄️" title="Total Size" value={`${stats.totalSizeMB} MB`} />
         <StatCard icon="📊" title="Total Tables" value={stats.tableCount} />

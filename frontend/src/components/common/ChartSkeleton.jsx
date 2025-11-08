@@ -1,5 +1,4 @@
-import React from 'react';
-import { Skeleton } from './Skeleton';
+import Skeleton from './Skeleton';
 import './ChartSkeleton.css';
 
 /**
@@ -52,10 +51,7 @@ const ChartSkeleton = ({ height = '450px', showLegend = true, showTitle = true }
             {Array.from({ length: 12 }).map((_, index) => {
               const randomHeight = Math.floor(Math.random() * 70) + 20; // Random height between 20-90%
               return (
-                <div
-                  key={index}
-                  className="chart-skeleton-bar-wrapper"
-                >
+                <div key={index} className="chart-skeleton-bar-wrapper">
                   <Skeleton
                     width="100%"
                     height={`${randomHeight}%`}

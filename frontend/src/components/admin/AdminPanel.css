@@ -93,7 +93,11 @@
 }
 
 .stat-card {
-  background: linear-gradient(135deg, var(--primary-color, #8b5cf6) 0%, var(--primary-hover, #7c3aed) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--primary-color, #8b5cf6) 0%,
+    var(--primary-hover, #7c3aed) 100%
+  );
   border-radius: 12px;
   padding: 20px;
   color: white;
@@ -300,7 +304,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .admin-loading p {
@@ -346,7 +352,7 @@
 }
 
 /* Dark Mode Support */
-[data-theme="dark"] .admin-panel {
+[data-theme='dark'] .admin-panel {
   --text-primary: #f9fafb;
   --text-secondary: #9ca3af;
   --card-bg: #1f2937;
@@ -357,29 +363,29 @@
   --info-border: #2563eb;
 }
 
-[data-theme="dark"] .stat-card {
+[data-theme='dark'] .stat-card {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
-[data-theme="dark"] .stat-card:hover {
+[data-theme='dark'] .stat-card:hover {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
 }
 
-[data-theme="dark"] .data-table {
+[data-theme='dark'] .data-table {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
-[data-theme="dark"] .confidence-badge.high {
+[data-theme='dark'] .confidence-badge.high {
   background: #166534;
   color: #86efac;
 }
 
-[data-theme="dark"] .confidence-badge.medium {
+[data-theme='dark'] .confidence-badge.medium {
   background: #713f12;
   color: #fde047;
 }
 
-[data-theme="dark"] .confidence-badge.low {
+[data-theme='dark'] .confidence-badge.low {
   background: #7f1d1d;
   color: #fca5a5;
 }
@@ -447,4 +453,48 @@
   .stat-value {
     font-size: 24px;
   }
+}
+
+/* Tab Header with Export Button */
+.tab-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+}
+
+.export-btn {
+  padding: 8px 16px;
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.export-btn:hover {
+  background: #059669;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+}
+
+.export-btn:active {
+  transform: translateY(0);
+}
+
+/* Dark mode for export button */
+[data-theme='dark'] .export-btn {
+  background: #059669;
+}
+
+[data-theme='dark'] .export-btn:hover {
+  background: #047857;
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useTemperatureUnit } from '../../contexts/TemperatureUnitContext';
 import RadarMap from '../weather/RadarMap';
@@ -6,7 +6,7 @@ import HistoricalRainTable from '../weather/HistoricalRainTable';
 import TemperatureBandChart from '../charts/TemperatureBandChart';
 import WindChart from '../charts/WindChart';
 import HourlyForecastChart from '../charts/HourlyForecastChart';
-import { ChartSkeleton, TableSkeleton, MapSkeleton } from '../common/Skeleton';
+import ChartSkeleton from '../common/ChartSkeleton';
 import API_CONFIG from '../../config/api';
 import './AIWeatherPage.css';
 
@@ -97,9 +97,7 @@ function SharedAnswerPage() {
       <div className="ai-page-header">
         <h1>🔗 Shared Weather Answer</h1>
         <p>Someone shared this AI weather analysis with you</p>
-        <div className="current-location-badge">
-          📍 {sharedAnswer.location}
-        </div>
+        <div className="current-location-badge">📍 {sharedAnswer.location}</div>
       </div>
 
       <div className="ai-answer-section">
@@ -117,13 +115,13 @@ function SharedAnswerPage() {
           <strong>Question:</strong> {sharedAnswer.question}
         </div>
 
-        <div className="answer-text">
-          {sharedAnswer.answer}
-        </div>
+        <div className="answer-text">{sharedAnswer.answer}</div>
 
         <div className="answer-context">
           <strong>Location:</strong> {sharedAnswer.location} <br />
-          <strong>Current Conditions:</strong> {sharedAnswer.weatherData.currentConditions}, {sharedAnswer.weatherData.temperature}°C<br />
+          <strong>Current Conditions:</strong> {sharedAnswer.weatherData.currentConditions},{' '}
+          {sharedAnswer.weatherData.temperature}°C
+          <br />
           <strong>Shared:</strong> {new Date(sharedAnswer.createdAt).toLocaleDateString()}
         </div>
 
@@ -140,10 +138,13 @@ function SharedAnswerPage() {
                 {/* Radar Map with skeleton */}
                 {viz.type === 'radar' && sharedAnswer.weatherData.coordinates && (
                   <>
-                    {!visualizationsLoaded[`radar-${index}`] && <MapSkeleton height={350} />}
+                    {!visualizationsLoaded[`radar-${index}`] && <ChartSkeleton height="350px" />}
                     <div className={visualizationsLoaded[`radar-${index}`] ? 'fade-in' : 'hidden'}>
                       <RadarMap
-                        center={[sharedAnswer.weatherData.coordinates.lat, sharedAnswer.weatherData.coordinates.lon]}
+                        center={[
+                          sharedAnswer.weatherData.coordinates.lat,
+                          sharedAnswer.weatherData.coordinates.lon,
+                        ]}
                         zoom={8}
                       />
                     </div>
@@ -154,9 +155,15 @@ function SharedAnswerPage() {
                 {viz.type === 'historical-precipitation' && viz.params && (
                   <>
                     {!visualizationsLoaded[`historical-precipitation-${index}`] && (
-                      <TableSkeleton rows={10} columns={4} height={500} />
+                      <ChartSkeleton height="500px" />
                     )}
-                    <div className={visualizationsLoaded[`historical-precipitation-${index}`] ? 'fade-in' : 'hidden'}>
+                    <div
+                      className={
+                        visualizationsLoaded[`historical-precipitation-${index}`]
+                          ? 'fade-in'
+                          : 'hidden'
+                      }
+                    >
                       <HistoricalRainTable
                         location={sharedAnswer.location}
                         date={viz.params.date}
@@ -169,8 +176,14 @@ function SharedAnswerPage() {
                 {/* Temperature Chart */}
                 {viz.type === 'chart-temperature' && sharedAnswer.weatherData.forecast && (
                   <>
-                    {!visualizationsLoaded[`chart-temperature-${index}`] && <ChartSkeleton height={400} />}
-                    <div className={visualizationsLoaded[`chart-temperature-${index}`] ? 'fade-in' : 'hidden'}>
+                    {!visualizationsLoaded[`chart-temperature-${index}`] && (
+                      <ChartSkeleton height={400} />
+                    )}
+                    <div
+                      className={
+                        visualizationsLoaded[`chart-temperature-${index}`] ? 'fade-in' : 'hidden'
+                      }
+                    >
                       <TemperatureBandChart
                         data={sharedAnswer.weatherData.forecast}
                         unit={unit}
@@ -184,11 +197,10 @@ function SharedAnswerPage() {
                 {viz.type === 'chart-wind' && sharedAnswer.weatherData.forecast && (
                   <>
                     {!visualizationsLoaded[`chart-wind-${index}`] && <ChartSkeleton height={350} />}
-                    <div className={visualizationsLoaded[`chart-wind-${index}`] ? 'fade-in' : 'hidden'}>
-                      <WindChart
-                        data={sharedAnswer.weatherData.forecast}
-                        height={350}
-                      />
+                    <div
+                      className={visualizationsLoaded[`chart-wind-${index}`] ? 'fade-in' : 'hidden'}
+                    >
+                      <WindChart data={sharedAnswer.weatherData.forecast} height={350} />
                     </div>
                   </>
                 )}
@@ -196,8 +208,14 @@ function SharedAnswerPage() {
                 {/* Hourly Forecast Chart */}
                 {viz.type === 'chart-hourly' && sharedAnswer.weatherData.hourly && (
                   <>
-                    {!visualizationsLoaded[`chart-hourly-${index}`] && <ChartSkeleton height={400} />}
-                    <div className={visualizationsLoaded[`chart-hourly-${index}`] ? 'fade-in' : 'hidden'}>
+                    {!visualizationsLoaded[`chart-hourly-${index}`] && (
+                      <ChartSkeleton height={400} />
+                    )}
+                    <div
+                      className={
+                        visualizationsLoaded[`chart-hourly-${index}`] ? 'fade-in' : 'hidden'
+                      }
+                    >
                       <HourlyForecastChart
                         hourlyData={sharedAnswer.weatherData.hourly}
                         unit={unit}
