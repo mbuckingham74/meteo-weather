@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, lazy, Suspense } from 'react';
 import {
   BrowserRouter,
   Routes,
@@ -16,17 +16,35 @@ import ErrorBoundary from './components/common/ErrorBoundary';
 import SkipToContent from './components/common/SkipToContent';
 import AuthHeader from './components/auth/AuthHeader';
 import WeatherDashboard from './components/weather/WeatherDashboard';
-import LocationComparisonView from './components/location/LocationComparisonView';
 import PrivacyPolicy from './components/legal/PrivacyPolicy';
-import AIWeatherPage from './components/ai/AIWeatherPage';
-import SharedAnswerPage from './components/ai/SharedAnswerPage';
-import UserPreferencesPage from './components/settings/UserPreferencesPage';
-import AboutPage from './components/about/AboutPage';
-import AdminPanel from './components/admin/AdminPanel';
 import { parseLocationSlug } from './utils/urlHelpers';
 import { geocodeLocation } from './services/weatherApi';
 import './styles/main.css'; // ITCSS architecture - imports all base styles
 import './App.css'; // App-specific styles
+
+// Code-split heavy components that aren't needed on initial load
+const LocationComparisonView = lazy(() => import('./components/location/LocationComparisonView'));
+const AIWeatherPage = lazy(() => import('./components/ai/AIWeatherPage'));
+const SharedAnswerPage = lazy(() => import('./components/ai/SharedAnswerPage'));
+const UserPreferencesPage = lazy(() => import('./components/settings/UserPreferencesPage'));
+const AboutPage = lazy(() => import('./components/about/AboutPage'));
+const AdminPanel = lazy(() => import('./components/admin/AdminPanel'));
+
+// Loading fallback component
+function PageLoader() {
+  return (
+    <div style={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: '400px',
+      fontSize: '18px',
+      color: '#6b7280'
+    }}>
+      Loading...
+    </div>
+  );
+}
 
 function RouteAwareLocationManager() {
   const routerLocation = useRouterLocation();
@@ -128,18 +146,20 @@ function AppShell() {
       <AuthHeader />
       <RouteAwareLocationManager />
       <main id="main-content" tabIndex={-1}>
-        <Routes>
-          <Route path="/" element={<WeatherDashboard />} />
-          <Route path="/location/:slug" element={<WeatherDashboard />} />
-          <Route path="/compare" element={<ComparePage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/privacy" element={<PrivacyPolicy />} />
-          <Route path="/preferences" element={<UserPreferencesPage />} />
-          <Route path="/ai-weather" element={<AIWeatherPage />} />
-          <Route path="/ai-weather/shared/:shareId" element={<SharedAnswerPage />} />
-          <Route path="/admin" element={<AdminPanel />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            <Route path="/" element={<WeatherDashboard />} />
+            <Route path="/location/:slug" element={<WeatherDashboard />} />
+            <Route path="/compare" element={<ComparePage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/preferences" element={<UserPreferencesPage />} />
+            <Route path="/ai-weather" element={<AIWeatherPage />} />
+            <Route path="/ai-weather/shared/:shareId" element={<SharedAnswerPage />} />
+            <Route path="/admin" element={<AdminPanel />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Suspense>
       </main>
     </div>
   );
