@@ -47,6 +47,30 @@ For `max-width` queries (mobile-first fallback):
 
 ---
 
+## ⚠️ Important: CSS Variables in Media Queries
+
+**CSS variables CANNOT be used in `@media` queries due to browser limitations.**
+
+```css
+/* ❌ DOES NOT WORK - Browser cannot evaluate variables in media queries */
+@media (min-width: var(--breakpoint-md)) {
+  .component { ... }
+}
+
+/* ✅ CORRECT - Use hardcoded pixel values */
+@media (min-width: 768px) {
+  .component { ... }
+}
+```
+
+**Why?** Media queries are evaluated before CSS custom properties are resolved. The browser needs static values to determine which styles to apply.
+
+**Solution:** Our responsive utilities (`_responsive.css`) use hardcoded pixel values. Component styles should also use hardcoded values in media queries while using variables for properties.
+
+**Reference:** [MDN: Using CSS custom properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties#invalid_custom_properties)
+
+---
+
 ## Usage Patterns
 
 ### Pattern 1: Mobile-First (Recommended)
@@ -59,7 +83,8 @@ For `max-width` queries (mobile-first fallback):
   grid-template-columns: 1fr;
 }
 
-@media (min-width: var(--breakpoint-md)) {
+/* Use hardcoded pixel values in media queries (browser limitation) */
+@media (min-width: 768px) {
   .component {
     /* Tablet and up (>= 768px) */
     padding: var(--spacing-md);
@@ -68,7 +93,7 @@ For `max-width` queries (mobile-first fallback):
   }
 }
 
-@media (min-width: var(--breakpoint-lg)) {
+@media (min-width: 1024px) {
   .component {
     /* Desktop and up (>= 1024px) */
     padding: var(--spacing-lg);
@@ -94,7 +119,8 @@ For `max-width` queries (mobile-first fallback):
   grid-template-columns: repeat(3, 1fr);
 }
 
-@media (max-width: var(--breakpoint-lg-max)) {
+/* Use hardcoded pixel values in media queries (browser limitation) */
+@media (max-width: 1023.98px) {
   .component {
     /* Tablet and below (< 1024px) */
     padding: var(--spacing-md);
@@ -102,7 +128,7 @@ For `max-width` queries (mobile-first fallback):
   }
 }
 
-@media (max-width: var(--breakpoint-md-max)) {
+@media (max-width: 767.98px) {
   .component {
     /* Mobile (< 768px) */
     padding: var(--spacing-sm);

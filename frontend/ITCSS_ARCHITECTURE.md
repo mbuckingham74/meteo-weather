@@ -2,6 +2,25 @@
 
 **ITCSS (Inverted Triangle CSS)** organizes CSS by specificity, from least specific (settings) to most specific (utilities). This creates a clear hierarchy and prevents specificity wars.
 
+**Last Updated:** November 8, 2025 (CSS Audit Fixes applied)
+
+---
+
+## Recent Updates (November 2025)
+
+### CSS Audit Fixes Applied ✅
+
+- **Responsive Utilities Fixed:** All `var()` in media queries replaced with pixel values (browser limitation)
+- **Theme System Unified:** Removed 95 lines of duplicate `[data-theme]` overrides from components
+- **Design Tokens Adopted:** 65+ hardcoded spacing values replaced with `var(--spacing-*)`
+- **App.css ITCSS Compliance:** Removed duplicate resets (box-sizing, body margin/padding) already in Layer 3
+- **Accessibility Improved:** All typography ≥12px (WCAG 1.4.4 compliant)
+- **Animation Scope Fixed:** Keyframes moved outside media queries for fallback classes
+
+**See:** [CSS_AUDIT_FIXES.md](CSS_AUDIT_FIXES.md) for complete details.
+
+---
+
 ## Structure
 
 ```
