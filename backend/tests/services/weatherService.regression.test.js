@@ -287,7 +287,7 @@ describe('📚 DOCUMENTATION SAFEGUARD', () => {
   it('OLD_LOCATION_BUG_FIX.md must document backend sanitization', () => {
     const fs = require('fs');
     const path = require('path');
-    const docPath = path.resolve(__dirname, '../../docs/troubleshooting/OLD_LOCATION_BUG_FIX.md');
+    const docPath = path.resolve(__dirname, '../../../docs/troubleshooting/OLD_LOCATION_BUG_FIX.md');
 
     if (!fs.existsSync(docPath)) {
       throw new Error('Missing documentation: docs/troubleshooting/OLD_LOCATION_BUG_FIX.md');
