@@ -106,6 +106,17 @@
 
 ### Recent Work (Nov 2025)
 
+- ✅ **PostCSS Config Fix & Build Tooling Improvements** (Nov 8, 2025)
+  - **Fixed Local Dev Build Error:** Removed problematic PurgeCSS integration that was breaking Vite dev server
+  - **PostCSS Config:** Simplified to empty plugins array (PurgeCSS temporarily disabled due to module loading issues)
+  - **Pre-commit Hook Fix:** Corrected git add path bug (was doubling backend/ prefix)
+  - **Async/Await Fixes:** Fixed sanitizeResolvedAddress calls in weatherService to properly await results
+  - **Added Stylelint:** Installed stylelint and stylelint-config-standard for future CSS linting
+  - **Documentation Updates:** Updated various doc cross-references and reorganized REGRESSION_PREVENTION.md
+  - **Impact:** Local development working again, cleaner build process, improved code quality
+  - **Files Changed:** postcss.config.cjs, .husky/pre-commit, weatherService.js, package.json
+  - **Status:** Deployed to production ✅
+
 - ✅ **CSS Audit Fixes Part 2 - Theme System & Design Tokens** (Nov 8, 2025)
   - **Fixed 4 Critical CSS Issues:** Theme consistency, design token adoption, duplicate code removal
   - **AIWeatherHero.css Theme Integration:** Created 23 component-level CSS variables that map to design system
