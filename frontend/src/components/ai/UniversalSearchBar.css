@@ -45,8 +45,8 @@
 .universal-input-wrapper:focus-within {
   border-color: #10b981;
   box-shadow:
-    0 0 0 4px rgba(102, 126, 234, 0.15),
-    0 8px 20px rgba(102, 126, 234, 0.2);
+    0 0 0 4px rgba(16, 185, 129, 0.15),
+    0 8px 20px rgba(16, 185, 129, 0.2);
   transform: translateY(-2px);
 }
 
@@ -96,7 +96,7 @@
 
 .universal-submit-button:hover:not(:disabled) {
   transform: scale(1.08);
-  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.5);
 }
 
 .universal-submit-button:disabled {
@@ -149,52 +149,52 @@
 
 /* Color-coded chip types to demonstrate variety */
 .universal-example-chip.location {
-  border-color: #4caf50;
+  border-color: var(--accent-primary);
 }
 
 .universal-example-chip.location:hover {
-  background: #4caf50;
-  border-color: #4caf50;
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
   color: white;
 }
 
 .universal-example-chip.question {
-  border-color: #2196f3;
+  border-color: var(--info-text);
 }
 
 .universal-example-chip.question:hover {
-  background: #2196f3;
-  border-color: #2196f3;
+  background: var(--info-text);
+  border-color: var(--info-text);
   color: white;
 }
 
 .universal-example-chip.analysis {
-  border-color: #9c27b0;
+  border-color: var(--accent-secondary);
 }
 
 .universal-example-chip.analysis:hover {
-  background: #9c27b0;
-  border-color: #9c27b0;
+  background: var(--accent-secondary);
+  border-color: var(--accent-secondary);
   color: white;
 }
 
 .universal-example-chip.comparison {
-  border-color: #00bcd4;
+  border-color: var(--info-border);
 }
 
 .universal-example-chip.comparison:hover {
-  background: #00bcd4;
-  border-color: #00bcd4;
+  background: var(--info-border);
+  border-color: var(--info-border);
   color: white;
 }
 
 .universal-example-chip.practical {
-  border-color: #ff9800;
+  border-color: var(--warning-text);
 }
 
 .universal-example-chip.practical:hover {
-  background: #ff9800;
-  border-color: #ff9800;
+  background: var(--warning-text);
+  border-color: var(--warning-text);
   color: white;
 }
 
@@ -224,12 +224,12 @@
 }
 
 .hint-ai {
-  color: #9c27b0;
+  color: var(--accent-secondary);
   font-weight: 600;
 }
 
 .hint-location {
-  color: #4caf50;
+  color: var(--accent-primary);
   font-weight: 600;
 }
 
@@ -251,8 +251,8 @@
 [data-theme='light'] .universal-input-wrapper:focus-within {
   border-color: #10b981;
   box-shadow:
-    0 0 0 4px rgba(102, 126, 234, 0.1),
-    0 8px 20px rgba(102, 126, 234, 0.15);
+    0 0 0 4px rgba(16, 185, 129, 0.1),
+    0 8px 20px rgba(16, 185, 129, 0.15);
 }
 
 [data-theme='light'] .universal-search-input {
@@ -556,7 +556,7 @@
   border-color: #10b981;
   color: white;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
 /* Light Theme for Inline Answer */
