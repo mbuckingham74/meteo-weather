@@ -1,11 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useToast } from '../common/ToastContainer';
 import './AdminPanel.css';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
 const AdminPanel = () => {
   const { user, token } = useAuth();
+  const toast = useToast();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
@@ -22,8 +24,8 @@ const AdminPanel = () => {
 
       const response = await fetch(`${API_BASE_URL}/api/admin/stats`, {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (!response.ok) {
@@ -58,40 +60,45 @@ const AdminPanel = () => {
       const response = await fetch(`${API_BASE_URL}/api/admin/cache/clear-expired`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
       });
 
       const data = await response.json();
       if (data.success) {
-        alert(`✅ Cleared ${data.deletedCount} expired cache entries`);
+        toast.success(`Cleared ${data.deletedCount} expired cache entries`);
         fetchStats();
       }
     } catch (err) {
-      alert(`❌ Error: ${err.message}`);
+      toast.error(`Error: ${err.message}`);
     }
   };
 
   const handleClearAllCache = async () => {
-    if (!window.confirm('⚠️ WARNING: This will clear ALL cache entries. Next requests will be slower. Continue?')) return;
+    if (
+      !window.confirm(
+        '⚠️ WARNING: This will clear ALL cache entries. Next requests will be slower. Continue?'
+      )
+    )
+      return;
 
     try {
       const response = await fetch(`${API_BASE_URL}/api/admin/cache/clear-all`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
       });
 
       const data = await response.json();
       if (data.success) {
-        alert(`✅ ${data.message}`);
+        toast.success(data.message);
         fetchStats();
       }
     } catch (err) {
-      alert(`❌ Error: ${err.message}`);
+      toast.error(`Error: ${err.message}`);
     }
   };
 
@@ -144,11 +151,7 @@ const AdminPanel = () => {
     <div className="admin-panel">
       <div className="admin-header">
         <h1>🔧 Admin Dashboard</h1>
-        <button
-          onClick={handleRefresh}
-          className="refresh-btn"
-          disabled={refreshing}
-        >
+        <button onClick={handleRefresh} className="refresh-btn" disabled={refreshing}>
           {refreshing ? '⟳ Refreshing...' : '↻ Refresh'}
         </button>
       </div>
@@ -172,10 +175,7 @@ const AdminPanel = () => {
         >
           🌤️ Weather Data
         </button>
-        <button
-          className={activeTab === 'ai' ? 'active' : ''}
-          onClick={() => setActiveTab('ai')}
-        >
+        <button className={activeTab === 'ai' ? 'active' : ''} onClick={() => setActiveTab('ai')}>
           🤖 AI Usage
         </button>
         <button
@@ -285,31 +285,11 @@ const UsersTab = ({ stats }) => {
   return (
     <div className="users-tab">
       <div className="stats-grid">
-        <StatCard
-          icon="👥"
-          title="Total Users"
-          value={stats.total}
-        />
-        <StatCard
-          icon="✨"
-          title="New Users (7 days)"
-          value={stats.recentSignups}
-        />
-        <StatCard
-          icon="⚡"
-          title="Active (30 days)"
-          value={stats.activeLastMonth}
-        />
-        <StatCard
-          icon="⭐"
-          title="Users with Favorites"
-          value={stats.withFavorites}
-        />
-        <StatCard
-          icon="📊"
-          title="Avg Favorites/User"
-          value={stats.avgFavoritesPerUser}
-        />
+        <StatCard icon="👥" title="Total Users" value={stats.total} />
+        <StatCard icon="✨" title="New Users (7 days)" value={stats.recentSignups} />
+        <StatCard icon="⚡" title="Active (30 days)" value={stats.activeLastMonth} />
+        <StatCard icon="⭐" title="Users with Favorites" value={stats.withFavorites} />
+        <StatCard icon="📊" title="Avg Favorites/User" value={stats.avgFavoritesPerUser} />
       </div>
     </div>
   );
@@ -320,11 +300,7 @@ const WeatherTab = ({ stats }) => {
   return (
     <div className="weather-tab">
       <div className="stats-grid">
-        <StatCard
-          icon="🌍"
-          title="Total Locations"
-          value={stats.totalLocations.toLocaleString()}
-        />
+        <StatCard icon="🌍" title="Total Locations" value={stats.totalLocations.toLocaleString()} />
         <StatCard
           icon="📊"
           title="Weather Records"
@@ -408,26 +384,10 @@ const AITab = ({ stats }) => {
   return (
     <div className="ai-tab">
       <div className="stats-grid">
-        <StatCard
-          icon="🤖"
-          title="Total Queries"
-          value={stats.totalQueries.toLocaleString()}
-        />
-        <StatCard
-          icon="📅"
-          title="Last 7 Days"
-          value={stats.queriesLast7Days}
-        />
-        <StatCard
-          icon="👀"
-          title="Total Views"
-          value={stats.totalViews.toLocaleString()}
-        />
-        <StatCard
-          icon="🎯"
-          title="Avg Tokens/Query"
-          value={stats.avgTokensPerQuery}
-        />
+        <StatCard icon="🤖" title="Total Queries" value={stats.totalQueries.toLocaleString()} />
+        <StatCard icon="📅" title="Last 7 Days" value={stats.queriesLast7Days} />
+        <StatCard icon="👀" title="Total Views" value={stats.totalViews.toLocaleString()} />
+        <StatCard icon="🎯" title="Avg Tokens/Query" value={stats.avgTokensPerQuery} />
         <StatCard
           icon="💰"
           title="Estimated Cost"
@@ -450,9 +410,7 @@ const AITab = ({ stats }) => {
             {stats.confidenceBreakdown.map((item, idx) => (
               <tr key={idx}>
                 <td>
-                  <span className={`confidence-badge ${item.confidence}`}>
-                    {item.confidence}
-                  </span>
+                  <span className={`confidence-badge ${item.confidence}`}>{item.confidence}</span>
                 </td>
                 <td>{item.count}</td>
                 <td>{Math.round(item.avg_tokens)}</td>
@@ -500,26 +458,10 @@ const CacheTab = ({ stats, onClearExpired, onClearAll }) => {
   return (
     <div className="cache-tab">
       <div className="stats-grid">
-        <StatCard
-          icon="💾"
-          title="Total Entries"
-          value={stats.totalEntries.toLocaleString()}
-        />
-        <StatCard
-          icon="✅"
-          title="Valid Entries"
-          value={stats.validEntries.toLocaleString()}
-        />
-        <StatCard
-          icon="❌"
-          title="Expired Entries"
-          value={stats.expiredEntries.toLocaleString()}
-        />
-        <StatCard
-          icon="🎯"
-          title="Hit Rate (7d)"
-          value={`${stats.hitRate}%`}
-        />
+        <StatCard icon="💾" title="Total Entries" value={stats.totalEntries.toLocaleString()} />
+        <StatCard icon="✅" title="Valid Entries" value={stats.validEntries.toLocaleString()} />
+        <StatCard icon="❌" title="Expired Entries" value={stats.expiredEntries.toLocaleString()} />
+        <StatCard icon="🎯" title="Hit Rate (7d)" value={`${stats.hitRate}%`} />
       </div>
 
       <div className="cache-actions">
@@ -559,10 +501,18 @@ const CacheTab = ({ stats, onClearExpired, onClearAll }) => {
         <div className="section">
           <h2>⏰ Oldest Cache Entry</h2>
           <div className="info-box">
-            <p><strong>Key:</strong> {stats.oldestEntry.cache_key}</p>
-            <p><strong>Source:</strong> {stats.oldestEntry.api_source}</p>
-            <p><strong>Created:</strong> {new Date(stats.oldestEntry.created_at).toLocaleString()}</p>
-            <p><strong>Expires:</strong> {new Date(stats.oldestEntry.expires_at).toLocaleString()}</p>
+            <p>
+              <strong>Key:</strong> {stats.oldestEntry.cache_key}
+            </p>
+            <p>
+              <strong>Source:</strong> {stats.oldestEntry.api_source}
+            </p>
+            <p>
+              <strong>Created:</strong> {new Date(stats.oldestEntry.created_at).toLocaleString()}
+            </p>
+            <p>
+              <strong>Expires:</strong> {new Date(stats.oldestEntry.expires_at).toLocaleString()}
+            </p>
           </div>
         </div>
       )}
@@ -575,16 +525,8 @@ const DatabaseTab = ({ stats }) => {
   return (
     <div className="database-tab">
       <div className="stats-grid">
-        <StatCard
-          icon="🗄️"
-          title="Total Size"
-          value={`${stats.totalSizeMB} MB`}
-        />
-        <StatCard
-          icon="📊"
-          title="Total Tables"
-          value={stats.tableCount}
-        />
+        <StatCard icon="🗄️" title="Total Size" value={`${stats.totalSizeMB} MB`} />
+        <StatCard icon="📊" title="Total Tables" value={stats.tableCount} />
       </div>
 
       <div className="section">

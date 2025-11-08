@@ -11,6 +11,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { LocationProvider, useLocation as useLocationContext } from './contexts/LocationContext';
 import { TemperatureUnitProvider } from './contexts/TemperatureUnitContext';
+import { ToastProvider } from './components/common/ToastContainer';
 import ErrorBoundary from './components/common/ErrorBoundary';
 import SkipToContent from './components/common/SkipToContent';
 import AuthHeader from './components/auth/AuthHeader';
@@ -149,17 +150,19 @@ function AppShell() {
 function App() {
   return (
     <ErrorBoundary>
-      <AuthProvider>
-        <ThemeProvider>
-          <TemperatureUnitProvider>
-            <LocationProvider>
-              <BrowserRouter>
-                <AppShell />
-              </BrowserRouter>
-            </LocationProvider>
-          </TemperatureUnitProvider>
-        </ThemeProvider>
-      </AuthProvider>
+      <ToastProvider>
+        <AuthProvider>
+          <ThemeProvider>
+            <TemperatureUnitProvider>
+              <LocationProvider>
+                <BrowserRouter>
+                  <AppShell />
+                </BrowserRouter>
+              </LocationProvider>
+            </TemperatureUnitProvider>
+          </ThemeProvider>
+        </AuthProvider>
+      </ToastProvider>
     </ErrorBoundary>
   );
 }
