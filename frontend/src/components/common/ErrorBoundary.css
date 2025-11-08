@@ -86,7 +86,7 @@
 }
 
 .error-boundary-button.primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
   color: white;
 }
 
@@ -106,8 +106,8 @@
 
 .error-boundary-button.tertiary {
   background: transparent;
-  color: var(--accent-primary, #667eea);
-  border: 1px solid var(--accent-primary, #667eea);
+  color: var(--accent-primary, #10b981);
+  border: 1px solid var(--accent-primary, #10b981);
 }
 
 .error-boundary-button.tertiary:hover {
@@ -131,7 +131,7 @@
 }
 
 .error-boundary-details summary:hover {
-  color: var(--accent-primary, #667eea);
+  color: var(--accent-primary, #10b981);
 }
 
 .error-boundary-details-content {

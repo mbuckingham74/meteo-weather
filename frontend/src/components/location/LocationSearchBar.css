@@ -18,7 +18,7 @@
 }
 
 .search-input-wrapper:focus-within {
-  border-color: var(--accent-primary, #667eea);
+  border-color: var(--accent-primary, #10b981);
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
@@ -122,7 +122,7 @@
   padding: 4px 8px;
   font-size: 11px;
   font-weight: 600;
-  color: var(--accent-primary, #667eea);
+  color: var(--accent-primary, #10b981);
   cursor: pointer;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -132,7 +132,7 @@
 
 .clear-recent-link:hover {
   background: var(--accent-bg, #eff6ff);
-  color: var(--accent-primary, #667eea);
+  color: var(--accent-primary, #10b981);
 }
 
 .clear-recent-link:active {
@@ -168,7 +168,7 @@
 }
 
 .use-my-location-text {
-  color: var(--accent-primary, #667eea) !important;
+  color: var(--accent-primary, #10b981) !important;
   font-weight: 600 !important;
 }
 

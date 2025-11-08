@@ -378,7 +378,7 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
           onClick={() => setSelectedMetric('overview')}
           style={{
             padding: '8px 16px',
-            background: selectedMetric === 'overview' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : '#f3f4f6',
+            background: selectedMetric === 'overview' ? 'linear-gradient(135deg, #10b981 0%, #34d399 100%)' : '#f3f4f6',
             color: selectedMetric === 'overview' ? 'white' : '#4b5563',
             border: 'none',
             borderRadius: '6px',

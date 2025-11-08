@@ -48,7 +48,7 @@ function TemperatureProbabilityChart({ probabilityData, unit = 'C', height = 400
         <p style={{ margin: '0 0 8px 0', fontWeight: 'bold', color: 'var(--text-primary, #111827)' }}>
           {formatTemperature(data.temperature, unit)} - {formatTemperature(data.temperature + 5, unit)}
         </p>
-        <p style={{ margin: '4px 0', color: '#6366f1', fontSize: '14px', fontWeight: '600' }}>
+        <p style={{ margin: '4px 0', color: '#10b981', fontSize: '14px', fontWeight: '600' }}>
           {data.probability.toFixed(1)}% of days
         </p>
         <p style={{ margin: '4px 0', color: 'var(--text-tertiary, #9ca3af)', fontSize: '11px' }}>
@@ -151,13 +151,13 @@ function TemperatureProbabilityChart({ probabilityData, unit = 'C', height = 400
           {/* Mean reference line */}
           <ReferenceLine
             x={Math.floor(statistics.mean / 5) * 5}
-            stroke="#6366f1"
+            stroke="#10b981"
             strokeWidth={2}
             strokeDasharray="3 3"
             label={{
               value: 'Mean',
               position: 'top',
-              fill: '#6366f1',
+              fill: '#10b981',
               fontSize: 11,
               fontWeight: '600'
             }}

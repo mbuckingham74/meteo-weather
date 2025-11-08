@@ -65,7 +65,7 @@ function CloudCoverChart({ data, days, height = 350 }) {
         <p style={{ margin: '4px 0', color: '#64748b' }}>
           Cloud Cover: {data.cloudCover}% ({cloudCondition})
         </p>
-        <p style={{ margin: '4px 0', color: '#6366f1' }}>
+        <p style={{ margin: '4px 0', color: '#10b981' }}>
           Visibility: {data.visibility ? `${data.visibility.toFixed(1)} km` : 'N/A'}
         </p>
       </div>
@@ -97,8 +97,8 @@ function CloudCoverChart({ data, days, height = 350 }) {
               <stop offset="95%" stopColor="#94a3b8" stopOpacity={0.1}/>
             </linearGradient>
             <linearGradient id="visibilityGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#6366f1" stopOpacity={0.4}/>
-              <stop offset="95%" stopColor="#6366f1" stopOpacity={0.05}/>
+              <stop offset="5%" stopColor="#10b981" stopOpacity={0.4}/>
+              <stop offset="95%" stopColor="#10b981" stopOpacity={0.05}/>
             </linearGradient>
           </defs>
           <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
@@ -150,7 +150,7 @@ function CloudCoverChart({ data, days, height = 350 }) {
             yAxisId="right"
             type="monotone"
             dataKey="visibility"
-            stroke="#6366f1"
+            stroke="#10b981"
             fill="url(#visibilityGradient)"
             strokeWidth={2}
             name="Visibility"

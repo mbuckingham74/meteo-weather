@@ -77,13 +77,13 @@ function HistoricalComparisonChart({ forecastData, historicalData, unit = 'C', h
           {data.displayDate}
         </p>
         {data.aggregatedDays && (
-          <p style={{ margin: '0 0 8px 0', fontSize: '11px', color: '#667eea', fontStyle: 'italic' }}>
+          <p style={{ margin: '0 0 8px 0', fontSize: '11px', color: '#10b981', fontStyle: 'italic' }}>
             ({data.aggregatedDays} days averaged)
           </p>
         )}
 
         <div style={{ marginBottom: '8px' }}>
-          <p style={{ margin: '2px 0', fontSize: '12px', fontWeight: '600', color: '#6366f1' }}>
+          <p style={{ margin: '2px 0', fontSize: '12px', fontWeight: '600', color: '#10b981' }}>
             Forecast:
           </p>
           <p style={{ margin: '2px 0 2px 12px', fontSize: '11px', color: 'var(--text-secondary, #6b7280)' }}>
@@ -219,7 +219,7 @@ function HistoricalComparisonChart({ forecastData, historicalData, unit = 'C', h
           <Line
             type="monotone"
             dataKey="forecastAvg"
-            stroke="#6366f1"
+            stroke="#10b981"
             strokeWidth={3}
             name="Forecast Average"
             dot={{ r: 5 }}
@@ -234,7 +234,7 @@ function HistoricalComparisonChart({ forecastData, historicalData, unit = 'C', h
         </p>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '8px' }}>
           <div style={{ fontSize: '11px', color: 'var(--text-secondary, #6b7280)' }}>
-            <span style={{ color: '#6366f1', fontWeight: '600' }}>Solid lines:</span> Current forecast
+            <span style={{ color: '#10b981', fontWeight: '600' }}>Solid lines:</span> Current forecast
           </div>
           <div style={{ fontSize: '11px', color: 'var(--text-secondary, #6b7280)' }}>
             <span style={{ color: '#10b981', fontWeight: '600' }}>Dashed line:</span> Historical average

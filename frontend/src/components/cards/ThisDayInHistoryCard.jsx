@@ -33,7 +33,7 @@ function ThisDayInHistoryCard({ historyData, unit = 'C' }) {
   return (
     <div style={{
       padding: '12px',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      background: 'linear-gradient(135deg, #10b981 0%, #34d399 100%)',
       borderRadius: '8px',
       boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
       color: 'white'

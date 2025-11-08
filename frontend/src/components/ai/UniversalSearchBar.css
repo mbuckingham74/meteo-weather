@@ -43,7 +43,7 @@
 }
 
 .universal-input-wrapper:focus-within {
-  border-color: #667eea;
+  border-color: #10b981;
   box-shadow:
     0 0 0 4px rgba(102, 126, 234, 0.15),
     0 8px 20px rgba(102, 126, 234, 0.2);
@@ -80,7 +80,7 @@
 .universal-submit-button {
   width: 44px;
   height: 44px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
   border: none;
   border-radius: 10px;
   color: white;
@@ -249,7 +249,7 @@
 }
 
 [data-theme='light'] .universal-input-wrapper:focus-within {
-  border-color: #667eea;
+  border-color: #10b981;
   box-shadow:
     0 0 0 4px rgba(102, 126, 234, 0.1),
     0 8px 20px rgba(102, 126, 234, 0.15);
@@ -375,7 +375,7 @@
 
 /* Focus/Active States for Accessibility */
 .universal-example-chip:focus {
-  outline: 2px solid #667eea;
+  outline: 2px solid #10b981;
   outline-offset: 2px;
 }
 
@@ -552,8 +552,8 @@
 }
 
 .follow-up-chip:hover {
-  background: #667eea;
-  border-color: #667eea;
+  background: #10b981;
+  border-color: #10b981;
   color: white;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
@@ -597,8 +597,8 @@
 }
 
 [data-theme='light'] .follow-up-chip:hover {
-  background: #667eea;
-  border-color: #667eea;
+  background: #10b981;
+  border-color: #10b981;
   color: white;
 }
 

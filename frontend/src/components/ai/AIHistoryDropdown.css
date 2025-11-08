@@ -19,8 +19,8 @@
 }
 
 .history-toggle-button:hover {
-  border-color: var(--accent-primary, #667eea);
-  color: var(--accent-primary, #667eea);
+  border-color: var(--accent-primary, #10b981);
+  color: var(--accent-primary, #10b981);
   transform: translateY(-2px);
 }
 
@@ -130,7 +130,7 @@
 .history-location {
   font-size: 12px;
   font-weight: 600;
-  color: var(--accent-primary, #667eea);
+  color: var(--accent-primary, #10b981);
 }
 
 .history-timestamp {

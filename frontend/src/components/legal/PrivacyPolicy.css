@@ -18,7 +18,7 @@
 
 /* Header */
 .privacy-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
   padding: 48px 40px;
   text-align: center;
   color: white;
@@ -56,7 +56,7 @@
   font-weight: 700;
   margin: 0 0 16px 0;
   color: var(--text-primary, #111827);
-  border-bottom: 2px solid var(--accent-primary, #667eea);
+  border-bottom: 2px solid var(--accent-primary, #10b981);
   padding-bottom: 8px;
 }
 
@@ -76,7 +76,7 @@
 
 .privacy-highlight {
   background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-  border-left: 4px solid var(--accent-primary, #667eea);
+  border-left: 4px solid var(--accent-primary, #10b981);
   padding: 16px 20px;
   border-radius: 8px;
   font-size: 17px;
@@ -84,7 +84,7 @@
 }
 
 .privacy-highlight strong {
-  color: var(--accent-primary, #667eea);
+  color: var(--accent-primary, #10b981);
   font-size: 18px;
 }
 
@@ -108,7 +108,7 @@
   content: "•";
   position: absolute;
   left: -12px;
-  color: var(--accent-primary, #667eea);
+  color: var(--accent-primary, #10b981);
   font-weight: bold;
   font-size: 20px;
 }
@@ -172,7 +172,7 @@
   align-items: center;
   gap: 8px;
   padding: 12px 24px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
   color: white;
   text-decoration: none;
   border-radius: 8px;

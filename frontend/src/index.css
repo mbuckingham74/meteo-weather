@@ -27,7 +27,7 @@ code {
 /* Global focus indicators for accessibility */
 /* Based on WCAG 2.4.7 - Focus Visible */
 :focus {
-  outline: 3px solid #667eea;
+  outline: 3px solid #10b981;
   outline-offset: 2px;
 }
 
@@ -45,7 +45,7 @@ select:focus-visible,
 [role='button']:focus-visible,
 [role='tab']:focus-visible,
 [tabindex]:focus-visible {
-  outline: 3px solid #667eea;
+  outline: 3px solid #10b981;
   outline-offset: 2px;
 }
 
@@ -53,9 +53,9 @@ select:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  outline: 2px solid #667eea;
+  outline: 2px solid #10b981;
   outline-offset: 0;
-  border-color: #667eea;
+  border-color: #10b981;
 }
 
 /* High contrast mode support */

@@ -63,7 +63,7 @@ function TemperatureBandChart({ data, unit = 'C', height = 400, days, aggregatio
           {data.displayDate}
         </p>
         {data.aggregatedDays && (
-          <p style={{ margin: '0 0 8px 0', fontSize: '11px', color: '#667eea', fontStyle: 'italic' }}>
+          <p style={{ margin: '0 0 8px 0', fontSize: '11px', color: '#10b981', fontStyle: 'italic' }}>
             ({data.aggregatedDays} days averaged)
           </p>
         )}
