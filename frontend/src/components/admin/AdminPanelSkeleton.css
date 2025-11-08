@@ -1,0 +1,56 @@
+/* Admin Panel Skeleton Styles */
+
+.admin-panel-skeleton {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.admin-skeleton-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.admin-skeleton-tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 32px;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 12px;
+}
+
+.admin-skeleton-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.admin-skeleton-section {
+  margin-bottom: 32px;
+}
+
+.admin-skeleton-table {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .admin-panel-skeleton {
+    padding: 16px;
+  }
+
+  .admin-skeleton-tabs {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .admin-skeleton-stats-grid {
+    grid-template-columns: 1fr;
+  }
+}

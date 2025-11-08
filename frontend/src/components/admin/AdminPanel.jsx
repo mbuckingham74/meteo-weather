@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../common/ToastContainer';
+import AdminPanelSkeleton from './AdminPanelSkeleton';
 import './AdminPanel.css';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
@@ -125,14 +126,7 @@ const AdminPanel = () => {
   }
 
   if (loading && !stats) {
-    return (
-      <div className="admin-panel">
-        <div className="admin-loading">
-          <div className="spinner"></div>
-          <p>Loading statistics...</p>
-        </div>
-      </div>
-    );
+    return <AdminPanelSkeleton />;
   }
 
   if (error && !stats) {
