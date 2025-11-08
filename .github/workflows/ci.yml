@@ -149,6 +149,11 @@ jobs:
           cd frontend
           npm run lint
 
+      - name: Run Stylelint
+        run: |
+          cd frontend
+          npm run lint:css
+
   frontend-test:
     name: Frontend Tests
     runs-on: ubuntu-latest
