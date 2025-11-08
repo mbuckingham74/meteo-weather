@@ -5,6 +5,17 @@
  * Phase 2 Accessibility Enhancement
  */
 
+/* Global keyframe for reduced motion - must be outside media query for fallback class */
+@keyframes reduced-pulse {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   /* Global animation and transition reset */
   *,
@@ -47,16 +58,6 @@
   .auth-loading-spinner,
   .radar-loading-spinner {
     animation: reduced-pulse 2s ease-in-out infinite !important;
-  }
-
-  @keyframes reduced-pulse {
-    0%,
-    100% {
-      opacity: 0.6;
-    }
-    50% {
-      opacity: 1;
-    }
   }
 
   /* Radar map - disable rotation animation */
