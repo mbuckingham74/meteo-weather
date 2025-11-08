@@ -1,4 +1,4 @@
-# ITCSS Architecture - Phase 2.1 Complete ✅
+# ITCSS Architecture - Phases 2.1-2.3 Complete ✅
 
 **ITCSS (Inverted Triangle CSS)** organizes CSS by specificity, from least specific (settings) to most specific (utilities). This creates a clear hierarchy and prevents specificity wars.
 
@@ -6,20 +6,22 @@
 
 ```
 src/styles/
-├── main.css                    # Main entry point (imports all layers)
+├── main.css                     # Main entry point (imports all layers)
 ├── itcss/
 │   ├── settings/
-│   │   └── _variables.css      # CSS custom properties
-│   ├── tools/                  # (Empty - for future mixins if needed)
+│   │   ├── _variables.css       # CSS custom properties (spacing, colors, fonts)
+│   │   └── _breakpoints.css     # Responsive breakpoint variables (NEW in 2.3)
+│   ├── tools/                   # (Empty - for future mixins if needed)
 │   ├── generic/
-│   │   └── _reset.css          # CSS reset, normalize
+│   │   └── _reset.css           # CSS reset, normalize
 │   ├── elements/
-│   │   └── _base.css           # Base HTML elements
+│   │   └── _base.css            # Base HTML elements
 │   ├── objects/
-│   │   └── _layout.css         # Layout patterns (.o- prefix)
-│   ├── components/             # (Component CSS handled separately)
+│   │   └── _layout.css          # Layout patterns (.o- prefix)
+│   ├── components/              # (Component CSS handled separately)
 │   └── utilities/
-│       └── _helpers.css        # Utility classes (.u- prefix)
+│       ├── _helpers.css         # Utility classes (.u- prefix)
+│       └── _responsive.css      # Responsive utilities (NEW in 2.3)
 ```
 
 ## IT
@@ -28,15 +30,24 @@ CSS Layers
 
 ### Layer 1: Settings
 
-**Files:** `itcss/settings/_variables.css`
+**Files:**
+
+- `itcss/settings/_variables.css` - Spacing, colors, fonts, etc.
+- `itcss/settings/_breakpoints.css` - Responsive breakpoints (Phase 2.3)
+
 **Purpose:** CSS custom properties, configuration
 **Output:** Variable definitions only
 **Example:**
 
 ```css
 :root {
+  /* Spacing & Typography */
   --spacing-md: 12px;
   --font-base: 14px;
+
+  /* Breakpoints (Phase 2.3) */
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
 }
 ```
 
@@ -107,19 +118,40 @@ h1 {
 
 ### Layer 7: Utilities
 
-**Files:** `itcss/utilities/_helpers.css`
+**Files:**
+
+- `itcss/utilities/_helpers.css` - General utilities
+- `itcss/utilities/_responsive.css` - Responsive utilities (Phase 2.3)
+
 **Purpose:** Helper classes (highest specificity)
 **Naming:** `.u-` prefix
 **Use:** `!important` to ensure they always win
 **Example:**
 
 ```css
+/* General utilities */
 .u-text-center {
   text-align: center !important;
 }
 
 .u-mb-lg {
   margin-bottom: var(--spacing-lg) !important;
+}
+
+/* Responsive utilities (Phase 2.3) */
+.u-hide-mobile {
+  display: none !important; /* Hidden on mobile */
+}
+
+.u-grid-responsive {
+  display: grid !important;
+  grid-template-columns: repeat(1, 1fr) !important; /* 1 col mobile */
+}
+
+@media (min-width: var(--breakpoint-md)) {
+  .u-grid-responsive {
+    grid-template-columns: repeat(2, 1fr) !important; /* 2 cols tablet */
+  }
 }
 ```
 
@@ -149,6 +181,17 @@ import './App.css'; // App-specific styles
 ```jsx
 <h1 className="u-text-center u-mb-lg">Centered Heading</h1>
 <p className="u-text-secondary">Secondary text color</p>
+
+{/* Responsive utilities (Phase 2.3) */}
+<nav className="u-hide-mobile">Desktop Navigation</nav>
+<button className="u-show-mobile">☰ Mobile Menu</button>
+
+<div className="u-grid-responsive">
+  {/* 1 column mobile, 2 tablet, 3 desktop */}
+  <div>Item 1</div>
+  <div>Item 2</div>
+  <div>Item 3</div>
+</div>
 ```
 
 ### Component Styles
@@ -170,12 +213,29 @@ import styles from './MyComponent.module.css';
 
 ## Impact
 
+### Phase 2.1 (ITCSS Foundation)
+
 - **CSS Bundle:** 182.47 kB (gzip: 34.12 kB)
-- **Size Change:** +5.73 kB (+3.2%)
-- **Reason:** Added utilities and layout objects
-- **Acceptable:** Gaining organized structure and reusable patterns
+- **Size Change:** +5.73 kB (+3.2% from Phase 1.3)
+- **Added:** Utilities and layout objects
+
+### Phase 2.3 (Breakpoints & Responsive)
+
+- **CSS Bundle:** 186.83 kB (gzip: 34.68 kB)
+- **Size Change:** +4.36 kB (+2.4% from Phase 2.1)
+- **Added:** 18 breakpoint variables + 20+ responsive utilities
+- **Total since Phase 1.0:** +19.92 kB (+11.9%)
+
+**Verdict:** Acceptable - gaining organized architecture + responsive system
+
+## Completed Phases
+
+- ✅ **Phase 2.1:** ITCSS architecture foundation
+- ✅ **Phase 2.2:** BEM naming convention standard (documentation)
+- ✅ **Phase 2.3:** Standardized breakpoint variables
 
 ## Next Steps
 
-- Phase 2.2: Standardize BEM naming convention
-- Phase 2.3: Create standardized breakpoint variables
+- **Phase 3.1:** Remove unused CSS with PurgeCSS/UnCSS
+- **Phase 3.2:** Optimize performance - remove global transitions
+- **Phase 3.3:** Implement CSS linting with stylelint

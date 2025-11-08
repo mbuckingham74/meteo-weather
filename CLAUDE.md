@@ -76,6 +76,15 @@
 - [docs/ui-ux/REDESIGN_SUMMARY.md](docs/ui-ux/REDESIGN_SUMMARY.md) - Unified Hero Card redesign
 - [docs/ui-ux/UI_OPTIMIZATION_SUMMARY.md](docs/ui-ux/UI_OPTIMIZATION_SUMMARY.md) - Material Design 3
 
+**🎨 CSS Architecture:**
+- [frontend/ITCSS_ARCHITECTURE.md](frontend/ITCSS_ARCHITECTURE.md) - ITCSS layer organization (Phases 2.1-2.3 complete)
+- [frontend/BEM_NAMING_CONVENTION.md](frontend/BEM_NAMING_CONVENTION.md) - BEM standard for new components (512 lines)
+- [frontend/BREAKPOINT_SYSTEM.md](frontend/BREAKPOINT_SYSTEM.md) - Responsive breakpoint system (600+ lines)
+- [frontend/DENSITY_SYSTEM.md](frontend/DENSITY_SYSTEM.md) - Density mode implementation
+- [frontend/CSS_PHASE_1_COMPLETE.md](frontend/CSS_PHASE1_COMPLETE.md) - Phase 1 summary (CSS Modules, variables, scale)
+- [frontend/CSS_PHASE_2.2_COMPLETE.md](frontend/CSS_PHASE_2.2_COMPLETE.md) - BEM documentation phase
+- [frontend/CSS_PHASE_2.3_COMPLETE.md](frontend/CSS_PHASE_2.3_COMPLETE.md) - Breakpoint system phase
+
 **⚠️ Troubleshooting:**
 - [docs/troubleshooting/](docs/troubleshooting/) - Common issues & solutions
 - [docs/troubleshooting/TROUBLESHOOTING.md](docs/troubleshooting/TROUBLESHOOTING.md) - Common issues and fixes
@@ -95,6 +104,16 @@
 - [docs/admin/IMPLEMENTATION_SUMMARY.md](docs/admin/IMPLEMENTATION_SUMMARY.md) - Technical details (890 lines)
 
 ### Recent Work (Nov 2025)
+
+- ✅ **Global CSS Refactor - Phase 2 Complete** (Nov 8, 2025)
+  - **Phase 2.1:** ITCSS architecture (+5.73 kB, organized CSS by specificity)
+  - **Phase 2.2:** BEM naming convention standard (documentation-based, zero risk)
+  - **Phase 2.3:** Standardized breakpoint system (+4.36 kB, 18 variables + 20+ utilities)
+  - **CSS Bundle:** 167 kB → 186.83 kB (+19.92 kB, +11.9%) - acceptable for value gained
+  - **Impact:** Organized architecture, responsive system, clear standards
+  - **Documentation:** 2,000+ lines across BEM_NAMING_CONVENTION.md, BREAKPOINT_SYSTEM.md, ITCSS_ARCHITECTURE.md
+  - **Next:** Phase 3 (PurgeCSS, performance optimization, CSS linting)
+
 - ✅ **Admin Panel Implementation** (Nov 7, 2025) - Comprehensive admin dashboard with 6 tabs, statistics, AI cost tracking, cache management
   - **Features:** System stats, user analytics, weather data insights, AI usage & cost tracking, cache management, database monitoring
   - **Access:** Database-based admin system (first user = auto-admin), JWT-protected routes
@@ -102,6 +121,7 @@
   - **Files:** 9 new files (backend middleware/service/routes, frontend component, migrations, docs)
   - **Documentation:** 4 comprehensive guides (2,100+ lines total)
   - **Privacy:** Updated privacy policy with admin data collection disclosures
+
 - ✅ **Documentation Reorganization** (Nov 7, 2025) - Organized 60+ docs into 10 clear categories
 - ✅ **CI/CD Pipeline Optimization** (Nov 7, 2025) - 50-70% faster with aggressive caching
 - ✅ **Database Performance Fix** (Nov 7, 2025) - Missing FULLTEXT index restored (20x faster)

@@ -12,6 +12,7 @@
    Variables, config (no CSS output)
    ============================================ */
 @import './itcss/settings/_variables.css';
+@import './itcss/settings/_breakpoints.css';
 
 /* ============================================
    LAYER 2: TOOLS
@@ -61,6 +62,7 @@
    Use !important to ensure they always win
    ============================================ */
 @import './itcss/utilities/_helpers.css';
+@import './itcss/utilities/_responsive.css';
 
 /* ============================================
    ACCESSIBILITY & SPECIAL FEATURES

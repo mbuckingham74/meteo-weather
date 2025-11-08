@@ -1,0 +1,277 @@
+/**
+ * ITCSS Layer 7: Utilities - Responsive
+ *
+ * Responsive utility classes for showing/hiding content at different breakpoints
+ * Uses .u- prefix (utility class convention)
+ */
+
+/* ============================================
+   VISIBILITY UTILITIES
+   Show/hide content at specific breakpoints
+   ============================================ */
+
+/* Hide on mobile (< 768px) */
+@media (max-width: var(--breakpoint-md-max)) {
+  .u-hide-mobile {
+    display: none !important;
+  }
+}
+
+/* Hide on tablet (768px - 1023px) */
+@media (min-width: var(--breakpoint-md)) and (max-width: var(--breakpoint-lg-max)) {
+  .u-hide-tablet {
+    display: none !important;
+  }
+}
+
+/* Hide on desktop (>= 1024px) */
+@media (min-width: var(--breakpoint-lg)) {
+  .u-hide-desktop {
+    display: none !important;
+  }
+}
+
+/* Show only on mobile (< 768px) */
+.u-show-mobile {
+  display: none !important;
+}
+
+@media (max-width: var(--breakpoint-md-max)) {
+  .u-show-mobile {
+    display: block !important;
+  }
+}
+
+/* Show only on tablet (768px - 1023px) */
+.u-show-tablet {
+  display: none !important;
+}
+
+@media (min-width: var(--breakpoint-md)) and (max-width: var(--breakpoint-lg-max)) {
+  .u-show-tablet {
+    display: block !important;
+  }
+}
+
+/* Show only on desktop (>= 1024px) */
+.u-show-desktop {
+  display: none !important;
+}
+
+@media (min-width: var(--breakpoint-lg)) {
+  .u-show-desktop {
+    display: block !important;
+  }
+}
+
+/* ============================================
+   FLEX UTILITIES - RESPONSIVE
+   Mobile-first responsive flex direction
+   ============================================ */
+
+/* Stack on mobile, row on desktop */
+.u-flex-stack-mobile {
+  flex-direction: column !important;
+}
+
+@media (min-width: var(--breakpoint-md)) {
+  .u-flex-stack-mobile {
+    flex-direction: row !important;
+  }
+}
+
+/* Stack on tablet and below */
+.u-flex-stack-tablet {
+  flex-direction: column !important;
+}
+
+@media (min-width: var(--breakpoint-lg)) {
+  .u-flex-stack-tablet {
+    flex-direction: row !important;
+  }
+}
+
+/* ============================================
+   TEXT ALIGNMENT - RESPONSIVE
+   Mobile-first text alignment
+   ============================================ */
+
+/* Center on mobile, left on desktop */
+.u-text-center-mobile {
+  text-align: center !important;
+}
+
+@media (min-width: var(--breakpoint-md)) {
+  .u-text-center-mobile {
+    text-align: left !important;
+  }
+}
+
+/* ============================================
+   SPACING UTILITIES - RESPONSIVE
+   Reduce spacing on mobile devices
+   ============================================ */
+
+/* Responsive padding */
+.u-p-responsive {
+  padding: var(--spacing-sm) !important;
+}
+
+@media (min-width: var(--breakpoint-md)) {
+  .u-p-responsive {
+    padding: var(--spacing-md) !important;
+  }
+}
+
+@media (min-width: var(--breakpoint-lg)) {
+  .u-p-responsive {
+    padding: var(--spacing-lg) !important;
+  }
+}
+
+/* Responsive margin bottom */
+.u-mb-responsive {
+  margin-bottom: var(--spacing-sm) !important;
+}
+
+@media (min-width: var(--breakpoint-md)) {
+  .u-mb-responsive {
+    margin-bottom: var(--spacing-md) !important;
+  }
+}
+
+@media (min-width: var(--breakpoint-lg)) {
+  .u-mb-responsive {
+    margin-bottom: var(--spacing-lg) !important;
+  }
+}
+
+/* ============================================
+   CONTAINER UTILITIES - RESPONSIVE
+   Responsive container max-widths
+   ============================================ */
+
+.u-container-responsive {
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: var(--spacing-md) !important;
+  padding-right: var(--spacing-md) !important;
+}
+
+@media (min-width: var(--breakpoint-sm)) {
+  .u-container-responsive {
+    max-width: var(--container-sm) !important;
+  }
+}
+
+@media (min-width: var(--breakpoint-md)) {
+  .u-container-responsive {
+    max-width: var(--container-md) !important;
+  }
+}
+
+@media (min-width: var(--breakpoint-lg)) {
+  .u-container-responsive {
+    max-width: var(--container-lg) !important;
+  }
+}
+
+@media (min-width: var(--breakpoint-xl)) {
+  .u-container-responsive {
+    max-width: var(--container-xl) !important;
+  }
+}
+
+/* ============================================
+   GRID UTILITIES - RESPONSIVE
+   Responsive grid columns
+   ============================================ */
+
+/* 1 column on mobile, 2 on tablet, 3 on desktop */
+.u-grid-responsive {
+  display: grid !important;
+  gap: var(--spacing-md) !important;
+  grid-template-columns: repeat(1, 1fr) !important;
+}
+
+@media (min-width: var(--breakpoint-md)) {
+  .u-grid-responsive {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (min-width: var(--breakpoint-lg)) {
+  .u-grid-responsive {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+/* 1 column on mobile, 2 on tablet+  */
+.u-grid-responsive-2col {
+  display: grid !important;
+  gap: var(--spacing-md) !important;
+  grid-template-columns: repeat(1, 1fr) !important;
+}
+
+@media (min-width: var(--breakpoint-md)) {
+  .u-grid-responsive-2col {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* 2 columns on mobile, 4 on tablet, 6 on desktop */
+.u-grid-responsive-multi {
+  display: grid !important;
+  gap: var(--spacing-md) !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+}
+
+@media (min-width: var(--breakpoint-md)) {
+  .u-grid-responsive-multi {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+}
+
+@media (min-width: var(--breakpoint-lg)) {
+  .u-grid-responsive-multi {
+    grid-template-columns: repeat(6, 1fr) !important;
+  }
+}
+
+/* ============================================
+   FONT SIZE UTILITIES - RESPONSIVE
+   Scale font sizes down on mobile
+   ============================================ */
+
+.u-text-responsive-lg {
+  font-size: var(--font-lg) !important;
+}
+
+@media (min-width: var(--breakpoint-md)) {
+  .u-text-responsive-lg {
+    font-size: var(--font-xl) !important;
+  }
+}
+
+@media (min-width: var(--breakpoint-lg)) {
+  .u-text-responsive-lg {
+    font-size: var(--font-2xl) !important;
+  }
+}
+
+.u-text-responsive-xl {
+  font-size: var(--font-xl) !important;
+}
+
+@media (min-width: var(--breakpoint-md)) {
+  .u-text-responsive-xl {
+    font-size: var(--font-2xl) !important;
+  }
+}
+
+@media (min-width: var(--breakpoint-lg)) {
+  .u-text-responsive-xl {
+    font-size: var(--font-3xl) !important;
+  }
+}
