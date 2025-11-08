@@ -1,0 +1,80 @@
+/**
+ * Main CSS Entry Point - ITCSS Architecture
+ *
+ * ITCSS (Inverted Triangle CSS) organizes CSS by specificity:
+ * From least specific (settings) to most specific (utilities)
+ *
+ * This prevents specificity wars and creates clear hierarchy
+ */
+
+/* ============================================
+   LAYER 1: SETTINGS
+   Variables, config (no CSS output)
+   ============================================ */
+@import './itcss/settings/_variables.css';
+
+/* ============================================
+   LAYER 2: TOOLS
+   Mixins, functions (no CSS output)
+   Currently empty - CSS doesn't have mixins
+   Use PostCSS or SCSS if mixins needed
+   ============================================ */
+
+/* ============================================
+   LAYER 3: GENERIC
+   Resets, normalize, box-sizing
+   Low specificity, affects all elements
+   ============================================ */
+@import './itcss/generic/_reset.css';
+
+/* ============================================
+   LAYER 4: ELEMENTS
+   Base HTML element styles (no classes)
+   ============================================ */
+@import './itcss/elements/_base.css';
+
+/* ============================================
+   LAYER 5: OBJECTS
+   Layout patterns, structural (non-cosmetic)
+   Prefixed with .o- (e.g., .o-container)
+   ============================================ */
+@import './itcss/objects/_layout.css';
+
+/* ============================================
+   LAYER 6: COMPONENTS
+   UI components (buttons, cards, etc.)
+   Most styles go here
+   ============================================ */
+
+/* Component styles are loaded via:
+   1. CSS Modules (*.module.css) - scoped per component
+   2. Traditional CSS files imported directly in components
+
+   No global component imports here to avoid bloat
+   Components handle their own styling
+*/
+
+/* ============================================
+   LAYER 7: UTILITIES
+   Helper classes, overrides (highest specificity)
+   Prefixed with .u- (e.g., .u-text-center)
+   Use !important to ensure they always win
+   ============================================ */
+@import './itcss/utilities/_helpers.css';
+
+/* ============================================
+   ACCESSIBILITY & SPECIAL FEATURES
+   ============================================ */
+@import './reduced-motion.css';
+
+/**
+ * NOTE ON COMPONENT IMPORTS:
+ *
+ * We deliberately DON'T import component CSS here because:
+ * 1. CSS Modules handle scoping automatically
+ * 2. Components import their own styles (better code splitting)
+ * 3. Prevents loading unused CSS
+ * 4. Better tree-shaking in production
+ *
+ * Only import global base styles, objects, and utilities here
+ */

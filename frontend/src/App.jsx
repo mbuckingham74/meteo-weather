@@ -25,9 +25,8 @@ import AboutPage from './components/about/AboutPage';
 import AdminPanel from './components/admin/AdminPanel';
 import { parseLocationSlug } from './utils/urlHelpers';
 import { geocodeLocation } from './services/weatherApi';
-import './styles/themes.css';
-import './App.css';
-import './styles/reduced-motion.css'; // Accessibility: reduced motion support
+import './styles/main.css'; // ITCSS architecture - imports all base styles
+import './App.css'; // App-specific styles
 
 function RouteAwareLocationManager() {
   const routerLocation = useRouterLocation();

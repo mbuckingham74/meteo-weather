@@ -1,0 +1,15 @@
+/**
+ * ITCSS Layer 1: Settings
+ *
+ * Global variables, configuration
+ * No actual CSS output - just definitions
+ *
+ * This file imports our existing themes.css which already contains
+ * all our CSS custom properties (variables)
+ */
+
+/* Import existing theme variables */
+@import '../../themes.css';
+
+/* Additional breakpoint variables (Phase 2.3) */
+/* Will be added in Phase 2.3 */
