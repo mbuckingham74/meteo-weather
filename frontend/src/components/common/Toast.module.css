@@ -6,9 +6,9 @@
   right: 20px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--spacing-md);
   padding: 16px 20px;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   background: white;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   min-width: 300px;
@@ -30,13 +30,13 @@
 }
 
 .toast-icon {
-  font-size: 20px;
+  font-size: var(--font-xl);
   flex-shrink: 0;
 }
 
 .toast-message {
   flex: 1;
-  font-size: 14px;
+  font-size: var(--font-base);
   font-weight: 500;
   color: #374151;
   line-height: 1.5;
@@ -45,7 +45,7 @@
 .toast-close {
   background: none;
   border: none;
-  font-size: 24px;
+  font-size: var(--font-2xl);
   color: #9ca3af;
   cursor: pointer;
   padding: 0;

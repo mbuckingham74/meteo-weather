@@ -1,7 +1,7 @@
 /* Admin Panel Skeleton Styles */
 
 .admin-panel-skeleton {
-  padding: 24px;
+  padding: var(--spacing-xl);
   max-width: 1400px;
   margin: 0 auto;
 }
@@ -15,7 +15,7 @@
 
 .admin-skeleton-tabs {
   display: flex;
-  gap: 12px;
+  gap: var(--spacing-md);
   margin-bottom: 32px;
   border-bottom: 2px solid #e5e7eb;
   padding-bottom: 12px;
@@ -36,7 +36,7 @@
   margin-top: 16px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--spacing-sm);
 }
 
 /* Responsive */
@@ -47,7 +47,7 @@
 
   .admin-skeleton-tabs {
     flex-wrap: wrap;
-    gap: 8px;
+    gap: var(--spacing-sm);
   }
 
   .admin-skeleton-stats-grid {

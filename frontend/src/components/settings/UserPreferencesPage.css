@@ -13,7 +13,7 @@
   max-width: 800px;
   margin: 0 auto;
   background-color: var(--bg-elevated, #ffffff);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 2rem;
 }
@@ -82,7 +82,7 @@
   padding: 0.75rem;
   font-size: 1rem;
   border: 1px solid var(--border-color, #d1d5db);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   background-color: var(--bg-primary, #ffffff);
   color: var(--text-primary, #111827);
   transition: border-color 0.2s;
@@ -105,7 +105,7 @@
 .checkbox-group {
   padding: 1rem;
   background-color: var(--bg-secondary, #f9fafb);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   border: 1px solid var(--border-color, #e5e7eb);
 }
 
@@ -184,7 +184,7 @@
   padding: 0.75rem 1rem;
   background-color: var(--bg-secondary, #f9fafb);
   border: 1px solid var(--border-color, #e5e7eb);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   transition: background-color 0.15s;
 }
 
@@ -204,7 +204,7 @@
   color: #dc2626;
   background-color: transparent;
   border: 1px solid #dc2626;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -217,7 +217,7 @@
 /* Messages */
 .message {
   padding: 1rem;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   font-size: 0.95rem;
   font-weight: 500;
 }
@@ -247,7 +247,7 @@
   padding: 0.75rem 2rem;
   font-size: 1rem;
   font-weight: 600;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   cursor: pointer;
   transition: all 0.2s;
   border: none;

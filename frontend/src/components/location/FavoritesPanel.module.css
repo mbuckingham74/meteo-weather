@@ -2,7 +2,7 @@
 
 .favorites-panel {
   background: var(--bg-elevated, white);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md, 0 2px 8px rgba(0, 0, 0, 0.1));
   overflow: hidden;
   border: 1px solid var(--border-light, transparent);
@@ -26,23 +26,23 @@
 
 .favorites-header h3 {
   margin: 0;
-  font-size: 16px;
+  font-size: var(--font-lg);
   font-weight: 600;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-sm);
 }
 
 .favorite-count {
   background: rgba(255, 255, 255, 0.3);
   padding: 2px 8px;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   font-size: 12px;
   font-weight: 700;
 }
 
 .sync-indicator {
-  font-size: 11px;
+  font-size: var(--font-sm);
   opacity: 0.9;
   font-weight: 400;
   font-style: italic;
@@ -63,14 +63,14 @@
   background: none;
   border: none;
   color: white;
-  font-size: 14px;
+  font-size: var(--font-base);
   cursor: pointer;
-  padding: 4px 8px;
+  padding: var(--spacing-xs) 8px;
   transition: transform 0.2s;
 }
 
 .favorites-content {
-  padding: 12px;
+  padding: var(--spacing-md);
 }
 
 /* Current Location Quick Add */
@@ -83,13 +83,13 @@
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
   background: var(--warning-bg, #fffbeb);
   border: 2px dashed var(--warning-border, #fbbf24);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  font-size: 14px;
+  font-size: var(--font-base);
   color: var(--warning-text, #92400e);
   font-weight: 500;
   transition: all 0.2s;
@@ -109,16 +109,16 @@
 .favorites-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--spacing-sm);
 }
 
 .favorite-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px;
+  padding: var(--spacing-md);
   background: var(--bg-primary, #f9fafb);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   cursor: pointer;
   transition: all 0.2s;
   border: 2px solid transparent;
@@ -140,7 +140,7 @@
 }
 
 .favorite-name {
-  font-size: 14px;
+  font-size: var(--font-base);
   font-weight: 500;
   color: var(--text-primary, #111827) !important;
   margin-bottom: 4px;
@@ -149,7 +149,7 @@
   white-space: nowrap;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-sm);
 }
 
 .current-badge {
@@ -176,7 +176,7 @@
   color: var(--text-tertiary, #6b7280);
   font-size: 18px;
   cursor: pointer;
-  padding: 4px 8px;
+  padding: var(--spacing-xs) 8px;
   margin-left: 8px;
   transition: color 0.2s;
   flex-shrink: 0;
@@ -195,15 +195,15 @@
 }
 
 .empty-icon {
-  font-size: 48px;
+  font-size: var(--font-4xl);
   display: block;
   margin-bottom: 12px;
   opacity: 0.5;
 }
 
 .favorites-empty p {
-  margin: 4px 0;
-  font-size: 14px;
+  margin: var(--spacing-xs) 0;
+  font-size: var(--font-base);
 }
 
 .empty-hint {
@@ -238,10 +238,10 @@
   }
 
   .favorite-name {
-    font-size: 13px;
+    font-size: var(--font-md);
   }
 
   .favorite-coords {
-    font-size: 11px;
+    font-size: var(--font-sm);
   }
 }

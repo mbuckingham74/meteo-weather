@@ -2,7 +2,7 @@
 
 .aqi-card {
   background: var(--bg-elevated);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   padding: 16px;
   box-shadow: var(--shadow-md);
   color: var(--text-primary);
@@ -15,7 +15,7 @@
   color: var(--text-primary);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-sm);
 }
 
 .aqi-card-title span {
@@ -25,7 +25,7 @@
 /* Main AQI Display */
 .aqi-main {
   background: var(--bg-tertiary);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   padding: 16px;
   text-align: center;
   margin-bottom: 16px;
@@ -38,14 +38,14 @@
 }
 
 .aqi-value {
-  font-size: 48px;
+  font-size: var(--font-4xl);
   font-weight: 700;
   line-height: 1;
   margin-bottom: 6px;
 }
 
 .aqi-label {
-  font-size: 16px;
+  font-size: var(--font-lg);
   font-weight: 600;
   color: var(--text-primary);
   text-transform: uppercase;
@@ -54,7 +54,7 @@
 
 .aqi-description {
   margin: 0;
-  font-size: 14px;
+  font-size: var(--font-base);
   color: var(--text-secondary);
   font-style: italic;
 }
@@ -79,11 +79,11 @@
 
 .pollutant-item {
   background: var(--bg-tertiary);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   padding: 10px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--spacing-xs);
   transition: all var(--transition-fast);
 }
 
@@ -109,14 +109,14 @@
 /* Health Recommendations */
 .aqi-recommendations {
   background: var(--bg-tertiary);
-  border-radius: 8px;
-  padding: 12px;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
   margin-bottom: 12px;
 }
 
 .recommendations-title {
   margin: 0 0 12px 0;
-  font-size: 14px;
+  font-size: var(--font-base);
   font-weight: 600;
   color: var(--text-primary);
 }
@@ -124,7 +124,7 @@
 .recommendations-list {
   margin: 0;
   padding-left: 20px;
-  font-size: 13px;
+  font-size: var(--font-md);
   color: var(--text-secondary);
   line-height: 1.6;
 }
@@ -146,7 +146,7 @@
 
 .data-source {
   margin: 0;
-  font-size: 11px;
+  font-size: var(--font-sm);
   color: var(--text-tertiary);
   font-style: italic;
 }
@@ -179,7 +179,7 @@
 
 .aqi-loading p {
   margin: 0;
-  font-size: 14px;
+  font-size: var(--font-base);
   color: var(--text-tertiary);
 }
 
@@ -194,13 +194,13 @@
 }
 
 .error-icon {
-  font-size: 48px;
+  font-size: var(--font-4xl);
   margin-bottom: 12px;
 }
 
 .aqi-error p {
   margin: 0;
-  font-size: 14px;
+  font-size: var(--font-base);
   color: var(--text-secondary);
 }
 
@@ -211,15 +211,15 @@
   }
 
   .aqi-main {
-    padding: 20px 16px;
+    padding: var(--spacing-lg) 16px;
   }
 
   .aqi-value {
-    font-size: 48px;
+    font-size: var(--font-4xl);
   }
 
   .aqi-label {
-    font-size: 16px;
+    font-size: var(--font-lg);
   }
 
   .pollutants-grid {
@@ -231,6 +231,6 @@
   }
 
   .pollutant-value {
-    font-size: 14px;
+    font-size: var(--font-base);
   }
 }

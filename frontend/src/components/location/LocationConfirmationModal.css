@@ -14,7 +14,7 @@
   align-items: center;
   justify-content: center;
   z-index: 10000;
-  padding: 20px;
+  padding: var(--spacing-lg);
   animation: fadeIn 0.2s ease-out;
 }
 
@@ -29,7 +29,7 @@
 
 .location-modal-content {
   background: var(--bg-elevated, white);
-  border-radius: 16px;
+  border-radius: var(--radius-xl);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   max-width: 500px;
   width: 100%;
@@ -53,13 +53,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px 24px 16px;
+  padding: var(--spacing-xl) 24px 16px;
   border-bottom: 1px solid var(--border-color, #e0e0e0);
 }
 
 .location-modal-header h3 {
   margin: 0;
-  font-size: 20px;
+  font-size: var(--font-xl);
   font-weight: 600;
   color: var(--text-primary, #111827);
 }
@@ -67,10 +67,10 @@
 .modal-close-btn {
   background: none;
   border: none;
-  font-size: 24px;
+  font-size: var(--font-2xl);
   color: var(--text-tertiary, #6b7280);
   cursor: pointer;
-  padding: 4px 8px;
+  padding: var(--spacing-xs) 8px;
   line-height: 1;
   transition: all 0.2s;
 }
@@ -81,14 +81,14 @@
 }
 
 .location-modal-body {
-  padding: 24px;
+  padding: var(--spacing-xl);
 }
 
 .detected-location-card {
   background: var(--bg-tertiary, #f9fafb);
   border: 2px solid var(--border-color, #e0e0e0);
-  border-radius: 12px;
-  padding: 20px;
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
   margin-bottom: 24px;
 }
 
@@ -99,7 +99,7 @@
 }
 
 .location-icon {
-  font-size: 32px;
+  font-size: var(--font-3xl);
   flex-shrink: 0;
 }
 
@@ -115,10 +115,10 @@
 }
 
 .location-accuracy {
-  font-size: 13px;
+  font-size: var(--font-md);
   font-weight: 500;
   margin-bottom: 4px;
-  padding: 4px 8px;
+  padding: var(--spacing-xs) 8px;
   border-radius: 4px;
   display: inline-block;
 }
@@ -150,16 +150,16 @@
 
 .vpn-warning {
   display: flex;
-  gap: 12px;
+  gap: var(--spacing-md);
   margin-top: 16px;
-  padding: 12px;
+  padding: var(--spacing-md);
   background: var(--warning-bg, #fef3c7);
   border: 1px solid var(--warning-border, #fcd34d);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
 }
 
 .warning-icon {
-  font-size: 20px;
+  font-size: var(--font-xl);
   flex-shrink: 0;
 }
 
@@ -169,7 +169,7 @@
 
 .warning-content strong {
   display: block;
-  font-size: 14px;
+  font-size: var(--font-base);
   font-weight: 600;
   color: var(--warning-text, #92400e);
   margin-bottom: 4px;
@@ -177,7 +177,7 @@
 
 .warning-content p {
   margin: 0;
-  font-size: 13px;
+  font-size: var(--font-md);
   line-height: 1.5;
   color: var(--warning-text, #92400e);
 }
@@ -188,7 +188,7 @@
 }
 
 .confirmation-question p {
-  font-size: 16px;
+  font-size: var(--font-lg);
   font-weight: 500;
   color: var(--text-primary, #111827);
   margin: 0;
@@ -196,16 +196,16 @@
 
 .location-modal-footer {
   display: flex;
-  gap: 12px;
+  gap: var(--spacing-md);
   padding: 16px 24px 24px;
   border-top: 1px solid var(--border-color, #e0e0e0);
 }
 
 .modal-btn {
   flex: 1;
-  padding: 12px 20px;
+  padding: var(--spacing-md) 20px;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
@@ -213,7 +213,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: var(--spacing-sm);
 }
 
 .modal-btn-primary {
@@ -282,7 +282,7 @@
 /* Mobile responsiveness */
 @media (max-width: 480px) {
   .location-modal-content {
-    border-radius: 12px;
+    border-radius: var(--radius-lg);
     max-height: 95vh;
   }
 
@@ -302,7 +302,7 @@
   }
 
   .location-name {
-    font-size: 16px;
+    font-size: var(--font-lg);
   }
 
   .warning-content p {

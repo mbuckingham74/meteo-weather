@@ -4,10 +4,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 20px;
+  padding: var(--spacing-md) 20px;
   background: var(--bg-primary);
   border-bottom: 1px solid var(--border-light);
-  gap: 12px;
+  gap: var(--spacing-md);
 }
 
 /* Hero Image Button (shows on About page) */
@@ -101,13 +101,13 @@
 .auth-header-buttons {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--spacing-md);
 }
 
 .auth-user-info {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--spacing-md);
 }
 
 .auth-user-avatar {
@@ -120,7 +120,7 @@
   justify-content: center;
   color: white;
   font-weight: 700;
-  font-size: 14px;
+  font-size: var(--font-base);
   text-transform: uppercase;
   border: none;
   cursor: pointer;
@@ -132,16 +132,16 @@
 }
 
 .auth-user-name {
-  font-size: 14px;
+  font-size: var(--font-base);
   font-weight: 600;
   color: var(--text-secondary);
 }
 
 .auth-header-button {
-  padding: 8px 16px;
+  padding: var(--spacing-sm) 16px;
   border: 2px solid var(--border-light);
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: var(--radius-md);
+  font-size: var(--font-base);
   font-weight: 600;
   cursor: pointer;
   transition: all var(--transition-normal);
@@ -187,11 +187,11 @@
   }
 
   .auth-header-button {
-    padding: 8px 10px;
+    padding: var(--spacing-sm) 10px;
   }
 
   .auth-header-buttons {
-    gap: 8px;
+    gap: var(--spacing-sm);
   }
 }
 
@@ -208,7 +208,7 @@
 /* Extra small screens - ensure buttons fit */
 @media (max-width: 380px) {
   .auth-header-button {
-    padding: 8px;
+    padding: var(--spacing-sm);
     min-width: 44px;
   }
 

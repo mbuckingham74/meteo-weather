@@ -25,7 +25,7 @@
 
 .auth-modal {
   background: var(--bg-elevated);
-  border-radius: 16px;
+  border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lg);
   max-width: 450px;
   width: 90%;
@@ -57,10 +57,10 @@
   right: 20px;
   background: none;
   border: none;
-  font-size: 24px;
+  font-size: var(--font-2xl);
   color: var(--text-tertiary);
   cursor: pointer;
-  padding: 4px 8px;
+  padding: var(--spacing-xs) 8px;
   line-height: 1;
   transition: color var(--transition-fast);
 }
@@ -78,7 +78,7 @@
 
 .auth-modal-subtitle {
   margin: 0;
-  font-size: 14px;
+  font-size: var(--font-base);
   color: var(--text-tertiary);
 }
 
@@ -89,26 +89,26 @@
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--spacing-lg);
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--spacing-sm);
 }
 
 .form-label {
-  font-size: 14px;
+  font-size: var(--font-base);
   font-weight: 600;
   color: var(--text-secondary);
 }
 
 .form-input {
-  padding: 12px 16px;
+  padding: var(--spacing-md) 16px;
   border: 2px solid var(--border-light);
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: var(--radius-md);
+  font-size: var(--font-base);
   outline: none;
   background: var(--bg-primary);
   color: var(--text-primary);
@@ -125,22 +125,22 @@
 
 .form-error {
   margin: 0;
-  padding: 12px 16px;
+  padding: var(--spacing-md) 16px;
   background: var(--error-bg);
   border: 1px solid var(--error-border);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   color: var(--error-text);
-  font-size: 14px;
+  font-size: var(--font-base);
 }
 
 .form-success {
   margin: 0;
-  padding: 12px 16px;
+  padding: var(--spacing-md) 16px;
   background: var(--success-bg);
   border: 1px solid var(--success-border);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   color: var(--success-text);
-  font-size: 14px;
+  font-size: var(--font-base);
 }
 
 .auth-submit-button {
@@ -148,8 +148,8 @@
   background: var(--gradient-primary);
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 16px;
+  border-radius: var(--radius-md);
+  font-size: var(--font-lg);
   font-weight: 600;
   cursor: pointer;
   transition:
@@ -174,13 +174,13 @@
 }
 
 .auth-modal-footer {
-  padding: 20px 30px 30px;
+  padding: var(--spacing-lg) 30px 30px;
   text-align: center;
 }
 
 .auth-switch-text {
   margin: 0;
-  font-size: 14px;
+  font-size: var(--font-base);
   color: var(--text-tertiary);
 }
 
@@ -224,20 +224,20 @@
     max-width: 100%;
     width: 100%;
     margin: 0;
-    border-radius: 16px 16px 0 0;
+    border-radius: var(--radius-xl) 16px 0 0;
     align-self: flex-end;
   }
 
   .auth-modal-header {
-    padding: 24px 20px 16px;
+    padding: var(--spacing-xl) 20px 16px;
   }
 
   .auth-modal-title {
-    font-size: 24px;
+    font-size: var(--font-2xl);
   }
 
   .auth-modal-body {
-    padding: 24px 20px;
+    padding: var(--spacing-xl) 20px;
   }
 
   .auth-modal-footer {

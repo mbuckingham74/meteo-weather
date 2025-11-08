@@ -11,7 +11,7 @@
   max-width: 600px;
   width: 100%;
   background: var(--bg-elevated, #ffffff);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   padding: 3rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   text-align: center;
@@ -24,9 +24,16 @@
 }
 
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-10px); }
-  75% { transform: translateX(10px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-10px);
+  }
+  75% {
+    transform: translateX(10px);
+  }
 }
 
 .error-boundary-title {
@@ -47,7 +54,7 @@
   background: var(--warning-bg, #fef3c7);
   border: 1px solid var(--warning-border, #fbbf24);
   color: var(--warning-text, #92400e);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   padding: 1rem;
   margin-bottom: 2rem;
   text-align: left;
@@ -74,7 +81,7 @@
 
 .error-boundary-button {
   padding: 0.75rem 1.5rem;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   font-size: 0.9375rem;
   font-weight: 600;
   cursor: pointer;
@@ -118,7 +125,7 @@
   text-align: left;
   margin-bottom: 1.5rem;
   background: var(--bg-secondary, #f3f4f6);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   padding: 1rem;
 }
 
@@ -156,7 +163,7 @@
 .error-detail-section pre {
   background: var(--bg-primary, #ffffff);
   border: 1px solid var(--bg-tertiary, #e5e7eb);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   padding: 1rem;
   font-size: 0.75rem;
   font-family: 'Courier New', monospace;

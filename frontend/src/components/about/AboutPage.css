@@ -25,7 +25,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.1)" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,165.3C1248,171,1344,149,1392,138.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom center;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.1)" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,165.3C1248,171,1344,149,1392,138.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>')
+    no-repeat bottom center;
   background-size: cover;
   opacity: 0.3;
 }
@@ -74,10 +75,12 @@
 .stat-card {
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(10px);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   padding: 1.5rem;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: transform 0.3s, background 0.3s;
+  transition:
+    transform 0.3s,
+    background 0.3s;
 }
 
 .stat-card:hover {
@@ -135,10 +138,12 @@
 
 .feature-card {
   background: var(--bg-elevated, #ffffff);
-  border-radius: 16px;
+  border-radius: var(--radius-xl);
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s;
 }
 
 .feature-card:hover {
@@ -218,10 +223,12 @@
 .tech-card {
   background: var(--bg-elevated, #ffffff);
   padding: 2.5rem 2rem;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   text-align: center;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s;
   border: 2px solid transparent;
 }
 
@@ -268,9 +275,12 @@
 .why-card {
   background: var(--accent-bg);
   padding: 2.5rem;
-  border-radius: 16px;
+  border-radius: var(--radius-xl);
   border: 2px solid var(--border-light);
-  transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+  transition:
+    transform 0.3s,
+    border-color 0.3s,
+    box-shadow 0.3s;
 }
 
 .why-card:hover {
@@ -329,7 +339,7 @@
   padding: 1rem 2.5rem;
   font-size: 1.1rem;
   font-weight: 700;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   text-decoration: none;
   transition: all 0.3s;
   display: inline-block;
@@ -363,7 +373,11 @@
 /* Dark Mode */
 @media (prefers-color-scheme: dark) {
   .about-page {
-    background: linear-gradient(to bottom, var(--bg-primary, #0f172a), var(--bg-secondary, #1e293b));
+    background: linear-gradient(
+      to bottom,
+      var(--bg-primary, #0f172a),
+      var(--bg-secondary, #1e293b)
+    );
   }
 
   .feature-card,

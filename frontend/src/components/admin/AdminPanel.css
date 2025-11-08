@@ -3,7 +3,7 @@
 .admin-panel {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 24px;
+  padding: var(--spacing-xl);
   min-height: 100vh;
 }
 
@@ -17,7 +17,7 @@
 }
 
 .admin-header h1 {
-  font-size: 32px;
+  font-size: var(--font-3xl);
   font-weight: 700;
   color: var(--text-primary, #1f2937);
   margin: 0;
@@ -28,8 +28,8 @@
   background: var(--accent-primary);
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: var(--radius-md);
+  font-size: var(--font-base);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
@@ -48,17 +48,17 @@
 /* Tabs */
 .admin-tabs {
   display: flex;
-  gap: 8px;
+  gap: var(--spacing-sm);
   margin-bottom: 24px;
   flex-wrap: wrap;
 }
 
 .admin-tabs button {
-  padding: 12px 20px;
+  padding: var(--spacing-md) 20px;
   background: var(--card-bg, white);
   border: 2px solid var(--border-color, #e5e7eb);
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: var(--radius-md);
+  font-size: var(--font-base);
   font-weight: 600;
   color: var(--text-secondary, #6b7280);
   cursor: pointer;
@@ -79,8 +79,8 @@
 /* Content Area */
 .admin-content {
   background: var(--card-bg, white);
-  border-radius: 12px;
-  padding: 24px;
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
@@ -88,14 +88,14 @@
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
+  gap: var(--spacing-lg);
   margin-bottom: 32px;
 }
 
 .stat-card {
   background: var(--gradient-primary);
-  border-radius: 12px;
-  padding: 20px;
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
   color: white;
   display: flex;
   align-items: center;
@@ -119,7 +119,7 @@
 }
 
 .stat-content h3 {
-  font-size: 14px;
+  font-size: var(--font-base);
   font-weight: 500;
   opacity: 0.9;
   margin: 0 0 8px 0;
@@ -132,7 +132,7 @@
 }
 
 .stat-subtitle {
-  font-size: 13px;
+  font-size: var(--font-md);
   opacity: 0.8;
 }
 
@@ -146,7 +146,7 @@
 }
 
 .section h2 {
-  font-size: 20px;
+  font-size: var(--font-xl);
   font-weight: 700;
   color: var(--text-primary, #1f2937);
   margin: 0 0 16px 0;
@@ -157,7 +157,7 @@
   width: 100%;
   border-collapse: collapse;
   background: var(--card-bg, white);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   overflow: hidden;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
@@ -167,7 +167,7 @@
 }
 
 .data-table th {
-  padding: 12px 16px;
+  padding: var(--spacing-md) 16px;
   text-align: left;
   font-size: 12px;
   font-weight: 700;
@@ -177,8 +177,8 @@
 }
 
 .data-table td {
-  padding: 12px 16px;
-  font-size: 14px;
+  padding: var(--spacing-md) 16px;
+  font-size: var(--font-base);
   color: var(--text-primary, #1f2937);
   border-bottom: 1px solid var(--border-color, #e5e7eb);
 }
@@ -201,8 +201,8 @@
 /* Confidence Badge */
 .confidence-badge {
   display: inline-block;
-  padding: 4px 12px;
-  border-radius: 12px;
+  padding: var(--spacing-xs) 12px;
+  border-radius: var(--radius-lg);
   font-size: 12px;
   font-weight: 600;
   text-transform: capitalize;
@@ -226,17 +226,17 @@
 /* Cache Actions */
 .cache-actions {
   display: flex;
-  gap: 12px;
+  gap: var(--spacing-md);
   margin-bottom: 24px;
 }
 
 .btn-warning {
-  padding: 12px 24px;
+  padding: var(--spacing-md) 24px;
   background: var(--warning-text);
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: var(--radius-md);
+  font-size: var(--font-base);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
@@ -248,12 +248,12 @@
 }
 
 .btn-danger {
-  padding: 12px 24px;
+  padding: var(--spacing-md) 24px;
   background: var(--error-text);
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: var(--radius-md);
+  font-size: var(--font-base);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
@@ -268,13 +268,13 @@
 .info-box {
   background: var(--info-bg, #f0f9ff);
   border: 1px solid var(--info-border, #bae6fd);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   padding: 16px;
 }
 
 .info-box p {
-  margin: 8px 0;
-  font-size: 14px;
+  margin: var(--spacing-sm) 0;
+  font-size: var(--font-base);
   color: var(--text-primary, #1f2937);
 }
 
@@ -306,7 +306,7 @@
 }
 
 .admin-loading p {
-  font-size: 16px;
+  font-size: var(--font-lg);
   color: var(--text-secondary, #6b7280);
 }
 
@@ -315,29 +315,29 @@
   text-align: center;
   padding: 60px 20px;
   background: var(--card-bg, white);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
 }
 
 .admin-error h2 {
-  font-size: 24px;
+  font-size: var(--font-2xl);
   font-weight: 700;
   color: var(--text-primary, #1f2937);
   margin: 0 0 12px 0;
 }
 
 .admin-error p {
-  font-size: 16px;
+  font-size: var(--font-lg);
   color: var(--text-secondary, #6b7280);
   margin-bottom: 24px;
 }
 
 .admin-error button {
-  padding: 12px 24px;
+  padding: var(--spacing-md) 24px;
   background: var(--accent-primary);
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: var(--radius-md);
+  font-size: var(--font-base);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
@@ -395,11 +395,11 @@
   .admin-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
+    gap: var(--spacing-md);
   }
 
   .admin-header h1 {
-    font-size: 24px;
+    font-size: var(--font-2xl);
   }
 
   .stats-grid {
@@ -428,7 +428,7 @@
 
   .data-table th,
   .data-table td {
-    padding: 8px 12px;
+    padding: var(--spacing-sm) 12px;
   }
 
   .question-cell {
@@ -443,11 +443,11 @@
   }
 
   .stat-icon {
-    font-size: 32px;
+    font-size: var(--font-3xl);
   }
 
   .stat-value {
-    font-size: 24px;
+    font-size: var(--font-2xl);
   }
 }
 
@@ -462,12 +462,12 @@
 }
 
 .export-btn {
-  padding: 8px 16px;
+  padding: var(--spacing-sm) 16px;
   background: var(--accent-primary);
   color: white;
   border: none;
-  border-radius: 6px;
-  font-size: 13px;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-md);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;

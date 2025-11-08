@@ -2,7 +2,9 @@
   min-height: 100vh;
   background: var(--bg-primary);
   color: var(--text-primary);
-  transition: background var(--transition-normal), color var(--transition-normal);
+  transition:
+    background var(--transition-normal),
+    color var(--transition-normal);
   overflow-x: hidden;
   width: 100%;
 }
@@ -29,14 +31,14 @@ body {
   /* Improve touch targets on mobile */
   button,
   a,
-  input[type="checkbox"] {
+  input[type='checkbox'] {
     min-height: 44px;
     min-width: 44px;
   }
 
   /* Better text readability on mobile */
   body {
-    font-size: 16px;
+    font-size: var(--font-lg);
     line-height: 1.6;
   }
 }

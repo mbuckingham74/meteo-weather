@@ -10,13 +10,13 @@
 .error-message {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--spacing-md);
   font-family:
     -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
     'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-  font-size: 14px;
+  font-size: var(--font-base);
   line-height: 1.5;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   transition:
     opacity 0.3s ease-out,
     transform 0.3s ease-out;
@@ -32,7 +32,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--spacing-xs);
 }
 
 .error-message__text {
@@ -48,7 +48,7 @@
 
 .error-message__actions {
   display: flex;
-  gap: 8px;
+  gap: var(--spacing-sm);
   align-items: center;
   flex-shrink: 0;
 }
@@ -57,7 +57,7 @@
   padding: 6px 12px;
   border: none;
   border-radius: 4px;
-  font-size: 13px;
+  font-size: var(--font-md);
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -84,8 +84,8 @@
 }
 
 .error-message__button--dismiss {
-  padding: 4px 8px;
-  font-size: 16px;
+  padding: var(--spacing-xs) 8px;
+  font-size: var(--font-lg);
   line-height: 1;
   opacity: 0.6;
 }
@@ -127,13 +127,13 @@
 /* ==================== MODE: INLINE ==================== */
 
 .error-message--inline {
-  padding: 12px 16px;
+  padding: var(--spacing-md) 16px;
   width: 100%;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .error-message--inline .error-message__text {
-  font-size: 13px;
+  font-size: var(--font-md);
 }
 
 /* Inline error variant with lighter background for forms */
@@ -259,12 +259,12 @@
 
 .error-message--modal {
   position: relative;
-  padding: 24px 28px;
+  padding: var(--spacing-xl) 28px;
   min-width: 400px;
   max-width: 600px;
   flex-direction: column;
   align-items: stretch;
-  gap: 20px;
+  gap: var(--spacing-lg);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
   animation: modal-scale-in 0.3s ease-out;
 }
@@ -296,11 +296,11 @@
 }
 
 .error-message--modal .error-message__icon {
-  font-size: 32px;
+  font-size: var(--font-3xl);
 }
 
 .error-message--modal .error-message__text {
-  font-size: 16px;
+  font-size: var(--font-lg);
 }
 
 .error-message--modal .error-message__actions {
@@ -310,7 +310,7 @@
 
 .error-message--modal .error-message__button {
   padding: 10px 20px;
-  font-size: 14px;
+  font-size: var(--font-base);
 }
 
 .error-message--modal .error-message__button--retry {
@@ -325,8 +325,8 @@
 /* ==================== SUGGESTIONS (WCAG 3.3.3 Level AA) ==================== */
 
 .error-message__help {
-  margin: 8px 0 0 0;
-  font-size: 13px;
+  margin: var(--spacing-sm) 0 0 0;
+  font-size: var(--font-md);
   color: #6b7280;
   font-style: italic;
   line-height: 1.5;
@@ -340,7 +340,7 @@
 
 .error-message__suggestions-label {
   margin: 0 0 8px 0;
-  font-size: 13px;
+  font-size: var(--font-md);
   font-weight: 600;
   color: rgba(255, 255, 255, 0.9);
 }
@@ -354,7 +354,7 @@
 .error-message__suggestion-item {
   position: relative;
   margin: 6px 0;
-  font-size: 13px;
+  font-size: var(--font-md);
   line-height: 1.5;
   color: rgba(255, 255, 255, 0.85);
   padding-left: 0;
@@ -381,7 +381,7 @@
 
 .error-message--toast .error-message__suggestion-item {
   font-size: 12px;
-  margin: 4px 0;
+  margin: var(--spacing-xs) 0;
 }
 
 /* Inline mode - minimal suggestions */
@@ -416,12 +416,12 @@
 }
 
 .error-message--modal .error-message__suggestions-label {
-  font-size: 14px;
+  font-size: var(--font-base);
 }
 
 .error-message--modal .error-message__suggestion-item {
-  font-size: 14px;
-  margin: 8px 0;
+  font-size: var(--font-base);
+  margin: var(--spacing-sm) 0;
 }
 
 /* ==================== RESPONSIVE ==================== */
@@ -465,12 +465,12 @@
   .error-message--modal {
     min-width: auto;
     max-width: calc(100% - 32px);
-    padding: 20px 24px;
+    padding: var(--spacing-lg) 24px;
   }
 
   .error-message--banner {
-    padding: 12px 16px;
-    font-size: 13px;
+    padding: var(--spacing-md) 16px;
+    font-size: var(--font-md);
   }
 
   .error-message__actions {

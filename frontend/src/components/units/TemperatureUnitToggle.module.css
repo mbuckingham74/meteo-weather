@@ -6,14 +6,14 @@
 .toggle {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 8px 12px;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) 12px;
   background: var(--bg-tertiary);
   border: 2px solid var(--border-light);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   cursor: pointer;
   transition: all var(--transition-fast);
-  font-size: 14px;
+  font-size: var(--font-base);
   font-weight: 600;
   color: var(--text-secondary);
 }
@@ -46,6 +46,6 @@
 @media (max-width: 640px) {
   .toggle {
     padding: 6px 10px;
-    font-size: 13px;
+    font-size: var(--font-md);
   }
 }

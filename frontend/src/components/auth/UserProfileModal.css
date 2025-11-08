@@ -16,7 +16,7 @@
 
 .profile-modal {
   background: var(--bg-elevated);
-  border-radius: 16px;
+  border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lg);
   max-width: 600px;
   width: 90%;
@@ -37,10 +37,10 @@
   right: 20px;
   background: none;
   border: none;
-  font-size: 24px;
+  font-size: var(--font-2xl);
   color: var(--text-tertiary);
   cursor: pointer;
-  padding: 4px 8px;
+  padding: var(--spacing-xs) 8px;
   line-height: 1;
   transition: color var(--transition-fast);
 }
@@ -51,14 +51,14 @@
 
 .profile-modal-title {
   margin: 0 0 8px 0;
-  font-size: 24px;
+  font-size: var(--font-2xl);
   font-weight: 700;
   color: var(--text-primary);
 }
 
 .profile-modal-subtitle {
   margin: 0;
-  font-size: 14px;
+  font-size: var(--font-base);
   color: var(--text-tertiary);
 }
 
@@ -68,18 +68,18 @@
 
 .profile-tabs {
   display: flex;
-  gap: 8px;
+  gap: var(--spacing-sm);
   margin-bottom: 24px;
   border-bottom: 2px solid var(--border-light);
 }
 
 .profile-tab {
-  padding: 12px 20px;
+  padding: var(--spacing-md) 20px;
   background: none;
   border: none;
   border-bottom: 2px solid transparent;
   margin-bottom: -2px;
-  font-size: 14px;
+  font-size: var(--font-base);
   font-weight: 600;
   color: var(--text-tertiary);
   cursor: pointer;
@@ -98,13 +98,13 @@
 .profile-section {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--spacing-lg);
 }
 
 .profile-info-card {
-  padding: 20px;
+  padding: var(--spacing-lg);
   background: var(--bg-tertiary);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--border-light);
 }
 
@@ -112,7 +112,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 0;
+  padding: var(--spacing-md) 0;
   border-bottom: 1px solid var(--border-light);
 }
 
@@ -121,20 +121,20 @@
 }
 
 .profile-info-label {
-  font-size: 14px;
+  font-size: var(--font-base);
   color: var(--text-tertiary);
   font-weight: 500;
 }
 
 .profile-info-value {
-  font-size: 14px;
+  font-size: var(--font-base);
   color: var(--text-primary);
   font-weight: 600;
 }
 
 .profile-section-title {
   margin: 0 0 16px 0;
-  font-size: 16px;
+  font-size: var(--font-lg);
   font-weight: 600;
   color: var(--text-primary);
 }
@@ -156,18 +156,18 @@
   align-items: center;
   padding: 16px;
   background: var(--bg-tertiary);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   border: 1px solid var(--border-light);
 }
 
 .preference-label {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--spacing-xs);
 }
 
 .preference-label-text {
-  font-size: 14px;
+  font-size: var(--font-base);
   font-weight: 600;
   color: var(--text-secondary);
 }
@@ -178,10 +178,10 @@
 }
 
 .preference-control select {
-  padding: 8px 12px;
+  padding: var(--spacing-sm) 12px;
   border: 2px solid var(--border-light);
-  border-radius: 6px;
-  font-size: 14px;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-base);
   background: var(--bg-primary);
   color: var(--text-primary);
   outline: none;
@@ -195,15 +195,17 @@
 }
 
 .profile-action-button {
-  padding: 12px 20px;
+  padding: var(--spacing-md) 20px;
   background: var(--gradient-primary);
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: var(--radius-md);
+  font-size: var(--font-base);
   font-weight: 600;
   cursor: pointer;
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
 .profile-action-button:hover {
@@ -241,11 +243,11 @@
 }
 
 .profile-modal-footer {
-  padding: 20px 30px;
+  padding: var(--spacing-lg) 30px;
   border-top: 1px solid var(--border-light);
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
+  gap: var(--spacing-md);
 }
 
 /* Favorites Tab Styles */
@@ -256,7 +258,7 @@
   font-size: 12px;
   font-weight: 700;
   padding: 2px 8px;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   margin-left: 8px;
 }
 
@@ -285,12 +287,12 @@
   text-align: center;
   padding: 60px 20px;
   background: var(--bg-tertiary);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   border: 2px dashed var(--border-medium);
 }
 
 .favorites-empty-state .empty-icon {
-  font-size: 48px;
+  font-size: var(--font-4xl);
   display: block;
   margin-bottom: 16px;
   opacity: 0.6;
@@ -303,21 +305,21 @@
 }
 
 .favorites-empty-state p {
-  margin: 4px 0;
+  margin: var(--spacing-xs) 0;
   color: var(--text-tertiary);
-  font-size: 14px;
+  font-size: var(--font-base);
 }
 
 .favorites-empty-state .empty-hint {
   margin-top: 12px;
-  font-size: 13px;
+  font-size: var(--font-md);
   color: var(--accent-primary);
 }
 
 .favorites-list-profile {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--spacing-md);
 }
 
 .favorite-item-profile {
@@ -327,7 +329,7 @@
   padding: 16px;
   background: var(--bg-tertiary);
   border: 1px solid var(--border-light);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   transition: all var(--transition-fast);
 }
 
@@ -339,13 +341,13 @@
 .favorite-content {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--spacing-md);
   flex: 1;
   cursor: pointer;
 }
 
 .favorite-icon {
-  font-size: 24px;
+  font-size: var(--font-2xl);
   flex-shrink: 0;
 }
 
@@ -366,12 +368,12 @@
 }
 
 .remove-favorite-button {
-  padding: 8px 12px;
+  padding: var(--spacing-sm) 12px;
   background: var(--error-bg);
   color: var(--error-text);
   border: 1px solid var(--error-border);
-  border-radius: 6px;
-  font-size: 16px;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-lg);
   font-weight: 600;
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -390,16 +392,16 @@
 
 .favorites-info {
   margin-top: 16px;
-  padding: 12px;
+  padding: var(--spacing-md);
   background: var(--info-bg);
   border: 1px solid var(--info-border);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   text-align: center;
 }
 
 .favorites-info p {
   margin: 0;
-  font-size: 13px;
+  font-size: var(--font-md);
   color: var(--info-text);
   font-weight: 500;
 }
@@ -410,7 +412,7 @@
     max-width: 100%;
     width: 100%;
     margin: 0;
-    border-radius: 16px 16px 0 0;
+    border-radius: var(--radius-xl) 16px 0 0;
     align-self: flex-end;
   }
 
@@ -425,13 +427,13 @@
   .profile-info-row {
     flex-direction: column;
     align-items: flex-start;
-    gap: 8px;
+    gap: var(--spacing-sm);
   }
 
   .preference-item {
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
+    gap: var(--spacing-md);
   }
 
   .preference-control select {

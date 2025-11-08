@@ -14,7 +14,7 @@
 }
 
 .universal-hero-title {
-  font-size: 32px;
+  font-size: var(--font-3xl);
   font-weight: 700;
   color: var(--text-primary, white);
   margin: 0 0 12px 0;
@@ -22,7 +22,7 @@
 }
 
 .universal-hero-subtitle {
-  font-size: 16px;
+  font-size: var(--font-lg);
   font-weight: 400;
   color: var(--text-secondary, #888);
   margin: 0;
@@ -36,7 +36,7 @@
   gap: 16px;
   background: var(--bg-elevated, #1a1a2e);
   border: 2px solid var(--border-color, #3a3a4e);
-  border-radius: 16px;
+  border-radius: var(--radius-xl);
   padding: 18px 24px;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -51,7 +51,7 @@
 }
 
 .universal-icon {
-  font-size: 24px;
+  font-size: var(--font-2xl);
   flex-shrink: 0;
   opacity: 0.7;
 }
@@ -115,7 +115,7 @@
   margin-top: 16px;
   padding: 14px 20px;
   background: var(--bg-secondary, #2a2a3e);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--border-color, #3a3a4e);
 }
 
@@ -130,12 +130,12 @@
 }
 
 .universal-example-chip {
-  padding: 8px 16px;
+  padding: var(--spacing-sm) 16px;
   background: var(--bg-elevated, #1a1a2e);
   border: 1.5px solid var(--border-color, #3a3a4e);
   border-radius: 20px;
   color: var(--text-primary, white);
-  font-size: 14px;
+  font-size: var(--font-base);
   font-weight: 500;
   cursor: pointer;
   transition: all 0.25s ease;
@@ -204,11 +204,11 @@
   padding: 10px 16px;
   background: var(--bg-secondary, #2a2a3e);
   border-radius: 10px;
-  font-size: 13px;
+  font-size: var(--font-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: var(--spacing-sm);
   animation: fadeIn 0.3s ease;
 }
 
@@ -298,54 +298,54 @@
 
   .universal-input-wrapper {
     padding: 14px 18px;
-    border-radius: 12px;
+    border-radius: var(--radius-lg);
   }
 
   .universal-icon {
-    font-size: 20px;
+    font-size: var(--font-xl);
   }
 
   .universal-search-input {
-    font-size: 16px;
+    font-size: var(--font-lg);
   }
 
   .universal-submit-button {
     width: 40px;
     height: 40px;
-    font-size: 20px;
+    font-size: var(--font-xl);
   }
 
   .universal-examples {
-    padding: 12px 16px;
-    gap: 8px;
+    padding: var(--spacing-md) 16px;
+    gap: var(--spacing-sm);
   }
 
   .universal-examples-label {
-    font-size: 13px;
+    font-size: var(--font-md);
   }
 
   .universal-example-chip {
-    font-size: 13px;
+    font-size: var(--font-md);
     padding: 7px 14px;
   }
 
   .universal-hint {
     font-size: 12px;
-    padding: 8px 14px;
+    padding: var(--spacing-sm) 14px;
   }
 }
 
 @media (max-width: 480px) {
   .universal-hero-title {
-    font-size: 24px;
+    font-size: var(--font-2xl);
   }
 
   .universal-hero-subtitle {
-    font-size: 14px;
+    font-size: var(--font-base);
   }
 
   .universal-input-wrapper {
-    padding: 12px 16px;
+    padding: var(--spacing-md) 16px;
   }
 
   .universal-search-input {
@@ -368,7 +368,7 @@
   }
 
   .universal-hint {
-    font-size: 11px;
+    font-size: var(--font-sm);
     padding: 6px 10px;
   }
 }
@@ -389,10 +389,10 @@
 /* Error Display */
 .ai-error-inline {
   margin-top: 24px;
-  padding: 20px;
+  padding: var(--spacing-lg);
   background: var(--error-bg, #fee2e2);
   border: 2px solid var(--error-border, #fecaca);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   color: var(--error-text, #991b1b);
   text-align: center;
   animation: fadeIn 0.3s ease;
@@ -407,10 +407,10 @@
 /* AI Answer Container */
 .ai-answer-inline {
   margin-top: 32px;
-  padding: 24px;
+  padding: var(--spacing-xl);
   background: var(--bg-elevated, #1f2937);
   border: 2px solid var(--border-color, #374151);
-  border-radius: 16px;
+  border-radius: var(--radius-xl);
   text-align: left;
   animation: fadeIn 0.3s ease;
 }
@@ -428,7 +428,7 @@
 .ai-answer-title {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--spacing-md);
 }
 
 .ai-icon {
@@ -438,7 +438,7 @@
 
 .ai-answer-title h3 {
   margin: 0;
-  font-size: 20px;
+  font-size: var(--font-xl);
   font-weight: 700;
   color: var(--text-primary, #f9fafb);
   line-height: 1.3;
@@ -447,13 +447,13 @@
 .ai-answer-meta {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--spacing-md);
   flex-shrink: 0;
 }
 
 .confidence-badge {
   padding: 6px 12px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
@@ -488,7 +488,7 @@
 
 .ai-answer-text p {
   margin: 0;
-  font-size: 16px;
+  font-size: var(--font-lg);
   line-height: 1.6;
   color: var(--text-primary, #f9fafb);
   font-weight: 400;
@@ -499,14 +499,14 @@
   margin-top: 24px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: var(--spacing-xl);
 }
 
 .visualization-card {
   background: var(--bg-secondary, #111827);
   border: 1px solid var(--border-color, #374151);
-  border-radius: 12px;
-  padding: 20px;
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
   transition: opacity 0.3s ease;
 }
 
@@ -528,7 +528,7 @@
 
 .follow-up-label {
   margin: 0 0 16px 0;
-  font-size: 14px;
+  font-size: var(--font-base);
   font-weight: 600;
   color: var(--text-secondary, #d1d5db);
 }
@@ -545,7 +545,7 @@
   border: 1.5px solid var(--border-color, #374151);
   border-radius: 20px;
   color: var(--text-primary, #f9fafb);
-  font-size: 14px;
+  font-size: var(--font-base);
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -605,12 +605,12 @@
 /* Responsive Inline Answer */
 @media (max-width: 768px) {
   .ai-answer-inline {
-    padding: 20px;
+    padding: var(--spacing-lg);
   }
 
   .ai-answer-header {
     flex-direction: column;
-    gap: 12px;
+    gap: var(--spacing-md);
   }
 
   .ai-answer-title h3 {
@@ -631,8 +631,8 @@
   }
 
   .follow-up-chip {
-    font-size: 13px;
-    padding: 8px 14px;
+    font-size: var(--font-md);
+    padding: var(--spacing-sm) 14px;
   }
 }
 
@@ -643,18 +643,18 @@
   }
 
   .ai-icon {
-    font-size: 24px;
+    font-size: var(--font-2xl);
   }
 
   .ai-answer-title h3 {
-    font-size: 16px;
+    font-size: var(--font-lg);
   }
 
   .ai-answer-text p {
-    font-size: 14px;
+    font-size: var(--font-base);
   }
 
   .visualization-card {
-    padding: 12px;
+    padding: var(--spacing-md);
   }
 }

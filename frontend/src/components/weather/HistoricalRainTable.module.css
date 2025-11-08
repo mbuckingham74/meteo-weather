@@ -1,8 +1,8 @@
 .table {
   background: var(--bg-elevated);
-  border-radius: 12px;
-  padding: 24px;
-  margin: 24px 0;
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  margin: var(--spacing-xl) 0;
   border: 1px solid var(--border-color);
 }
 
@@ -18,7 +18,7 @@
 }
 
 .subtitle {
-  font-size: 14px;
+  font-size: var(--font-base);
   color: var(--text-secondary);
   margin: 0;
 }
@@ -34,7 +34,7 @@
 .statCard {
   background: var(--bg-secondary);
   padding: 16px;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   text-align: center;
 }
 
@@ -47,7 +47,7 @@
 }
 
 .statValue {
-  font-size: 24px;
+  font-size: var(--font-2xl);
   font-weight: 700;
   color: var(--text-primary);
 }
@@ -63,14 +63,14 @@
   overflow-x: auto;
   max-height: 500px;
   overflow-y: auto;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   border: 1px solid var(--border-color);
 }
 
 .dataTable {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
+  font-size: var(--font-base);
 }
 
 .dataTable thead {
@@ -81,7 +81,7 @@
 }
 
 .dataTable th {
-  padding: 12px;
+  padding: var(--spacing-md);
   text-align: left;
   font-weight: 600;
   color: var(--text-secondary);
@@ -105,7 +105,7 @@
 }
 
 .dataTable td {
-  padding: 12px;
+  padding: var(--spacing-md);
   color: var(--text-primary);
 }
 
@@ -149,14 +149,14 @@
 }
 
 .tempRange {
-  font-size: 11px;
+  font-size: var(--font-sm);
   color: var(--text-tertiary);
 }
 
 .conditionsCell {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-sm);
 }
 
 .weatherIcon {
@@ -164,7 +164,7 @@
 }
 
 .conditionsText {
-  font-size: 13px;
+  font-size: var(--font-md);
 }
 
 /* Loading & Error States */
@@ -177,7 +177,7 @@
 }
 
 .loadingSpinner {
-  font-size: 16px;
+  font-size: var(--font-lg);
   color: var(--text-secondary);
 }
 
@@ -211,7 +211,7 @@
 
   .dataTable th,
   .dataTable td {
-    padding: 8px;
+    padding: var(--spacing-sm);
   }
 
   .tempRange {

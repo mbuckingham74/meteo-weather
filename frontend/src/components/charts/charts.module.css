@@ -17,13 +17,13 @@
   margin: 0 0 8px 0;
   font-weight: bold;
   color: var(--text-primary, #111827);
-  font-size: 13px;
+  font-size: var(--font-md);
 }
 
 /* Chart Summary Cards */
 .chart-summary {
   display: flex;
-  gap: 12px;
+  gap: var(--spacing-md);
   margin-bottom: 16px;
   flex-wrap: wrap;
 }
@@ -32,7 +32,7 @@
   flex: 1 1;
   min-width: 120px;
   background: var(--bg-tertiary, #f3f4f6);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   padding: 16px;
   text-align: center;
   cursor: pointer;
@@ -59,12 +59,12 @@
 }
 
 .summary-icon {
-  font-size: 24px;
+  font-size: var(--font-2xl);
   margin-bottom: 8px;
 }
 
 .summary-value {
-  font-size: 20px;
+  font-size: var(--font-xl);
   font-weight: 700;
   color: var(--text-primary, #111827);
   margin-bottom: 4px;
@@ -82,18 +82,18 @@
 .chart-controls {
   margin-top: 16px;
   display: flex;
-  gap: 8px;
+  gap: var(--spacing-sm);
   margin-bottom: 8px;
   flex-wrap: wrap;
   justify-content: center;
 }
 
 .chart-control-button {
-  padding: 8px 16px;
+  padding: var(--spacing-sm) 16px;
   background: var(--bg-tertiary, #f3f4f6);
   color: var(--text-secondary, #6b7280);
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -119,19 +119,19 @@
   gap: 16px;
   margin-top: 16px;
   justify-content: center;
-  padding: 12px;
+  padding: var(--spacing-md);
   background: var(--bg-tertiary, #f3f4f6);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
 }
 
 .chart-legend-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  padding: 8px 12px;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) 12px;
   background: var(--bg-elevated, white);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   transition: all 0.2s ease;
 }
 
@@ -157,7 +157,7 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .chart-title {
-    font-size: 16px;
+    font-size: var(--font-lg);
     margin-bottom: 12px;
   }
 
@@ -166,16 +166,16 @@
   }
 
   .chart-summary {
-    gap: 8px;
+    gap: var(--spacing-sm);
   }
 
   .chart-summary-card {
     min-width: 100px;
-    padding: 12px;
+    padding: var(--spacing-md);
   }
 
   .summary-icon {
-    font-size: 20px;
+    font-size: var(--font-xl);
   }
 
   .summary-value {
@@ -183,7 +183,7 @@
   }
 
   .summary-label {
-    font-size: 11px;
+    font-size: var(--font-sm);
   }
 
   .chart-controls {
@@ -192,11 +192,11 @@
 
   .chart-control-button {
     padding: 6px 12px;
-    font-size: 11px;
+    font-size: var(--font-sm);
   }
 
   .chart-legend {
-    gap: 12px;
+    gap: var(--spacing-md);
     padding: 10px;
   }
 
@@ -210,7 +210,7 @@
   }
 
   .legend-label {
-    font-size: 11px;
+    font-size: var(--font-sm);
   }
 }
 

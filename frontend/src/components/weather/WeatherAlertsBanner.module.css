@@ -13,14 +13,14 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--spacing-md);
   margin-bottom: 20px;
 }
 
 /* Alert Card Base */
 .alert {
   background: var(--bg-elevated);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   border-left: 4px solid;
   box-shadow: var(--shadow-md);
   overflow: hidden;
@@ -60,24 +60,24 @@
 .headerContent {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--spacing-md);
   flex: 1;
 }
 
 .icon {
-  font-size: 24px;
+  font-size: var(--font-2xl);
   flex-shrink: 0;
 }
 
 .titleSection {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--spacing-xs);
 }
 
 .title {
   margin: 0;
-  font-size: 16px;
+  font-size: var(--font-lg);
   font-weight: 700;
   color: var(--text-primary);
 }
@@ -92,9 +92,9 @@
   background: none;
   border: none;
   color: var(--text-secondary);
-  font-size: 14px;
+  font-size: var(--font-base);
   cursor: pointer;
-  padding: 8px;
+  padding: var(--spacing-sm);
   transition: transform var(--transition-fast);
 }
 
@@ -121,14 +121,14 @@
 
 .headline {
   margin: 0 0 12px 0;
-  font-size: 14px;
+  font-size: var(--font-base);
   font-weight: 600;
   color: var(--text-primary);
 }
 
 .description {
   margin: 0 0 12px 0;
-  font-size: 14px;
+  font-size: var(--font-base);
   line-height: 1.6;
   color: var(--text-secondary);
   white-space: pre-wrap;
@@ -136,7 +136,7 @@
 
 .ends {
   margin: 0;
-  font-size: 13px;
+  font-size: var(--font-md);
   color: var(--text-tertiary);
 }
 
@@ -147,7 +147,7 @@
 /* Mobile Responsive */
 @media (max-width: 640px) {
   .header {
-    padding: 12px;
+    padding: var(--spacing-md);
   }
 
   .body {
@@ -155,18 +155,18 @@
   }
 
   .icon {
-    font-size: 20px;
+    font-size: var(--font-xl);
   }
 
   .title {
-    font-size: 14px;
+    font-size: var(--font-base);
   }
 
   .time {
-    font-size: 11px;
+    font-size: var(--font-sm);
   }
 
   .description {
-    font-size: 13px;
+    font-size: var(--font-md);
   }
 }

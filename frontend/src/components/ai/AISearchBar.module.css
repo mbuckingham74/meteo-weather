@@ -1,5 +1,5 @@
 .searchBar {
-  margin: 20px 0;
+  margin: var(--spacing-lg) 0;
   transition: all 0.3s ease;
 }
 
@@ -9,10 +9,10 @@
   padding: 16px 20px;
   background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
   border: none;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--spacing-md);
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
@@ -24,7 +24,7 @@
 }
 
 .prompt .icon {
-  font-size: 24px;
+  font-size: var(--font-2xl);
   flex-shrink: 0;
 }
 
@@ -32,7 +32,7 @@
   flex: 1;
   text-align: left;
   color: white;
-  font-size: 16px;
+  font-size: var(--font-lg);
   font-weight: 500;
   opacity: 0.95;
 }
@@ -40,8 +40,8 @@
 .badge {
   background: rgba(255, 255, 255, 0.2);
   color: white;
-  padding: 4px 12px;
-  border-radius: 12px;
+  padding: var(--spacing-xs) 12px;
+  border-radius: var(--radius-lg);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.5px;
@@ -51,8 +51,8 @@
 .expandedView {
   background: var(--bg-elevated, #1a1a2e);
   border: 2px solid #10b981;
-  border-radius: 12px;
-  padding: 20px;
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
   position: relative;
   animation: expandIn 0.3s ease;
 }
@@ -71,21 +71,21 @@
 .inputWrapper {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--spacing-md);
   margin-bottom: 16px;
 }
 
 .inputWrapper .icon {
-  font-size: 24px;
+  font-size: var(--font-2xl);
   flex-shrink: 0;
 }
 
 .input {
   flex: 1;
-  padding: 12px 16px;
+  padding: var(--spacing-md) 16px;
   background: var(--bg-secondary, #2a2a3e);
   border: 1px solid var(--border-color, #3a3a4e);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   color: var(--text-primary, white);
   font-size: 15px;
   outline: none;
@@ -101,10 +101,10 @@
 }
 
 .askButton {
-  padding: 12px 24px;
+  padding: var(--spacing-md) 24px;
   background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   color: white;
   font-weight: 600;
   cursor: pointer;
@@ -121,13 +121,13 @@
 .examples {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-sm);
   flex-wrap: wrap;
 }
 
 .examplesLabel {
   color: var(--text-secondary, #888);
-  font-size: 13px;
+  font-size: var(--font-md);
   font-weight: 500;
   margin-right: 4px;
 }
@@ -136,9 +136,9 @@
   padding: 6px 12px;
   background: var(--bg-secondary, #2a2a3e);
   border: 1px solid var(--border-color, #3a3a4e);
-  border-radius: 16px;
+  border-radius: var(--radius-xl);
   color: var(--text-primary, white);
-  font-size: 13px;
+  font-size: var(--font-md);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -164,7 +164,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  font-size: var(--font-lg);
   transition: all 0.2s ease;
 }
 
@@ -204,7 +204,7 @@
   }
 
   .promptText {
-    font-size: 14px;
+    font-size: var(--font-base);
   }
 
   .inputWrapper {

@@ -7,7 +7,7 @@
 
 .toggleButton {
   padding: 10px 18px;
-  font-size: 14px;
+  font-size: var(--font-base);
   font-weight: 600;
   color: var(--text-primary, #111827);
   background: var(--bg-elevated, #ffffff);
@@ -32,7 +32,7 @@
   max-height: 500px;
   background: var(--bg-elevated, #ffffff);
   border: 2px solid var(--border-light, #e5e7eb);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   z-index: 1000;
   display: flex;
@@ -61,7 +61,7 @@
 
 .header h3 {
   margin: 0;
-  font-size: 16px;
+  font-size: var(--font-lg);
   font-weight: 700;
   color: var(--text-primary, #111827);
 }
@@ -73,7 +73,7 @@
   color: var(--error-text, #991b1b);
   background: transparent;
   border: 1px solid var(--error-border, #fecaca);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -90,12 +90,12 @@
 
 .empty p {
   margin: 0 0 8px 0;
-  font-size: 16px;
+  font-size: var(--font-lg);
   font-weight: 600;
 }
 
 .emptyHint {
-  font-size: 14px !important;
+  font-size: var(--font-base) !important;
   font-weight: 400 !important;
   color: var(--text-tertiary, #6b7280) !important;
 }
@@ -134,12 +134,12 @@
 }
 
 .timestamp {
-  font-size: 11px;
+  font-size: var(--font-sm);
   color: var(--text-tertiary, #6b7280);
 }
 
 .question {
-  font-size: 14px;
+  font-size: var(--font-base);
   line-height: 1.4;
   color: var(--text-primary, #111827);
   margin-bottom: 8px;
@@ -149,8 +149,8 @@
 .itemFooter {
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 11px;
+  gap: var(--spacing-md);
+  font-size: var(--font-sm);
   color: var(--text-secondary, #6b7280);
 }
 

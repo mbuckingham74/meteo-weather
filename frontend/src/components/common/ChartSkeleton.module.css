@@ -1,8 +1,8 @@
 .container {
   width: 100%;
-  padding: 24px;
+  padding: var(--spacing-xl);
   background: var(--bg-elevated, #ffffff);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
@@ -12,7 +12,7 @@
 
 .legend {
   display: flex;
-  gap: 24px;
+  gap: var(--spacing-xl);
   margin-bottom: 24px;
   flex-wrap: wrap;
 }
@@ -20,7 +20,7 @@
 .legendItem {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-sm);
 }
 
 .chart {
@@ -72,9 +72,9 @@
   height: 100%;
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  gap: 8px;
+  gap: var(--spacing-sm);
   align-items: flex-end;
-  padding: 8px 0;
+  padding: var(--spacing-sm) 0;
 }
 
 .barWrapper {
@@ -86,7 +86,7 @@
 .xAxis {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  gap: 8px;
+  gap: var(--spacing-sm);
   margin-left: 60px;
   margin-top: 8px;
 }
@@ -118,11 +118,11 @@
   }
 
   .bars {
-    gap: 4px;
+    gap: var(--spacing-xs);
   }
 
   .xAxis {
-    gap: 4px;
+    gap: var(--spacing-xs);
     margin-left: 50px;
   }
 

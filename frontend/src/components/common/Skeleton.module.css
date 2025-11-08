@@ -27,7 +27,7 @@
 }
 
 .rect {
-  border-radius: 8px;
+  border-radius: var(--radius-md);
 }
 
 .circle {
@@ -38,7 +38,7 @@
 
 .card {
   height: 120px;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   margin-bottom: 16px;
 }
 
