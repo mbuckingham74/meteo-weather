@@ -1,4 +1,4 @@
-.chart-skeleton-container {
+.container {
   width: 100%;
   padding: 24px;
   background: var(--bg-elevated, #ffffff);
@@ -6,31 +6,31 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-.chart-skeleton-header {
+.header {
   margin-bottom: 24px;
 }
 
-.chart-skeleton-legend {
+.legend {
   display: flex;
   gap: 24px;
   margin-bottom: 24px;
   flex-wrap: wrap;
 }
 
-.chart-skeleton-legend-item {
+.legendItem {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.chart-skeleton-chart {
+.chart {
   position: relative;
   width: 100%;
   display: flex;
   flex-direction: column;
 }
 
-.chart-skeleton-y-axis {
+.yAxis {
   position: absolute;
   left: 0;
   top: 0;
@@ -41,14 +41,14 @@
   padding-right: 12px;
 }
 
-.chart-skeleton-grid {
+.grid {
   position: relative;
   height: calc(100% - 40px);
   margin-left: 60px;
   margin-bottom: 16px;
 }
 
-.chart-skeleton-grid-lines {
+.gridLines {
   position: absolute;
   top: 0;
   left: 0;
@@ -60,14 +60,14 @@
   pointer-events: none;
 }
 
-.chart-skeleton-grid-line {
+.gridLine {
   width: 100%;
   height: 1px;
   background: var(--bg-tertiary, #e5e7eb);
   opacity: 0.5;
 }
 
-.chart-skeleton-bars {
+.bars {
   position: relative;
   height: 100%;
   display: grid;
@@ -77,13 +77,13 @@
   padding: 8px 0;
 }
 
-.chart-skeleton-bar-wrapper {
+.barWrapper {
   height: 100%;
   display: flex;
   align-items: flex-end;
 }
 
-.chart-skeleton-x-axis {
+.xAxis {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   gap: 8px;
@@ -91,52 +91,52 @@
   margin-top: 8px;
 }
 
-.chart-skeleton-x-axis > * {
+.xAxis > * {
   text-align: center;
 }
 
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
-  .chart-skeleton-container {
+  .container {
     background: var(--bg-elevated, #1f2937);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
 
-  .chart-skeleton-grid-line {
+  .gridLine {
     background: var(--bg-tertiary, #4b5563);
   }
 }
 
 /* Mobile responsiveness */
 @media (max-width: 768px) {
-  .chart-skeleton-container {
+  .container {
     padding: 16px;
   }
 
-  .chart-skeleton-legend {
+  .legend {
     gap: 16px;
   }
 
-  .chart-skeleton-bars {
+  .bars {
     gap: 4px;
   }
 
-  .chart-skeleton-x-axis {
+  .xAxis {
     gap: 4px;
     margin-left: 50px;
   }
 
-  .chart-skeleton-grid {
+  .grid {
     margin-left: 50px;
   }
 }
 
 @media (max-width: 480px) {
-  .chart-skeleton-bars {
+  .bars {
     grid-template-columns: repeat(7, 1fr);
   }
 
-  .chart-skeleton-x-axis {
+  .xAxis {
     grid-template-columns: repeat(7, 1fr);
   }
 }

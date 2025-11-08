@@ -1,11 +1,11 @@
 /* AI History Dropdown Styles */
 
-.ai-history-dropdown {
+.dropdown {
   position: relative;
   display: inline-block;
 }
 
-.history-toggle-button {
+.toggleButton {
   padding: 10px 18px;
   font-size: 14px;
   font-weight: 600;
@@ -18,13 +18,13 @@
   white-space: nowrap;
 }
 
-.history-toggle-button:hover {
+.toggleButton:hover {
   border-color: var(--accent-primary, #10b981);
   color: var(--accent-primary, #10b981);
   transform: translateY(-2px);
 }
 
-.history-dropdown-menu {
+.menu {
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
@@ -51,7 +51,7 @@
   }
 }
 
-.history-dropdown-header {
+.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -59,14 +59,14 @@
   border-bottom: 2px solid var(--border-light, #e5e7eb);
 }
 
-.history-dropdown-header h3 {
+.header h3 {
   margin: 0;
   font-size: 16px;
   font-weight: 700;
   color: var(--text-primary, #111827);
 }
 
-.clear-all-button {
+.clearButton {
   padding: 6px 12px;
   font-size: 12px;
   font-weight: 600;
@@ -78,67 +78,67 @@
   transition: all 0.2s ease;
 }
 
-.clear-all-button:hover {
+.clearButton:hover {
   background: var(--error-bg, #fee2e2);
 }
 
-.history-empty {
+.empty {
   padding: 40px 20px;
   text-align: center;
   color: var(--text-secondary, #6b7280);
 }
 
-.history-empty p {
+.empty p {
   margin: 0 0 8px 0;
   font-size: 16px;
   font-weight: 600;
 }
 
-.history-empty-hint {
+.emptyHint {
   font-size: 14px !important;
   font-weight: 400 !important;
   color: var(--text-tertiary, #6b7280) !important;
 }
 
-.history-items {
+.items {
   overflow-y: auto;
   max-height: 420px;
 }
 
-.history-item {
+.item {
   padding: 16px;
   border-bottom: 1px solid var(--border-light, #e5e7eb);
   cursor: pointer;
   transition: background 0.2s ease;
 }
 
-.history-item:hover {
+.item:hover {
   background: var(--bg-tertiary, #f9fafb);
 }
 
-.history-item:last-child {
+.item:last-child {
   border-bottom: none;
 }
 
-.history-item-header {
+.itemHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 8px;
 }
 
-.history-location {
+.location {
   font-size: 12px;
   font-weight: 600;
   color: var(--accent-primary, #10b981);
 }
 
-.history-timestamp {
+.timestamp {
   font-size: 11px;
   color: var(--text-tertiary, #6b7280);
 }
 
-.history-question {
+.question {
   font-size: 14px;
   line-height: 1.4;
   color: var(--text-primary, #111827);
@@ -146,7 +146,7 @@
   font-weight: 500;
 }
 
-.history-item-footer {
+.itemFooter {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -154,7 +154,7 @@
   color: var(--text-secondary, #6b7280);
 }
 
-.history-confidence {
+.confidence {
   padding: 2px 6px;
   background: var(--success-bg, #d1fae5);
   color: var(--success-text, #065f46);
@@ -163,7 +163,7 @@
   text-transform: uppercase;
 }
 
-.history-viz-count {
+.vizCount {
   padding: 2px 6px;
   background: var(--info-bg, #dbeafe);
   color: var(--info-text, #1e40af);
@@ -171,7 +171,7 @@
   font-weight: 600;
 }
 
-.history-delete-button {
+.deleteButton {
   margin-left: auto;
   width: 20px;
   height: 20px;
@@ -186,46 +186,46 @@
   transition: all 0.2s ease;
 }
 
-.history-delete-button:hover {
+.deleteButton:hover {
   background: var(--error-bg, #fee2e2);
   color: var(--error-text, #991b1b);
 }
 
 /* Dark mode */
-[data-theme='dark'] .history-toggle-button {
+[data-theme='dark'] .toggleButton {
   background: var(--bg-elevated, #1f2937);
   color: var(--text-primary, #f9fafb);
   border-color: var(--border-color, #374151);
 }
 
-[data-theme='dark'] .history-dropdown-menu {
+[data-theme='dark'] .menu {
   background: var(--bg-elevated, #1f2937);
   border-color: var(--border-color, #374151);
 }
 
-[data-theme='dark'] .history-dropdown-header {
+[data-theme='dark'] .header {
   border-bottom-color: var(--border-color, #374151);
 }
 
-[data-theme='dark'] .history-dropdown-header h3 {
+[data-theme='dark'] .header h3 {
   color: var(--text-primary, #f9fafb);
 }
 
-[data-theme='dark'] .history-item {
+[data-theme='dark'] .item {
   border-bottom-color: var(--border-color, #374151);
 }
 
-[data-theme='dark'] .history-item:hover {
+[data-theme='dark'] .item:hover {
   background: var(--bg-tertiary, #111827);
 }
 
-[data-theme='dark'] .history-question {
+[data-theme='dark'] .question {
   color: var(--text-primary, #f9fafb);
 }
 
 /* Mobile responsive */
 @media (max-width: 768px) {
-  .history-dropdown-menu {
+  .menu {
     width: 90vw;
     right: -20px;
   }

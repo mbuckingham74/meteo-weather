@@ -9,11 +9,11 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer
+  ResponsiveContainer,
 } from 'recharts';
 import { formatTemperature } from '../../utils/weatherHelpers';
 import { METRIC_COLORS } from '../../utils/colorScales';
-import './charts.css';
+import styles from './charts.module.css';
 
 /**
  * Hourly Forecast Chart Component
@@ -24,7 +24,9 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
 
   if (!hourlyData || hourlyData.length === 0) {
     return (
-      <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary, #6b7280)' }}>
+      <div
+        style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary, #6b7280)' }}
+      >
         No hourly forecast data available
       </div>
     );
@@ -49,16 +51,16 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
       humidity: hour.humidity,
       cloudCover: hour.cloudCover,
       uvIndex: hour.uvIndex,
-      conditions: hour.conditions
+      conditions: hour.conditions,
     };
   });
 
   // Calculate summary statistics
   const stats = {
-    high: Math.max(...chartData.map(d => d.temperature)),
-    low: Math.min(...chartData.map(d => d.temperature)),
+    high: Math.max(...chartData.map((d) => d.temperature)),
+    low: Math.min(...chartData.map((d) => d.temperature)),
     totalPrecip: chartData.reduce((sum, d) => sum + d.precipitation, 0),
-    avgWind: chartData.reduce((sum, d) => sum + d.windSpeed, 0) / chartData.length
+    avgWind: chartData.reduce((sum, d) => sum + d.windSpeed, 0) / chartData.length,
   };
 
   // Custom tooltip
@@ -69,16 +71,26 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
     const date = new Date(data.datetime);
 
     return (
-      <div style={{
-        background: 'var(--bg-elevated, white)',
-        padding: '12px',
-        border: '1px solid var(--border-light, #e5e7eb)',
-        borderRadius: '8px',
-        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-        minWidth: '200px'
-      }}>
-        <p style={{ margin: '0 0 8px 0', fontWeight: 'bold', color: 'var(--text-primary, #111827)', fontSize: '13px' }}>
-          {date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })} - {data.fullTime}
+      <div
+        style={{
+          background: 'var(--bg-elevated, white)',
+          padding: '12px',
+          border: '1px solid var(--border-light, #e5e7eb)',
+          borderRadius: '8px',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+          minWidth: '200px',
+        }}
+      >
+        <p
+          style={{
+            margin: '0 0 8px 0',
+            fontWeight: 'bold',
+            color: 'var(--text-primary, #111827)',
+            fontSize: '13px',
+          }}
+        >
+          {date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })} -{' '}
+          {data.fullTime}
         </p>
 
         <p style={{ margin: '4px 0', color: METRIC_COLORS.temperature, fontSize: '12px' }}>
@@ -99,7 +111,14 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
         </p>
 
         {data.conditions && (
-          <p style={{ margin: '6px 0 0 0', fontSize: '11px', color: 'var(--text-secondary, #6b7280)', fontStyle: 'italic' }}>
+          <p
+            style={{
+              margin: '6px 0 0 0',
+              fontSize: '11px',
+              color: 'var(--text-secondary, #6b7280)',
+              fontStyle: 'italic',
+            }}
+          >
             {data.conditions}
           </p>
         )}
@@ -126,7 +145,7 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
                 value: `Temperature (°${unit})`,
                 angle: -90,
                 position: 'insideLeft',
-                style: { textAnchor: 'middle', fill: '#6b7280' }
+                style: { textAnchor: 'middle', fill: '#6b7280' },
               }}
             />
             <Tooltip content={<CustomTooltip />} />
@@ -167,7 +186,7 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
                 value: `Temperature (°${unit})`,
                 angle: -90,
                 position: 'insideLeft',
-                style: { textAnchor: 'middle', fill: '#6b7280' }
+                style: { textAnchor: 'middle', fill: '#6b7280' },
               }}
             />
             <Tooltip content={<CustomTooltip />} />
@@ -208,7 +227,7 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
                 value: 'Precipitation (mm)',
                 angle: -90,
                 position: 'insideLeft',
-                style: { textAnchor: 'middle', fill: '#6b7280' }
+                style: { textAnchor: 'middle', fill: '#6b7280' },
               }}
             />
             <Tooltip content={<CustomTooltip />} />
@@ -248,7 +267,7 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
                 value: 'Wind Speed (km/h)',
                 angle: -90,
                 position: 'insideLeft',
-                style: { textAnchor: 'middle', fill: '#6b7280' }
+                style: { textAnchor: 'middle', fill: '#6b7280' },
               }}
             />
             <Tooltip content={<CustomTooltip />} />
@@ -285,7 +304,7 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
                 value: 'Time (hours)',
                 position: 'insideBottom',
                 offset: -5,
-                style: { textAnchor: 'middle', fill: '#6b7280', fontSize: 12 }
+                style: { textAnchor: 'middle', fill: '#6b7280', fontSize: 12 },
               }}
             />
             <YAxis
@@ -296,7 +315,7 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
                 value: `Temperature (°${unit})`,
                 angle: -90,
                 position: 'insideLeft',
-                style: { textAnchor: 'middle', fill: '#6b7280' }
+                style: { textAnchor: 'middle', fill: '#6b7280' },
               }}
             />
             <YAxis
@@ -308,7 +327,7 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
                 value: 'Precipitation (mm)',
                 angle: 90,
                 position: 'insideRight',
-                style: { textAnchor: 'middle', fill: '#6b7280' }
+                style: { textAnchor: 'middle', fill: '#6b7280' },
               }}
             />
             <Tooltip content={<CustomTooltip />} />
@@ -354,17 +373,29 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
   // Get title based on selected metric
   const getChartTitle = () => {
     switch (selectedMetric) {
-      case 'high': return '48-Hour High Temperature';
-      case 'low': return '48-Hour Low Temperature';
-      case 'precipitation': return '48-Hour Precipitation';
-      case 'wind': return '48-Hour Wind Speed';
-      default: return '48-Hour Detailed Forecast';
+      case 'high':
+        return '48-Hour High Temperature';
+      case 'low':
+        return '48-Hour Low Temperature';
+      case 'precipitation':
+        return '48-Hour Precipitation';
+      case 'wind':
+        return '48-Hour Wind Speed';
+      default:
+        return '48-Hour Detailed Forecast';
     }
   };
 
   return (
     <div>
-      <h3 style={{ marginBottom: '16px', color: 'var(--text-primary, #111827)', fontSize: '18px', fontWeight: '600' }}>
+      <h3
+        style={{
+          marginBottom: '16px',
+          color: 'var(--text-primary, #111827)',
+          fontSize: '18px',
+          fontWeight: '600',
+        }}
+      >
         {getChartTitle()}
       </h3>
 
@@ -373,12 +404,23 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
       </ResponsiveContainer>
 
       {/* Metric selector buttons */}
-      <div style={{ marginTop: '16px', display: 'flex', gap: '8px', marginBottom: '8px', flexWrap: 'wrap' }}>
+      <div
+        style={{
+          marginTop: '16px',
+          display: 'flex',
+          gap: '8px',
+          marginBottom: '8px',
+          flexWrap: 'wrap',
+        }}
+      >
         <button
           onClick={() => setSelectedMetric('overview')}
           style={{
             padding: '8px 16px',
-            background: selectedMetric === 'overview' ? 'linear-gradient(135deg, #10b981 0%, #34d399 100%)' : '#f3f4f6',
+            background:
+              selectedMetric === 'overview'
+                ? 'linear-gradient(135deg, #10b981 0%, #34d399 100%)'
+                : '#f3f4f6',
             color: selectedMetric === 'overview' ? 'white' : '#4b5563',
             border: 'none',
             borderRadius: '6px',
@@ -387,7 +429,7 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
             cursor: 'pointer',
             transition: 'all 0.2s',
             textTransform: 'uppercase',
-            letterSpacing: '0.5px'
+            letterSpacing: '0.5px',
           }}
           onMouseEnter={(e) => {
             if (selectedMetric !== 'overview') {
@@ -405,7 +447,14 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
       </div>
 
       {/* Summary stats - now clickable */}
-      <div style={{ marginTop: '8px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '12px' }}>
+      <div
+        style={{
+          marginTop: '8px',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+          gap: '12px',
+        }}
+      >
         <button
           onClick={() => setSelectedMetric('high')}
           style={{
@@ -416,7 +465,7 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
             border: selectedMetric === 'high' ? '2px solid #f59e0b' : '2px solid transparent',
             cursor: 'pointer',
             transition: 'all 0.2s',
-            transform: selectedMetric === 'high' ? 'scale(1.05)' : 'scale(1)'
+            transform: selectedMetric === 'high' ? 'scale(1.05)' : 'scale(1)',
           }}
           onMouseEnter={(e) => {
             if (selectedMetric !== 'high') {
@@ -429,7 +478,15 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
             }
           }}
         >
-          <p style={{ margin: '0 0 4px 0', fontSize: '11px', color: '#78350f', textTransform: 'uppercase', fontWeight: '600' }}>
+          <p
+            style={{
+              margin: '0 0 4px 0',
+              fontSize: '11px',
+              color: '#78350f',
+              textTransform: 'uppercase',
+              fontWeight: '600',
+            }}
+          >
             🔥 High
           </p>
           <p style={{ margin: 0, fontSize: '18px', fontWeight: '700', color: '#92400e' }}>
@@ -447,7 +504,7 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
             border: selectedMetric === 'low' ? '2px solid #3b82f6' : '2px solid transparent',
             cursor: 'pointer',
             transition: 'all 0.2s',
-            transform: selectedMetric === 'low' ? 'scale(1.05)' : 'scale(1)'
+            transform: selectedMetric === 'low' ? 'scale(1.05)' : 'scale(1)',
           }}
           onMouseEnter={(e) => {
             if (selectedMetric !== 'low') {
@@ -460,7 +517,15 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
             }
           }}
         >
-          <p style={{ margin: '0 0 4px 0', fontSize: '11px', color: '#1e3a8a', textTransform: 'uppercase', fontWeight: '600' }}>
+          <p
+            style={{
+              margin: '0 0 4px 0',
+              fontSize: '11px',
+              color: '#1e3a8a',
+              textTransform: 'uppercase',
+              fontWeight: '600',
+            }}
+          >
             ❄️ Low
           </p>
           <p style={{ margin: 0, fontSize: '18px', fontWeight: '700', color: '#1e40af' }}>
@@ -475,10 +540,11 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
             background: selectedMetric === 'precipitation' ? '#67e8f9' : '#e0f2fe',
             borderRadius: '6px',
             textAlign: 'center',
-            border: selectedMetric === 'precipitation' ? '2px solid #06b6d4' : '2px solid transparent',
+            border:
+              selectedMetric === 'precipitation' ? '2px solid #06b6d4' : '2px solid transparent',
             cursor: 'pointer',
             transition: 'all 0.2s',
-            transform: selectedMetric === 'precipitation' ? 'scale(1.05)' : 'scale(1)'
+            transform: selectedMetric === 'precipitation' ? 'scale(1.05)' : 'scale(1)',
           }}
           onMouseEnter={(e) => {
             if (selectedMetric !== 'precipitation') {
@@ -491,7 +557,15 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
             }
           }}
         >
-          <p style={{ margin: '0 0 4px 0', fontSize: '11px', color: '#075985', textTransform: 'uppercase', fontWeight: '600' }}>
+          <p
+            style={{
+              margin: '0 0 4px 0',
+              fontSize: '11px',
+              color: '#075985',
+              textTransform: 'uppercase',
+              fontWeight: '600',
+            }}
+          >
             🌧️ Total Precip
           </p>
           <p style={{ margin: 0, fontSize: '18px', fontWeight: '700', color: '#0369a1' }}>
@@ -509,7 +583,7 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
             border: selectedMetric === 'wind' ? '2px solid #6b7280' : '2px solid transparent',
             cursor: 'pointer',
             transition: 'all 0.2s',
-            transform: selectedMetric === 'wind' ? 'scale(1.05)' : 'scale(1)'
+            transform: selectedMetric === 'wind' ? 'scale(1.05)' : 'scale(1)',
           }}
           onMouseEnter={(e) => {
             if (selectedMetric !== 'wind') {
@@ -522,20 +596,43 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
             }
           }}
         >
-          <p style={{ margin: '0 0 4px 0', fontSize: '11px', color: 'var(--text-secondary, #374151)', textTransform: 'uppercase', fontWeight: '600' }}>
+          <p
+            style={{
+              margin: '0 0 4px 0',
+              fontSize: '11px',
+              color: 'var(--text-secondary, #374151)',
+              textTransform: 'uppercase',
+              fontWeight: '600',
+            }}
+          >
             💨 Avg Wind
           </p>
-          <p style={{ margin: 0, fontSize: '18px', fontWeight: '700', color: 'var(--text-secondary, #4b5563)' }}>
+          <p
+            style={{
+              margin: 0,
+              fontSize: '18px',
+              fontWeight: '700',
+              color: 'var(--text-secondary, #4b5563)',
+            }}
+          >
             {stats.avgWind.toFixed(1)} km/h
           </p>
         </button>
       </div>
 
       {/* Info panel */}
-      <div style={{ marginTop: '12px', padding: '10px', background: '#eff6ff', borderRadius: '6px', border: '1px solid #3b82f6' }}>
+      <div
+        style={{
+          marginTop: '12px',
+          padding: '10px',
+          background: '#eff6ff',
+          borderRadius: '6px',
+          border: '1px solid #3b82f6',
+        }}
+      >
         <p style={{ margin: 0, fontSize: '11px', color: '#1e40af' }}>
-          <strong>💡 Note:</strong> "Feels Like" temperature accounts for wind chill and heat index effects.
-          Times shown in local timezone.
+          <strong>💡 Note:</strong> &quot;Feels Like&quot; temperature accounts for wind chill and
+          heat index effects. Times shown in local timezone.
         </p>
       </div>
     </div>

@@ -1,21 +1,22 @@
 import Skeleton from '../common/Skeleton';
-import './AdminPanelSkeleton.css';
+import styles from './AdminPanelSkeleton.module.css';
 
 /**
  * AdminPanelSkeleton Component
  * Loading skeleton for the admin panel
+ * CSS Modules Migration: Phase 1.1 - Batch 2
  */
 function AdminPanelSkeleton() {
   return (
-    <div className="admin-panel-skeleton">
+    <div className={styles.container}>
       {/* Header Skeleton */}
-      <div className="admin-skeleton-header">
+      <div className={styles.header}>
         <Skeleton variant="rect" width="250px" height="36px" />
         <Skeleton variant="rect" width="120px" height="36px" />
       </div>
 
       {/* Tabs Skeleton */}
-      <div className="admin-skeleton-tabs">
+      <div className={styles.tabs}>
         <Skeleton variant="rect" width="100px" height="40px" />
         <Skeleton variant="rect" width="80px" height="40px" />
         <Skeleton variant="rect" width="120px" height="40px" />
@@ -25,7 +26,7 @@ function AdminPanelSkeleton() {
       </div>
 
       {/* Stats Grid Skeleton */}
-      <div className="admin-skeleton-stats-grid">
+      <div className={styles.statsGrid}>
         <Skeleton variant="card" />
         <Skeleton variant="card" />
         <Skeleton variant="card" />
@@ -34,9 +35,9 @@ function AdminPanelSkeleton() {
       </div>
 
       {/* Content Section Skeleton */}
-      <div className="admin-skeleton-section">
+      <div className={styles.section}>
         <Skeleton variant="rect" width="200px" height="28px" />
-        <div className="admin-skeleton-table">
+        <div className={styles.table}>
           <Skeleton variant="rect" height="40px" />
           <Skeleton variant="rect" height="30px" />
           <Skeleton variant="rect" height="30px" />

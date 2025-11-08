@@ -1,11 +1,14 @@
-/* Theme Toggle Styles - Matches header button styling */
+/**
+ * ThemeToggle - CSS Module
+ * CSS Modules Migration: Phase 1.1
+ */
 
-.theme-toggle-container {
+.container {
   display: inline-flex;
   align-items: center;
 }
 
-.theme-toggle-button {
+.button {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -21,45 +24,45 @@
   white-space: nowrap;
 }
 
-.theme-toggle-button:hover {
+.button:hover {
   border-color: var(--accent-primary);
   color: var(--accent-primary);
   background: var(--bg-tertiary);
 }
 
-.theme-toggle-button:active {
+.button:active {
   transform: translateY(0);
 }
 
-.theme-icon {
+.icon {
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 16px;
 }
 
-.theme-label {
+.label {
   font-size: 14px;
   font-weight: 600;
   color: var(--text-secondary);
 }
 
 /* Compact Mode (icon only) */
-.theme-toggle-button.compact {
+.button.compact {
   padding: 8px;
 }
 
-.theme-toggle-button.compact .theme-label {
+.button.compact .label {
   display: none;
 }
 
 /* Mobile responsive */
 @media (max-width: 640px) {
-  .theme-label {
+  .label {
     display: none;
   }
 
-  .theme-toggle-button {
+  .button {
     padding: 8px;
   }
 }

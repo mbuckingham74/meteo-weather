@@ -1,4 +1,4 @@
-.historical-rain-table {
+.table {
   background: var(--bg-elevated);
   border-radius: 12px;
   padding: 24px;
@@ -6,39 +6,39 @@
   border: 1px solid var(--border-color);
 }
 
-.table-header {
+.header {
   margin-bottom: 20px;
 }
 
-.table-header h3 {
+.header h3 {
   font-size: 22px;
   font-weight: 700;
   color: var(--text-primary);
   margin: 0 0 8px 0;
 }
 
-.table-subtitle {
+.subtitle {
   font-size: 14px;
   color: var(--text-secondary);
   margin: 0;
 }
 
 /* Statistics Summary */
-.statistics-summary {
+.statistics {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 16px;
   margin-bottom: 24px;
 }
 
-.stat-card {
+.statCard {
   background: var(--bg-secondary);
   padding: 16px;
   border-radius: 8px;
   text-align: center;
 }
 
-.stat-label {
+.statLabel {
   font-size: 12px;
   color: var(--text-secondary);
   text-transform: uppercase;
@@ -46,20 +46,20 @@
   margin-bottom: 8px;
 }
 
-.stat-value {
+.statValue {
   font-size: 24px;
   font-weight: 700;
   color: var(--text-primary);
 }
 
-.stat-note {
+.statNote {
   font-size: 12px;
   color: var(--text-tertiary);
   margin-top: 4px;
 }
 
 /* Table Styling */
-.table-scroll-container {
+.scrollContainer {
   overflow-x: auto;
   max-height: 500px;
   overflow-y: auto;
@@ -67,20 +67,20 @@
   border: 1px solid var(--border-color);
 }
 
-.historical-table {
+.dataTable {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
 }
 
-.historical-table thead {
+.dataTable thead {
   position: sticky;
   top: 0;
   background: var(--bg-secondary);
   z-index: 10;
 }
 
-.historical-table th {
+.dataTable th {
   padding: 12px;
   text-align: left;
   font-weight: 600;
@@ -91,31 +91,31 @@
   letter-spacing: 0.5px;
 }
 
-.historical-table tbody tr {
+.dataTable tbody tr {
   border-bottom: 1px solid var(--border-color);
   transition: background-color 0.2s;
 }
 
-.historical-table tbody tr:hover {
+.dataTable tbody tr:hover {
   background: var(--bg-secondary);
 }
 
-.historical-table tbody tr.rainy-day {
+.dataTable tbody tr.rainyDay {
   background: rgba(59, 130, 246, 0.05);
 }
 
-.historical-table td {
+.dataTable td {
   padding: 12px;
   color: var(--text-primary);
 }
 
-.year-cell {
+.yearCell {
   font-weight: 600;
   color: var(--text-primary);
 }
 
 /* Precipitation Bar */
-.precip-bar-container {
+.precipBarContainer {
   position: relative;
   width: 100%;
   height: 24px;
@@ -124,7 +124,7 @@
   overflow: hidden;
 }
 
-.precip-bar {
+.precipBar {
   position: absolute;
   left: 0;
   top: 0;
@@ -133,7 +133,7 @@
   transition: width 0.3s ease;
 }
 
-.precip-value {
+.precipValue {
   position: absolute;
   left: 8px;
   top: 50%;
@@ -144,51 +144,51 @@
   z-index: 1;
 }
 
-.temp-cell {
+.tempCell {
   font-variant-numeric: tabular-nums;
 }
 
-.temp-range {
+.tempRange {
   font-size: 11px;
   color: var(--text-tertiary);
 }
 
-.conditions-cell {
+.conditionsCell {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.weather-icon {
+.weatherIcon {
   font-size: 18px;
 }
 
-.conditions-text {
+.conditionsText {
   font-size: 13px;
 }
 
 /* Loading & Error States */
-.historical-rain-table.loading,
-.historical-rain-table.error,
-.historical-rain-table.no-data {
+.table.loading,
+.table.error,
+.table.noData {
   text-align: center;
   padding: 40px;
   color: var(--text-secondary);
 }
 
-.loading-spinner {
+.loadingSpinner {
   font-size: 16px;
   color: var(--text-secondary);
 }
 
 /* Footer */
-.table-footer {
+.footer {
   margin-top: 16px;
   padding-top: 16px;
   border-top: 1px solid var(--border-color);
 }
 
-.data-note {
+.dataNote {
   font-size: 12px;
   color: var(--text-tertiary);
   margin: 0;
@@ -197,24 +197,24 @@
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
-  .historical-rain-table {
+  .table {
     padding: 16px;
   }
 
-  .statistics-summary {
+  .statistics {
     grid-template-columns: 1fr;
   }
 
-  .historical-table {
+  .dataTable {
     font-size: 12px;
   }
 
-  .historical-table th,
-  .historical-table td {
+  .dataTable th,
+  .dataTable td {
     padding: 8px;
   }
 
-  .temp-range {
+  .tempRange {
     display: none;
   }
 }

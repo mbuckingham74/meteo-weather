@@ -1,8 +1,9 @@
-import './Skeleton.css';
+import styles from './Skeleton.module.css';
 
 /**
  * Skeleton Component
  * Displays loading placeholder with shimmer animation
+ * CSS Modules Migration: Phase 1.1
  *
  * @param {Object} props
  * @param {string} props.variant - Type: 'text', 'rect', 'circle', 'card'
@@ -12,7 +13,7 @@ import './Skeleton.css';
  */
 function Skeleton({ variant = 'text', width, height, count = 1 }) {
   const getClassName = () => {
-    const classes = ['skeleton', `skeleton-${variant}`];
+    const classes = [styles.skeleton, styles[variant]];
     return classes.join(' ');
   };
 

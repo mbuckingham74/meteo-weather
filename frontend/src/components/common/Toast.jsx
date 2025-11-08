@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
-import './Toast.css';
+import styles from './Toast.module.css';
 
 /**
  * Toast Component
  * Displays temporary notification messages
+ * CSS Modules Migration: Phase 1.1 - Batch 2
  *
  * @param {Object} props
  * @param {string} props.message - Message to display
@@ -37,10 +38,10 @@ function Toast({ message, type = 'info', duration = 4000, onClose }) {
   };
 
   return (
-    <div className={`toast toast-${type}`} role="alert" aria-live="polite">
-      <span className="toast-icon">{getIcon()}</span>
-      <span className="toast-message">{message}</span>
-      <button className="toast-close" onClick={onClose} aria-label="Close notification">
+    <div className={`${styles.toast} ${styles[type]}`} role="alert" aria-live="polite">
+      <span className={styles.icon}>{getIcon()}</span>
+      <span className={styles.message}>{message}</span>
+      <button className={styles.close} onClick={onClose} aria-label="Close notification">
         ×
       </button>
     </div>

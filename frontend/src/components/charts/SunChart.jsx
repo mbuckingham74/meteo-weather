@@ -7,9 +7,9 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer
+  ResponsiveContainer,
 } from 'recharts';
-import './charts.css';
+import styles from './charts.module.css';
 
 /**
  * SunChart Component
@@ -47,7 +47,7 @@ function SunChart({ data, days, height = 300 }) {
   };
 
   // Prepare chart data
-  const chartData = data.map(day => {
+  const chartData = data.map((day) => {
     const sunriseMinutes = timeToMinutes(day.sunrise);
     const sunsetMinutes = timeToMinutes(day.sunset);
     const daylightMinutes = sunsetMinutes - sunriseMinutes;
@@ -60,7 +60,7 @@ function SunChart({ data, days, height = 300 }) {
       daylight: daylightMinutes,
       daylightHours,
       sunriseTime: day.sunrise,
-      sunsetTime: day.sunset
+      sunsetTime: day.sunset,
     };
   });
 
@@ -68,13 +68,15 @@ function SunChart({ data, days, height = 300 }) {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
-        <div style={{
-          background: 'var(--bg-elevated)',
-          border: '2px solid var(--border-light)',
-          borderRadius: '8px',
-          padding: '12px',
-          boxShadow: 'var(--shadow-md)'
-        }}>
+        <div
+          style={{
+            background: 'var(--bg-elevated)',
+            border: '2px solid var(--border-light)',
+            borderRadius: '8px',
+            padding: '12px',
+            boxShadow: 'var(--shadow-md)',
+          }}
+        >
           <p style={{ margin: '0 0 8px 0', fontWeight: '600', color: 'var(--text-primary)' }}>
             {data.date}
           </p>
@@ -95,12 +97,14 @@ function SunChart({ data, days, height = 300 }) {
 
   return (
     <div style={{ width: '100%' }}>
-      <h3 style={{
-        margin: '0 0 8px 0',
-        fontSize: '16px',
-        fontWeight: '600',
-        color: 'var(--text-primary, #111827)'
-      }}>
+      <h3
+        style={{
+          margin: '0 0 8px 0',
+          fontSize: '16px',
+          fontWeight: '600',
+          color: 'var(--text-primary, #111827)',
+        }}
+      >
         🌅 Sunrise & Sunset - {getTimeLabel()}
       </h3>
 
@@ -124,7 +128,7 @@ function SunChart({ data, days, height = 300 }) {
               value: 'Time of Day',
               angle: -90,
               position: 'insideLeft',
-              style: { fill: '#111827', fontSize: 14, fontWeight: 600 }
+              style: { fill: '#111827', fontSize: 14, fontWeight: 600 },
             }}
           />
           <Tooltip content={<CustomTooltip />} />
@@ -135,22 +139,34 @@ function SunChart({ data, days, height = 300 }) {
         </BarChart>
       </ResponsiveContainer>
 
-      <div style={{
-        marginTop: '16px',
-        padding: '12px',
-        background: 'var(--bg-tertiary)',
-        borderRadius: '8px',
-        fontSize: '13px',
-        color: 'var(--text-secondary)'
-      }}>
+      <div
+        style={{
+          marginTop: '16px',
+          padding: '12px',
+          background: 'var(--bg-tertiary)',
+          borderRadius: '8px',
+          fontSize: '13px',
+          color: 'var(--text-secondary)',
+        }}
+      >
         <p style={{ margin: '0 0 8px 0' }}>
-          💡 <strong>Daylight Hours:</strong> The chart shows sunrise and sunset times.
-          Longer bars indicate more daylight hours.
+          💡 <strong>Daylight Hours:</strong> The chart shows sunrise and sunset times. Longer bars
+          indicate more daylight hours.
         </p>
         <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-          <span>📊 Avg: {(chartData.reduce((sum, d) => sum + parseFloat(d.daylightHours), 0) / chartData.length).toFixed(1)}h</span>
-          <span>⬆️ Max: {Math.max(...chartData.map(d => parseFloat(d.daylightHours))).toFixed(1)}h</span>
-          <span>⬇️ Min: {Math.min(...chartData.map(d => parseFloat(d.daylightHours))).toFixed(1)}h</span>
+          <span>
+            📊 Avg:{' '}
+            {(
+              chartData.reduce((sum, d) => sum + parseFloat(d.daylightHours), 0) / chartData.length
+            ).toFixed(1)}
+            h
+          </span>
+          <span>
+            ⬆️ Max: {Math.max(...chartData.map((d) => parseFloat(d.daylightHours))).toFixed(1)}h
+          </span>
+          <span>
+            ⬇️ Min: {Math.min(...chartData.map((d) => parseFloat(d.daylightHours))).toFixed(1)}h
+          </span>
         </div>
       </div>
     </div>

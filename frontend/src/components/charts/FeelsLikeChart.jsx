@@ -8,9 +8,9 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer
+  ResponsiveContainer,
 } from 'recharts';
-import './charts.css';
+import styles from './charts.module.css';
 
 /**
  * FeelsLikeChart Component
@@ -33,26 +33,28 @@ function FeelsLikeChart({ data, days, unit = 'C', height = 300 }) {
   }
 
   // Prepare chart data
-  const chartData = data.map(day => ({
+  const chartData = data.map((day) => ({
     date: new Date(day.datetime).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
     actualMax: day.tempmax,
     actualMin: day.tempmin,
     feelsLikeMax: day.feelslikemax,
     feelsLikeMin: day.feelslikemin,
-    difference: Math.abs(day.temp - day.feelslike).toFixed(1)
+    difference: Math.abs(day.temp - day.feelslike).toFixed(1),
   }));
 
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
-        <div style={{
-          background: 'var(--bg-elevated)',
-          border: '2px solid var(--border-light)',
-          borderRadius: '8px',
-          padding: '12px',
-          boxShadow: 'var(--shadow-md)'
-        }}>
+        <div
+          style={{
+            background: 'var(--bg-elevated)',
+            border: '2px solid var(--border-light)',
+            borderRadius: '8px',
+            padding: '12px',
+            boxShadow: 'var(--shadow-md)',
+          }}
+        >
           <p style={{ margin: '0 0 8px 0', fontWeight: '600', color: 'var(--text-primary)' }}>
             {data.date}
           </p>
@@ -77,18 +79,25 @@ function FeelsLikeChart({ data, days, unit = 'C', height = 300 }) {
   };
 
   // Calculate temperature range for Y-axis
-  const allTemps = chartData.flatMap(d => [d.actualMax, d.actualMin, d.feelsLikeMax, d.feelsLikeMin]);
+  const allTemps = chartData.flatMap((d) => [
+    d.actualMax,
+    d.actualMin,
+    d.feelsLikeMax,
+    d.feelsLikeMin,
+  ]);
   const minTemp = Math.floor(Math.min(...allTemps)) - 2;
   const maxTemp = Math.ceil(Math.max(...allTemps)) + 2;
 
   return (
     <div style={{ width: '100%' }}>
-      <h3 style={{
-        margin: '0 0 8px 0',
-        fontSize: '16px',
-        fontWeight: '600',
-        color: 'var(--text-primary, #111827)'
-      }}>
+      <h3
+        style={{
+          margin: '0 0 8px 0',
+          fontSize: '16px',
+          fontWeight: '600',
+          color: 'var(--text-primary, #111827)',
+        }}
+      >
         🌡️ Feels Like Temperature - {getTimeLabel()}
       </h3>
 
@@ -96,8 +105,8 @@ function FeelsLikeChart({ data, days, unit = 'C', height = 300 }) {
         <ComposedChart data={chartData} margin={{ top: 5, right: 30, left: 25, bottom: 5 }}>
           <defs>
             <linearGradient id="colorFeelsLike" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#f97316" stopOpacity={0.3}/>
-              <stop offset="95%" stopColor="#06b6d4" stopOpacity={0.3}/>
+              <stop offset="5%" stopColor="#f97316" stopOpacity={0.3} />
+              <stop offset="95%" stopColor="#06b6d4" stopOpacity={0.3} />
             </linearGradient>
           </defs>
           <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" opacity={0.5} />
@@ -116,7 +125,7 @@ function FeelsLikeChart({ data, days, unit = 'C', height = 300 }) {
               value: `Temperature (°${unit})`,
               angle: -90,
               position: 'insideLeft',
-              style: { fill: '#111827', fontSize: 14, fontWeight: 600 }
+              style: { fill: '#111827', fontSize: 14, fontWeight: 600 },
             }}
           />
           <Tooltip content={<CustomTooltip />} />
@@ -185,18 +194,20 @@ function FeelsLikeChart({ data, days, unit = 'C', height = 300 }) {
         </ComposedChart>
       </ResponsiveContainer>
 
-      <div style={{
-        marginTop: '16px',
-        padding: '12px',
-        background: 'var(--bg-tertiary)',
-        borderRadius: '8px',
-        fontSize: '13px',
-        color: 'var(--text-secondary)'
-      }}>
+      <div
+        style={{
+          marginTop: '16px',
+          padding: '12px',
+          background: 'var(--bg-tertiary)',
+          borderRadius: '8px',
+          fontSize: '13px',
+          color: 'var(--text-secondary)',
+        }}
+      >
         <p style={{ margin: 0 }}>
-          💡 <strong>Feels Like</strong> temperature accounts for wind chill (cold weather) and heat index (hot weather),
-          showing what the temperature actually feels like on your skin. Solid lines show actual temperature,
-          dashed lines show feels-like temperature.
+          💡 <strong>Feels Like</strong> temperature accounts for wind chill (cold weather) and heat
+          index (hot weather), showing what the temperature actually feels like on your skin. Solid
+          lines show actual temperature, dashed lines show feels-like temperature.
         </p>
       </div>
     </div>

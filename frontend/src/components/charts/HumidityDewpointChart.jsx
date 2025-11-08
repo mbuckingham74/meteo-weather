@@ -7,9 +7,9 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer
+  ResponsiveContainer,
 } from 'recharts';
-import './charts.css';
+import styles from './charts.module.css';
 
 /**
  * HumidityDewpointChart Component
@@ -32,22 +32,24 @@ function HumidityDewpointChart({ data, days, unit = 'C', height = 300 }) {
   }
 
   // Prepare chart data
-  const chartData = data.map(day => ({
+  const chartData = data.map((day) => ({
     date: new Date(day.datetime).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
     humidity: day.humidity,
-    dewpoint: day.dew
+    dewpoint: day.dew,
   }));
 
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       return (
-        <div style={{
-          background: 'var(--bg-elevated)',
-          border: '2px solid var(--border-light)',
-          borderRadius: '8px',
-          padding: '12px',
-          boxShadow: 'var(--shadow-md)'
-        }}>
+        <div
+          style={{
+            background: 'var(--bg-elevated)',
+            border: '2px solid var(--border-light)',
+            borderRadius: '8px',
+            padding: '12px',
+            boxShadow: 'var(--shadow-md)',
+          }}
+        >
           <p style={{ margin: '0 0 8px 0', fontWeight: '600', color: 'var(--text-primary)' }}>
             {payload[0].payload.date}
           </p>
@@ -65,12 +67,14 @@ function HumidityDewpointChart({ data, days, unit = 'C', height = 300 }) {
 
   return (
     <div style={{ width: '100%' }}>
-      <h3 style={{
-        margin: '0 0 8px 0',
-        fontSize: '16px',
-        fontWeight: '600',
-        color: 'var(--text-primary, #111827)'
-      }}>
+      <h3
+        style={{
+          margin: '0 0 8px 0',
+          fontSize: '16px',
+          fontWeight: '600',
+          color: 'var(--text-primary, #111827)',
+        }}
+      >
         💧 Humidity & Dewpoint - {getTimeLabel()}
       </h3>
 
@@ -92,7 +96,7 @@ function HumidityDewpointChart({ data, days, unit = 'C', height = 300 }) {
               value: 'Humidity (%)',
               angle: -90,
               position: 'insideLeft',
-              style: { fill: '#111827', fontSize: 14, fontWeight: 600 }
+              style: { fill: '#111827', fontSize: 14, fontWeight: 600 },
             }}
           />
           <YAxis
@@ -105,7 +109,7 @@ function HumidityDewpointChart({ data, days, unit = 'C', height = 300 }) {
               value: `Dewpoint (°${unit})`,
               angle: 90,
               position: 'insideRight',
-              style: { fill: '#111827', fontSize: 14, fontWeight: 600 }
+              style: { fill: '#111827', fontSize: 14, fontWeight: 600 },
             }}
           />
           <Tooltip content={<CustomTooltip />} />
@@ -136,17 +140,19 @@ function HumidityDewpointChart({ data, days, unit = 'C', height = 300 }) {
         </LineChart>
       </ResponsiveContainer>
 
-      <div style={{
-        marginTop: '16px',
-        padding: '12px',
-        background: 'var(--bg-tertiary)',
-        borderRadius: '8px',
-        fontSize: '13px',
-        color: 'var(--text-secondary)'
-      }}>
+      <div
+        style={{
+          marginTop: '16px',
+          padding: '12px',
+          background: 'var(--bg-tertiary)',
+          borderRadius: '8px',
+          fontSize: '13px',
+          color: 'var(--text-secondary)',
+        }}
+      >
         <p style={{ margin: 0 }}>
-          💡 <strong>Dewpoint</strong> is the temperature at which air becomes saturated and dew forms.
-          Higher dewpoint means more moisture in the air and a "stickier" feel.
+          💡 <strong>Dewpoint</strong> is the temperature at which air becomes saturated and dew
+          forms. Higher dewpoint means more moisture in the air and a &quot;stickier&quot; feel.
         </p>
       </div>
     </div>

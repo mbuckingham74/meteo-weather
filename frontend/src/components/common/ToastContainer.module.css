@@ -1,6 +1,9 @@
-/* Toast Container Styles */
+/**
+ * ToastContainer - CSS Module
+ * CSS Modules Migration: Phase 1.1
+ */
 
-.toast-container {
+.container {
   position: fixed;
   top: 20px;
   right: 20px;
@@ -11,13 +14,13 @@
   pointer-events: none;
 }
 
-.toast-container > * {
+.container > * {
   pointer-events: auto;
 }
 
 /* Responsive */
 @media (max-width: 640px) {
-  .toast-container {
+  .container {
     top: 10px;
     right: 10px;
     left: 10px;

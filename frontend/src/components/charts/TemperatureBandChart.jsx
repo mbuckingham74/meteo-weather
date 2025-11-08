@@ -7,9 +7,9 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Legend
+  Legend,
 } from 'recharts';
-import './charts.css';
+import styles from './charts.module.css';
 import { TEMPERATURE_BANDS } from '../../utils/colorScales';
 import { formatTemperature, formatDateShort } from '../../utils/weatherHelpers';
 
@@ -20,7 +20,9 @@ import { formatTemperature, formatDateShort } from '../../utils/weatherHelpers';
 function TemperatureBandChart({ data, unit = 'C', height = 400, days, aggregationLabel }) {
   if (!data || data.length === 0) {
     return (
-      <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary, #6b7280)' }}>
+      <div
+        style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary, #6b7280)' }}
+      >
         No temperature data available
       </div>
     );
@@ -36,13 +38,13 @@ function TemperatureBandChart({ data, unit = 'C', height = 400, days, aggregatio
   };
 
   // Format data for Recharts
-  const chartData = data.map(day => ({
+  const chartData = data.map((day) => ({
     date: day.date,
     displayDate: day.displayLabel || formatDateShort(day.date), // Use displayLabel if available (for aggregated data)
     high: day.tempMax || day.tempHigh,
     low: day.tempMin || day.tempLow,
     avg: day.tempAvg || day.temp,
-    aggregatedDays: day.aggregatedDays // Track if this is aggregated data
+    aggregatedDays: day.aggregatedDays, // Track if this is aggregated data
   }));
 
   // Custom tooltip
@@ -52,18 +54,24 @@ function TemperatureBandChart({ data, unit = 'C', height = 400, days, aggregatio
     const data = payload[0].payload;
 
     return (
-      <div style={{
-        background: 'var(--bg-elevated, white)',
-        padding: '12px',
-        border: '1px solid var(--border-light, #e5e7eb)',
-        borderRadius: '8px',
-        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-      }}>
-        <p style={{ margin: '0 0 8px 0', fontWeight: 'bold', color: 'var(--text-primary, #111827)' }}>
+      <div
+        style={{
+          background: 'var(--bg-elevated, white)',
+          padding: '12px',
+          border: '1px solid var(--border-light, #e5e7eb)',
+          borderRadius: '8px',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+        }}
+      >
+        <p
+          style={{ margin: '0 0 8px 0', fontWeight: 'bold', color: 'var(--text-primary, #111827)' }}
+        >
           {data.displayDate}
         </p>
         {data.aggregatedDays && (
-          <p style={{ margin: '0 0 8px 0', fontSize: '11px', color: '#10b981', fontStyle: 'italic' }}>
+          <p
+            style={{ margin: '0 0 8px 0', fontSize: '11px', color: '#10b981', fontStyle: 'italic' }}
+          >
             ({data.aggregatedDays} days averaged)
           </p>
         )}
@@ -82,14 +90,19 @@ function TemperatureBandChart({ data, unit = 'C', height = 400, days, aggregatio
 
   return (
     <div>
-      <h3 style={{ marginBottom: '8px', marginTop: '0', color: 'var(--text-primary, #111827)', fontSize: '16px', fontWeight: '600' }}>
+      <h3
+        style={{
+          marginBottom: '8px',
+          marginTop: '0',
+          color: 'var(--text-primary, #111827)',
+          fontSize: '16px',
+          fontWeight: '600',
+        }}
+      >
         Temperature Range - {getTimeLabel()}
       </h3>
       <ResponsiveContainer width="100%" height={height}>
-        <AreaChart
-          data={chartData}
-          margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-        >
+        <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
           <XAxis
             dataKey="displayDate"
@@ -107,14 +120,11 @@ function TemperatureBandChart({ data, unit = 'C', height = 400, days, aggregatio
               value: `Temperature (°${unit})`,
               angle: -90,
               position: 'insideLeft',
-              style: { textAnchor: 'middle', fill: '#6b7280' }
+              style: { textAnchor: 'middle', fill: '#6b7280' },
             }}
           />
           <Tooltip content={<CustomTooltip />} />
-          <Legend
-            wrapperStyle={{ paddingTop: '20px' }}
-            iconType="line"
-          />
+          <Legend wrapperStyle={{ paddingTop: '20px' }} iconType="line" />
 
           {/* Temperature high area */}
           <Area
@@ -152,19 +162,30 @@ function TemperatureBandChart({ data, unit = 'C', height = 400, days, aggregatio
       </ResponsiveContainer>
 
       {/* Temperature Band Legend */}
-      <div style={{ marginTop: '12px', padding: '8px', background: '#f9fafb', borderRadius: '8px' }}>
-        <p style={{ margin: '0 0 6px 0', fontSize: '13px', fontWeight: '600', color: 'var(--text-secondary, #374151)' }}>
+      <div
+        style={{ marginTop: '12px', padding: '8px', background: '#f9fafb', borderRadius: '8px' }}
+      >
+        <p
+          style={{
+            margin: '0 0 6px 0',
+            fontSize: '13px',
+            fontWeight: '600',
+            color: 'var(--text-secondary, #374151)',
+          }}
+        >
           Temperature Comfort Zones:
         </p>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-          {TEMPERATURE_BANDS.map(band => (
+          {TEMPERATURE_BANDS.map((band) => (
             <div key={band.name} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <div style={{
-                width: '16px',
-                height: '16px',
-                backgroundColor: band.color,
-                borderRadius: '3px'
-              }} />
+              <div
+                style={{
+                  width: '16px',
+                  height: '16px',
+                  backgroundColor: band.color,
+                  borderRadius: '3px',
+                }}
+              />
               <span style={{ fontSize: '12px', color: 'var(--text-secondary, #6b7280)' }}>
                 {band.name} ({band.min}°-{band.max}°C)
               </span>

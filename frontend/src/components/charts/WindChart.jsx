@@ -7,9 +7,9 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Legend
+  Legend,
 } from 'recharts';
-import './charts.css';
+import styles from './charts.module.css';
 import { METRIC_COLORS } from '../../utils/colorScales';
 import { formatDateShort, formatWindSpeed, getWindDirection } from '../../utils/weatherHelpers';
 
@@ -20,7 +20,9 @@ import { formatDateShort, formatWindSpeed, getWindDirection } from '../../utils/
 function WindChart({ data, height = 350, days, aggregationLabel }) {
   if (!data || data.length === 0) {
     return (
-      <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary, #6b7280)' }}>
+      <div
+        style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary, #6b7280)' }}
+      >
         No wind data available
       </div>
     );
@@ -36,13 +38,13 @@ function WindChart({ data, height = 350, days, aggregationLabel }) {
   };
 
   // Format data for Recharts
-  const chartData = data.map(day => ({
+  const chartData = data.map((day) => ({
     date: day.date,
     displayDate: day.displayLabel || formatDateShort(day.date),
     windSpeed: day.windSpeed,
     windDirection: day.windDirection,
     windDirectionLabel: getWindDirection(day.windDirection),
-    aggregatedDays: day.aggregatedDays
+    aggregatedDays: day.aggregatedDays,
   }));
 
   // Custom tooltip
@@ -52,18 +54,24 @@ function WindChart({ data, height = 350, days, aggregationLabel }) {
     const data = payload[0].payload;
 
     return (
-      <div style={{
-        background: 'var(--bg-elevated, white)',
-        padding: '12px',
-        border: '1px solid var(--border-light, #e5e7eb)',
-        borderRadius: '8px',
-        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-      }}>
-        <p style={{ margin: '0 0 8px 0', fontWeight: 'bold', color: 'var(--text-primary, #111827)' }}>
+      <div
+        style={{
+          background: 'var(--bg-elevated, white)',
+          padding: '12px',
+          border: '1px solid var(--border-light, #e5e7eb)',
+          borderRadius: '8px',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+        }}
+      >
+        <p
+          style={{ margin: '0 0 8px 0', fontWeight: 'bold', color: 'var(--text-primary, #111827)' }}
+        >
           {data.displayDate}
         </p>
         {data.aggregatedDays && (
-          <p style={{ margin: '0 0 8px 0', fontSize: '11px', color: '#10b981', fontStyle: 'italic' }}>
+          <p
+            style={{ margin: '0 0 8px 0', fontSize: '11px', color: '#10b981', fontStyle: 'italic' }}
+          >
             ({data.aggregatedDays} days averaged)
           </p>
         )}
@@ -101,14 +109,7 @@ function WindChart({ data, height = 350, days, aggregationLabel }) {
           markerEnd="url(#arrowhead)"
         />
         <defs>
-          <marker
-            id="arrowhead"
-            markerWidth="10"
-            markerHeight="10"
-            refX="5"
-            refY="3"
-            orient="auto"
-          >
+          <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="5" refY="3" orient="auto">
             <polygon points="0 0, 10 3, 0 6" fill="#10b981" />
           </marker>
         </defs>
@@ -118,15 +119,20 @@ function WindChart({ data, height = 350, days, aggregationLabel }) {
 
   return (
     <div>
-      <h3 style={{ marginBottom: '8px', marginTop: '0', color: 'var(--text-primary, #111827)', fontSize: '16px', fontWeight: '600' }}>
+      <h3
+        style={{
+          marginBottom: '8px',
+          marginTop: '0',
+          color: 'var(--text-primary, #111827)',
+          fontSize: '16px',
+          fontWeight: '600',
+        }}
+      >
         Wind Speed & Direction - {getTimeLabel()}
       </h3>
 
       <ResponsiveContainer width="100%" height={height}>
-        <LineChart
-          data={chartData}
-          margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-        >
+        <LineChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
           <XAxis
             dataKey="displayDate"
@@ -144,7 +150,7 @@ function WindChart({ data, height = 350, days, aggregationLabel }) {
               value: 'Wind Speed (km/h)',
               angle: -90,
               position: 'insideLeft',
-              style: { textAnchor: 'middle', fill: '#6b7280' }
+              style: { textAnchor: 'middle', fill: '#6b7280' },
             }}
           />
           <Tooltip content={<CustomTooltip />} />
@@ -163,13 +169,25 @@ function WindChart({ data, height = 350, days, aggregationLabel }) {
       </ResponsiveContainer>
 
       {/* Wind Direction Legend */}
-      <div style={{ marginTop: '20px', padding: '12px', background: '#f9fafb', borderRadius: '8px' }}>
-        <p style={{ margin: '0 0 12px 0', fontSize: '14px', fontWeight: '600', color: 'var(--text-secondary, #374151)' }}>
+      <div
+        style={{ marginTop: '20px', padding: '12px', background: '#f9fafb', borderRadius: '8px' }}
+      >
+        <p
+          style={{
+            margin: '0 0 12px 0',
+            fontSize: '14px',
+            fontWeight: '600',
+            color: 'var(--text-secondary, #374151)',
+          }}
+        >
           Wind Directions by Day:
         </p>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', justifyContent: 'center' }}>
           {chartData.slice(0, 7).map((day, idx) => (
-            <div key={idx} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+            <div
+              key={idx}
+              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}
+            >
               <WindDirectionIndicator direction={day.windDirection} />
               <span style={{ fontSize: '11px', color: 'var(--text-secondary, #6b7280)' }}>
                 {day.displayDate.split(',')[0]}
@@ -183,11 +201,26 @@ function WindChart({ data, height = 350, days, aggregationLabel }) {
       </div>
 
       {/* Beaufort Scale Reference */}
-      <div style={{ marginTop: '12px', padding: '12px', background: '#f9fafb', borderRadius: '8px' }}>
-        <p style={{ margin: '0 0 8px 0', fontSize: '12px', fontWeight: '600', color: 'var(--text-secondary, #374151)' }}>
+      <div
+        style={{ marginTop: '12px', padding: '12px', background: '#f9fafb', borderRadius: '8px' }}
+      >
+        <p
+          style={{
+            margin: '0 0 8px 0',
+            fontSize: '12px',
+            fontWeight: '600',
+            color: 'var(--text-secondary, #374151)',
+          }}
+        >
           Beaufort Scale Reference:
         </p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '8px' }}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+            gap: '8px',
+          }}
+        >
           <div style={{ fontSize: '11px', color: 'var(--text-secondary, #6b7280)' }}>
             <span style={{ fontWeight: '600' }}>Calm:</span> &lt; 10 km/h
           </div>

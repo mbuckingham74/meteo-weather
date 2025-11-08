@@ -1,10 +1,10 @@
-.ai-search-bar {
+.searchBar {
   margin: 20px 0;
   transition: all 0.3s ease;
 }
 
 /* Collapsed State - Attractive Search Prompt */
-.ai-search-prompt {
+.prompt {
   width: 100%;
   padding: 16px 20px;
   background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
@@ -18,17 +18,17 @@
   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
-.ai-search-prompt:hover {
+.prompt:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
 }
 
-.ai-search-prompt .ai-icon {
+.prompt .icon {
   font-size: 24px;
   flex-shrink: 0;
 }
 
-.ai-prompt-text {
+.promptText {
   flex: 1;
   text-align: left;
   color: white;
@@ -37,7 +37,7 @@
   opacity: 0.95;
 }
 
-.ai-badge {
+.badge {
   background: rgba(255, 255, 255, 0.2);
   color: white;
   padding: 4px 12px;
@@ -48,7 +48,7 @@
 }
 
 /* Expanded State */
-.ai-search-expanded {
+.expandedView {
   background: var(--bg-elevated, #1a1a2e);
   border: 2px solid #10b981;
   border-radius: 12px;
@@ -68,19 +68,19 @@
   }
 }
 
-.ai-input-wrapper {
+.inputWrapper {
   display: flex;
   align-items: center;
   gap: 12px;
   margin-bottom: 16px;
 }
 
-.ai-input-wrapper .ai-icon {
+.inputWrapper .icon {
   font-size: 24px;
   flex-shrink: 0;
 }
 
-.ai-search-input {
+.input {
   flex: 1;
   padding: 12px 16px;
   background: var(--bg-secondary, #2a2a3e);
@@ -92,15 +92,15 @@
   transition: border-color 0.2s ease;
 }
 
-.ai-search-input:focus {
+.input:focus {
   border-color: #10b981;
 }
 
-.ai-search-input::placeholder {
+.input::placeholder {
   color: var(--text-secondary, #888);
 }
 
-.ai-ask-button {
+.askButton {
   padding: 12px 24px;
   background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
   border: none;
@@ -112,27 +112,27 @@
   white-space: nowrap;
 }
 
-.ai-ask-button:hover {
+.askButton:hover {
   transform: scale(1.05);
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
 /* Example Questions */
-.ai-examples {
+.examples {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-.ai-examples-label {
+.examplesLabel {
   color: var(--text-secondary, #888);
   font-size: 13px;
   font-weight: 500;
   margin-right: 4px;
 }
 
-.ai-example-chip {
+.exampleChip {
   padding: 6px 12px;
   background: var(--bg-secondary, #2a2a3e);
   border: 1px solid var(--border-color, #3a3a4e);
@@ -143,14 +143,14 @@
   transition: all 0.2s ease;
 }
 
-.ai-example-chip:hover {
+.exampleChip:hover {
   background: #10b981;
   border-color: #10b981;
   transform: translateY(-1px);
 }
 
 /* Collapse Button */
-.ai-collapse-button {
+.collapseButton {
   position: absolute;
   top: 12px;
   right: 12px;
@@ -168,55 +168,55 @@
   transition: all 0.2s ease;
 }
 
-.ai-collapse-button:hover {
+.collapseButton:hover {
   background: #10b981;
   color: white;
   border-color: #10b981;
 }
 
 /* Dark Theme Support */
-[data-theme="light"] .ai-search-input,
-[data-theme="light"] .ai-example-chip {
+[data-theme='light'] .input,
+[data-theme='light'] .exampleChip {
   background: #f5f5f5;
   border-color: #e0e0e0;
   color: #333;
 }
 
-[data-theme="light"] .ai-search-expanded {
+[data-theme='light'] .expandedView {
   background: white;
   border-color: #10b981;
 }
 
-[data-theme="light"] .ai-collapse-button {
+[data-theme='light'] .collapseButton {
   background: #f5f5f5;
   border-color: #e0e0e0;
   color: #666;
 }
 
-[data-theme="light"] .ai-examples-label {
+[data-theme='light'] .examplesLabel {
   color: #666;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .ai-search-prompt {
+  .prompt {
     padding: 14px 16px;
   }
 
-  .ai-prompt-text {
+  .promptText {
     font-size: 14px;
   }
 
-  .ai-input-wrapper {
+  .inputWrapper {
     flex-wrap: wrap;
   }
 
-  .ai-ask-button {
+  .askButton {
     width: 100%;
     margin-top: 8px;
   }
 
-  .ai-example-chip {
+  .exampleChip {
     font-size: 12px;
     padding: 5px 10px;
   }

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import './AuthModal.css';
+import styles from './AuthModal.module.css';
 
 /**
  * AuthModal Component
@@ -133,45 +133,45 @@ function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
   if (!isOpen) return null;
 
   return (
-    <div className="auth-modal-overlay" onClick={handleClose} role="presentation">
+    <div className={styles.overlay} onClick={handleClose} role="presentation">
       <div
         ref={modalRef}
-        className="auth-modal"
+        className={styles.modal}
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
         aria-labelledby="auth-modal-title"
         aria-describedby="auth-modal-subtitle"
       >
-        <div className="auth-modal-header">
+        <div className={styles.header}>
           <button
-            className="auth-modal-close"
+            className={styles.closeButton}
             onClick={handleClose}
             aria-label="Close authentication dialog"
           >
             <span aria-hidden="true">×</span>
           </button>
-          <h2 id="auth-modal-title" className="auth-modal-title">
+          <h2 id="auth-modal-title" className={styles.title}>
             {mode === 'login' ? 'Welcome Back' : 'Create Account'}
           </h2>
-          <p id="auth-modal-subtitle" className="auth-modal-subtitle">
+          <p id="auth-modal-subtitle" className={styles.subtitle}>
             {mode === 'login'
               ? 'Sign in to access your weather preferences'
               : 'Join us to save your favorite locations and preferences'}
           </p>
         </div>
 
-        <div className="auth-modal-body">
-          <form onSubmit={handleSubmit} className="auth-form">
+        <div className={styles.body}>
+          <form onSubmit={handleSubmit} className={styles.form}>
             {mode === 'register' && (
-              <div className="form-group">
-                <label htmlFor="name" className="form-label">
+              <div className={styles.formGroup}>
+                <label htmlFor="name" className={styles.label}>
                   Full Name
                 </label>
                 <input
                   type="text"
                   id="name"
-                  className="form-input"
+                  className={styles.input}
                   placeholder="John Doe"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -181,14 +181,14 @@ function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
               </div>
             )}
 
-            <div className="form-group">
-              <label htmlFor="email" className="form-label">
+            <div className={styles.formGroup}>
+              <label htmlFor="email" className={styles.label}>
                 Email Address
               </label>
               <input
                 type="email"
                 id="email"
-                className="form-input"
+                className={styles.input}
                 placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -197,14 +197,14 @@ function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
               />
             </div>
 
-            <div className="form-group">
-              <label htmlFor="password" className="form-label">
+            <div className={styles.formGroup}>
+              <label htmlFor="password" className={styles.label}>
                 Password
               </label>
               <input
                 type="password"
                 id="password"
-                className="form-input"
+                className={styles.input}
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -214,14 +214,14 @@ function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
             </div>
 
             {mode === 'register' && (
-              <div className="form-group">
-                <label htmlFor="confirmPassword" className="form-label">
+              <div className={styles.formGroup}>
+                <label htmlFor="confirmPassword" className={styles.label}>
                   Confirm Password
                 </label>
                 <input
                   type="password"
                   id="confirmPassword"
-                  className="form-input"
+                  className={styles.input}
                   placeholder="••••••••"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
@@ -232,18 +232,18 @@ function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
             )}
 
             {error && (
-              <p className="form-error" role="alert" aria-live="polite">
+              <p className={styles.error} role="alert" aria-live="polite">
                 {error}
               </p>
             )}
             {success && (
-              <p className="form-success" role="alert" aria-live="polite">
+              <p className={styles.success} role="alert" aria-live="polite">
                 {success}
               </p>
             )}
 
-            <button type="submit" className="auth-submit-button" disabled={loading}>
-              {loading && <span className="auth-loading-spinner"></span>}
+            <button type="submit" className={styles.submitButton} disabled={loading}>
+              {loading && <span className={styles.loadingSpinner}></span>}
               {loading
                 ? mode === 'login'
                   ? 'Signing in...'
@@ -255,12 +255,12 @@ function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
           </form>
         </div>
 
-        <div className="auth-modal-footer">
-          <p className="auth-switch-text">
+        <div className={styles.footer}>
+          <p className={styles.switchText}>
             {mode === 'login' ? "Don't have an account?" : 'Already have an account?'}
             <button
               type="button"
-              className="auth-switch-button"
+              className={styles.switchButton}
               onClick={switchMode}
               disabled={loading}
             >

@@ -1,6 +1,9 @@
-/* Temperature Unit Toggle Styles */
+/**
+ * TemperatureUnitToggle - CSS Module
+ * CSS Modules Migration: Phase 1.1
+ */
 
-.temp-unit-toggle {
+.toggle {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -15,25 +18,25 @@
   color: var(--text-secondary);
 }
 
-.temp-unit-toggle:hover {
+.toggle:hover {
   border-color: var(--accent-primary);
   box-shadow: var(--shadow-sm);
 }
 
-.unit-option {
+.option {
   padding: 2px 4px;
   border-radius: 4px;
   transition: all var(--transition-fast);
   color: var(--text-tertiary);
 }
 
-.unit-option.active {
+.option.active {
   color: var(--accent-primary);
   background: var(--bg-primary);
   font-weight: 700;
 }
 
-.unit-separator {
+.separator {
   color: var(--border-medium);
   font-weight: 300;
   user-select: none;
@@ -41,7 +44,7 @@
 
 /* Responsive */
 @media (max-width: 640px) {
-  .temp-unit-toggle {
+  .toggle {
     padding: 6px 10px;
     font-size: 13px;
   }

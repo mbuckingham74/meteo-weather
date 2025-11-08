@@ -1,17 +1,22 @@
-.skip-to-content {
+/**
+ * SkipToContent - CSS Module
+ * CSS Modules Migration: Phase 1.1
+ */
+
+.container {
   position: fixed;
   top: 0;
   left: 0;
   z-index: 10000;
-  background: var(--bg-elevated, #ffffff);
+  background: var(--bg-elevated);
   padding: 0;
 }
 
-.skip-link {
+.link {
   position: absolute;
   top: -100px;
   left: 0;
-  background: var(--accent-primary, #10b981);
+  background: var(--accent-primary);
   color: white;
   padding: 12px 24px;
   text-decoration: none;
@@ -23,13 +28,13 @@
   white-space: nowrap;
 }
 
-.skip-link:focus {
+.link:focus {
   top: 0;
-  outline: 3px solid var(--accent-primary, #10b981);
+  outline: 3px solid var(--accent-primary);
   outline-offset: 2px;
 }
 
-.skip-link:not(:first-child) {
+.link:not(:first-child) {
   left: auto;
   right: 0;
   border-radius: 0 0 0 8px;
@@ -37,11 +42,11 @@
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {
-  .skip-link {
+  .link {
     border: 3px solid currentColor;
   }
 
-  .skip-link:focus {
+  .link:focus {
     outline: 4px solid currentColor;
     outline-offset: 4px;
   }
@@ -49,7 +54,7 @@
 
 /* Dark mode */
 @media (prefers-color-scheme: dark) {
-  .skip-to-content {
-    background: var(--bg-elevated, #1f2937);
+  .container {
+    background: var(--bg-elevated);
   }
 }

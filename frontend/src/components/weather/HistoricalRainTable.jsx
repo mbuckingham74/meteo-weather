@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import API_CONFIG from '../../config/api';
-import './HistoricalRainTable.css';
+import styles from './HistoricalRainTable.module.css';
 
 const API_BASE_URL = API_CONFIG.BASE_URL;
 
@@ -26,7 +26,7 @@ function HistoricalRainTable({ location, date, years = 25 }) {
         const params = new URLSearchParams({
           location,
           date,
-          years: years.toString()
+          years: years.toString(),
         });
 
         const response = await fetch(`${API_BASE_URL}/weather/historical-date?${params}`);
@@ -52,15 +52,15 @@ function HistoricalRainTable({ location, date, years = 25 }) {
 
   if (loading) {
     return (
-      <div className="historical-rain-table loading">
-        <div className="loading-spinner">🔄 Loading {years} years of historical data...</div>
+      <div className={`${styles.table} ${styles.loading}`}>
+        <div className={styles.loadingSpinner}>🔄 Loading {years} years of historical data...</div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="historical-rain-table error">
+      <div className={`${styles.table} ${styles.error}`}>
         <p>❌ {error}</p>
       </div>
     );
@@ -68,7 +68,7 @@ function HistoricalRainTable({ location, date, years = 25 }) {
 
   if (!data || data.data.length === 0) {
     return (
-      <div className="historical-rain-table no-data">
+      <div className={`${styles.table} ${styles.noData}`}>
         <p>No historical data available for this date.</p>
       </div>
     );
@@ -78,32 +78,36 @@ function HistoricalRainTable({ location, date, years = 25 }) {
   const [monthName, dayNum] = getDateDisplay(date);
 
   return (
-    <div className="historical-rain-table">
-      <div className="table-header">
-        <h3>📊 Historical Weather for {monthName} {dayNum}</h3>
-        <p className="table-subtitle">
+    <div className={styles.table}>
+      <div className={styles.header}>
+        <h3>
+          📊 Historical Weather for {monthName} {dayNum}
+        </h3>
+        <p className={styles.subtitle}>
           Showing {historicalData.length} years of data for {location}
         </p>
       </div>
 
-      <div className="statistics-summary">
-        <div className="stat-card">
-          <div className="stat-label">Average Precipitation</div>
-          <div className="stat-value">{statistics.averagePrecipitation.toFixed(2)} mm</div>
+      <div className={styles.statistics}>
+        <div className={styles.statCard}>
+          <div className={styles.statLabel}>Average Precipitation</div>
+          <div className={styles.statValue}>{statistics.averagePrecipitation.toFixed(2)} mm</div>
         </div>
-        <div className="stat-card">
-          <div className="stat-label">Rainy Days</div>
-          <div className="stat-value">{statistics.rainyDayPercentage}%</div>
-          <div className="stat-note">({statistics.rainyDays}/{historicalData.length} years)</div>
+        <div className={styles.statCard}>
+          <div className={styles.statLabel}>Rainy Days</div>
+          <div className={styles.statValue}>{statistics.rainyDayPercentage}%</div>
+          <div className={styles.statNote}>
+            ({statistics.rainyDays}/{historicalData.length} years)
+          </div>
         </div>
-        <div className="stat-card">
-          <div className="stat-label">Wettest Year</div>
-          <div className="stat-value">{statistics.maxPrecipitation.toFixed(2)} mm</div>
+        <div className={styles.statCard}>
+          <div className={styles.statLabel}>Wettest Year</div>
+          <div className={styles.statValue}>{statistics.maxPrecipitation.toFixed(2)} mm</div>
         </div>
       </div>
 
-      <div className="table-scroll-container">
-        <table className="historical-table">
+      <div className={styles.scrollContainer}>
+        <table className={styles.dataTable}>
           <thead>
             <tr>
               <th>Year</th>
@@ -114,30 +118,35 @@ function HistoricalRainTable({ location, date, years = 25 }) {
           </thead>
           <tbody>
             {historicalData.map((row) => (
-              <tr key={row.year} className={row.precip > 0.1 ? 'rainy-day' : ''}>
-                <td className="year-cell">{row.year}</td>
-                <td className="precip-cell">
-                  <div className="precip-bar-container">
+              <tr key={row.year} className={row.precip > 0.1 ? styles.rainyDay : ''}>
+                <td className={styles.yearCell}>{row.year}</td>
+                <td className={styles.precipCell}>
+                  <div className={styles.precipBarContainer}>
                     <div
-                      className="precip-bar"
+                      className={styles.precipBar}
                       style={{
-                        width: `${Math.min((row.precip / statistics.maxPrecipitation) * 100, 100)}%`
+                        width: `${Math.min((row.precip / statistics.maxPrecipitation) * 100, 100)}%`,
                       }}
                     />
-                    <span className="precip-value">
+                    <span className={styles.precipValue}>
                       {row.precip > 0 ? `${row.precip.toFixed(1)} mm` : 'No rain'}
                     </span>
                   </div>
                 </td>
-                <td className="temp-cell">
+                <td className={styles.tempCell}>
                   {row.temp ? `${row.temp.toFixed(1)}°C` : 'N/A'}
                   {row.tempmax && row.tempmin && (
-                    <span className="temp-range"> ({row.tempmin.toFixed(0)}° - {row.tempmax.toFixed(0)}°)</span>
+                    <span className={styles.tempRange}>
+                      {' '}
+                      ({row.tempmin.toFixed(0)}° - {row.tempmax.toFixed(0)}°)
+                    </span>
                   )}
                 </td>
-                <td className="conditions-cell">
-                  {row.icon && <span className="weather-icon">{getWeatherIcon(row.icon)}</span>}
-                  <span className="conditions-text">{row.conditions || 'Unknown'}</span>
+                <td className={styles.conditionsCell}>
+                  {row.icon && (
+                    <span className={styles.weatherIcon}>{getWeatherIcon(row.icon)}</span>
+                  )}
+                  <span className={styles.conditionsText}>{row.conditions || 'Unknown'}</span>
                 </td>
               </tr>
             ))}
@@ -145,8 +154,8 @@ function HistoricalRainTable({ location, date, years = 25 }) {
         </table>
       </div>
 
-      <div className="table-footer">
-        <p className="data-note">
+      <div className={styles.footer}>
+        <p className={styles.dataNote}>
           💡 Data sourced from Visual Crossing Weather API. Precipitation measured in millimeters.
         </p>
       </div>
@@ -157,7 +166,20 @@ function HistoricalRainTable({ location, date, years = 25 }) {
 // Helper function to get month name and day
 function getDateDisplay(date) {
   const [month, day] = date.split('-');
-  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const monthNames = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
   return [monthNames[parseInt(month) - 1], parseInt(day)];
 }
 
@@ -168,12 +190,12 @@ function getWeatherIcon(icon) {
     'clear-night': '🌙',
     'partly-cloudy-day': '⛅',
     'partly-cloudy-night': '☁️',
-    'cloudy': '☁️',
-    'rain': '🌧️',
-    'snow': '🌨️',
-    'sleet': '🌨️',
-    'wind': '💨',
-    'fog': '🌫️'
+    cloudy: '☁️',
+    rain: '🌧️',
+    snow: '🌨️',
+    sleet: '🌨️',
+    wind: '💨',
+    fog: '🌫️',
   };
   return iconMap[icon] || '🌤️';
 }

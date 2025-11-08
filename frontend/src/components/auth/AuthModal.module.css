@@ -152,7 +152,9 @@
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
   margin-top: 8px;
 }
 

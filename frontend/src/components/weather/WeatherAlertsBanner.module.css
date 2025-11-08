@@ -1,13 +1,24 @@
-/* Weather Alerts Banner Styles */
+/**
+ * WeatherAlertsBanner - CSS Module
+ *
+ * CSS Modules Migration: Phase 1.1
+ * Benefits:
+ * - Auto-scoped class names (no global namespace pollution)
+ * - Simpler class names (no need for verbose prefixes)
+ * - Better tree-shaking (unused styles removed in production)
+ * - Compile-time safety (typos caught during build)
+ */
 
-.weather-alerts-container {
+/* Container */
+.container {
   display: flex;
   flex-direction: column;
   gap: 12px;
   margin-bottom: 20px;
 }
 
-.weather-alert {
+/* Alert Card Base */
+.alert {
   background: var(--bg-elevated);
   border-radius: 12px;
   border-left: 4px solid;
@@ -16,29 +27,29 @@
   transition: all var(--transition-fast);
 }
 
-.weather-alert:hover {
+.alert:hover {
   box-shadow: var(--shadow-lg);
 }
 
-/* Severity-based styling */
-.weather-alert-warning {
-  background: var(--error-bg, #fef2f2);
+/* Severity Modifiers */
+.alertWarning {
+  background: var(--error-bg);
 }
 
-.weather-alert-watch {
-  background: var(--warning-bg, #fffbeb);
+.alertWatch {
+  background: var(--warning-bg);
 }
 
-.weather-alert-advisory {
-  background: var(--info-bg, #eff6ff);
+.alertAdvisory {
+  background: var(--info-bg);
 }
 
-.weather-alert-info {
-  background: var(--bg-secondary, #f9fafb);
+.alertInfo {
+  background: var(--bg-secondary);
 }
 
-/* Alert Header */
-.alert-header {
+/* Header */
+.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -46,38 +57,38 @@
   user-select: none;
 }
 
-.alert-header-content {
+.headerContent {
   display: flex;
   align-items: center;
   gap: 12px;
   flex: 1;
 }
 
-.alert-icon {
+.icon {
   font-size: 24px;
   flex-shrink: 0;
 }
 
-.alert-title-section {
+.titleSection {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.alert-title {
+.title {
   margin: 0;
   font-size: 16px;
   font-weight: 700;
   color: var(--text-primary);
 }
 
-.alert-time {
+.time {
   font-size: 12px;
   color: var(--text-tertiary);
   font-weight: 500;
 }
 
-.alert-expand-button {
+.expandButton {
   background: none;
   border: none;
   color: var(--text-secondary);
@@ -87,12 +98,12 @@
   transition: transform var(--transition-fast);
 }
 
-.alert-expand-button:hover {
+.expandButton:hover {
   color: var(--text-primary);
 }
 
-/* Alert Body */
-.alert-body {
+/* Body */
+.body {
   padding: 0 16px 16px 52px;
   animation: slideDown 0.2s ease-out;
 }
@@ -108,14 +119,14 @@
   }
 }
 
-.alert-headline {
+.headline {
   margin: 0 0 12px 0;
   font-size: 14px;
   font-weight: 600;
   color: var(--text-primary);
 }
 
-.alert-description {
+.description {
   margin: 0 0 12px 0;
   font-size: 14px;
   line-height: 1.6;
@@ -123,39 +134,39 @@
   white-space: pre-wrap;
 }
 
-.alert-ends {
+.ends {
   margin: 0;
   font-size: 13px;
   color: var(--text-tertiary);
 }
 
-.alert-ends strong {
+.ends strong {
   color: var(--text-secondary);
 }
 
-/* Mobile responsive */
+/* Mobile Responsive */
 @media (max-width: 640px) {
-  .alert-header {
+  .header {
     padding: 12px;
   }
 
-  .alert-body {
+  .body {
     padding: 0 12px 12px 40px;
   }
 
-  .alert-icon {
+  .icon {
     font-size: 20px;
   }
 
-  .alert-title {
+  .title {
     font-size: 14px;
   }
 
-  .alert-time {
+  .time {
     font-size: 11px;
   }
 
-  .alert-description {
+  .description {
     font-size: 13px;
   }
 }
