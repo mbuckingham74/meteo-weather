@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import ThemeToggle from '../theme/ThemeToggle';
@@ -52,30 +52,25 @@ function AuthHeader() {
           <Link to="/privacy" className="auth-header-button auth-header-privacy-button">
             Privacy Policy
           </Link>
+          {isAuthenticated && user?.isAdmin && (
+            <Link to="/admin" className="auth-header-button auth-header-admin-button">
+              Admin Panel
+            </Link>
+          )}
         </div>
         {isAuthenticated ? (
           <div className="auth-user-info">
             <span className="auth-user-name">{user?.name}</span>
-            <button
-              className="auth-user-avatar"
-              onClick={handleProfileClick}
-              title="View Profile"
-            >
+            <button className="auth-user-avatar" onClick={handleProfileClick} title="View Profile">
               {getUserInitials()}
             </button>
           </div>
         ) : (
           <div className="auth-header-buttons">
-            <button
-              className="auth-header-button"
-              onClick={handleLoginClick}
-            >
+            <button className="auth-header-button" onClick={handleLoginClick}>
               <span>Sign In</span>
             </button>
-            <button
-              className="auth-header-button primary"
-              onClick={handleSignUpClick}
-            >
+            <button className="auth-header-button primary" onClick={handleSignUpClick}>
               <span>Sign Up</span>
             </button>
             <ThemeToggle />
@@ -99,10 +94,7 @@ function AuthHeader() {
         initialMode={authMode}
       />
 
-      <UserProfileModal
-        isOpen={showProfileModal}
-        onClose={() => setShowProfileModal(false)}
-      />
+      <UserProfileModal isOpen={showProfileModal} onClose={() => setShowProfileModal(false)} />
     </>
   );
 }
