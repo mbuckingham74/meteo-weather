@@ -819,7 +819,7 @@
 
 .current-stats {
   display: grid;
-  grid-template-columns: repeat(5, 1fr) !important;
+  grid-template-columns: repeat(5, 1fr);
   gap: var(--spacing-xs);
   margin-bottom: 6px;
   width: 100%;
@@ -842,7 +842,7 @@
 }
 
 .stat-value {
-  font-size: 10px;
+  font-size: var(--font-xs);
   font-weight: 600;
   color: var(--text-secondary) !important;
 }
@@ -1305,7 +1305,7 @@
   }
 
   .view-forecast-button .button-subtitle {
-    font-size: 10px;
+    font-size: var(--font-xs);
   }
 
   .location-info {

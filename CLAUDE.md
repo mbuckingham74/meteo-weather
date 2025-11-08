@@ -106,6 +106,16 @@
 
 ### Recent Work (Nov 2025)
 
+- ✅ **CSS Audit Fixes - Critical Issues Resolved** (Nov 8, 2025)
+  - **Fixed 5 Critical CSS Issues:** Mobile responsiveness, keyframe collisions, theme system bypasses, typography accessibility
+  - **Mobile Responsiveness:** Removed `!important` from `.current-stats` base rule, allowing 2-column mobile layout to work properly
+  - **Keyframe Collision:** Renamed ErrorMessage toast animations to `error-toast-slide-in/out` to prevent conflict with Toast.module.css
+  - **Theme System Integration:** Replaced 18+ hardcoded colors in Toast.module.css with CSS variables (removed 51 lines of dark mode overrides)
+  - **Theme System Integration:** Replaced 4 hardcoded colors in Skeleton.module.css with CSS variables (removed 10 lines of dark mode overrides)
+  - **Typography Accessibility:** Fixed 2 instances of `font-size: 10px` → `var(--font-xs)` (12px minimum, WCAG 1.4.4 compliant)
+  - **Impact:** Better mobile UX, consistent animations, proper theme toggle support, full accessibility compliance
+  - **Files Changed:** 4 files (132 lines modified)
+
 - ✅ **Global CSS Refactor - Phase 3.2 Part 2 Complete** (Nov 8, 2025)
   - **Fixed 6 Critical CSS Issues:** Responsive bugs, keyframe collisions, performance, ITCSS violations, accessibility, dark theme
   - **Responsive:** Hero grid now fluid (minmax(320px, 600px)), collapses to single column @ 960px

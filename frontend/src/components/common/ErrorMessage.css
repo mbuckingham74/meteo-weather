@@ -163,11 +163,11 @@
   max-width: 500px;
   z-index: 2000;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-  animation: toast-slide-in 0.3s ease-out;
+  animation: error-toast-slide-in 0.3s ease-out;
   backdrop-filter: blur(10px);
 }
 
-@keyframes toast-slide-in {
+@keyframes error-toast-slide-in {
   from {
     opacity: 0;
     transform: translateX(-50%) translateY(-20px);
@@ -179,10 +179,10 @@
 }
 
 .error-message--toast.error-message--exiting {
-  animation: toast-slide-out 0.3s ease-out forwards;
+  animation: error-toast-slide-out 0.3s ease-out forwards;
 }
 
-@keyframes toast-slide-out {
+@keyframes error-toast-slide-out {
   from {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
