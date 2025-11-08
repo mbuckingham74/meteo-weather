@@ -71,6 +71,48 @@
   --transition-fast: 0.15s ease;
   --transition-normal: 0.2s ease;
   --transition-slow: 0.3s ease;
+
+  /* ============================================
+     DENSITY SYSTEM - Default (Normal)
+     ============================================ */
+
+  /* Spacing Scale (8pt grid) */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 20px;
+  --spacing-xl: 24px;
+
+  /* Font Sizes */
+  --font-xs: 9px;
+  --font-sm: 11px;
+  --font-md: 13px;
+  --font-base: 14px;
+  --font-lg: 16px;
+  --font-xl: 20px;
+  --font-2xl: 24px;
+  --font-3xl: 32px;
+  --font-4xl: 48px;
+
+  /* Border Radius */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /* Component-Specific Spacing */
+  --dashboard-padding: 12px;
+  --card-padding: 12px;
+  --button-padding-y: 10px;
+  --button-padding-x: 16px;
+  --input-padding-y: 12px;
+  --input-padding-x: 16px;
+  --icon-size-sm: 18px;
+  --icon-size-md: 20px;
+  --icon-size-lg: 24px;
+  --gap-sm: 6px;
+  --gap-md: 8px;
+  --gap-lg: 12px;
 }
 
 /* Dark Theme */
@@ -161,4 +203,64 @@ body {
 /* Prevent transitions on page load */
 .preload * {
   transition: none !important;
+}
+
+/* ============================================
+   COMPACT DENSITY MODE
+   Applied via data-density="compact" on body
+   ============================================ */
+[data-density='compact'] {
+  /* Spacing Scale - 50-70% reduction */
+  --spacing-xs: 1px;
+  --spacing-sm: 2px;
+  --spacing-md: 4px;
+  --spacing-lg: 6px;
+  --spacing-xl: 8px;
+
+  /* Font Sizes - Compact */
+  --font-xs: 7px;
+  --font-sm: 9px;
+  --font-md: 11px;
+  --font-base: 12px;
+  --font-lg: 13px;
+  --font-xl: 16px;
+  --font-2xl: 18px;
+  --font-3xl: 20px;
+  --font-4xl: 32px;
+
+  /* Border Radius - Reduced */
+  --radius-sm: 3px;
+  --radius-md: 5px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+
+  /* Component-Specific Spacing - Compact */
+  --dashboard-padding: 8px;
+  --card-padding: 8px;
+  --button-padding-y: 6px;
+  --button-padding-x: 10px;
+  --input-padding-y: 6px;
+  --input-padding-x: 10px;
+  --icon-size-sm: 11px;
+  --icon-size-md: 14px;
+  --icon-size-lg: 18px;
+  --gap-sm: 2px;
+  --gap-md: 4px;
+  --gap-lg: 6px;
+}
+
+/* Preserve touch targets on mobile (accessibility) */
+@media (max-width: 768px) {
+  [data-density='compact'] {
+    --button-padding-y: 10px;
+    --button-padding-x: 16px;
+    --font-3xl: 40px;
+    --font-4xl: 48px;
+  }
+}
+
+@media (max-width: 480px) {
+  [data-density='compact'] {
+    --font-3xl: 36px;
+  }
 }
