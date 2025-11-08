@@ -1,3 +1,8 @@
+/**
+ * App Component Styles
+ * Global resets handled by ITCSS in styles/main.css
+ */
+
 .App {
   min-height: 100vh;
   background: var(--bg-primary);
@@ -9,13 +14,8 @@
   width: 100%;
 }
 
-* {
-  box-sizing: border-box;
-}
-
+/* Additional body styles beyond ITCSS reset */
 body {
-  margin: 0;
-  padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
@@ -25,10 +25,10 @@ body {
 /* Mobile-specific improvements */
 @media (max-width: 640px) {
   .App {
-    padding-bottom: 20px;
+    padding-bottom: var(--spacing-lg);
   }
 
-  /* Improve touch targets on mobile */
+  /* Improve touch targets on mobile (WCAG 2.5.5 Level AAA) */
   button,
   a,
   input[type='checkbox'] {

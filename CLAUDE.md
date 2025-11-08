@@ -106,6 +106,22 @@
 
 ### Recent Work (Nov 2025)
 
+- ✅ **CSS Audit Fixes Part 2 - Theme System & Design Tokens** (Nov 8, 2025)
+  - **Fixed 4 Critical CSS Issues:** Theme consistency, design token adoption, duplicate code removal
+  - **AIWeatherHero.css Theme Integration:** Created 23 component-level CSS variables that map to design system
+  - **WeatherDashboard.css Token Adoption:** Replaced 65+ hardcoded spacing/font values with design tokens
+  - **Removed Duplicate Theme Overrides:** Deleted 95 lines of redundant [data-theme] rules from LocationSearchBar.css (58 lines) and AdminPanel.css (37 lines)
+  - **App.css Cleanup:** Removed duplicate box-sizing and body resets (ITCSS already handles), kept font-smoothing
+  - **Impact:** Single source of truth for theming, easier theme customization, better maintainability, cleaner architecture
+  - **Files Changed:** 5 files (AIWeatherHero.css fully refactored, WeatherDashboard.css bulk token replacement, 3 files cleaned)
+
+- ✅ **CSS Audit Fixes Part 1 - Critical Browser Issues** (Nov 8, 2025)
+  - **Fixed 2 Critical Browser Compatibility Issues:** @media queries and @keyframes scope
+  - **Responsive Utilities Fix:** Replaced all var(--breakpoint-*) in @media queries with hardcoded pixel values (browser limitation)
+  - **Keyframes Scope Fix:** Moved @keyframes reduced-pulse outside @media query for fallback .reduced-motion class
+  - **Impact:** Responsive utility classes now functional (.u-hide-mobile, .u-grid-responsive, etc. were completely broken), reduced-motion fallback works
+  - **Files Changed:** 2 files (_responsive.css: 278 lines, reduced-motion.css: keyframes moved)
+
 - ✅ **CSS Audit Fixes - Critical Issues Resolved** (Nov 8, 2025)
   - **Fixed 5 Critical CSS Issues:** Mobile responsiveness, keyframe collisions, theme system bypasses, typography accessibility
   - **Mobile Responsiveness:** Removed `!important` from `.current-stats` base rule, allowing 2-column mobile layout to work properly

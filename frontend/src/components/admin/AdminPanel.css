@@ -355,44 +355,7 @@
   background: var(--accent-secondary);
 }
 
-/* Dark Mode Support */
-[data-theme='dark'] .admin-panel {
-  --text-primary: #f9fafb;
-  --text-secondary: #9ca3af;
-  --card-bg: #1f2937;
-  --border-color: #374151;
-  --hover-bg: #374151;
-  --table-header-bg: #111827;
-  --info-bg: #1e3a5f;
-  --info-border: #2563eb;
-}
-
-[data-theme='dark'] .stat-card {
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-}
-
-[data-theme='dark'] .stat-card:hover {
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
-}
-
-[data-theme='dark'] .data-table {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-[data-theme='dark'] .confidence-badge.high {
-  background: var(--success-bg);
-  color: var(--success-text);
-}
-
-[data-theme='dark'] .confidence-badge.medium {
-  background: var(--warning-bg);
-  color: var(--warning-text);
-}
-
-[data-theme='dark'] .confidence-badge.low {
-  background: var(--error-bg);
-  color: var(--error-text);
-}
+/* Dark Mode - handled by global [data-theme] CSS variables in theme-variables.css */
 
 /* Responsive Design */
 @media (max-width: 768px) {

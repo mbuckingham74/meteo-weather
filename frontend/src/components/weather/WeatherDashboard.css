@@ -12,7 +12,7 @@
 /* Header */
 .dashboard-header {
   text-align: center;
-  margin-bottom: 16px;
+  margin-bottom: var(--spacing-lg);
   padding: var(--spacing-sm) 16px;
   background: var(--gradient-primary);
   color: white;
@@ -87,10 +87,10 @@
 
 /* Main Weather Display Container - TWO COLUMN LAYOUT */
 .hero-weather-display {
-  padding: 16px;
+  padding: var(--spacing-lg);
   display: grid;
   grid-template-columns: 1fr minmax(320px, 600px);
-  gap: 16px;
+  gap: var(--spacing-lg);
   align-items: start;
 }
 
@@ -134,7 +134,7 @@
 /* Current Conditions - Side by side temp and stats */
 .hero-current-conditions {
   display: flex;
-  gap: 16px;
+  gap: var(--spacing-lg);
   align-items: center;
 }
 
@@ -163,15 +163,15 @@
 .hero-quick-stats {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 6px;
+  gap: var(--spacing-xs);
 }
 
 .hero-stat {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
-  padding: 6px;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs);
   background: var(--bg-tertiary);
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-light);
@@ -273,7 +273,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: var(--spacing-xs);
 }
 
 .hero-action-btn:hover {
@@ -293,7 +293,7 @@
 .hero-temp-toggle {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--spacing-xs);
   padding: var(--spacing-sm) 12px;
   background: var(--bg-tertiary);
   border: 1px solid var(--border-light);
@@ -320,18 +320,18 @@
 
 /* Radar Section */
 .hero-radar-section {
-  padding: 16px 0;
+  padding: var(--spacing-lg) 0;
 }
 
 /* Chart Preview Section */
 .hero-chart-preview {
-  padding: 16px 0;
+  padding: var(--spacing-lg) 0;
   border-top: 2px solid var(--border-light);
 }
 
 .hero-view-charts-btn {
   width: 100%;
-  padding: 16px 20px;
+  padding: var(--spacing-lg) 20px;
   background: var(--gradient-primary);
   border: none;
   border-radius: var(--radius-lg);
@@ -391,8 +391,8 @@
 .dashboard-main-row {
   display: grid;
   grid-template-columns: 2fr 1fr;
-  gap: 10px;
-  margin-bottom: 12px;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
   align-items: stretch;
 }
 
@@ -401,7 +401,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-sm);
-  padding: 10px;
+  padding: var(--spacing-sm);
   background: var(--bg-elevated);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-md);
@@ -427,11 +427,11 @@
 .location-actions {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--spacing-sm);
 }
 
 .location-action-button {
-  padding: 10px 16px;
+  padding: var(--spacing-sm) 16px;
   border: 2px solid var(--border-light);
   border-radius: var(--radius-md);
   font-size: var(--font-base);
@@ -449,7 +449,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: var(--spacing-xs);
 }
 
 .location-action-button:hover {
@@ -481,7 +481,7 @@
 /* View Forecast Button */
 .view-forecast-button {
   width: 100%;
-  padding: 10px 12px;
+  padding: var(--spacing-sm) 12px;
   background: var(--gradient-primary);
   border: none;
   border-radius: var(--radius-lg);
@@ -491,7 +491,7 @@
     box-shadow var(--transition-fast);
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--spacing-sm);
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
   margin-top: 8px;
 }
@@ -533,7 +533,7 @@
 
 .location-error {
   margin-top: 8px;
-  padding: 10px 12px;
+  padding: var(--spacing-sm) 12px;
   background: var(--error-bg);
   border: 1px solid var(--error-border);
   border-radius: var(--radius-md);
@@ -544,14 +544,14 @@
 
 .location-form {
   display: flex;
-  gap: 10px;
+  gap: var(--spacing-sm);
   flex: 1;
   min-width: 300px;
 }
 
 .location-input {
   flex: 1;
-  padding: 10px 16px;
+  padding: var(--spacing-sm) 16px;
   border: 2px solid var(--border-light);
   border-radius: var(--radius-md);
   font-size: var(--font-base);
@@ -564,7 +564,7 @@
 }
 
 .location-button {
-  padding: 10px 24px;
+  padding: var(--spacing-sm) 24px;
   background: var(--accent-primary, #10b981);
   color: white;
   border: none;
@@ -595,7 +595,7 @@
 }
 
 .control-select {
-  padding: 10px 12px;
+  padding: var(--spacing-sm) 12px;
   border: 2px solid var(--border-light);
   border-radius: var(--radius-md);
   font-size: var(--font-base);
@@ -671,13 +671,13 @@
 .chart-tabs {
   display: flex;
   gap: var(--spacing-sm);
-  margin-bottom: 12px;
+  margin-bottom: var(--spacing-md);
   border-bottom: 2px solid var(--border-light);
   padding-bottom: 0;
 }
 
 .chart-tab {
-  padding: 10px 20px;
+  padding: var(--spacing-sm) 20px;
   background: transparent;
   border: none;
   border-bottom: 3px solid transparent;
@@ -705,7 +705,7 @@
 
 .section-header.forecast-header {
   margin-top: 16px;
-  margin-bottom: 12px;
+  margin-bottom: var(--spacing-md);
 }
 
 .section-title {
@@ -724,7 +724,7 @@
 
 /* Location Info */
 .location-info {
-  padding: 10px;
+  padding: var(--spacing-sm);
   background: var(--bg-elevated);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-md);
@@ -742,7 +742,7 @@
   flex-direction: column;
   align-items: flex-start;
   gap: var(--spacing-xs);
-  margin-bottom: 12px;
+  margin-bottom: var(--spacing-md);
   padding-top: 6px;
   padding-bottom: 12px;
   border-bottom: 1px solid var(--border-light);
@@ -772,7 +772,7 @@
 .current-conditions {
   background: var(--bg-tertiary);
   border-radius: var(--radius-md);
-  padding: 10px;
+  padding: var(--spacing-sm);
   border: 1px solid var(--border-light);
   display: flex;
   flex-direction: column;
@@ -787,7 +787,7 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  margin-bottom: 8px;
+  margin-bottom: var(--spacing-sm);
   padding-bottom: 8px;
   border-bottom: 1px solid var(--border-light);
   width: 100%;
@@ -803,7 +803,7 @@
 .current-details {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: var(--spacing-xs);
 }
 
 .current-condition {
@@ -821,7 +821,7 @@
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: var(--spacing-xs);
-  margin-bottom: 6px;
+  margin-bottom: var(--spacing-xs);
   width: 100%;
   box-sizing: border-box;
   min-width: 0;
@@ -832,7 +832,7 @@
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  padding: 6px 4px;
+  padding: var(--spacing-xs) 4px;
   background: var(--bg-primary);
   border-radius: 4px;
 }
@@ -898,12 +898,12 @@
   background: var(--bg-primary);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-sm);
-  padding: 6px;
+  padding: var(--spacing-xs);
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 3px;
+  gap: var(--spacing-xs);
   transition:
     transform var(--transition-fast),
     box-shadow var(--transition-fast),
@@ -995,7 +995,7 @@
 .summary-precipitation {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--spacing-xs);
   margin-top: 6px;
   padding-top: 6px;
   border-top: 1px solid var(--border-light);
@@ -1025,7 +1025,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: var(--spacing-sm);
   flex-wrap: wrap;
   gap: var(--spacing-sm);
 }
@@ -1064,14 +1064,14 @@
 .chart-nav-list {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--spacing-xs);
 }
 
 .chart-nav-button {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  padding: 10px 14px;
+  padding: var(--spacing-sm) 14px;
   background: var(--bg-primary);
   border: 2px solid var(--border-light);
   border-radius: var(--radius-md);
@@ -1103,7 +1103,7 @@
   border: 1px solid var(--border-light, #e5e7eb);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
-  margin-bottom: 16px;
+  margin-bottom: var(--spacing-lg);
 }
 
 .no-charts-message p:first-child {
@@ -1117,7 +1117,7 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--spacing-md);
-  margin-bottom: 16px;
+  margin-bottom: var(--spacing-lg);
 }
 
 .chart-card {
@@ -1136,11 +1136,11 @@
 /* API Info */
 .api-info {
   text-align: center;
-  padding: 10px;
+  padding: var(--spacing-sm);
   background: var(--bg-tertiary, #f9fafb);
   border: 1px solid var(--border-light, #e5e7eb);
   border-radius: var(--radius-md);
-  margin-bottom: 12px;
+  margin-bottom: var(--spacing-md);
 }
 
 .api-info p {
@@ -1152,7 +1152,7 @@
 /* Footer */
 .dashboard-footer {
   text-align: center;
-  padding: 16px;
+  padding: var(--spacing-lg);
   color: #6b7280;
   font-size: var(--font-base);
   border-top: 1px solid #e5e7eb;
@@ -1215,8 +1215,8 @@
   }
 
   .dashboard-header {
-    padding: 10px 16px;
-    margin-bottom: 20px;
+    padding: var(--spacing-sm) 16px;
+    margin-bottom: var(--spacing-lg);
   }
 
   .dashboard-title {
@@ -1234,7 +1234,7 @@
   /* Unified Hero Card Responsive */
   .unified-hero-card {
     border-radius: var(--radius-xl);
-    margin-bottom: 20px;
+    margin-bottom: var(--spacing-lg);
   }
 
   .hero-search-section {
@@ -1274,17 +1274,17 @@
   /* Hero section responsive */
   .universal-search-hero {
     padding: 30px 16px;
-    margin-bottom: 24px;
+    margin-bottom: var(--spacing-xl);
   }
 
   /* Stack city box and controls vertically on mobile */
   .dashboard-main-row {
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: var(--spacing-lg);
   }
 
   .dashboard-controls {
-    padding: 16px;
+    padding: var(--spacing-lg);
   }
 
   .location-action-button {
@@ -1293,7 +1293,7 @@
   }
 
   .view-forecast-button {
-    padding: 10px 14px;
+    padding: var(--spacing-sm) 14px;
   }
 
   .view-forecast-button .button-icon {
@@ -1309,7 +1309,7 @@
   }
 
   .location-info {
-    padding: 16px;
+    padding: var(--spacing-lg);
   }
 
   .location-header {
@@ -1353,11 +1353,11 @@
   }
 
   .chart-card {
-    padding: 16px;
+    padding: var(--spacing-lg);
   }
 
   .charts-grid {
-    gap: 16px;
+    gap: var(--spacing-lg);
   }
 
   /* Mobile optimization for highlights */
@@ -1371,7 +1371,7 @@
   }
 
   .highlight-card {
-    padding: 10px;
+    padding: var(--spacing-sm);
     gap: var(--spacing-sm);
   }
 
@@ -1395,7 +1395,7 @@
 
   .conditions-icon-section {
     margin-right: 0;
-    margin-bottom: 8px;
+    margin-bottom: var(--spacing-sm);
   }
 }
 
