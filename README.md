@@ -40,9 +40,10 @@ A comprehensive weather dashboard inspired by Weather Spark, providing detailed 
 | **Test Coverage** | 476/476 passing | Comprehensive test suite with zero failures |
 | **API Efficiency** | 99% cache hit | MySQL-based caching, 282x faster responses |
 | **Performance** | 20-50x faster | Optimized database queries with spatial indexes |
+| **Bundle Size** | 177 kB gzipped | Code-split routes, optimized for fast loading |
 | **CI/CD Speed** | 50-70% faster | Aggressive caching with 9 parallel jobs |
 | **Deployment** | Zero-downtime | Automated deployment with health checks |
-| **Documentation** | 82 docs | Organized in 11 categories with OpenAPI spec |
+| **Documentation** | 82+ docs | Organized in 11 categories with OpenAPI spec |
 
 **Key Achievements:**
 - 🚀 Production-ready with [live demo](https://meteo-beta.tachyonfuture.com)

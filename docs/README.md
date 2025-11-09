@@ -120,11 +120,12 @@ Welcome to the Meteo Weather App documentation! This guide will help you find ex
 ---
 
 ### [💻 Development](development/)
-**Developer guides & tools** - Code conventions, refactoring docs, migration guides
+**Developer guides & tools** - Code conventions, refactoring docs, migration guides, performance
 
 **Key Files:**
 - [AGENTS.md](development/AGENTS.md) - Repository guidelines
 - [VITE_MIGRATION_GUIDE.md](development/VITE_MIGRATION_GUIDE.md) - CRA → Vite migration
+- [PERFORMANCE_OPTIMIZATION.md](development/PERFORMANCE_OPTIMIZATION.md) - Bundle optimization guide
 - [CODE_QUALITY_AUDIT.md](development/CODE_QUALITY_AUDIT.md) - Code quality analysis
 
 ---

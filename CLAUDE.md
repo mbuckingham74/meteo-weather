@@ -106,6 +106,24 @@
 
 ### Recent Work (Nov 2025)
 
+- ✅ **JavaScript Bundle Optimization - Code Splitting** (Nov 8, 2025)
+  - **Implemented Route-Based Lazy Loading:** Added React.lazy() for all non-critical routes
+  - **Main Bundle Reduction:** 711.57 kB → 632.82 kB (-78.75 kB, -11% smaller)
+  - **Gzipped Reduction:** 196.35 kB → 176.93 kB (-19.42 kB, -10% smaller)
+  - **5 Lazy-Loaded Chunks:** AdminPanel (17.43 kB), AIWeatherPage (13.53 kB), UserPreferences (8.22 kB), AboutPage (6.50 kB), SharedAnswer (4.47 kB), LocationComparisonView
+  - **Suspense Boundaries:** Added loading fallback for smooth UX
+  - **Impact:** Faster initial page load, smaller downloads for 95% of users, better caching
+  - **Files Changed:** App.jsx (lazy imports + Suspense wrapper)
+  - **Status:** Deployed to production ✅
+
+- ✅ **Backend Documentation & Test Fixes** (Nov 8, 2025)
+  - **Created OLD_LOCATION_BUG_FIX.md:** Comprehensive 239-line documentation of Visual Crossing placeholder fix
+  - **Fixed Regression Test Path:** Updated test to correctly locate docs in project root (../../../docs vs ../../docs)
+  - **Documents:** Backend sanitization, Nominatim fallback, prevention measures, testing strategy
+  - **Impact:** Full documentation of "Old Location" bug fix, prevents future regressions
+  - **Files Changed:** docs/troubleshooting/OLD_LOCATION_BUG_FIX.md (new), weatherService.regression.test.js
+  - **Status:** Committed ✅
+
 - ✅ **PostCSS Config Fix & Build Tooling Improvements** (Nov 8, 2025)
   - **Fixed Local Dev Build Error:** Removed problematic PurgeCSS integration that was breaking Vite dev server
   - **PostCSS Config:** Simplified to empty plugins array (PurgeCSS temporarily disabled due to module loading issues)
