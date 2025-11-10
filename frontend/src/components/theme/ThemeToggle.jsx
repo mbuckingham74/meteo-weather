@@ -1,6 +1,5 @@
-import React from 'react';
+import { Button } from '@components/ui/primitives';
 import { useTheme } from '../../contexts/ThemeContext';
-import styles from './ThemeToggle.module.css';
 
 /**
  * ThemeToggle Component
@@ -33,16 +32,14 @@ function ThemeToggle({ compact = false }) {
   };
 
   return (
-    <div className={styles.container}>
-      <button
-        className={`${styles.button} ${compact ? styles.compact : ''}`}
-        onClick={cycleTheme}
-        title={`Theme: ${getThemeLabel()} (click to cycle)`}
-      >
-        <span className={styles.icon}>{getThemeIcon()}</span>
-        <span className={styles.label}>{getThemeLabel()}</span>
-      </button>
-    </div>
+    <Button
+      variant="ghost"
+      onClick={cycleTheme}
+      title={`Theme: ${getThemeLabel()} (click to cycle)`}
+    >
+      <span aria-hidden="true">{getThemeIcon()}</span>
+      {!compact && <span>{getThemeLabel()}</span>}
+    </Button>
   );
 }
 
