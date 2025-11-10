@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { Button, Stack, Surface } from '@components/ui/primitives';
 import styles from './AuthModal.module.css';
 
 /**
@@ -59,7 +60,7 @@ function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
     }
   };
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     if (!loading) {
       setError(null);
       setSuccess(null);
@@ -69,7 +70,7 @@ function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
       setConfirmPassword('');
       onClose();
     }
-  };
+  }, [loading, onClose]);
 
   const switchMode = () => {
     setMode(mode === 'login' ? 'register' : 'login');
@@ -127,15 +128,19 @@ function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
       document.removeEventListener('keydown', handleKeyDown);
       previousFocusRef.current?.focus();
     };
-  }, [isOpen, loading]);
+  }, [handleClose, isOpen, loading]);
 
   // Return null if modal is not open - MUST be after all hooks
   if (!isOpen) return null;
 
   return (
     <div className={styles.overlay} onClick={handleClose} role="presentation">
-      <div
+      <Surface
+        as="section"
         ref={modalRef}
+        padding="none"
+        radius="xl"
+        elevation="lg"
         className={styles.modal}
         onClick={(e) => e.stopPropagation()}
         role="dialog"
@@ -143,8 +148,9 @@ function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
         aria-labelledby="auth-modal-title"
         aria-describedby="auth-modal-subtitle"
       >
-        <div className={styles.header}>
+        <Stack as="header" align="center" gap="xs" className={styles.header}>
           <button
+            type="button"
             className={styles.closeButton}
             onClick={handleClose}
             aria-label="Close authentication dialog"
@@ -159,12 +165,12 @@ function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
               ? 'Sign in to access your weather preferences'
               : 'Join us to save your favorite locations and preferences'}
           </p>
-        </div>
+        </Stack>
 
         <div className={styles.body}>
-          <form onSubmit={handleSubmit} className={styles.form}>
+          <Stack as="form" gap="lg" className={styles.form} onSubmit={handleSubmit}>
             {mode === 'register' && (
-              <div className={styles.formGroup}>
+              <Stack as="div" gap="xs" className={styles.formGroup}>
                 <label htmlFor="name" className={styles.label}>
                   Full Name
                 </label>
@@ -178,10 +184,10 @@ function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
                   required
                   disabled={loading}
                 />
-              </div>
+              </Stack>
             )}
 
-            <div className={styles.formGroup}>
+            <Stack as="div" gap="xs" className={styles.formGroup}>
               <label htmlFor="email" className={styles.label}>
                 Email Address
               </label>
@@ -195,9 +201,9 @@ function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
                 required
                 disabled={loading}
               />
-            </div>
+            </Stack>
 
-            <div className={styles.formGroup}>
+            <Stack as="div" gap="xs" className={styles.formGroup}>
               <label htmlFor="password" className={styles.label}>
                 Password
               </label>
@@ -211,10 +217,10 @@ function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
                 required
                 disabled={loading}
               />
-            </div>
+            </Stack>
 
             {mode === 'register' && (
-              <div className={styles.formGroup}>
+              <Stack as="div" gap="xs" className={styles.formGroup}>
                 <label htmlFor="confirmPassword" className={styles.label}>
                   Confirm Password
                 </label>
@@ -228,7 +234,7 @@ function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
                   required
                   disabled={loading}
                 />
-              </div>
+              </Stack>
             )}
 
             {error && (
@@ -242,8 +248,14 @@ function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
               </p>
             )}
 
-            <button type="submit" className={styles.submitButton} disabled={loading}>
-              {loading && <span className={styles.loadingSpinner}></span>}
+            <Button
+              type="submit"
+              variant="primary"
+              size="lg"
+              className={styles.fullWidth}
+              disabled={loading}
+            >
+              {loading && <span className={styles.loadingSpinner} />}
               {loading
                 ? mode === 'login'
                   ? 'Signing in...'
@@ -251,11 +263,11 @@ function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
                 : mode === 'login'
                   ? 'Sign In'
                   : 'Create Account'}
-            </button>
-          </form>
+            </Button>
+          </Stack>
         </div>
 
-        <div className={styles.footer}>
+        <Stack as="footer" align="center" justify="center" className={styles.footer}>
           <p className={styles.switchText}>
             {mode === 'login' ? "Don't have an account?" : 'Already have an account?'}
             <button
@@ -264,11 +276,11 @@ function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
               onClick={switchMode}
               disabled={loading}
             >
-              {mode === 'login' ? 'Sign Up' : 'Sign In'}
+              {mode === 'login' ? 'Create one!' : 'Sign in'}
             </button>
           </p>
-        </div>
-      </div>
+        </Stack>
+      </Surface>
     </div>
   );
 }

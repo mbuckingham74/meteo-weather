@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import TemperatureUnitToggle from '../../units/TemperatureUnitToggle';
+import { Button } from '@components/ui/primitives';
 
 /**
  * Quick Actions Panel Component
@@ -9,7 +10,6 @@ function QuickActionsPanel({
   detectingLocation,
   locationError,
   isAuthenticated,
-  visibleCharts,
   handleDetectLocation,
   setVisibleCharts,
   getCityName,
@@ -22,40 +22,35 @@ function QuickActionsPanel({
 
       <div id="location-search" className="location-search-section">
         <div className="location-actions">
-          <button
-            className="location-action-button detect-location"
+          <Button
+            variant="ghost"
             onClick={handleDetectLocation}
             disabled={detectingLocation}
             aria-label={
               detectingLocation ? 'Detecting your location...' : 'Use my current location'
             }
-            aria-busy={detectingLocation}
           >
-            <span aria-hidden="true">{detectingLocation ? '🔄' : '📍'}</span>{' '}
-            {detectingLocation ? 'Detecting...' : 'Use My Location'}
-          </button>
-          <a
+            {detectingLocation ? '🔄 Detecting…' : '📍 Use My Location'}
+          </Button>
+          <Button
+            as="a"
             href="/compare"
-            className="location-action-button compare-link"
+            variant="ghost"
             aria-label="Go to location comparison page"
           >
-            <span aria-hidden="true">📊</span> Compare Locations
-          </a>
-          <a
-            href="/ai-weather"
-            className="location-action-button ai-link"
-            aria-label="Ask AI about the weather"
-          >
-            <span aria-hidden="true">🤖</span> Ask AI
-          </a>
+            📊 Compare Locations
+          </Button>
+          <Button as="a" href="/ai-weather" variant="ghost" aria-label="Ask AI about the weather">
+            🤖 Ask AI
+          </Button>
           {isAuthenticated && (
-            <button
-              className="location-action-button settings-link"
+            <Button
+              variant="secondary"
               onClick={() => navigate('/preferences')}
               aria-label="Go to my preferences and settings"
             >
-              <span aria-hidden="true">⚙️</span> My Settings
-            </button>
+              ⚙️ My Settings
+            </Button>
           )}
         </div>
         {locationError && <div className="location-error">⚠️ {locationError}</div>}
@@ -67,20 +62,17 @@ function QuickActionsPanel({
       </div>
 
       {/* View Forecast Button */}
-      <button
-        className="view-forecast-button"
+      <Button
+        fullWidth
+        size="lg"
         onClick={() =>
           document
             .getElementById('forecast-section')
             ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
         }
       >
-        <span className="button-icon">📊</span>
-        <span className="button-text">
-          <strong>View {getCityName()} Forecast & Charts</strong>
-          <span className="button-subtitle">Interactive weather visualizations</span>
-        </span>
-      </button>
+        📊 View {getCityName()} Forecast & Charts
+      </Button>
 
       {/* Chart Navigation */}
       <div className="chart-controls-section">
