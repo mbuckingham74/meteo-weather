@@ -130,8 +130,8 @@ function QuickActionsPanel({
           </div>
         </div>
         <div className="chart-nav-list">
-          <button
-            className="chart-nav-button"
+          <Button
+            variant="outline"
             onClick={() =>
               document
                 .getElementById('chart-hourly')
@@ -139,9 +139,9 @@ function QuickActionsPanel({
             }
           >
             🕐 48-Hour Forecast
-          </button>
-          <button
-            className="chart-nav-button"
+          </Button>
+          <Button
+            variant="outline"
             onClick={() =>
               document
                 .getElementById('chart-temperature')
@@ -149,9 +149,9 @@ function QuickActionsPanel({
             }
           >
             🌡️ Temperature Bands
-          </button>
-          <button
-            className="chart-nav-button"
+          </Button>
+          <Button
+            variant="outline"
             onClick={() =>
               document
                 .getElementById('chart-precipitation')
@@ -159,9 +159,9 @@ function QuickActionsPanel({
             }
           >
             🌧️ Precipitation
-          </button>
-          <button
-            className="chart-nav-button"
+          </Button>
+          <Button
+            variant="outline"
             onClick={() =>
               document
                 .getElementById('chart-wind')
@@ -169,9 +169,9 @@ function QuickActionsPanel({
             }
           >
             💨 Wind
-          </button>
-          <button
-            className="chart-nav-button"
+          </Button>
+          <Button
+            variant="outline"
             onClick={() =>
               document
                 .getElementById('chart-cloudCover')
@@ -179,9 +179,9 @@ function QuickActionsPanel({
             }
           >
             ☁️ Cloud Cover
-          </button>
-          <button
-            className="chart-nav-button"
+          </Button>
+          <Button
+            variant="outline"
             onClick={() =>
               document
                 .getElementById('chart-uvIndex')
@@ -189,9 +189,9 @@ function QuickActionsPanel({
             }
           >
             ☀️ UV Index
-          </button>
-          <button
-            className="chart-nav-button"
+          </Button>
+          <Button
+            variant="outline"
             onClick={() =>
               document
                 .getElementById('chart-overview')
@@ -199,9 +199,9 @@ function QuickActionsPanel({
             }
           >
             📈 Multi-Metric Overview
-          </button>
-          <button
-            className="chart-nav-button"
+          </Button>
+          <Button
+            variant="outline"
             onClick={() =>
               document
                 .getElementById('chart-humidityDew')
@@ -209,9 +209,9 @@ function QuickActionsPanel({
             }
           >
             💧 Humidity & Dewpoint
-          </button>
-          <button
-            className="chart-nav-button"
+          </Button>
+          <Button
+            variant="outline"
             onClick={() =>
               document
                 .getElementById('chart-sunriseSunset')
@@ -219,9 +219,9 @@ function QuickActionsPanel({
             }
           >
             🌅 Sunrise & Sunset
-          </button>
-          <button
-            className="chart-nav-button"
+          </Button>
+          <Button
+            variant="outline"
             onClick={() =>
               document
                 .getElementById('chart-feelsLike')
@@ -229,9 +229,9 @@ function QuickActionsPanel({
             }
           >
             🌡️ Feels Like Temperature
-          </button>
-          <button
-            className="chart-nav-button"
+          </Button>
+          <Button
+            variant="outline"
             onClick={() =>
               document
                 .getElementById('chart-airQuality')
@@ -239,7 +239,7 @@ function QuickActionsPanel({
             }
           >
             💨 Air Quality Index
-          </button>
+          </Button>
 
           {/* Historical/Climate section */}
           <div
@@ -250,9 +250,8 @@ function QuickActionsPanel({
               margin: '8px 0',
             }}
           />
-
-          <button
-            className="chart-nav-button"
+          <Button
+            variant="outline"
             onClick={() =>
               document
                 .getElementById('chart-thisDayHistory')
@@ -260,9 +259,9 @@ function QuickActionsPanel({
             }
           >
             📅 This Day in History
-          </button>
-          <button
-            className="chart-nav-button"
+          </Button>
+          <Button
+            variant="outline"
             onClick={() =>
               document
                 .getElementById('chart-historicalComparison')
@@ -270,9 +269,9 @@ function QuickActionsPanel({
             }
           >
             📊 Historical Comparison
-          </button>
-          <button
-            className="chart-nav-button"
+          </Button>
+          <Button
+            variant="outline"
             onClick={() =>
               document
                 .getElementById('chart-recordTemps')
@@ -280,9 +279,9 @@ function QuickActionsPanel({
             }
           >
             🏆 Record Temperatures
-          </button>
-          <button
-            className="chart-nav-button"
+          </Button>
+          <Button
+            variant="outline"
             onClick={() =>
               document
                 .getElementById('chart-tempProbability')
@@ -290,7 +289,7 @@ function QuickActionsPanel({
             }
           >
             📉 Temperature Probability
-          </button>
+          </Button>
         </div>
       </div>
     </div>
