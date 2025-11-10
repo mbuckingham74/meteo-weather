@@ -44,7 +44,7 @@ function asyncHandler(fn) {
  * @param {Object} res - Express response
  * @param {Function} next - Express next function
  */
-function errorHandler(err, req, res, next) {
+function errorHandler(err, req, res, _next) {
   // Convert to ApiError if not already
   const apiError = isApiError(err)
     ? err
@@ -81,12 +81,14 @@ function errorHandler(err, req, res, next) {
 function notFoundHandler(req, res) {
   const { createError } = require('../utils/errorCodes');
 
-  res.status(404).json(
-    createError(
-      ERROR_CODES.NOT_FOUND,
-      `Route ${req.method} ${req.originalUrl || req.url} not found`
-    ).toJSON()
-  );
+  res
+    .status(404)
+    .json(
+      createError(
+        ERROR_CODES.NOT_FOUND,
+        `Route ${req.method} ${req.originalUrl || req.url} not found`
+      ).toJSON()
+    );
 }
 
 /**

@@ -24,79 +24,86 @@ const app = express();
 // ============================================
 
 // 1. Security headers with helmet
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: [
-        "'self'",
-        "'unsafe-inline'", // Required for React
-        "'unsafe-eval'", // Required for React dev mode
-        "https://plausible.tachyonfuture.com",
-        "https://matomo.tachyonfuture.com"
-      ],
-      styleSrc: [
-        "'self'",
-        "'unsafe-inline'", // Required for React and inline styles
-        "https://unpkg.com" // Leaflet CSS
-      ],
-      imgSrc: [
-        "'self'",
-        "data:",
-        "blob:",
-        "https:",
-        "http://tile.openstreetmap.org",
-        "http://a.tile.openstreetmap.org",
-        "http://b.tile.openstreetmap.org",
-        "http://c.tile.openstreetmap.org"
-      ],
-      fontSrc: ["'self'", "data:"],
-      connectSrc: [
-        "'self'",
-        "https://api.meteo-beta.tachyonfuture.com",
-        "http://localhost:5001",
-        "https://api.openweathermap.org",
-        "https://weather.visualcrossing.com",
-        "https://api.rainviewer.com",
-        "https://api.anthropic.com",
-        "https://ipapi.co",
-        "https://geojs.io",
-        "https://air-quality-api.open-meteo.com"
-      ],
-      frameAncestors: ["'self'"],
-      baseUri: ["'self'"],
-      formAction: ["'self'"]
-    }
-  },
-  crossOriginEmbedderPolicy: false, // Required for some map tiles
-  hsts: process.env.NODE_ENV === 'production' ? {
-    maxAge: 31536000,
-    includeSubDomains: true,
-    preload: true
-  } : false // Don't enforce HSTS in development
-}));
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: [
+          "'self'",
+          "'unsafe-inline'", // Required for React
+          "'unsafe-eval'", // Required for React dev mode
+          'https://plausible.tachyonfuture.com',
+          'https://matomo.tachyonfuture.com',
+        ],
+        styleSrc: [
+          "'self'",
+          "'unsafe-inline'", // Required for React and inline styles
+          'https://unpkg.com', // Leaflet CSS
+        ],
+        imgSrc: [
+          "'self'",
+          'data:',
+          'blob:',
+          'https:',
+          'http://tile.openstreetmap.org',
+          'http://a.tile.openstreetmap.org',
+          'http://b.tile.openstreetmap.org',
+          'http://c.tile.openstreetmap.org',
+        ],
+        fontSrc: ["'self'", 'data:'],
+        connectSrc: [
+          "'self'",
+          'https://api.meteo-beta.tachyonfuture.com',
+          'http://localhost:5001',
+          'https://api.openweathermap.org',
+          'https://weather.visualcrossing.com',
+          'https://api.rainviewer.com',
+          'https://api.anthropic.com',
+          'https://ipapi.co',
+          'https://geojs.io',
+          'https://air-quality-api.open-meteo.com',
+        ],
+        frameAncestors: ["'self'"],
+        baseUri: ["'self'"],
+        formAction: ["'self'"],
+      },
+    },
+    crossOriginEmbedderPolicy: false, // Required for some map tiles
+    hsts:
+      process.env.NODE_ENV === 'production'
+        ? {
+            maxAge: 31536000,
+            includeSubDomains: true,
+            preload: true,
+          }
+        : false, // Don't enforce HSTS in development
+  })
+);
 
 // 2. CORS with origin validation
 const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS?.split(',') || [
   'http://localhost:3000',
-  'http://localhost:3001'
+  'http://localhost:3001',
 ];
 
-app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (mobile apps, Postman, curl)
-    if (!origin) return callback(null, true);
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // Allow requests with no origin (mobile apps, Postman, curl)
+      if (!origin) return callback(null, true);
 
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error(`Origin ${origin} not allowed by CORS`));
-    }
-  },
-  credentials: true,
-  optionsSuccessStatus: 200,
-  maxAge: 86400 // Cache preflight for 24 hours
-}));
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error(`Origin ${origin} not allowed by CORS`));
+      }
+    },
+    credentials: true,
+    optionsSuccessStatus: 200,
+    maxAge: 86400, // Cache preflight for 24 hours
+  })
+);
 
 // 3. Body parsing with size limits
 app.use(express.json({ limit: '1mb' }));
@@ -110,12 +117,12 @@ const apiLimiter = rateLimit({
   legacyHeaders: false, // Disable `X-RateLimit-*` headers
   message: {
     success: false,
-    error: 'Too many requests from this IP, please try again later.'
+    error: 'Too many requests from this IP, please try again later.',
   },
   skip: (req) => {
     // Don't rate limit health check
     return req.path === '/api/health';
-  }
+  },
 });
 
 app.use('/api/', apiLimiter);
@@ -127,8 +134,8 @@ const authLimiter = rateLimit({
   skipSuccessfulRequests: true, // Don't count successful logins
   message: {
     success: false,
-    error: 'Too many login attempts. Please try again in 15 minutes.'
-  }
+    error: 'Too many login attempts. Please try again in 15 minutes.',
+  },
 });
 
 app.use('/api/auth/login', authLimiter);
@@ -141,8 +148,8 @@ const aiLimiter = rateLimit({
   message: {
     success: false,
     error: 'AI query limit reached (10 per hour). Please try again later.',
-    retryAfter: '1 hour'
-  }
+    retryAfter: '1 hour',
+  },
 });
 
 app.use('/api/ai-weather', aiLimiter);
@@ -158,7 +165,7 @@ app.get('/api/health', async (req, res) => {
     message: 'Meteo API is running',
     database: dbConnected ? 'connected' : 'disconnected',
     visualCrossingApi: apiKeyConfigured ? 'configured' : 'not configured',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 
@@ -179,20 +186,16 @@ app.use('/api/admin', adminRoutes);
 app.use((req, res) => {
   res.status(404).json({
     success: false,
-    error: 'Endpoint not found'
+    error: 'Endpoint not found',
   });
 });
 
 // Global error handler (express detects four-argument signature)
-// eslint-disable-next-line no-unused-vars
-app.use((err, req, res, next) => {
-  // eslint-disable-next-line no-console
+app.use((err, req, res, _next) => {
   console.error('Unhandled error:', err);
   res.status(500).json({
     success: false,
-    error: process.env.NODE_ENV === 'production'
-      ? 'Internal server error'
-      : err.message
+    error: process.env.NODE_ENV === 'production' ? 'Internal server error' : err.message,
   });
 });
 

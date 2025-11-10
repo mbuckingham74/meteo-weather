@@ -17,60 +17,13 @@ jest.mock('../../services/geocodingService', () => ({
 }));
 
 describe('🚨 REGRESSION PREVENTION: Backend "Old Location" Bug', () => {
-  let sanitizeResolvedAddress;
-
   beforeEach(() => {
     jest.clearAllMocks();
-
-    // Mock sanitizeResolvedAddress from weatherService
-    // We'll import it dynamically to test it
-    jest.isolateModules(() => {
-      const weatherService = require('../../services/weatherService');
-      // Since it's not exported, we need to test it via the public API
-      // OR we can read and eval it (not ideal but works for regression testing)
-    });
   });
 
   describe('CRITICAL: Visual Crossing Returns Placeholder', () => {
-    it('MUST call Nominatim when VC returns "Old Location"', async () => {
-      // Mock Nominatim to return a real city
-      reverseGeocodeNominatim.mockResolvedValue({
-        address: 'Clallam County, Washington, United States of America',
-      });
-
-      // Test data: Visual Crossing returned "Old Location"
-      const resolvedAddress = 'Old Location';
-      const latitude = 47.9062;
-      const longitude = -124.5745;
-
-      // Since sanitizeResolvedAddress is not exported, we test via getCurrentWeather
-      // This is an integration test approach
-      const weatherService = require('../../services/weatherService');
-
-      // We can't directly test private functions, so this test documents the requirement
-      // The actual test would be in integration tests or we need to export the function
-
-      // 🚨 CRITICAL REQUIREMENT 🚨
-      // When Visual Crossing returns "Old Location", the backend MUST:
-      // 1. Detect the placeholder pattern
-      // 2. Call reverseGeocodeNominatim(lat, lon)
-      // 3. Return the Nominatim result instead of "Old Location"
-
-      expect(true).toBe(true); // Placeholder - see integration test below
-    });
-
-    it('MUST call Nominatim when VC returns raw coordinates', async () => {
-      // Mock Nominatim
-      reverseGeocodeNominatim.mockResolvedValue({
-        address: 'Clallam County, Washington, United States of America',
-      });
-
-      // 🚨 CRITICAL: Visual Crossing sometimes returns coordinates like "47.9062,-124.5745"
-      // This MUST be detected and replaced with Nominatim result
-
-      // Test requirement documented
-      expect(true).toBe(true); // See integration test below
-    });
+    it.todo('MUST call Nominatim when VC returns "Old Location"');
+    it.todo('MUST call Nominatim when VC returns raw coordinates');
   });
 
   describe('INTEGRATION: getCurrentWeather with Placeholders', () => {
@@ -231,9 +184,12 @@ describe('🚨 REGRESSION PREVENTION: Backend "Old Location" Bug', () => {
       const sourceCode = fs.readFileSync(filePath, 'utf-8');
 
       // Must have pattern to detect coordinates like "47.9062,-124.5745"
-      const hasCoordinatePattern = /const isCoordinates = \/\^-?\[\\d\]\+\[\\\\.\]\[\\d\]\+,\[\\s\]\*-?\[\\d\]\+\[\\\\.\]\[\\d\]\+\$\//.test(sourceCode) ||
-                                   sourceCode.includes('isCoordinates') ||
-                                   /\d+\.\d+,\s*-?\d+\.\d+/.test(sourceCode);
+      const hasCoordinatePattern =
+        /const isCoordinates = \/\^-?\[\\d\]\+\[\\\\.\]\[\\d\]\+,\[\\s\]\*-?\[\\d\]\+\[\\\\.\]\[\\d\]\+\$\//.test(
+          sourceCode
+        ) ||
+        sourceCode.includes('isCoordinates') ||
+        /\d+\.\d+,\s*-?\d+\.\d+/.test(sourceCode);
 
       expect(hasCoordinatePattern).toBe(true);
     });
@@ -287,7 +243,10 @@ describe('📚 DOCUMENTATION SAFEGUARD', () => {
   it('OLD_LOCATION_BUG_FIX.md must document backend sanitization', () => {
     const fs = require('fs');
     const path = require('path');
-    const docPath = path.resolve(__dirname, '../../../docs/troubleshooting/OLD_LOCATION_BUG_FIX.md');
+    const docPath = path.resolve(
+      __dirname,
+      '../../../docs/troubleshooting/OLD_LOCATION_BUG_FIX.md'
+    );
 
     if (!fs.existsSync(docPath)) {
       throw new Error('Missing documentation: docs/troubleshooting/OLD_LOCATION_BUG_FIX.md');
@@ -304,6 +263,6 @@ describe('📚 DOCUMENTATION SAFEGUARD', () => {
 
     // Must mention backend sanitization
     expect(docContent.toLowerCase()).toContain('backend') ||
-    expect(docContent.toLowerCase()).toContain('sanitize');
+      expect(docContent.toLowerCase()).toContain('sanitize');
   });
 });
