@@ -79,8 +79,8 @@ function QuickActionsPanel({
         <div className="chart-controls-header">
           <h3>📊 Charts</h3>
           <div className="chart-toggle-buttons">
-            <button
-              className="toggle-all-button"
+            <Button
+              variant="secondary"
               onClick={() =>
                 setVisibleCharts({
                   hourly: true,
@@ -102,9 +102,9 @@ function QuickActionsPanel({
               }
             >
               Show All
-            </button>
-            <button
-              className="toggle-all-button"
+            </Button>
+            <Button
+              variant="outline"
               onClick={() =>
                 setVisibleCharts({
                   hourly: false,
@@ -126,7 +126,7 @@ function QuickActionsPanel({
               }
             >
               Hide All
-            </button>
+            </Button>
           </div>
         </div>
         <div className="chart-nav-list">

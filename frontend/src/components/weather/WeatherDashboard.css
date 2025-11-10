@@ -874,30 +874,6 @@
   color: var(--text-primary);
 }
 
-.chart-toggle-buttons {
-  display: flex;
-  gap: var(--spacing-sm);
-}
-
-.toggle-all-button {
-  padding: var(--spacing-sm) 16px;
-  background: var(--bg-tertiary, #f3f4f6);
-  border: 1px solid var(--border-light, #d1d5db);
-  border-radius: var(--radius-sm);
-  font-size: var(--font-md);
-  font-weight: 600;
-  cursor: pointer;
-  transition:
-    background 0.2s,
-    border-color 0.2s;
-  color: var(--text-secondary, #374151);
-}
-
-.toggle-all-button:hover {
-  background: var(--hover-bg, #e5e7eb);
-  border-color: var(--text-tertiary, #6b7280);
-}
-
 .chart-nav-list {
   display: flex;
   flex-direction: column;
