@@ -1,0 +1,172 @@
+/**
+ * WeatherAlertsBanner - CSS Module
+ *
+ * CSS Modules Migration: Phase 1.1
+ * Benefits:
+ * - Auto-scoped class names (no global namespace pollution)
+ * - Simpler class names (no need for verbose prefixes)
+ * - Better tree-shaking (unused styles removed in production)
+ * - Compile-time safety (typos caught during build)
+ */
+
+/* Container */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-bottom: 20px;
+}
+
+/* Alert Card Base */
+.alert {
+  background: var(--bg-elevated);
+  border-radius: var(--radius-lg);
+  border-left: 4px solid;
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  transition: box-shadow var(--transition-fast);
+}
+
+.alert:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+/* Severity Modifiers */
+.alertWarning {
+  background: var(--error-bg);
+}
+
+.alertWatch {
+  background: var(--warning-bg);
+}
+
+.alertAdvisory {
+  background: var(--info-bg);
+}
+
+.alertInfo {
+  background: var(--bg-secondary);
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  user-select: none;
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex: 1;
+}
+
+.icon {
+  font-size: var(--font-2xl);
+  flex-shrink: 0;
+}
+
+.titleSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--font-lg);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.time {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+
+.expandButton {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: var(--font-base);
+  cursor: pointer;
+  padding: var(--spacing-sm);
+  transition: transform var(--transition-fast);
+}
+
+.expandButton:hover {
+  color: var(--text-primary);
+}
+
+/* Body */
+.body {
+  padding: 0 16px 16px 52px;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 500px;
+  }
+}
+
+.headline {
+  margin: 0 0 12px 0;
+  font-size: var(--font-base);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.description {
+  margin: 0 0 12px 0;
+  font-size: var(--font-base);
+  line-height: 1.6;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+}
+
+.ends {
+  margin: 0;
+  font-size: var(--font-md);
+  color: var(--text-tertiary);
+}
+
+.ends strong {
+  color: var(--text-secondary);
+}
+
+/* Mobile Responsive */
+@media (max-width: 640px) {
+  .header {
+    padding: var(--spacing-md);
+  }
+
+  .body {
+    padding: 0 12px 12px 40px;
+  }
+
+  .icon {
+    font-size: var(--font-xl);
+  }
+
+  .title {
+    font-size: var(--font-base);
+  }
+
+  .time {
+    font-size: var(--font-sm);
+  }
+
+  .description {
+    font-size: var(--font-md);
+  }
+}

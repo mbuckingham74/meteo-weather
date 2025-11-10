@@ -25,8 +25,8 @@
   "scope": "/",
   "display": "standalone",
   "orientation": "any",
-  "theme_color": "#667eea",
-  "background_color": "#f9fafb",
+  "theme_color": "#4c7ce5",
+  "background_color": "#f5f7fb",
   "categories": ["weather", "utilities", "lifestyle"],
   "screenshots": [],
   "shortcuts": [

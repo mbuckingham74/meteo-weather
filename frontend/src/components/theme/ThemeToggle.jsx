@@ -1,10 +1,10 @@
-import React from 'react';
+import { Button } from '@components/ui/primitives';
 import { useTheme } from '../../contexts/ThemeContext';
-import './ThemeToggle.css';
 
 /**
  * ThemeToggle Component
  * Simple button to cycle between light, dark, and auto themes
+ * CSS Modules Migration: Phase 1.1
  */
 function ThemeToggle({ compact = false }) {
   const { themePreference, actualTheme, setTheme } = useTheme();
@@ -32,16 +32,14 @@ function ThemeToggle({ compact = false }) {
   };
 
   return (
-    <div className="theme-toggle-container">
-      <button
-        className={`theme-toggle-button ${compact ? 'compact' : ''}`}
-        onClick={cycleTheme}
-        title={`Theme: ${getThemeLabel()} (click to cycle)`}
-      >
-        <span className="theme-icon">{getThemeIcon()}</span>
-        <span className="theme-label">{getThemeLabel()}</span>
-      </button>
-    </div>
+    <Button
+      variant="ghost"
+      onClick={cycleTheme}
+      title={`Theme: ${getThemeLabel()} (click to cycle)`}
+    >
+      <span aria-hidden="true">{getThemeIcon()}</span>
+      {!compact && <span>{getThemeLabel()}</span>}
+    </Button>
   );
 }
 

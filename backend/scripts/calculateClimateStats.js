@@ -27,14 +27,14 @@ const args = process.argv.slice(2).reduce((acc, arg) => {
 const CONFIG = {
   startYear: args['start-year'] || 2015,
   endYear: args['end-year'] || 2025,
-  recalculate: args.recalculate || false
+  recalculate: args.recalculate || false,
 };
 
 const stats = {
   locationsProcessed: 0,
   statsInserted: 0,
   statsSkipped: 0,
-  errors: []
+  errors: [],
 };
 
 /**
@@ -61,7 +61,8 @@ async function calculateLocationStats(locationId, locationName) {
   for (let month = 1; month <= 12; month++) {
     try {
       // Query to calculate statistics for this month across all years
-      const [monthlyData] = await pool.query(`
+      const [monthlyData] = await pool.query(
+        `
         SELECT
           ? as month,
           AVG(temperature_high) as avg_temp_high,
@@ -79,7 +80,9 @@ async function calculateLocationStats(locationId, locationName) {
           AND MONTH(observation_date) = ?
           AND YEAR(observation_date) >= ?
           AND YEAR(observation_date) <= ?
-      `, [month, locationId, month, CONFIG.startYear, CONFIG.endYear]);
+      `,
+        [month, locationId, month, CONFIG.startYear, CONFIG.endYear]
+      );
 
       if (!monthlyData || monthlyData.length === 0) {
         console.log(`  ⚠️  No data for month ${month}, skipping...`);
@@ -126,17 +129,18 @@ async function calculateLocationStats(locationId, locationName) {
         data.rainy_days,
         data.snowy_days,
         CONFIG.startYear,
-        CONFIG.endYear
+        CONFIG.endYear,
       ];
 
       await pool.query(query, values);
       stats.statsInserted++;
 
-      console.log(`  ✓ Month ${month.toString().padStart(2, '0')}: ` +
-        `High ${data.avg_temp_high ? data.avg_temp_high.toFixed(1) : 'N/A'}°C, ` +
-        `Low ${data.avg_temp_low ? data.avg_temp_low.toFixed(1) : 'N/A'}°C, ` +
-        `Precip ${data.avg_precipitation ? data.avg_precipitation.toFixed(1) : 'N/A'}mm`);
-
+      console.log(
+        `  ✓ Month ${month.toString().padStart(2, '0')}: ` +
+          `High ${data.avg_temp_high ? data.avg_temp_high.toFixed(1) : 'N/A'}°C, ` +
+          `Low ${data.avg_temp_low ? data.avg_temp_low.toFixed(1) : 'N/A'}°C, ` +
+          `Precip ${data.avg_precipitation ? data.avg_precipitation.toFixed(1) : 'N/A'}mm`
+      );
     } catch (error) {
       console.error(`  ✗ Error calculating month ${month}: ${error.message}`);
       stats.errors.push({ location: locationName, month, error: error.message });
@@ -161,7 +165,8 @@ async function main() {
   const startTime = Date.now();
 
   // Get all locations that have weather data
-  const [locations] = await pool.query(`
+  const [locations] = await pool.query(
+    `
     SELECT
       l.id,
       l.city_name,
@@ -174,7 +179,9 @@ async function main() {
     GROUP BY l.id, l.city_name, l.state, l.country
     HAVING data_points >= 365
     ORDER BY l.city_name
-  `, [CONFIG.startYear, CONFIG.endYear]);
+  `,
+    [CONFIG.startYear, CONFIG.endYear]
+  );
 
   console.log(`📊 Found ${locations.length} locations with sufficient data\n`);
 
@@ -182,7 +189,7 @@ async function main() {
     console.log('⚠️  No locations with weather data found.');
     console.log('💡 Run bulkHistoricalImport.js first to populate historical data.\n');
     await pool.end();
-    process.exit(0);
+    return;
   }
 
   // Process each location
@@ -203,7 +210,7 @@ async function main() {
 
   if (stats.errors.length > 0) {
     console.log(`\n⚠️  Errors encountered: ${stats.errors.length}`);
-    stats.errors.forEach(err => {
+    stats.errors.forEach((err) => {
       console.log(`  • ${err.location} (Month ${err.month}): ${err.error}`);
     });
   }
@@ -211,14 +218,13 @@ async function main() {
   console.log('\n✅ Calculation complete!\n');
 
   await pool.end();
-  process.exit(0);
 }
 
 // Run if called directly
 if (require.main === module) {
-  main().catch(error => {
+  main().catch((error) => {
     console.error('\n💥 Fatal error:', error);
-    process.exit(1);
+    process.exitCode = 1;
   });
 }
 

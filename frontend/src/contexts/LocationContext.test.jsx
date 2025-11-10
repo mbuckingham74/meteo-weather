@@ -3,6 +3,7 @@
  * Testing location state management and localStorage persistence
  */
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { render, screen, act } from '@testing-library/react';
 import { LocationProvider, useLocation } from './LocationContext';
 
@@ -46,23 +47,21 @@ describe('LocationContext', () => {
 
   beforeEach(() => {
     // Mock localStorage
-    getItemSpy = jest.spyOn(Storage.prototype, 'getItem').mockReturnValue(null);
-    setItemSpy = jest.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {});
-    removeItemSpy = jest
-      .spyOn(Storage.prototype, 'removeItem')
-      .mockImplementation(() => {});
+    getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockReturnValue(null);
+    setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {});
+    removeItemSpy = vi.spyOn(Storage.prototype, 'removeItem').mockImplementation(() => {});
 
     // Mock console.error
-    jest.spyOn(console, 'error').mockImplementation(() => {});
+    vi.spyOn(console, 'error').mockImplementation(() => {});
 
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
     getItemSpy.mockRestore();
     setItemSpy.mockRestore();
     removeItemSpy.mockRestore();
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe('Provider', () => {
@@ -93,9 +92,7 @@ describe('LocationContext', () => {
       );
 
       expect(screen.getByTestId('location')).toHaveTextContent('London, UK');
-      expect(screen.getByTestId('location-data')).toHaveTextContent(
-        JSON.stringify(savedLocation)
-      );
+      expect(screen.getByTestId('location-data')).toHaveTextContent(JSON.stringify(savedLocation));
     });
 
     it('loads saved location with location_name from localStorage', () => {

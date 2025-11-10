@@ -1,10 +1,11 @@
 import React from 'react';
-import './SkipToContent.css';
+import styles from './SkipToContent.module.css';
 
 /**
  * SkipToContent Component
  * Provides skip links for keyboard users to bypass repetitive navigation
  * Only visible when focused (Tab key)
+ * CSS Modules Migration: Phase 1.1
  */
 const SkipToContent = () => {
   const handleSkip = (e, targetId) => {
@@ -18,24 +19,24 @@ const SkipToContent = () => {
   };
 
   return (
-    <nav className="skip-to-content" aria-label="Skip links">
+    <nav className={styles.container} aria-label="Skip links">
       <a
         href="#main-content"
-        className="skip-link"
+        className={styles.link}
         onClick={(e) => handleSkip(e, 'main-content')}
       >
         Skip to main content
       </a>
       <a
         href="#location-search"
-        className="skip-link"
+        className={styles.link}
         onClick={(e) => handleSkip(e, 'location-search')}
       >
         Skip to location search
       </a>
       <a
         href="#weather-charts"
-        className="skip-link"
+        className={styles.link}
         onClick={(e) => handleSkip(e, 'weather-charts')}
       >
         Skip to weather charts

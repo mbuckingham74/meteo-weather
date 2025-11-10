@@ -13,11 +13,11 @@ class ErrorBoundary extends React.Component {
       hasError: false,
       error: null,
       errorInfo: null,
-      errorCount: 0
+      errorCount: 0,
     };
   }
 
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError(_error) {
     // Update state so the next render will show the fallback UI
     return { hasError: true };
   }
@@ -27,10 +27,10 @@ class ErrorBoundary extends React.Component {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
 
     // Update state with error details
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       error,
       errorInfo,
-      errorCount: prevState.errorCount + 1
+      errorCount: prevState.errorCount + 1,
     }));
 
     // Send to error logging service (e.g., Sentry, LogRocket)
@@ -47,7 +47,7 @@ class ErrorBoundary extends React.Component {
       componentStack: errorInfo.componentStack,
       timestamp: new Date().toISOString(),
       userAgent: navigator.userAgent,
-      url: window.location.href
+      url: window.location.href,
     };
 
     console.log('📊 Error logged:', errorDetails);
@@ -66,7 +66,7 @@ class ErrorBoundary extends React.Component {
     this.setState({
       hasError: false,
       error: null,
-      errorInfo: null
+      errorInfo: null,
     });
   };
 
@@ -131,7 +131,8 @@ ${errorInfo?.componentStack || 'No component stack available'}
 
             {/* Message */}
             <p className="error-boundary-message">
-              We're sorry for the inconvenience. The application encountered an unexpected error.
+              We&apos;re sorry for the inconvenience. The application encountered an unexpected
+              error.
             </p>
 
             {/* Error count warning */}
@@ -144,10 +145,7 @@ ${errorInfo?.componentStack || 'No component stack available'}
 
             {/* Action Buttons */}
             <div className="error-boundary-actions">
-              <button
-                className="error-boundary-button primary"
-                onClick={this.handleReset}
-              >
+              <button className="error-boundary-button primary" onClick={this.handleReset}>
                 🔄 Try Again
               </button>
               <button
@@ -156,10 +154,7 @@ ${errorInfo?.componentStack || 'No component stack available'}
               >
                 ↻ Refresh Page
               </button>
-              <button
-                className="error-boundary-button tertiary"
-                onClick={this.handleReportIssue}
-              >
+              <button className="error-boundary-button tertiary" onClick={this.handleReportIssue}>
                 🐛 Report Issue
               </button>
             </div>

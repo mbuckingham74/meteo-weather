@@ -1,293 +1,274 @@
-# Documentation Index
+# 📚 Documentation Hub
 
-Welcome to the Meteo Weather App documentation! This directory contains comprehensive guides for developers, contributors, and system administrators.
+Welcome to the Meteo Weather App documentation! This guide will help you find exactly what you need.
 
-## 📚 Quick Navigation
+## 🎯 Quick Navigation
 
-### 🚀 Getting Started
-- **[QUICKSTART.md](QUICKSTART.md)** - Fast-track setup guide for new developers
-- **[../README.md](../README.md)** - Main project overview and feature documentation
-- **[../.env.example](../.env.example)** - Environment configuration template for 3-minute setup
+### New to the Project?
+👉 **Start here:** [Getting Started](getting-started/) - Get up and running in 3 minutes
 
-### 🏗️ Architecture & Development
-- **[development/AGENTS.md](development/AGENTS.md)** - Repository guidelines for contributors and AI agents
-- **[CODE_QUALITY_AUDIT.md](CODE_QUALITY_AUDIT.md)** - Code quality analysis and improvement recommendations
-- **[USER_PREFERENCES_SYSTEM.md](USER_PREFERENCES_SYSTEM.md)** - User preferences and email notification system architecture
+### What are you looking for?
 
-### 🚢 Deployment & Operations
-- **[DEPLOYMENT.md](DEPLOYMENT.md)** - Production deployment guide (general)
-- **[DEPLOYMENT_GUIDE_PRIVATE.md](DEPLOYMENT_GUIDE_PRIVATE.md)** - Server-specific deployment instructions (private)
-- **[DEPLOYMENT_TESTING_CHECKLIST.md](DEPLOYMENT_TESTING_CHECKLIST.md)** - Pre-deployment verification checklist
-- **[SECURITY_HEADERS.md](SECURITY_HEADERS.md)** - HTTP security headers implementation guide (CSP, HSTS, etc.)
-
-### 🧪 Testing & Quality
-- **[TESTING_ROADMAP.md](TESTING_ROADMAP.md)** - Testing strategy and coverage improvement plan
-- **[IMPROVEMENTS_TODO.md](IMPROVEMENTS_TODO.md)** - Prioritized backlog of code quality improvements
-
-### 📢 Marketing & Community
-- **[PROMOTION.md](PROMOTION.md)** - Launch content and promotional materials for multiple platforms
-- **[GITHUB_TOPICS.md](GITHUB_TOPICS.md)** - GitHub repository discovery strategy and topic tags
-- **[GITHUB_PROFILE_README.md](GITHUB_PROFILE_README.md)** - Profile README template for GitHub
-
-### 📦 Archive
-- **[archive/](archive/)** - Historical documents and completed audits
-  - `AUDIT_FINDINGS_SUMMARY.md` - Repository audit summary (November 2025)
-  - `REPOSITORY_AUDIT_REPORT.md` - Comprehensive repository audit (November 2025)
+| I want to... | Go to... |
+|-------------|----------|
+| 🚀 **Get the app running quickly** | [Getting Started](getting-started/) |
+| 💻 **Start developing features** | [Development](development/) |
+| 📡 **Understand the API** | [API Reference](api/) |
+| 🚀 **Deploy to production** | [Deployment](deployment/) |
+| 🔐 **Understand security** | [Security](security/) |
+| ♿ **Learn about accessibility** | [Accessibility](accessibility/) |
+| ⚙️ **Work with CI/CD** | [CI/CD](cicd/) |
+| 💾 **Optimize database** | [Database](database/) |
+| 🎨 **Design/UX work** | [UI/UX](ui-ux/) |
+| ⚠️ **Fix a problem** | [Troubleshooting](troubleshooting/) |
+| 📚 **Find reference materials** | [Reference](reference/) |
+| 📦 **Browse historical docs** | [Archive](archive/) |
 
 ---
 
-## 📖 Document Descriptions
+## 📖 Documentation Categories
 
-### Getting Started Documentation
+### [📖 Getting Started](getting-started/)
+**Perfect for newcomers** - Quickstart guide, architecture overview, developer onboarding
 
-#### QUICKSTART.md
-Comprehensive quick start guide for new developers with:
-- Docker-based setup instructions
-- Environment variable configuration
-- API key acquisition guides
-- Database initialization steps
-- Common troubleshooting issues
-
-**Audience:** New contributors, developers evaluating the project
-**Read time:** 5-10 minutes
+**Key Files:**
+- [QUICKSTART.md](getting-started/QUICKSTART.md) - 3-minute setup with Docker
+- [ARCHITECTURE.md](getting-started/ARCHITECTURE.md) - System architecture diagrams
+- [DEVELOPER_ONBOARDING.md](getting-started/DEVELOPER_ONBOARDING.md) - Comprehensive onboarding
 
 ---
 
-### Architecture & Development Documentation
+### [🚀 Deployment](deployment/)
+**Production deployment guides** - Server setup, Docker deployment, CI/CD integration
 
-#### development/AGENTS.md
-Guidelines for contributors and AI development assistants:
-- Repository structure and module organization
-- Coding conventions and style guide
-- Commit message standards
-- Pull request workflow
-- Testing requirements
-
-**Audience:** Contributors, maintainers, AI agents
-**Read time:** 10 minutes
-
-#### CODE_QUALITY_AUDIT.md
-Comprehensive code quality analysis conducted November 2025:
-- Identified 13+ duplicate API URLs across codebase
-- Centralized configuration recommendations (completed)
-- Timeout documentation improvements (completed)
-- Priority 1 fixes implemented with 92% duplication reduction
-
-**Audience:** Maintainers, code reviewers
-**Read time:** 15 minutes
-
-#### USER_PREFERENCES_SYSTEM.md
-Technical specification for user preferences and email notifications:
-- Database schema (7 new columns)
-- API endpoints (GET, PUT, PATCH, DELETE)
-- Email notification infrastructure
-- Location-based report scheduling
-- Frontend/backend integration details
-
-**Audience:** Backend developers, feature contributors
-**Read time:** 10 minutes
+**Key Files:**
+- [DEPLOYMENT_WORKFLOW.md](deployment/DEPLOYMENT_WORKFLOW.md) - **MANDATORY workflow with CHANGELOG updates**
+- [DEPLOY_NOW.md](deployment/DEPLOY_NOW.md) - Quick deploy reference
+- [DEPLOYMENT_GUIDE.md](deployment/DEPLOYMENT_GUIDE.md) - Step-by-step guide
+- [DEPLOYMENT_TESTING_CHECKLIST.md](deployment/DEPLOYMENT_TESTING_CHECKLIST.md) - Post-deploy verification
 
 ---
 
-### Deployment & Operations Documentation
+### [🔐 Security](security/)
+**Security implementation & audits** - Rate limiting, secret scanning, best practices
 
-#### DEPLOYMENT.md
-General production deployment guide:
-- Docker containerization process
-- Environment configuration
-- Database setup and migrations
-- Nginx reverse proxy configuration
-- SSL/TLS certificate management
-- Health check setup
+**Score: 9.4/10 | Vulnerabilities: 0**
 
-**Audience:** DevOps engineers, system administrators
-**Read time:** 20 minutes
-
-#### DEPLOYMENT_GUIDE_PRIVATE.md
-Server-specific deployment instructions:
-- Hostinger VPS setup details
-- Nginx Proxy Manager configuration
-- Domain configuration (meteo-beta.tachyonfuture.com)
-- SSH access and private key management
-- Production deployment script usage
-
-**Audience:** Project maintainers with server access
-**Read time:** 15 minutes
-**Note:** Contains server-specific details, not for public distribution
-
-#### DEPLOYMENT_TESTING_CHECKLIST.md
-Pre-deployment verification checklist:
-- Localhost testing requirements (2+ browsers)
-- Console error checking procedures
-- Visual comparison guidelines
-- Screenshot documentation steps
-- Error reporting templates
-
-**Audience:** Developers, QA engineers
-**Read time:** 5 minutes
-**Critical:** Must complete BEFORE requesting production deployment
-
-#### SECURITY_HEADERS.md
-HTTP security headers implementation guide:
-- Content Security Policy (CSP) configuration
-- X-Frame-Options (clickjacking prevention)
-- Strict-Transport-Security (HSTS) for HTTPS enforcement
-- Permissions-Policy for browser feature control
-- Nginx configuration examples
-- Testing and validation procedures
-
-**Audience:** DevOps engineers, security engineers
-**Read time:** 15 minutes
-**Expected Security Score After Implementation:** A+ (Mozilla Observatory), A (SecurityHeaders.com)
+**Key Files:**
+- [SECURITY_IMPLEMENTATION_SUMMARY.md](security/SECURITY_IMPLEMENTATION_SUMMARY.md) - Latest features
+- [RATE_LIMITING_AND_SECURITY_AUDIT.md](security/RATE_LIMITING_AND_SECURITY_AUDIT.md) - Full audit
+- [SECURITY_HEADERS.md](security/SECURITY_HEADERS.md) - HTTP header configuration
 
 ---
 
-### Testing & Quality Documentation
+### [♿ Accessibility](accessibility/)
+**WCAG 2.1 Level AA compliance** - Screen reader support, keyboard navigation, reduced motion
 
-#### TESTING_ROADMAP.md
-Comprehensive testing strategy:
-- Current coverage: 34% (476/476 tests passing)
-- Phase 1-4 implementation plan
-- Unit testing patterns with Jest + React Testing Library
-- Integration testing guidelines
-- End-to-end testing roadmap (Playwright/Cypress)
-- Coverage targets and timelines
+**Score: 8.5-9/10 | WCAG Level AA Compliant**
 
-**Audience:** QA engineers, test automation developers
-**Read time:** 20 minutes
-
-#### IMPROVEMENTS_TODO.md
-Prioritized backlog created November 2025:
-- High-priority user-facing improvements
-- Code quality enhancements
-- Monitoring and analytics integration
-- Estimated effort for each task
-- Status tracking (completed/in-progress/pending)
-
-**Audience:** Project managers, contributors looking for tasks
-**Read time:** 10 minutes
-**Status:** Living document, updated as tasks complete
+**Key Files:**
+- [AUDIT_SUMMARY.md](accessibility/AUDIT_SUMMARY.md) - Quick reference (20 issues)
+- [PHASE1_COMPLETE.md](accessibility/PHASE1_COMPLETE.md) - Level A implementation
+- [PHASE2_COMPLETE.md](accessibility/PHASE2_COMPLETE.md) - Level AA implementation
 
 ---
 
-### Marketing & Community Documentation
+### [⚙️ CI/CD](cicd/)
+**Continuous Integration & Deployment** - GitHub Actions, automated testing, deployment pipelines
 
-#### PROMOTION.md
-Launch content for multiple platforms:
-- Reddit post templates (r/selfhosted, r/reactjs, r/webdev)
-- Hacker News launch post
-- Twitter/X announcement thread
-- Product Hunt submission template
-- Show HN submission guide
-- Dev.to article draft
+**50-70% faster | 9 parallel jobs**
 
-**Audience:** Marketing team, community managers
-**Read time:** 30 minutes
-**Usage:** Copy-paste templates when launching features
-
-#### GITHUB_TOPICS.md
-Repository discovery strategy:
-- 20 curated GitHub topics for maximum visibility
-- Topic selection rationale (weather, react, docker, self-hosted, etc.)
-- SEO optimization guidelines
-- GitHub About section recommendations
-
-**Audience:** Repository maintainers
-**Read time:** 5 minutes
-**Impact:** Improves discoverability for new users and contributors
-
-#### GITHUB_PROFILE_README.md
-GitHub profile README template:
-- Project showcase formatting
-- Tech stack badges
-- Statistics and achievements
-- Portfolio presentation best practices
-
-**Audience:** Project showcasing, portfolio building
-**Read time:** 5 minutes
+**Key Files:**
+- [QUICK_REFERENCE.md](cicd/QUICK_REFERENCE.md) - One-page cheat sheet
+- [DEVELOPER_GUIDE.md](cicd/DEVELOPER_GUIDE.md) - Complete pipeline guide
+- [OPTIMIZATION_SUMMARY.md](cicd/OPTIMIZATION_SUMMARY.md) - Recent optimizations
 
 ---
 
-### Archive Documentation
+### [💾 Database](database/)
+**Database optimization & migrations** - Performance tuning, indexing, partitioning
 
-#### archive/AUDIT_FINDINGS_SUMMARY.md
-Summary of November 2025 repository audit:
-- Root directory organization issues (11 files → 7 target)
-- Missing `.env.example` (resolved)
-- Documentation structure recommendations
-- Badge simplification suggestions (14 → 6 completed)
+**20-50x faster queries | 585K+ weather records**
 
-**Audience:** Historical reference
-**Status:** Completed, archived
+**Key Files:**
+- [PERFORMANCE_FIX_NOV7.md](database/PERFORMANCE_FIX_NOV7.md) - Critical FULLTEXT index fix
+- [OPTIMIZATION_COMPLETE.md](database/OPTIMIZATION_COMPLETE.md) - All phases summary
+- [OPTIMIZATION_RECOMMENDATIONS.md](database/OPTIMIZATION_RECOMMENDATIONS.md) - Future improvements
 
-#### archive/REPOSITORY_AUDIT_REPORT.md
-Comprehensive repository audit conducted November 2025:
-- 10 major improvement areas identified
-- Grade: B+ (85/100) with path to A
-- Phase 1-3 improvement plan with time estimates
-- Detailed recommendations for organization and presentation
+---
 
-**Audience:** Historical reference
-**Status:** Completed, archived
-**Note:** Many recommendations already implemented
+### [🎨 UI/UX](ui-ux/)
+**Design & user experience** - Material Design 3, layout optimization, density modes
+
+**50-60% space reduction | +70% info density**
+
+**Key Files:**
+- [REDESIGN_SUMMARY.md](ui-ux/REDESIGN_SUMMARY.md) - Unified Hero Card redesign
+- [UI_OPTIMIZATION_SUMMARY.md](ui-ux/UI_OPTIMIZATION_SUMMARY.md) - Material Design 3
+- [DENSITY_COMPARISON.md](ui-ux/DENSITY_COMPARISON.md) - Before/after comparison
+
+---
+
+### [⚠️ Troubleshooting](troubleshooting/)
+**Common issues & solutions** - Bug fixes, debugging guides, rollback procedures
+
+**Key Files:**
+- [TROUBLESHOOTING.md](troubleshooting/TROUBLESHOOTING.md) - Common problems
+- [REGRESSION_PREVENTION.md](troubleshooting/REGRESSION_PREVENTION.md) - "Old Location" bug prevention
+- [ERROR_MESSAGE_STYLE_GUIDE.md](troubleshooting/ERROR_MESSAGE_STYLE_GUIDE.md) - Error handling (700+ lines)
+
+---
+
+### [💻 Development](development/)
+**Developer guides & tools** - Code conventions, refactoring docs, migration guides, performance
+
+**Key Files:**
+- [AGENTS.md](development/AGENTS.md) - Repository guidelines
+- [VITE_MIGRATION_GUIDE.md](development/VITE_MIGRATION_GUIDE.md) - CRA → Vite migration
+- [PERFORMANCE_OPTIMIZATION.md](development/PERFORMANCE_OPTIMIZATION.md) - Bundle optimization guide
+- [CODE_QUALITY_AUDIT.md](development/CODE_QUALITY_AUDIT.md) - Code quality analysis
+
+---
+
+### [📡 API Reference](api/)
+**Complete API documentation** - All endpoints, request/response examples, authentication
+
+**Key Files:**
+- [API_REFERENCE.md](api/API_REFERENCE.md) - Complete endpoint documentation with examples
+- Authentication, Weather, Climate, Locations, Air Quality, AI Features
+- Rate limiting, caching, error handling, and pagination guides
+
+---
+
+### [📚 Reference](reference/)
+**Additional materials** - Roadmap, promotional content, GitHub topics
+
+**Key Files:**
+- [IMPROVEMENTS_TODO.md](reference/IMPROVEMENTS_TODO.md) - Future enhancements
+- [GITHUB_TOPICS.md](reference/GITHUB_TOPICS.md) - SEO & discoverability
+- [PROMOTION.md](reference/PROMOTION.md) - Launch content templates
+
+---
+
+### [📦 Archive](archive/)
+**Historical documentation** - Completed projects, legacy audits, read-only reference
+
+**Key Files:**
+- [ERROR_MESSAGE_IMPROVEMENT_STATUS.md](archive/ERROR_MESSAGE_IMPROVEMENT_STATUS.md) - Completed (Nov 5)
+- [AUDIT_FINDINGS_SUMMARY.md](archive/AUDIT_FINDINGS_SUMMARY.md) - Repository audit
+- [REPOSITORY_AUDIT_REPORT.md](archive/REPOSITORY_AUDIT_REPORT.md) - Full audit (40K+ lines)
 
 ---
 
 ## 🔍 Finding What You Need
 
-**I want to...**
+### By Task
 
-- **...get the app running quickly** → Start with [QUICKSTART.md](QUICKSTART.md) or [../.env.example](../.env.example)
-- **...deploy to production** → Read [DEPLOYMENT_TESTING_CHECKLIST.md](DEPLOYMENT_TESTING_CHECKLIST.md), then [DEPLOYMENT.md](DEPLOYMENT.md)
-- **...contribute code** → Read [development/AGENTS.md](development/AGENTS.md) and [CODE_QUALITY_AUDIT.md](CODE_QUALITY_AUDIT.md)
-- **...improve security** → Implement [SECURITY_HEADERS.md](SECURITY_HEADERS.md) recommendations
-- **...increase test coverage** → Follow [TESTING_ROADMAP.md](TESTING_ROADMAP.md) phases
-- **...promote the project** → Use templates in [PROMOTION.md](PROMOTION.md)
-- **...configure email notifications** → Read [USER_PREFERENCES_SYSTEM.md](USER_PREFERENCES_SYSTEM.md)
-- **...understand the codebase** → Read [CODE_QUALITY_AUDIT.md](CODE_QUALITY_AUDIT.md) and [development/AGENTS.md](development/AGENTS.md)
+**Setting up locally:**
+1. [Getting Started → QUICKSTART.md](getting-started/QUICKSTART.md)
+2. [Getting Started → SETUP_GUIDE.md](getting-started/SETUP_GUIDE.md)
 
----
+**Deploying to production:**
+1. [Deployment → DEPLOY_NOW.md](deployment/DEPLOY_NOW.md)
+2. [Deployment → DEPLOYMENT_TESTING_CHECKLIST.md](deployment/DEPLOYMENT_TESTING_CHECKLIST.md)
+3. [Security → SECURITY_DEPLOYMENT_CHECKLIST.md](security/SECURITY_DEPLOYMENT_CHECKLIST.md)
 
-## 📝 Documentation Standards
+**Fixing a bug:**
+1. [Troubleshooting → TROUBLESHOOTING.md](troubleshooting/TROUBLESHOOTING.md)
+2. [Troubleshooting → REGRESSION_PREVENTION.md](troubleshooting/REGRESSION_PREVENTION.md)
 
-All documentation in this directory follows these standards:
+**Working on UI:**
+1. [UI/UX → REDESIGN_SUMMARY.md](ui-ux/REDESIGN_SUMMARY.md)
+2. [Accessibility → AUDIT_SUMMARY.md](accessibility/AUDIT_SUMMARY.md)
 
-- **Markdown format** - `.md` files for maximum compatibility
-- **Clear headings** - H2/H3 hierarchy for easy navigation
-- **Code examples** - Syntax-highlighted code blocks where applicable
-- **Screenshots** - Visual aids for complex procedures (where available)
-- **Last updated dates** - Maintain currency of critical guides
-- **Audience labels** - Specify intended readers for each document
-- **Read time estimates** - Help readers budget time appropriately
+**Optimizing performance:**
+1. [Database → OPTIMIZATION_COMPLETE.md](database/OPTIMIZATION_COMPLETE.md)
+2. [CI/CD → OPTIMIZATION_SUMMARY.md](cicd/OPTIMIZATION_SUMMARY.md)
 
----
+### By Role
 
-## 🔄 Keeping Documentation Updated
+**👤 New Developer:**
+→ [Getting Started](getting-started/) → [Development](development/)
 
-**When updating documentation:**
+**🚀 DevOps Engineer:**
+→ [Deployment](deployment/) → [CI/CD](cicd/) → [Security](security/)
 
-1. Update the **Last Updated** date at the top of the document
-2. Add a changelog entry if the document has significant changes
-3. Update this index if adding new files or changing document purposes
-4. Cross-reference related documents where appropriate
-5. Keep code examples in sync with actual codebase
+**🎨 UI/UX Designer:**
+→ [UI/UX](ui-ux/) → [Accessibility](accessibility/)
 
-**Document lifecycle:**
-- **Active** - Regularly updated, in `docs/` root
-- **Archived** - Historical reference, moved to `docs/archive/`
-- **Deprecated** - Outdated, removed or consolidated
+**🔧 Database Admin:**
+→ [Database](database/) → [Deployment](deployment/)
+
+**🐛 Bug Hunter:**
+→ [Troubleshooting](troubleshooting/) → [Development](development/)
 
 ---
 
-## 📞 Questions?
+## 📊 Project Status (Nov 2025)
 
-- **General questions:** Open an issue on [GitHub](https://github.com/mbuckingham74/meteo-weather/issues)
-- **Security concerns:** See [SECURITY.md](../SECURITY.md) for reporting procedures
-- **Deployment help:** Start with [DEPLOYMENT_TESTING_CHECKLIST.md](DEPLOYMENT_TESTING_CHECKLIST.md)
-- **Contributing:** Read [development/AGENTS.md](development/AGENTS.md) first
+### Recent Achievements
+- ✅ **CI/CD:** 50-70% faster pipeline (Nov 7)
+- ✅ **Accessibility:** WCAG Level AA compliance (Nov 7)
+- ✅ **Database:** 20-50x query performance (Nov 7)
+- ✅ **UI/UX:** Material Design 3 implementation (Nov 6)
+- ✅ **Security:** 9.4/10 score, 0 vulnerabilities (Nov 5)
+
+### Key Metrics
+- **Tests:** 476/476 passing
+- **Coverage:** Frontend 33.65%, Backend 60-65%
+- **Security Score:** 9.4/10
+- **Accessibility Score:** 8.5-9/10
+- **Performance:** 282x faster cached responses
 
 ---
 
-**Last Updated:** November 4, 2025
-**Maintained by:** Meteo Weather App Team
-**Repository:** [meteo-weather](https://github.com/mbuckingham74/meteo-weather)
+## 🎓 Learning Path
+
+### Day 1: Get Running
+1. Read [Getting Started → QUICKSTART.md](getting-started/QUICKSTART.md)
+2. Follow setup instructions
+3. Explore the app at http://localhost:3000
+
+### Week 1: Understand the System
+1. Study [Getting Started → ARCHITECTURE.md](getting-started/ARCHITECTURE.md)
+2. Review [Development → AGENTS.md](development/AGENTS.md)
+3. Read recent [CHANGELOG.md](../CHANGELOG.md)
+
+### Month 1: Contribute
+1. Pick an issue from GitHub
+2. Follow [CONTRIBUTING.md](../CONTRIBUTING.md)
+3. Reference relevant docs from this hub
+4. Submit your first PR!
+
+---
+
+## 🆘 Need Help?
+
+1. **Check relevant category README** (links above)
+2. **Search documentation** using GitHub search or `grep`
+3. **Browse troubleshooting** for common issues
+4. **Check CLAUDE.md** for AI assistant quick reference
+5. **Open a GitHub issue** if stuck
+
+---
+
+## 📝 Contributing to Docs
+
+Found an error or want to improve documentation?
+
+1. **File location:** All docs in `docs/` with category subdirectories
+2. **Guidelines:** Clear, concise, actionable
+3. **Format:** Markdown with emoji icons for visual scanning
+4. **Links:** Use relative paths (`../category/file.md`)
+5. **Submit:** Open a PR with your improvements
+
+---
+
+**Last Updated:** November 7, 2025 | **Maintained by:** Michael Buckingham
+
+**Quick Links:**
+- 🏠 [Main README](../README.md)
+- 🤖 [CLAUDE.md](../CLAUDE.md) - AI assistant context
+- 🤝 [CONTRIBUTING.md](../CONTRIBUTING.md)
+- 🔒 [SECURITY.md](../SECURITY.md)
+- 📜 [CHANGELOG.md](../CHANGELOG.md)

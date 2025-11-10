@@ -24,16 +24,24 @@ async function registerUser(email, password, name) {
       throw new Error('Email already registered');
     }
 
+    // Check if this is the first user (will become admin)
+    const [userCount] = await pool.query('SELECT COUNT(*) as count FROM users');
+    const isFirstUser = userCount[0].count === 0;
+
     // Hash password
     const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
 
-    // Create user
+    // Create user (first user is automatically admin)
     const [result] = await pool.query(
-      'INSERT INTO users (email, password_hash, name) VALUES (?, ?, ?)',
-      [email, passwordHash, name]
+      'INSERT INTO users (email, password_hash, name, is_admin) VALUES (?, ?, ?, ?)',
+      [email, passwordHash, name, isFirstUser]
     );
 
     const userId = result.insertId;
+
+    if (isFirstUser) {
+      console.log(`🔧 First user registered as admin: ${email}`);
+    }
 
     // Create default preferences
     await pool.query(
@@ -41,14 +49,15 @@ async function registerUser(email, password, name) {
       [userId]
     );
 
-    // Generate tokens
-    const tokens = generateTokens(userId, email);
+    // Generate tokens (include admin status)
+    const tokens = generateTokens(userId, email, isFirstUser);
 
     return {
       user: {
         id: userId,
         email,
-        name
+        name,
+        isAdmin: isFirstUser
       },
       ...tokens
     };
@@ -63,9 +72,9 @@ async function registerUser(email, password, name) {
  */
 async function loginUser(email, password) {
   try {
-    // Find user
+    // Find user (include admin status)
     const [users] = await pool.query(
-      'SELECT id, email, password_hash, name FROM users WHERE email = ?',
+      'SELECT id, email, password_hash, name, is_admin FROM users WHERE email = ?',
       [email]
     );
 
@@ -88,14 +97,15 @@ async function loginUser(email, password) {
       [user.id]
     );
 
-    // Generate tokens
-    const tokens = generateTokens(user.id, user.email);
+    // Generate tokens (include admin status)
+    const tokens = generateTokens(user.id, user.email, user.is_admin);
 
     return {
       user: {
         id: user.id,
         email: user.email,
-        name: user.name
+        name: user.name,
+        isAdmin: user.is_admin
       },
       ...tokens
     };
@@ -108,15 +118,15 @@ async function loginUser(email, password) {
 /**
  * Generate JWT access and refresh tokens
  */
-function generateTokens(userId, email) {
+function generateTokens(userId, email, isAdmin = false) {
   const accessToken = jwt.sign(
-    { userId, email },
+    { userId, email, isAdmin },
     process.env.JWT_SECRET,
     { expiresIn: process.env.JWT_EXPIRES_IN || '24h' }
   );
 
   const refreshToken = jwt.sign(
-    { userId, email },
+    { userId, email, isAdmin },
     process.env.JWT_REFRESH_SECRET,
     { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d' }
   );
@@ -156,9 +166,9 @@ async function refreshAccessToken(refreshToken) {
   try {
     const decoded = verifyRefreshToken(refreshToken);
 
-    // Verify user still exists
+    // Verify user still exists (include admin status)
     const [users] = await pool.query(
-      'SELECT id, email FROM users WHERE id = ?',
+      'SELECT id, email, is_admin FROM users WHERE id = ?',
       [decoded.userId]
     );
 
@@ -168,9 +178,9 @@ async function refreshAccessToken(refreshToken) {
 
     const user = users[0];
 
-    // Generate new access token
+    // Generate new access token (include admin status)
     const accessToken = jwt.sign(
-      { userId: user.id, email: user.email },
+      { userId: user.id, email: user.email, isAdmin: user.is_admin },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN || '24h' }
     );
@@ -188,7 +198,7 @@ async function refreshAccessToken(refreshToken) {
 async function getUserById(userId) {
   try {
     const [users] = await pool.query(
-      'SELECT id, email, name, created_at, last_login FROM users WHERE id = ?',
+      'SELECT id, email, name, is_admin, created_at, last_login FROM users WHERE id = ?',
       [userId]
     );
 
@@ -196,7 +206,17 @@ async function getUserById(userId) {
       throw new Error('User not found');
     }
 
-    return users[0];
+    const user = users[0];
+
+    // Return user with isAdmin in camelCase
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      isAdmin: user.is_admin,
+      created_at: user.created_at,
+      last_login: user.last_login
+    };
   } catch (error) {
     console.error('Get user error:', error);
     throw error;

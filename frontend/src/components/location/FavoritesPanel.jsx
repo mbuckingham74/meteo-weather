@@ -4,15 +4,15 @@ import {
   getFavorites as getLocalFavorites,
   removeFavorite as removeLocalFavorite,
   addFavorite as addLocalFavorite,
-  clearFavorites as clearLocalFavorites
+  clearFavorites as clearLocalFavorites,
 } from '../../services/favoritesService';
 import {
   getCloudFavorites,
   addCloudFavorite,
   removeCloudFavorite,
-  importFavorites
+  importFavorites,
 } from '../../services/authApi';
-import './FavoritesPanel.css';
+import styles from './FavoritesPanel.module.css';
 
 /**
  * FavoritesPanel Component
@@ -50,12 +50,12 @@ function FavoritesPanel({ onLocationSelect, currentLocation }) {
 
       if (localFavs.length > 0) {
         // Import localStorage favorites to cloud
-        const formattedFavs = localFavs.map(fav => ({
+        const formattedFavs = localFavs.map((fav) => ({
           location_name: fav.address,
           latitude: fav.latitude,
           longitude: fav.longitude,
           address: fav.address,
-          timezone: fav.timezone
+          timezone: fav.timezone,
         }));
 
         await importFavorites(accessToken, formattedFavs);
@@ -117,7 +117,7 @@ function FavoritesPanel({ onLocationSelect, currentLocation }) {
           latitude: location.latitude,
           longitude: location.longitude,
           address: location.address,
-          timezone: location.timezone
+          timezone: location.timezone,
         });
         await refreshFavorites();
       } catch (error) {
@@ -134,76 +134,75 @@ function FavoritesPanel({ onLocationSelect, currentLocation }) {
     if (!location) return false;
 
     return favorites.some(
-      fav => fav.latitude === location.latitude && fav.longitude === location.longitude
+      (fav) => fav.latitude === location.latitude && fav.longitude === location.longitude
     );
   };
 
   const isCurrentFavorite = currentLocation && isFavorited(currentLocation);
 
   return (
-    <div className="favorites-panel">
-      <div className="favorites-header" onClick={() => setIsExpanded(!isExpanded)}>
+    <div className={styles.panel}>
+      <div className={styles.header} onClick={() => setIsExpanded(!isExpanded)}>
         <h3>
           {isAuthenticated ? '☁️' : '⭐'} Favorite Locations
-          {favorites.length > 0 && <span className="favorite-count">{favorites.length}</span>}
-          {syncing && <span className="sync-indicator">Syncing...</span>}
+          {favorites.length > 0 && <span className={styles.count}>{favorites.length}</span>}
+          {syncing && <span className={styles.syncIndicator}>Syncing...</span>}
         </h3>
-        <button className="expand-button">
-          {isExpanded ? '▼' : '▶'}
-        </button>
+        <button className={styles.expandButton}>{isExpanded ? '▼' : '▶'}</button>
       </div>
 
       {isExpanded && (
-        <div className="favorites-content">
+        <div className={styles.content}>
           {/* Current Location Quick Add */}
           {currentLocation && !isCurrentFavorite && (
-            <div className="current-location-add">
+            <div className={styles.currentLocationAdd}>
               <button
-                className="add-current-button"
+                className={styles.addCurrentButton}
                 onClick={(e) => handleAdd(currentLocation, e)}
                 disabled={syncing}
               >
                 <span>⭐</span>
-                <span>Add "{currentLocation.address}" to favorites</span>
+                <span>Add &quot;{currentLocation.address}&quot; to favorites</span>
               </button>
             </div>
           )}
 
           {favorites.length === 0 ? (
-            <div className="favorites-empty">
-              <span className="empty-icon">{isAuthenticated ? '☁️' : '⭐'}</span>
+            <div className={styles.empty}>
+              <span className={styles.emptyIcon}>{isAuthenticated ? '☁️' : '⭐'}</span>
               <p>No favorite locations yet</p>
-              <p className="empty-hint">
+              <p className={styles.emptyHint}>
                 {isAuthenticated
                   ? 'Your favorites sync across all devices'
                   : 'Sign in to sync favorites across devices'}
               </p>
             </div>
           ) : (
-            <div className="favorites-list">
+            <div className={styles.list}>
               {favorites.map((favorite) => {
-                const isCurrent = currentLocation &&
+                const isCurrent =
+                  currentLocation &&
                   favorite.latitude === currentLocation.latitude &&
                   favorite.longitude === currentLocation.longitude;
 
                 return (
                   <div
                     key={favorite.id}
-                    className={`favorite-item ${isCurrent ? 'active' : ''}`}
+                    className={`${styles.item} ${isCurrent ? styles.active : ''}`}
                     onClick={() => onLocationSelect(favorite)}
                   >
-                    <div className="favorite-info">
-                      <div className="favorite-name">
+                    <div className={styles.info}>
+                      <div className={styles.name}>
                         {favorite.address || favorite.location_name}
-                        {isCurrent && <span className="current-badge">Current</span>}
+                        {isCurrent && <span className={styles.currentBadge}>Current</span>}
                       </div>
-                      <div className="favorite-coords">
+                      <div className={styles.coords}>
                         {favorite.latitude.toFixed(4)}, {favorite.longitude.toFixed(4)}
                         {favorite.timezone && ` • ${favorite.timezone}`}
                       </div>
                     </div>
                     <button
-                      className="remove-button"
+                      className={styles.removeButton}
                       onClick={(e) => handleRemove(favorite, e)}
                       title="Remove from favorites"
                       disabled={syncing}
@@ -217,7 +216,7 @@ function FavoritesPanel({ onLocationSelect, currentLocation }) {
           )}
 
           {favorites.length > 0 && (
-            <div className="favorites-footer">
+            <div className={styles.footer}>
               <p>
                 {favorites.length} favorite location{favorites.length !== 1 ? 's' : ''}
                 {isAuthenticated && ' • Synced to cloud'}

@@ -1,4 +1,67 @@
 {
+  "name": "meteo-weather-app",
+  "version": "1.1.0",
+  "description": "Self-hostable weather dashboard with AI features",
+  "private": true,
+  "scripts": {
+    "dev": "docker-compose up",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install && cd ..",
+    "test": "npm run test:frontend && npm run test:backend",
+    "test:frontend": "cd frontend && npm test",
+    "test:backend": "cd backend && npm test",
+    "lint": "npm run lint:frontend && npm run lint:backend",
+    "lint:frontend": "cd frontend && npm run lint",
+    "lint:backend": "cd backend && npm run lint",
+    "lint:fix": "npm run lint:fix:frontend && npm run lint:fix:backend",
+    "lint:fix:frontend": "cd frontend && npm run lint:fix",
+    "lint:fix:backend": "cd backend && npm run lint:fix",
+    "format": "npm run format:frontend && npm run format:backend && prettier --write \"*.md\"",
+    "format:frontend": "cd frontend && npm run format",
+    "format:backend": "cd backend && npm run format",
+    "format:check": "npm run format:check:frontend && npm run format:check:backend",
+    "format:check:frontend": "cd frontend && npm run format:check",
+    "format:check:backend": "cd backend && npm run format:check",
+    "build": "cd frontend && npm run build",
+    "validate": "cd frontend && npm run validate",
+    "security:scan": "./scripts/verify-security.sh",
+    "security:audit": "npm audit && cd frontend && npm audit && cd ../backend && npm audit && cd ..",
+    "db:init": "cd backend && npm run db:init",
+    "db:schema": "cd backend && npm run db:schema",
+    "db:seed": "cd backend && npm run db:seed",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "docker:restart": "./scripts/restart-all.sh",
+    "deploy:beta": "bash scripts/deploy-beta.sh",
+    "verify:production": "./scripts/test-production-apis.sh",
+    "prepare": "husky install .husky"
+  },
+  "keywords": [
+    "weather",
+    "dashboard",
+    "self-hosted",
+    "ai",
+    "climate"
+  ],
+  "author": "Michael Buckingham",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mbuckingham74/meteo-weather.git"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "prettier": "^3.4.2",
+    "stylelint": "^16.25.0",
+    "stylelint-config-standard": "^39.0.1"
+  },
   "dependencies": {
     "react-router-dom": "^7.9.5"
   }

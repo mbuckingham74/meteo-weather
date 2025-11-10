@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { getAIHistory, deleteHistoryItem, clearAIHistory, formatHistoryTimestamp } from '../../utils/aiHistoryStorage';
-import './AIHistoryDropdown.css';
+import {
+  getAIHistory,
+  deleteHistoryItem,
+  clearAIHistory,
+  formatHistoryTimestamp,
+} from '../../utils/aiHistoryStorage';
+import styles from './AIHistoryDropdown.module.css';
 
 /**
  * AI History Dropdown
@@ -52,54 +57,53 @@ function AIHistoryDropdown({ onSelectHistory }) {
   };
 
   return (
-    <div className="ai-history-dropdown" ref={dropdownRef}>
+    <div className={styles.dropdown} ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="history-toggle-button"
+        className={styles.toggleButton}
         title="View recent AI queries"
       >
         📜 History {history.length > 0 && `(${history.length})`}
       </button>
 
       {isOpen && (
-        <div className="history-dropdown-menu">
-          <div className="history-dropdown-header">
+        <div className={styles.menu}>
+          <div className={styles.header}>
             <h3>Recent Questions</h3>
             {history.length > 0 && (
-              <button onClick={handleClearAll} className="clear-all-button">
+              <button onClick={handleClearAll} className={styles.clearButton}>
                 Clear All
               </button>
             )}
           </div>
 
           {history.length === 0 ? (
-            <div className="history-empty">
+            <div className={styles.empty}>
               <p>No recent questions</p>
-              <p className="history-empty-hint">Ask a question to see it here</p>
+              <p className={styles.emptyHint}>Ask a question to see it here</p>
             </div>
           ) : (
-            <div className="history-items">
+            <div className={styles.items}>
               {history.map((item) => (
-                <div
-                  key={item.id}
-                  className="history-item"
-                  onClick={() => handleSelectItem(item)}
-                >
-                  <div className="history-item-header">
-                    <span className="history-location">📍 {item.location}</span>
-                    <span className="history-timestamp">{formatHistoryTimestamp(item.timestamp)}</span>
+                <div key={item.id} className={styles.item} onClick={() => handleSelectItem(item)}>
+                  <div className={styles.itemHeader}>
+                    <span className={styles.location}>📍 {item.location}</span>
+                    <span className={styles.timestamp}>
+                      {formatHistoryTimestamp(item.timestamp)}
+                    </span>
                   </div>
-                  <div className="history-question">{item.question}</div>
-                  <div className="history-item-footer">
-                    <span className="history-confidence">{item.confidence} confidence</span>
+                  <div className={styles.question}>{item.question}</div>
+                  <div className={styles.itemFooter}>
+                    <span className={styles.confidence}>{item.confidence} confidence</span>
                     {item.visualizations && item.visualizations.length > 0 && (
-                      <span className="history-viz-count">
-                        {item.visualizations.length} visualization{item.visualizations.length > 1 ? 's' : ''}
+                      <span className={styles.vizCount}>
+                        {item.visualizations.length} visualization
+                        {item.visualizations.length > 1 ? 's' : ''}
                       </span>
                     )}
                     <button
                       onClick={(e) => handleDeleteItem(e, item.id)}
-                      className="history-delete-button"
+                      className={styles.deleteButton}
                       title="Delete this item"
                     >
                       ×

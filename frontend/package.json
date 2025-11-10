@@ -5,6 +5,7 @@
   "type": "module",
   "dependencies": {
     "axios": "^1.12.2",
+    "clsx": "^2.1.1",
     "gif.js": "^0.2.0",
     "html2canvas": "^1.4.1",
     "leaflet": "^1.9.4",
@@ -17,6 +18,7 @@
     "yaml": "^2.8.1"
   },
   "devDependencies": {
+    "@fullhuman/postcss-purgecss": "^7.0.2",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
@@ -33,6 +35,8 @@
     "jsdom": "^26.0.0",
     "lint-staged": "^15.3.0",
     "prettier": "^3.4.2",
+    "stylelint": "^16.11.0",
+    "stylelint-config-standard": "^36.0.1",
     "typescript": "^5.7.3",
     "vite": "^6.0.7",
     "vitest": "^3.2.0"
@@ -47,9 +51,13 @@
     "test:ci": "vitest run --coverage",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint . --ext js,jsx --fix",
+    "lint:css": "stylelint \"src/**/*.css\"",
+    "lint:css:fix": "stylelint \"src/**/*.css\" --fix",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,md}\"",
     "format:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx,json,css,md}\"",
     "type-check": "tsc --noEmit",
+    "validate": "node scripts/validate-build-config.cjs",
+    "prebuild": "npm run validate",
     "prepare": "cd .. && husky frontend/.husky"
   },
   "lint-staged": {
@@ -57,7 +65,11 @@
       "eslint --fix",
       "prettier --write"
     ],
-    "*.{json,css,md}": [
+    "*.css": [
+      "stylelint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
       "prettier --write"
     ]
   },

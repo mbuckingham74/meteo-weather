@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import ThemeToggle from '../theme/ThemeToggle';
 import AuthModal from './AuthModal';
 import UserProfileModal from './UserProfileModal';
-import './AuthHeader.css';
+import { Button, Stack } from '@components/ui/primitives';
+import styles from './AuthHeader.module.css';
 
 /**
  * AuthHeader Component
@@ -44,51 +45,59 @@ function AuthHeader() {
 
   return (
     <>
-      <div className="auth-header">
-        <div className="auth-header-left">
-          <Link to="/about" className="auth-header-button auth-header-about-button">
+      <Stack
+        as="header"
+        direction="row"
+        align="center"
+        justify="space-between"
+        gap="md"
+        wrap
+        className={styles.header}
+      >
+        <Stack as="div" direction="row" align="center" gap="sm" wrap className={styles.linkGroup}>
+          <Button as={Link} to="/about" variant="ghost">
             About Meteo Weather
-          </Link>
-          <Link to="/privacy" className="auth-header-button auth-header-privacy-button">
+          </Button>
+          <Button as={Link} to="/privacy" variant="ghost">
             Privacy Policy
-          </Link>
-        </div>
+          </Button>
+          {isAuthenticated && user?.isAdmin && (
+            <Button as={Link} to="/admin" variant="secondary">
+              Admin Panel
+            </Button>
+          )}
+        </Stack>
         {isAuthenticated ? (
-          <div className="auth-user-info">
-            <span className="auth-user-name">{user?.name}</span>
+          <Stack direction="row" gap="md" align="center" className={styles.userSection}>
+            <span className={styles.userName}>{user?.name}</span>
             <button
-              className="auth-user-avatar"
+              type="button"
+              className={styles.avatar}
               onClick={handleProfileClick}
               title="View Profile"
             >
               {getUserInitials()}
             </button>
-          </div>
-        ) : (
-          <div className="auth-header-buttons">
-            <button
-              className="auth-header-button"
-              onClick={handleLoginClick}
-            >
-              <span>Sign In</span>
-            </button>
-            <button
-              className="auth-header-button primary"
-              onClick={handleSignUpClick}
-            >
-              <span>Sign Up</span>
-            </button>
             <ThemeToggle />
-          </div>
+          </Stack>
+        ) : (
+          <Stack direction="row" gap="sm" align="center" wrap className={styles.buttonGroup}>
+            <Button onClick={handleLoginClick} variant="ghost">
+              Sign In
+            </Button>
+            <Button onClick={handleSignUpClick} variant="primary">
+              Sign Up
+            </Button>
+            <ThemeToggle />
+          </Stack>
         )}
-        {isAuthenticated && <ThemeToggle />}
-      </div>
+      </Stack>
 
       {/* Hero Image Button - Only shows on About page */}
       {isAboutPage && (
-        <Link to="/" className="hero-image-button" aria-label="Go to Meteo Weather home page">
-          <div className="hero-image-overlay">
-            <span className="hero-image-text">🏠 Go to Meteo Weather</span>
+        <Link to="/" className={styles.heroButton} aria-label="Go to Meteo Weather home page">
+          <div className={styles.heroOverlay}>
+            <span className={styles.heroText}>🏠 Go to Meteo Weather</span>
           </div>
         </Link>
       )}
@@ -99,10 +108,7 @@ function AuthHeader() {
         initialMode={authMode}
       />
 
-      <UserProfileModal
-        isOpen={showProfileModal}
-        onClose={() => setShowProfileModal(false)}
-      />
+      <UserProfileModal isOpen={showProfileModal} onClose={() => setShowProfileModal(false)} />
     </>
   );
 }
