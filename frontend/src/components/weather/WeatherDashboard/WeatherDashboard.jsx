@@ -20,12 +20,12 @@ import { WEATHER_CONFIG } from '../../../constants/weather';
 import WeatherAlertsBanner from '../WeatherAlertsBanner';
 import UniversalSearchBar from '../../ai/UniversalSearchBar';
 import LocationConfirmationModal from '../../location/LocationConfirmationModal';
-import TemperatureUnitToggle from '../../units/TemperatureUnitToggle';
 import RadarMap from '../RadarMap';
 import TodaysHighlights from './TodaysHighlights';
 import ChartsGrid from './ChartsGrid';
-import { Button, Grid, Stack, Surface } from '@components/ui/primitives';
+import { Grid, Stack, Surface } from '@components/ui/primitives';
 import '../WeatherDashboard.css';
+import HeroControls from './HeroControls';
 
 /**
  * Weather Dashboard Component
@@ -436,52 +436,11 @@ function WeatherDashboard() {
                 )}
 
                 {/* Quick Actions - Compact */}
-                <Stack as="div" gap="sm" className="hero-actions-section">
-                  <Grid
-                    as="div"
-                    columns={{ base: 2, md: 4 }}
-                    gap="sm"
-                    align="center"
-                    className="hero-action-buttons"
-                  >
-                    <Button
-                      variant="ghost"
-                      icon={detectingLocation ? '🔄' : '📍'}
-                      onClick={handleDetectLocation}
-                      disabled={detectingLocation}
-                      aria-label={
-                        detectingLocation ? 'Detecting location...' : 'Use my current location'
-                      }
-                      fullWidth
-                    >
-                      {detectingLocation ? 'Detecting…' : 'Use My Location'}
-                    </Button>
-                    <Button
-                      as="a"
-                      href="/compare"
-                      variant="ghost"
-                      icon="📊"
-                      aria-label="Compare locations"
-                      fullWidth
-                    >
-                      Compare
-                    </Button>
-                    <Button
-                      as="a"
-                      href="/ai-weather"
-                      variant="ghost"
-                      icon="🤖"
-                      aria-label="Ask AI weather assistant"
-                      fullWidth
-                    >
-                      Ask AI
-                    </Button>
-                    <div className="hero-temp-toggle">
-                      <TemperatureUnitToggle />
-                    </div>
-                  </Grid>
-                  {locationError && <div className="hero-location-error">⚠️ {locationError}</div>}
-                </Stack>
+                <HeroControls
+                  detectingLocation={detectingLocation}
+                  handleDetectLocation={handleDetectLocation}
+                  locationError={locationError}
+                />
               </Stack>
 
               {/* RIGHT COLUMN: Radar Map */}

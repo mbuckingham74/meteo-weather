@@ -260,59 +260,6 @@
   padding: var(--spacing-lg) 0;
 }
 
-/* Chart Preview Section */
-.hero-chart-preview {
-  padding: var(--spacing-lg) 0;
-  border-top: 2px solid var(--border-light);
-}
-
-.hero-view-charts-btn {
-  width: 100%;
-  padding: var(--spacing-lg) 20px;
-  background: var(--gradient-primary);
-  border: none;
-  border-radius: var(--radius-lg);
-  cursor: pointer;
-  transition:
-    transform var(--transition-fast),
-    box-shadow var(--transition-fast);
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
-}
-
-.hero-view-charts-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-}
-
-.charts-btn-icon {
-  font-size: var(--font-2xl);
-  flex-shrink: 0;
-}
-
-.charts-btn-text {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
-  text-align: left;
-}
-
-.charts-btn-text strong {
-  font-size: var(--font-lg);
-  font-weight: 700;
-  color: white;
-  line-height: 1.3;
-}
-
-.charts-btn-subtitle {
-  font-size: var(--font-md);
-  color: rgba(255, 255, 255, 0.9);
-  font-weight: 500;
-}
-
 /* Universal Search Hero - Full Width (OLD - keeping for backwards compatibility) */
 .universal-search-hero {
   width: 100%;
@@ -1019,22 +966,6 @@
   .location-action-button {
     width: 100%;
     justify-content: center;
-  }
-
-  .view-forecast-button {
-    padding: var(--spacing-sm) 14px;
-  }
-
-  .view-forecast-button .button-icon {
-    font-size: 22px;
-  }
-
-  .view-forecast-button .button-text strong {
-    font-size: 12px;
-  }
-
-  .view-forecast-button .button-subtitle {
-    font-size: var(--font-xs);
   }
 
   .location-info {
