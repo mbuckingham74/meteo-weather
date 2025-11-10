@@ -460,11 +460,12 @@
   padding-bottom: 0;
 }
 
-.chart-tab {
+.chart-tabs .chart-tab {
   padding: var(--spacing-sm) 20px;
   background: transparent;
   border: none;
   border-bottom: 3px solid transparent;
+  border-radius: 0;
   font-size: 15px;
   font-weight: 600;
   color: var(--text-primary, white);
@@ -475,14 +476,16 @@
     border-color var(--transition-fast);
   position: relative;
   bottom: -2px;
+  box-shadow: none;
+  gap: var(--spacing-xs);
 }
 
-.chart-tab:hover {
+.chart-tabs .chart-tab:hover {
   color: var(--accent-primary);
   background: var(--bg-tertiary);
 }
 
-.chart-tab.active {
+.chart-tabs .chart-tab.active {
   color: var(--accent-primary);
   border-bottom-color: var(--accent-primary);
 }

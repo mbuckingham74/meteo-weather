@@ -23,7 +23,7 @@ import LocationConfirmationModal from '../../location/LocationConfirmationModal'
 import RadarMap from '../RadarMap';
 import TodaysHighlights from './TodaysHighlights';
 import ChartsGrid from './ChartsGrid';
-import { Grid, Stack, Surface } from '@components/ui/primitives';
+import { Button, Grid, Stack, Surface } from '@components/ui/primitives';
 import '../WeatherDashboard.css';
 import HeroControls from './HeroControls';
 
@@ -475,7 +475,9 @@ function WeatherDashboard() {
 
           {/* Tab Navigation */}
           <div className="chart-tabs" role="tablist" aria-label="Chart categories">
-            <button
+            <Button
+              variant="ghost"
+              size="sm"
               className={`chart-tab ${activeTab === 'forecast' ? 'active' : ''}`}
               onClick={() => setActiveTab('forecast')}
               role="tab"
@@ -483,8 +485,10 @@ function WeatherDashboard() {
               aria-controls="chart-content"
             >
               <span aria-hidden="true">📈</span> Forecast
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
               className={`chart-tab ${activeTab === 'details' ? 'active' : ''}`}
               onClick={() => setActiveTab('details')}
               role="tab"
@@ -492,8 +496,10 @@ function WeatherDashboard() {
               aria-controls="chart-content"
             >
               <span aria-hidden="true">🔍</span> Details
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
               className={`chart-tab ${activeTab === 'historical' ? 'active' : ''}`}
               onClick={() => setActiveTab('historical')}
               role="tab"
@@ -501,8 +507,10 @@ function WeatherDashboard() {
               aria-controls="chart-content"
             >
               <span aria-hidden="true">📅</span> Historical
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
               className={`chart-tab ${activeTab === 'air-quality' ? 'active' : ''}`}
               onClick={() => setActiveTab('air-quality')}
               role="tab"
@@ -510,7 +518,7 @@ function WeatherDashboard() {
               aria-controls="chart-content"
             >
               <span aria-hidden="true">💨</span> Air Quality
-            </button>
+            </Button>
           </div>
 
           {/* Charts */}
