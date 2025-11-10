@@ -24,7 +24,7 @@ import TemperatureUnitToggle from '../../units/TemperatureUnitToggle';
 import RadarMap from '../RadarMap';
 import TodaysHighlights from './TodaysHighlights';
 import ChartsGrid from './ChartsGrid';
-import { Grid, Stack, Surface } from '@components/ui/primitives';
+import { Button, Grid, Stack, Surface } from '@components/ui/primitives';
 import '../WeatherDashboard.css';
 
 /**
@@ -444,27 +444,38 @@ function WeatherDashboard() {
                     align="center"
                     className="hero-action-buttons"
                   >
-                    <button
-                      className="hero-action-btn"
+                    <Button
+                      variant="ghost"
+                      icon={detectingLocation ? '🔄' : '📍'}
                       onClick={handleDetectLocation}
                       disabled={detectingLocation}
                       aria-label={
                         detectingLocation ? 'Detecting location...' : 'Use my current location'
                       }
+                      fullWidth
                     >
-                      <span aria-hidden="true">{detectingLocation ? '🔄' : '📍'}</span>
-                      {detectingLocation ? 'Detecting...' : 'Use My Location'}
-                    </button>
-                    <a href="/compare" className="hero-action-btn" aria-label="Compare locations">
-                      <span aria-hidden="true">📊</span> Compare
-                    </a>
-                    <a
+                      {detectingLocation ? 'Detecting…' : 'Use My Location'}
+                    </Button>
+                    <Button
+                      as="a"
+                      href="/compare"
+                      variant="ghost"
+                      icon="📊"
+                      aria-label="Compare locations"
+                      fullWidth
+                    >
+                      Compare
+                    </Button>
+                    <Button
+                      as="a"
                       href="/ai-weather"
-                      className="hero-action-btn"
+                      variant="ghost"
+                      icon="🤖"
                       aria-label="Ask AI weather assistant"
+                      fullWidth
                     >
-                      <span aria-hidden="true">🤖</span> Ask AI
-                    </a>
+                      Ask AI
+                    </Button>
                     <div className="hero-temp-toggle">
                       <TemperatureUnitToggle />
                     </div>

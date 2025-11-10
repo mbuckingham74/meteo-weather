@@ -1,3 +1,4 @@
+import { Button } from '@components/ui/primitives';
 import './AboutPage.css';
 
 function AboutPage() {
@@ -184,12 +185,12 @@ function AboutPage() {
         <h2>Ready to Experience Weather Differently?</h2>
         <p>Get started with Meteo Weather today - it&apos;s free!</p>
         <div className="cta-buttons">
-          <a href="/" className="cta-button primary">
+          <Button as="a" href="/" variant="secondary" size="lg">
             Start Exploring Weather
-          </a>
-          <a href="/compare" className="cta-button secondary">
+          </Button>
+          <Button as="a" href="/compare" variant="ghost" size="lg" className="about-cta-secondary">
             Compare Locations
-          </a>
+          </Button>
         </div>
       </section>
     </div>

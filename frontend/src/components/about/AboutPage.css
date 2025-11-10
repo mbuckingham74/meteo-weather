@@ -335,42 +335,24 @@
   flex-wrap: wrap;
 }
 
-.cta-button {
-  padding: 1rem 2.5rem;
+.cta-buttons :where(button, a) {
+  min-width: 220px;
   font-size: 1.1rem;
   font-weight: 700;
-  border-radius: var(--radius-lg);
-  text-decoration: none;
-  transition:
-    transform 0.3s,
-    box-shadow 0.3s,
-    background 0.3s;
-  display: inline-block;
-  min-width: 220px;
+  text-align: center;
 }
 
-.cta-button.primary {
-  background: white;
-  color: var(--accent-primary);
-  box-shadow: var(--shadow-lg);
-}
-
-.cta-button.primary:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-xl);
-  background: var(--bg-secondary);
-}
-
-.cta-button.secondary {
+.about-cta .about-cta-secondary {
   background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.7);
   color: white;
-  border: 2px solid white;
   backdrop-filter: blur(10px);
 }
 
-.cta-button.secondary:hover {
+.about-cta .about-cta-secondary:hover {
   background: rgba(255, 255, 255, 0.25);
-  transform: translateY(-3px);
+  border-color: white;
+  color: white;
 }
 
 /* Dark Mode */
@@ -476,7 +458,7 @@
     align-items: stretch;
   }
 
-  .cta-button {
+  .cta-buttons :where(button, a) {
     width: 100%;
   }
 }

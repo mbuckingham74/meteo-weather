@@ -242,14 +242,7 @@ function QuickActionsPanel({
           </Button>
 
           {/* Historical/Climate section */}
-          <div
-            style={{
-              width: '100%',
-              height: '1px',
-              background: 'var(--border-light)',
-              margin: '8px 0',
-            }}
-          />
+          <div className="chart-nav-divider" role="separator" aria-hidden="true" />
           <Button
             variant="outline"
             onClick={() =>
