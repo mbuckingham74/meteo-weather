@@ -10,7 +10,6 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
-import styles from './charts.module.css';
 import { METRIC_COLORS } from '../../utils/colorScales';
 import {
   formatDateShort,

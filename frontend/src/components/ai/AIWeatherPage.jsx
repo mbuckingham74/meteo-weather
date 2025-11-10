@@ -30,7 +30,6 @@ function AIWeatherPage() {
   const [error, setError] = useState(null);
   const [autoSubmitted, setAutoSubmitted] = useState(false);
   const [visualizationsLoaded, setVisualizationsLoaded] = useState({});
-  const [shareUrl, setShareUrl] = useState(null);
   const [shareLoading, setShareLoading] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
 
@@ -235,7 +234,6 @@ function AIWeatherPage() {
 
       if (result.success) {
         const fullUrl = `${window.location.origin}${result.shareUrl}`;
-        setShareUrl(fullUrl);
 
         // Copy to clipboard
         await navigator.clipboard.writeText(fullUrl);

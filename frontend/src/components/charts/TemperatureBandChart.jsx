@@ -9,7 +9,6 @@ import {
   ResponsiveContainer,
   Legend,
 } from 'recharts';
-import styles from './charts.module.css';
 import { TEMPERATURE_BANDS } from '../../utils/colorScales';
 import { formatTemperature, formatDateShort } from '../../utils/weatherHelpers';
 
@@ -17,7 +16,13 @@ import { formatTemperature, formatDateShort } from '../../utils/weatherHelpers';
  * Temperature Band Chart Component
  * Weather Spark-style color-coded temperature visualization
  */
-function TemperatureBandChart({ data, unit = 'C', height = 400, days, aggregationLabel }) {
+function TemperatureBandChart({
+  data,
+  unit = 'C',
+  height = 400,
+  days,
+  aggregationLabel: _aggregationLabel,
+}) {
   if (!data || data.length === 0) {
     return (
       <div

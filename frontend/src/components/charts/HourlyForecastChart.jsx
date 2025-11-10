@@ -13,7 +13,6 @@ import {
 } from 'recharts';
 import { formatTemperature } from '../../utils/weatherHelpers';
 import { METRIC_COLORS } from '../../utils/colorScales';
-import styles from './charts.module.css';
 
 /**
  * Hourly Forecast Chart Component

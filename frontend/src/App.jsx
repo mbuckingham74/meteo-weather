@@ -33,14 +33,16 @@ const AdminPanel = lazy(() => import('./components/admin/AdminPanel'));
 // Loading fallback component
 function PageLoader() {
   return (
-    <div style={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      minHeight: '400px',
-      fontSize: '18px',
-      color: '#6b7280'
-    }}>
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '400px',
+        fontSize: '18px',
+        color: '#6b7280',
+      }}
+    >
       Loading...
     </div>
   );
@@ -91,7 +93,6 @@ function RouteAwareLocationManager() {
         }
       } catch (error) {
         if (!isCancelled) {
-          // eslint-disable-next-line no-console
           console.error('Error loading location from URL:', error);
         }
       }

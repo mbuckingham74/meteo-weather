@@ -11,7 +11,6 @@ import {
   ReferenceLine,
   Cell,
 } from 'recharts';
-import styles from './charts.module.css';
 import { getTemperatureColor } from '../../utils/colorScales';
 import { formatTemperature } from '../../utils/weatherHelpers';
 

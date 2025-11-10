@@ -105,7 +105,7 @@ function UniversalSearchBar() {
         setQuery(''); // Clear input on success
       } else {
         // No results - could show error or fallback to AI
-        console.log('No location found, consider AI fallback');
+        console.warn('No location found, consider AI fallback');
       }
     } catch (error) {
       console.error('Location search error:', error);

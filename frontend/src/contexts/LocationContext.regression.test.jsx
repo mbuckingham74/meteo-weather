@@ -13,7 +13,7 @@
  * ⚠️ IF THESE TESTS FAIL, THE BUG HAS RETURNED! ⚠️
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 

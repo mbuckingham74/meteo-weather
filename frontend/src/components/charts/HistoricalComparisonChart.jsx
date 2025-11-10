@@ -10,7 +10,6 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
-import styles from './charts.module.css';
 import { formatDateShort, formatTemperature } from '../../utils/weatherHelpers';
 
 /**
@@ -22,7 +21,7 @@ function HistoricalComparisonChart({
   historicalData,
   unit = 'C',
   height = 400,
-  aggregationLabel,
+  aggregationLabel: _aggregationLabel,
 }) {
   if (!forecastData || forecastData.length === 0) {
     return (

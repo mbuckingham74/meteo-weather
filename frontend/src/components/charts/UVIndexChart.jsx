@@ -11,7 +11,6 @@ import {
   Cell,
   ReferenceLine,
 } from 'recharts';
-import styles from './charts.module.css';
 import { getUVIndexColor } from '../../utils/colorScales';
 import { formatDateShort } from '../../utils/weatherHelpers';
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import {
   formatErrorWithSuggestions,
@@ -82,11 +82,19 @@ const ErrorMessage = ({
       : errorWithSuggestions.suggestions?.slice(0, maxSuggestions) || [];
 
   // Auto-dismiss logic
+  const handleDismiss = useCallback(() => {
+    setIsExiting(true);
+    setTimeout(() => {
+      setIsVisible(false);
+      if (onDismiss) {
+        onDismiss();
+      }
+    }, 300);
+  }, [onDismiss]);
+
   useEffect(() => {
     if (autoHideDuration > 0 && isVisible) {
-      timerRef.current = setTimeout(() => {
-        handleDismiss();
-      }, autoHideDuration);
+      timerRef.current = setTimeout(handleDismiss, autoHideDuration);
 
       return () => {
         if (timerRef.current) {
@@ -94,7 +102,7 @@ const ErrorMessage = ({
         }
       };
     }
-  }, [autoHideDuration, isVisible]);
+  }, [autoHideDuration, handleDismiss, isVisible]);
 
   // Focus management for accessibility
   useEffect(() => {
@@ -115,23 +123,13 @@ const ErrorMessage = ({
       document.addEventListener('keydown', handleKeyDown);
       return () => document.removeEventListener('keydown', handleKeyDown);
     }
-  }, [mode, dismissible]);
+  }, [dismissible, handleDismiss, mode]);
 
-  const handleDismiss = () => {
-    setIsExiting(true);
-    setTimeout(() => {
-      setIsVisible(false);
-      if (onDismiss) {
-        onDismiss();
-      }
-    }, 300); // Match CSS animation duration
-  };
-
-  const handleRetry = () => {
+  const handleRetry = useCallback(() => {
     if (onRetry) {
       onRetry();
     }
-  };
+  }, [onRetry]);
 
   // Don't render if not visible
   if (!isVisible || !error) {

@@ -10,7 +10,6 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
-import styles from './charts.module.css';
 import { formatDateShort, formatTemperature } from '../../utils/weatherHelpers';
 
 /**

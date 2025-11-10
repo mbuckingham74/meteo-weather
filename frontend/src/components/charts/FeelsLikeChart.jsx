@@ -10,7 +10,6 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
-import styles from './charts.module.css';
 
 /**
  * FeelsLikeChart Component

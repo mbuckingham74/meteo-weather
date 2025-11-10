@@ -9,7 +9,6 @@ import {
   ResponsiveContainer,
   Legend,
 } from 'recharts';
-import styles from './charts.module.css';
 import { METRIC_COLORS } from '../../utils/colorScales';
 import { formatDateShort, formatWindSpeed, getWindDirection } from '../../utils/weatherHelpers';
 
@@ -17,7 +16,7 @@ import { formatDateShort, formatWindSpeed, getWindDirection } from '../../utils/
  * Wind Chart Component
  * Shows wind speed and direction over time
  */
-function WindChart({ data, height = 350, days, aggregationLabel }) {
+function WindChart({ data, height = 350, days, aggregationLabel: _aggregationLabel }) {
   if (!data || data.length === 0) {
     return (
       <div

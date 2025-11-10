@@ -287,13 +287,13 @@ describe('ThisDayInHistoryCard Component', () => {
     it('renders fire emoji for record high', () => {
       render(<ThisDayInHistoryCard historyData={mockHistoryData} />);
 
-      expect(screen.getByText((content, element) => content.includes('🔥'))).toBeInTheDocument();
+      expect(screen.getByText((content, _element) => content.includes('🔥'))).toBeInTheDocument();
     });
 
     it('renders snowflake emoji for record low', () => {
       render(<ThisDayInHistoryCard historyData={mockHistoryData} />);
 
-      expect(screen.getByText((content, element) => content.includes('❄️'))).toBeInTheDocument();
+      expect(screen.getByText((content, _element) => content.includes('❄️'))).toBeInTheDocument();
     });
 
     it('renders chart emoji for averages', () => {
@@ -305,13 +305,13 @@ describe('ThisDayInHistoryCard Component', () => {
     it('renders rain emoji for precipitation', () => {
       render(<ThisDayInHistoryCard historyData={mockHistoryData} />);
 
-      expect(screen.getByText((content, element) => content.includes('🌧️'))).toBeInTheDocument();
+      expect(screen.getByText((content, _element) => content.includes('🌧️'))).toBeInTheDocument();
     });
 
     it('renders lightbulb emoji for fun fact', () => {
       render(<ThisDayInHistoryCard historyData={mockHistoryData} />);
 
-      expect(screen.getByText((content, element) => content.includes('💡'))).toBeInTheDocument();
+      expect(screen.getByText((content, _element) => content.includes('💡'))).toBeInTheDocument();
     });
   });
 });

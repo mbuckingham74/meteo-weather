@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   AreaChart,
   Area,
@@ -9,7 +8,6 @@ import {
   ResponsiveContainer,
   Legend,
 } from 'recharts';
-import styles from './charts.module.css';
 import { getCloudCoverColor } from '../../utils/colorScales';
 import { formatDateShort } from '../../utils/weatherHelpers';
 
