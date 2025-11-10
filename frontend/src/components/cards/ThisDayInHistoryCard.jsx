@@ -1,6 +1,20 @@
 import React from 'react';
 import { formatTemperature } from '../../utils/weatherHelpers';
 
+const FROSTED_PANEL_STYLE = {
+  padding: '10px',
+  background: 'var(--overlay-accent, rgba(255, 255, 255, 0.15))',
+  borderRadius: '10px',
+  backdropFilter: 'blur(10px)',
+};
+
+const FROSTED_BLOCK_STYLE = {
+  padding: '12px',
+  background: 'var(--overlay-accent, rgba(255, 255, 255, 0.1))',
+  borderRadius: '8px',
+  backdropFilter: 'blur(10px)',
+};
+
 /**
  * This Day in History Card Component
  * Displays historical weather records for the current date
@@ -78,14 +92,7 @@ function ThisDayInHistoryCard({ historyData, unit = 'C' }) {
         }}
       >
         {/* Record High */}
-        <div
-          style={{
-            padding: '10px',
-            background: 'rgba(255, 255, 255, 0.15)',
-            borderRadius: '10px',
-            backdropFilter: 'blur(10px)',
-          }}
-        >
+        <div style={FROSTED_PANEL_STYLE}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
             <span style={{ fontSize: '24px' }}>🔥</span>
             <p style={{ margin: 0, fontSize: '13px', opacity: 0.9, fontWeight: '600' }}>
@@ -101,14 +108,7 @@ function ThisDayInHistoryCard({ historyData, unit = 'C' }) {
         </div>
 
         {/* Record Low */}
-        <div
-          style={{
-            padding: '10px',
-            background: 'rgba(255, 255, 255, 0.15)',
-            borderRadius: '10px',
-            backdropFilter: 'blur(10px)',
-          }}
-        >
+        <div style={FROSTED_PANEL_STYLE}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
             <span style={{ fontSize: '24px' }}>❄️</span>
             <p style={{ margin: 0, fontSize: '13px', opacity: 0.9, fontWeight: '600' }}>
@@ -125,14 +125,7 @@ function ThisDayInHistoryCard({ historyData, unit = 'C' }) {
       </div>
 
       {/* Average temperatures */}
-      <div
-        style={{
-          padding: '10px',
-          background: 'rgba(255, 255, 255, 0.15)',
-          borderRadius: '10px',
-          backdropFilter: 'blur(10px)',
-        }}
-      >
+      <div style={FROSTED_PANEL_STYLE}>
         <p style={{ margin: '0 0 8px 0', fontSize: '13px', fontWeight: '600', opacity: 0.9 }}>
           📊 Historical Averages
         </p>
@@ -187,15 +180,7 @@ function ThisDayInHistoryCard({ historyData, unit = 'C' }) {
 
       {/* Precipitation record */}
       {records.maxPrecipitation && records.maxPrecipitation.value > 0 && (
-        <div
-          style={{
-            marginTop: '16px',
-            padding: '12px',
-            background: 'rgba(255, 255, 255, 0.1)',
-            borderRadius: '8px',
-            backdropFilter: 'blur(10px)',
-          }}
-        >
+        <div style={{ ...FROSTED_BLOCK_STYLE, marginTop: '16px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{ fontSize: '18px' }}>🌧️</span>
@@ -216,12 +201,9 @@ function ThisDayInHistoryCard({ historyData, unit = 'C' }) {
       {/* Fun fact */}
       <div
         style={{
+          ...FROSTED_BLOCK_STYLE,
           marginTop: '16px',
-          padding: '12px',
-          background: 'rgba(255, 255, 255, 0.1)',
-          borderRadius: '8px',
-          backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(255, 255, 255, 0.2)',
+          border: '1px solid var(--overlay-accent-strong, rgba(255, 255, 255, 0.2))',
         }}
       >
         <p style={{ margin: 0, fontSize: '11px', opacity: 0.85, lineHeight: '1.5' }}>
