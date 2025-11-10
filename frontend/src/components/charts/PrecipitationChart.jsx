@@ -98,7 +98,7 @@ function PrecipitationChart({ data, height = 350, days, aggregationLabel }) {
       <h3
         style={{
           marginBottom: '16px',
-          color: 'var(--text-primary, #111827)',
+          color: 'var(--text-primary)',
           fontSize: '18px',
           fontWeight: '600',
         }}

@@ -272,7 +272,7 @@ function CloudCoverChart({ data, days, height = 350 }) {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <span style={{ fontSize: '16px' }}>☁️☁️</span>
-            <span style={{ fontSize: '11px', color: 'var(--text-secondary, #6b7280)' }}>
+            <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
               Overcast (&gt; 80%)
             </span>
           </div>

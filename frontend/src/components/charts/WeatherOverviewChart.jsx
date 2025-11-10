@@ -10,6 +10,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
+import { chartPalette } from '../../constants';
 import { METRIC_COLORS } from '../../utils/colorScales';
 import {
   formatDateShort,
@@ -40,9 +41,7 @@ function WeatherOverviewChart({ data, days, unit = 'C', height = 450 }) {
 
   if (!data || data.length === 0) {
     return (
-      <div
-        style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary, #6b7280)' }}
-      >
+      <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' }}>
         No weather data available
       </div>
     );
@@ -77,17 +76,15 @@ function WeatherOverviewChart({ data, days, unit = 'C', height = 450 }) {
     return (
       <div
         style={{
-          background: 'var(--bg-elevated, white)',
+          background: 'var(--bg-elevated)',
           padding: '12px',
-          border: '1px solid var(--border-light, #e5e7eb)',
+          border: '1px solid var(--border-light)',
           borderRadius: '8px',
           boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
           minWidth: '200px',
         }}
       >
-        <p
-          style={{ margin: '0 0 8px 0', fontWeight: 'bold', color: 'var(--text-primary, #111827)' }}
-        >
+        <p style={{ margin: '0 0 8px 0', fontWeight: 'bold', color: 'var(--text-primary)' }}>
           {data.displayDate}
         </p>
         {visibleMetrics.temperature && (
@@ -139,7 +136,7 @@ function WeatherOverviewChart({ data, days, unit = 'C', height = 450 }) {
         <h3
           style={{
             margin: 0,
-            color: 'var(--text-primary, #111827)',
+            color: 'var(--text-primary)',
             fontSize: '18px',
             fontWeight: '600',
           }}
@@ -158,8 +155,8 @@ function WeatherOverviewChart({ data, days, unit = 'C', height = 450 }) {
                 fontSize: '12px',
                 borderRadius: '6px',
                 border: `2px solid ${METRIC_COLORS[metric]}`,
-                background: isVisible ? METRIC_COLORS[metric] : 'white',
-                color: isVisible ? 'white' : METRIC_COLORS[metric],
+                background: isVisible ? METRIC_COLORS[metric] : 'var(--bg-elevated)',
+                color: isVisible ? 'var(--text-on-accent)' : METRIC_COLORS[metric],
                 cursor: 'pointer',
                 fontWeight: '600',
                 transition: 'all 0.2s',
@@ -174,14 +171,22 @@ function WeatherOverviewChart({ data, days, unit = 'C', height = 450 }) {
 
       <ResponsiveContainer width="100%" height={height}>
         <ComposedChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-          <XAxis dataKey="displayDate" tick={{ fontSize: 12, fill: '#6b7280' }} stroke="#9ca3af" />
-          <YAxis yAxisId="left" tick={{ fontSize: 12, fill: '#6b7280' }} stroke="#9ca3af" />
+          <CartesianGrid strokeDasharray="3 3" stroke={chartPalette.grid} />
+          <XAxis
+            dataKey="displayDate"
+            tick={{ fontSize: 12, fill: chartPalette.textMuted }}
+            stroke={chartPalette.grid}
+          />
+          <YAxis
+            yAxisId="left"
+            tick={{ fontSize: 12, fill: chartPalette.textMuted }}
+            stroke={chartPalette.grid}
+          />
           <YAxis
             yAxisId="right"
             orientation="right"
-            tick={{ fontSize: 12, fill: '#6b7280' }}
-            stroke="#9ca3af"
+            tick={{ fontSize: 12, fill: chartPalette.textMuted }}
+            stroke={chartPalette.grid}
           />
           <Tooltip content={<CustomTooltip />} />
           <Legend wrapperStyle={{ paddingTop: '20px' }} />
@@ -273,12 +278,12 @@ function WeatherOverviewChart({ data, days, unit = 'C', height = 450 }) {
         style={{
           marginTop: '12px',
           padding: '10px',
-          background: '#eff6ff',
+          background: 'var(--info-bg)',
           borderRadius: '6px',
-          border: '1px solid #3b82f6',
+          border: '1px solid var(--info-border)',
         }}
       >
-        <p style={{ margin: 0, fontSize: '11px', color: '#1e40af' }}>
+        <p style={{ margin: 0, fontSize: '11px', color: 'var(--accent-text)' }}>
           <strong>💡 Tip:</strong> Click the colored buttons above to show/hide different weather
           metrics on the chart
         </p>

@@ -8,7 +8,7 @@
 /* Chart Titles */
 .chart-title {
   margin: 0 0 16px 0;
-  color: var(--text-primary, #111827);
+  color: var(--text-primary);
   font-size: 18px;
   font-weight: 600;
 }
@@ -16,7 +16,7 @@
 .chart-subtitle {
   margin: 0 0 8px 0;
   font-weight: bold;
-  color: var(--text-primary, #111827);
+  color: var(--text-primary);
   font-size: var(--font-md);
 }
 
@@ -31,7 +31,7 @@
 .chart-summary-card {
   flex: 1 1;
   min-width: 120px;
-  background: var(--bg-tertiary, #f3f4f6);
+  background: var(--bg-tertiary);
   border-radius: var(--radius-lg);
   padding: 16px;
   text-align: center;
@@ -69,14 +69,14 @@
 .summary-value {
   font-size: var(--font-xl);
   font-weight: 700;
-  color: var(--text-primary, #111827);
+  color: var(--text-primary);
   margin-bottom: 4px;
 }
 
 .summary-label {
   font-size: 12px;
   font-weight: 600;
-  color: var(--text-secondary, #6b7280);
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -93,8 +93,8 @@
 
 .chart-control-button {
   padding: var(--spacing-sm) 16px;
-  background: var(--bg-tertiary, #f3f4f6);
-  color: var(--text-secondary, #6b7280);
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
   border: none;
   border-radius: var(--radius-sm);
   font-size: 12px;
@@ -108,8 +108,8 @@
 }
 
 .chart-control-button:hover {
-  background: var(--bg-secondary, #e5e7eb);
-  color: var(--text-primary, #111827);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 .chart-control-button.active {
@@ -125,7 +125,7 @@
   margin-top: 16px;
   justify-content: center;
   padding: var(--spacing-md);
-  background: var(--bg-tertiary, #f3f4f6);
+  background: var(--bg-tertiary);
   border-radius: var(--radius-md);
 }
 
@@ -135,7 +135,7 @@
   align-items: center;
   gap: var(--spacing-xs);
   padding: var(--spacing-sm) 12px;
-  background: var(--bg-elevated, white);
+  background: var(--bg-elevated);
   border-radius: var(--radius-sm);
   transition:
     transform 0.2s ease,
@@ -157,7 +157,7 @@
 .legend-label {
   font-size: 12px;
   font-weight: 600;
-  color: var(--text-primary, #111827);
+  color: var(--text-primary);
   text-align: center;
 }
 

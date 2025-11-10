@@ -11,6 +11,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
+import { chartPalette } from '../../constants';
 import { formatTemperature } from '../../utils/weatherHelpers';
 import { METRIC_COLORS } from '../../utils/colorScales';
 
@@ -23,9 +24,7 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
 
   if (!hourlyData || hourlyData.length === 0) {
     return (
-      <div
-        style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary, #6b7280)' }}
-      >
+      <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' }}>
         No hourly forecast data available
       </div>
     );
@@ -62,6 +61,10 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
     avgWind: chartData.reduce((sum, d) => sum + d.windSpeed, 0) / chartData.length,
   };
 
+  const axisTickSmall = { fontSize: 11, fill: chartPalette.textMuted };
+  const axisTickMedium = { fontSize: 12, fill: chartPalette.textMuted };
+  const axisLabelStyle = { textAnchor: 'middle', fill: chartPalette.textMuted };
+
   // Custom tooltip
   const CustomTooltip = ({ active, payload }) => {
     if (!active || !payload || payload.length === 0) return null;
@@ -72,9 +75,9 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
     return (
       <div
         style={{
-          background: 'var(--bg-elevated, white)',
+          background: 'var(--bg-elevated)',
           padding: '12px',
-          border: '1px solid var(--border-light, #e5e7eb)',
+          border: '1px solid var(--border-light)',
           borderRadius: '8px',
           boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
           minWidth: '200px',
@@ -84,7 +87,7 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
           style={{
             margin: '0 0 8px 0',
             fontWeight: 'bold',
-            color: 'var(--text-primary, #111827)',
+            color: 'var(--text-primary)',
             fontSize: '13px',
           }}
         >
@@ -95,7 +98,7 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
         <p style={{ margin: '4px 0', color: METRIC_COLORS.temperature, fontSize: '12px' }}>
           🌡️ Temp: {formatTemperature(data.temperature, unit)}
         </p>
-        <p style={{ margin: '4px 0', color: '#9333ea', fontSize: '12px' }}>
+        <p style={{ margin: '4px 0', color: chartPalette.accentSecondary, fontSize: '12px' }}>
           🤚 Feels: {formatTemperature(data.feelsLike, unit)}
         </p>
 
@@ -114,7 +117,7 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
             style={{
               margin: '6px 0 0 0',
               fontSize: '11px',
-              color: 'var(--text-secondary, #6b7280)',
+              color: 'var(--text-secondary)',
               fontStyle: 'italic',
             }}
           >
@@ -131,20 +134,16 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
       case 'high':
         return (
           <ComposedChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-            <XAxis
-              dataKey="displayTime"
-              tick={{ fontSize: 11, fill: '#6b7280' }}
-              stroke="#9ca3af"
-            />
+            <CartesianGrid strokeDasharray="3 3" stroke={chartPalette.grid} />
+            <XAxis dataKey="displayTime" tick={axisTickSmall} stroke={chartPalette.grid} />
             <YAxis
-              tick={{ fontSize: 12, fill: '#6b7280' }}
-              stroke="#9ca3af"
+              tick={axisTickMedium}
+              stroke={chartPalette.grid}
               label={{
                 value: `Temperature (°${unit})`,
                 angle: -90,
                 position: 'insideLeft',
-                style: { textAnchor: 'middle', fill: '#6b7280' },
+                style: axisLabelStyle,
               }}
             />
             <Tooltip content={<CustomTooltip />} />
@@ -152,8 +151,8 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
             <Area
               type="monotone"
               dataKey="temperature"
-              stroke="#dc2626"
-              fill="#fecaca"
+              stroke={chartPalette.hot}
+              fill="var(--error-bg)"
               fillOpacity={0.3}
               strokeWidth={3}
               name="High Temperature"
@@ -161,10 +160,10 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
             <Line
               type="monotone"
               dataKey="temperature"
-              stroke="#dc2626"
+              stroke={chartPalette.hot}
               strokeWidth={3}
               name="Temperature"
-              dot={{ r: 3, fill: '#dc2626' }}
+              dot={{ r: 3, fill: chartPalette.hot }}
             />
           </ComposedChart>
         );
@@ -172,20 +171,16 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
       case 'low':
         return (
           <ComposedChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-            <XAxis
-              dataKey="displayTime"
-              tick={{ fontSize: 11, fill: '#6b7280' }}
-              stroke="#9ca3af"
-            />
+            <CartesianGrid strokeDasharray="3 3" stroke={chartPalette.grid} />
+            <XAxis dataKey="displayTime" tick={axisTickSmall} stroke={chartPalette.grid} />
             <YAxis
-              tick={{ fontSize: 12, fill: '#6b7280' }}
-              stroke="#9ca3af"
+              tick={axisTickMedium}
+              stroke={chartPalette.grid}
               label={{
                 value: `Temperature (°${unit})`,
                 angle: -90,
                 position: 'insideLeft',
-                style: { textAnchor: 'middle', fill: '#6b7280' },
+                style: axisLabelStyle,
               }}
             />
             <Tooltip content={<CustomTooltip />} />
@@ -193,8 +188,8 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
             <Area
               type="monotone"
               dataKey="temperature"
-              stroke="#2563eb"
-              fill="#bfdbfe"
+              stroke={chartPalette.cool}
+              fill="var(--info-bg)"
               fillOpacity={0.3}
               strokeWidth={3}
               name="Low Temperature"
@@ -202,10 +197,10 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
             <Line
               type="monotone"
               dataKey="temperature"
-              stroke="#2563eb"
+              stroke={chartPalette.cool}
               strokeWidth={3}
               name="Temperature"
-              dot={{ r: 3, fill: '#2563eb' }}
+              dot={{ r: 3, fill: chartPalette.cool }}
             />
           </ComposedChart>
         );
@@ -213,20 +208,16 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
       case 'precipitation':
         return (
           <ComposedChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-            <XAxis
-              dataKey="displayTime"
-              tick={{ fontSize: 11, fill: '#6b7280' }}
-              stroke="#9ca3af"
-            />
+            <CartesianGrid strokeDasharray="3 3" stroke={chartPalette.grid} />
+            <XAxis dataKey="displayTime" tick={axisTickSmall} stroke={chartPalette.grid} />
             <YAxis
-              tick={{ fontSize: 12, fill: '#6b7280' }}
-              stroke="#9ca3af"
+              tick={axisTickMedium}
+              stroke={chartPalette.grid}
               label={{
                 value: 'Precipitation (mm)',
                 angle: -90,
                 position: 'insideLeft',
-                style: { textAnchor: 'middle', fill: '#6b7280' },
+                style: axisLabelStyle,
               }}
             />
             <Tooltip content={<CustomTooltip />} />
@@ -241,7 +232,7 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
             <Line
               type="monotone"
               dataKey="precipProb"
-              stroke="#0891b2"
+              stroke={chartPalette.coolAccent}
               strokeWidth={2}
               name="Precip Probability (%)"
               dot={false}
@@ -253,20 +244,16 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
       case 'wind':
         return (
           <ComposedChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-            <XAxis
-              dataKey="displayTime"
-              tick={{ fontSize: 11, fill: '#6b7280' }}
-              stroke="#9ca3af"
-            />
+            <CartesianGrid strokeDasharray="3 3" stroke={chartPalette.grid} />
+            <XAxis dataKey="displayTime" tick={axisTickSmall} stroke={chartPalette.grid} />
             <YAxis
-              tick={{ fontSize: 12, fill: '#6b7280' }}
-              stroke="#9ca3af"
+              tick={axisTickMedium}
+              stroke={chartPalette.grid}
               label={{
                 value: 'Wind Speed (km/h)',
                 angle: -90,
                 position: 'insideLeft',
-                style: { textAnchor: 'middle', fill: '#6b7280' },
+                style: axisLabelStyle,
               }}
             />
             <Tooltip content={<CustomTooltip />} />
@@ -275,7 +262,7 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
               type="monotone"
               dataKey="windSpeed"
               stroke={METRIC_COLORS.windSpeed}
-              fill="#d1d5db"
+              fill="var(--bg-tertiary)"
               fillOpacity={0.3}
               strokeWidth={3}
               name="Wind Speed"
@@ -294,39 +281,39 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
       default: // 'overview'
         return (
           <ComposedChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+            <CartesianGrid strokeDasharray="3 3" stroke={chartPalette.grid} />
             <XAxis
               dataKey="displayTime"
-              tick={{ fontSize: 11, fill: '#6b7280' }}
-              stroke="#9ca3af"
+              tick={axisTickSmall}
+              stroke={chartPalette.grid}
               label={{
                 value: 'Time (hours)',
                 position: 'insideBottom',
                 offset: -5,
-                style: { textAnchor: 'middle', fill: '#6b7280', fontSize: 12 },
+                style: { textAnchor: 'middle', fill: chartPalette.textMuted, fontSize: 12 },
               }}
             />
             <YAxis
               yAxisId="left"
-              tick={{ fontSize: 12, fill: '#6b7280' }}
-              stroke="#9ca3af"
+              tick={axisTickMedium}
+              stroke={chartPalette.grid}
               label={{
                 value: `Temperature (°${unit})`,
                 angle: -90,
                 position: 'insideLeft',
-                style: { textAnchor: 'middle', fill: '#6b7280' },
+                style: axisLabelStyle,
               }}
             />
             <YAxis
               yAxisId="right"
               orientation="right"
-              tick={{ fontSize: 12, fill: '#6b7280' }}
-              stroke="#9ca3af"
+              tick={axisTickMedium}
+              stroke={chartPalette.grid}
               label={{
                 value: 'Precipitation (mm)',
                 angle: 90,
                 position: 'insideRight',
-                style: { textAnchor: 'middle', fill: '#6b7280' },
+                style: axisLabelStyle,
               }}
             />
             <Tooltip content={<CustomTooltip />} />
@@ -348,7 +335,7 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
               yAxisId="left"
               type="monotone"
               dataKey="feelsLike"
-              stroke="#9333ea"
+              stroke={chartPalette.accentSecondary}
               strokeWidth={2}
               name="Feels Like"
               dot={false}
@@ -390,7 +377,7 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
       <h3
         style={{
           marginBottom: '16px',
-          color: 'var(--text-primary, #111827)',
+          color: 'var(--text-primary)',
           fontSize: '18px',
           fontWeight: '600',
         }}
@@ -417,11 +404,10 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
           style={{
             padding: '8px 16px',
             background:
-              selectedMetric === 'overview'
-                ? 'linear-gradient(135deg, #10b981 0%, #34d399 100%)'
-                : '#f3f4f6',
-            color: selectedMetric === 'overview' ? 'white' : '#4b5563',
-            border: 'none',
+              selectedMetric === 'overview' ? 'var(--gradient-primary)' : 'var(--bg-tertiary)',
+            color:
+              selectedMetric === 'overview' ? 'var(--text-on-accent)' : 'var(--text-secondary)',
+            border: selectedMetric === 'overview' ? 'none' : '1px solid var(--border-light)',
             borderRadius: '6px',
             fontSize: '12px',
             fontWeight: '600',
@@ -432,12 +418,12 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
           }}
           onMouseEnter={(e) => {
             if (selectedMetric !== 'overview') {
-              e.target.style.background = '#e5e7eb';
+              e.target.style.background = 'var(--hover-bg)';
             }
           }}
           onMouseLeave={(e) => {
             if (selectedMetric !== 'overview') {
-              e.target.style.background = '#f3f4f6';
+              e.target.style.background = 'var(--bg-tertiary)';
             }
           }}
         >
@@ -458,10 +444,13 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
           onClick={() => setSelectedMetric('high')}
           style={{
             padding: '10px',
-            background: selectedMetric === 'high' ? '#fcd34d' : '#fef3c7',
+            background: selectedMetric === 'high' ? 'var(--warning-bg-hover)' : 'var(--warning-bg)',
             borderRadius: '6px',
             textAlign: 'center',
-            border: selectedMetric === 'high' ? '2px solid #f59e0b' : '2px solid transparent',
+            border:
+              selectedMetric === 'high'
+                ? '2px solid var(--warning-border)'
+                : '1px solid transparent',
             cursor: 'pointer',
             transition: 'all 0.2s',
             transform: selectedMetric === 'high' ? 'scale(1.05)' : 'scale(1)',
@@ -481,14 +470,16 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
             style={{
               margin: '0 0 4px 0',
               fontSize: '11px',
-              color: '#78350f',
+              color: 'var(--warning-text)',
               textTransform: 'uppercase',
               fontWeight: '600',
             }}
           >
             🔥 High
           </p>
-          <p style={{ margin: 0, fontSize: '18px', fontWeight: '700', color: '#92400e' }}>
+          <p
+            style={{ margin: 0, fontSize: '18px', fontWeight: '700', color: 'var(--warning-text)' }}
+          >
             {formatTemperature(stats.high, unit)}
           </p>
         </button>
@@ -497,10 +488,11 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
           onClick={() => setSelectedMetric('low')}
           style={{
             padding: '10px',
-            background: selectedMetric === 'low' ? '#93c5fd' : '#dbeafe',
+            background: selectedMetric === 'low' ? 'var(--info-border)' : 'var(--info-bg)',
             borderRadius: '6px',
             textAlign: 'center',
-            border: selectedMetric === 'low' ? '2px solid #3b82f6' : '2px solid transparent',
+            border:
+              selectedMetric === 'low' ? '2px solid var(--info-border)' : '1px solid transparent',
             cursor: 'pointer',
             transition: 'all 0.2s',
             transform: selectedMetric === 'low' ? 'scale(1.05)' : 'scale(1)',
@@ -520,14 +512,16 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
             style={{
               margin: '0 0 4px 0',
               fontSize: '11px',
-              color: '#1e3a8a',
+              color: 'var(--accent-text)',
               textTransform: 'uppercase',
               fontWeight: '600',
             }}
           >
             ❄️ Low
           </p>
-          <p style={{ margin: 0, fontSize: '18px', fontWeight: '700', color: '#1e40af' }}>
+          <p
+            style={{ margin: 0, fontSize: '18px', fontWeight: '700', color: 'var(--accent-text)' }}
+          >
             {formatTemperature(stats.low, unit)}
           </p>
         </button>
@@ -536,11 +530,14 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
           onClick={() => setSelectedMetric('precipitation')}
           style={{
             padding: '10px',
-            background: selectedMetric === 'precipitation' ? '#67e8f9' : '#e0f2fe',
+            background:
+              selectedMetric === 'precipitation' ? 'var(--accent-bg)' : 'var(--bg-tertiary)',
             borderRadius: '6px',
             textAlign: 'center',
             border:
-              selectedMetric === 'precipitation' ? '2px solid #06b6d4' : '2px solid transparent',
+              selectedMetric === 'precipitation'
+                ? `2px solid ${chartPalette.coolAccent}`
+                : '1px solid transparent',
             cursor: 'pointer',
             transition: 'all 0.2s',
             transform: selectedMetric === 'precipitation' ? 'scale(1.05)' : 'scale(1)',
@@ -560,14 +557,21 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
             style={{
               margin: '0 0 4px 0',
               fontSize: '11px',
-              color: '#075985',
+              color: chartPalette.coolAccent,
               textTransform: 'uppercase',
               fontWeight: '600',
             }}
           >
             🌧️ Total Precip
           </p>
-          <p style={{ margin: 0, fontSize: '18px', fontWeight: '700', color: '#0369a1' }}>
+          <p
+            style={{
+              margin: 0,
+              fontSize: '18px',
+              fontWeight: '700',
+              color: chartPalette.coolAccent,
+            }}
+          >
             {stats.totalPrecip.toFixed(1)} mm
           </p>
         </button>
@@ -576,10 +580,11 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
           onClick={() => setSelectedMetric('wind')}
           style={{
             padding: '10px',
-            background: selectedMetric === 'wind' ? '#d1d5db' : '#f3f4f6',
+            background: selectedMetric === 'wind' ? 'var(--bg-tertiary)' : 'var(--bg-secondary)',
             borderRadius: '6px',
             textAlign: 'center',
-            border: selectedMetric === 'wind' ? '2px solid #6b7280' : '2px solid transparent',
+            border:
+              selectedMetric === 'wind' ? '2px solid var(--border-light)' : '1px solid transparent',
             cursor: 'pointer',
             transition: 'all 0.2s',
             transform: selectedMetric === 'wind' ? 'scale(1.05)' : 'scale(1)',
@@ -599,7 +604,7 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
             style={{
               margin: '0 0 4px 0',
               fontSize: '11px',
-              color: 'var(--text-secondary, #374151)',
+              color: 'var(--text-secondary)',
               textTransform: 'uppercase',
               fontWeight: '600',
             }}
@@ -611,7 +616,7 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
               margin: 0,
               fontSize: '18px',
               fontWeight: '700',
-              color: 'var(--text-secondary, #4b5563)',
+              color: 'var(--text-primary)',
             }}
           >
             {stats.avgWind.toFixed(1)} km/h
@@ -624,12 +629,12 @@ function HourlyForecastChart({ hourlyData, unit = 'C', height = 400 }) {
         style={{
           marginTop: '12px',
           padding: '10px',
-          background: '#eff6ff',
+          background: 'var(--info-bg)',
           borderRadius: '6px',
-          border: '1px solid #3b82f6',
+          border: '1px solid var(--info-border)',
         }}
       >
-        <p style={{ margin: 0, fontSize: '11px', color: '#1e40af' }}>
+        <p style={{ margin: 0, fontSize: '11px', color: 'var(--accent-text)' }}>
           <strong>💡 Note:</strong> &quot;Feels Like&quot; temperature accounts for wind chill and
           heat index effects. Times shown in local timezone.
         </p>

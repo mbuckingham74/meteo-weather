@@ -10,6 +10,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
+import { chartPalette } from '../../constants';
 import { formatDateShort, formatTemperature } from '../../utils/weatherHelpers';
 
 /**
@@ -25,9 +26,7 @@ function HistoricalComparisonChart({
 }) {
   if (!forecastData || forecastData.length === 0) {
     return (
-      <div
-        style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary, #6b7280)' }}
-      >
+      <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' }}>
         No forecast data available
       </div>
     );
@@ -35,9 +34,7 @@ function HistoricalComparisonChart({
 
   if (!historicalData || historicalData.length === 0) {
     return (
-      <div
-        style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary, #6b7280)' }}
-      >
+      <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' }}>
         Loading historical climate data...
       </div>
     );
@@ -76,36 +73,46 @@ function HistoricalComparisonChart({
     return (
       <div
         style={{
-          background: 'var(--bg-elevated, white)',
+          background: 'var(--bg-elevated)',
           padding: '12px',
-          border: '1px solid var(--border-light, #e5e7eb)',
+          border: '1px solid var(--border-light)',
           borderRadius: '8px',
           boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
           minWidth: '220px',
         }}
       >
-        <p
-          style={{ margin: '0 0 8px 0', fontWeight: 'bold', color: 'var(--text-primary, #111827)' }}
-        >
+        <p style={{ margin: '0 0 8px 0', fontWeight: 'bold', color: 'var(--text-primary)' }}>
           {data.displayDate}
         </p>
         {data.aggregatedDays && (
           <p
-            style={{ margin: '0 0 8px 0', fontSize: '11px', color: '#10b981', fontStyle: 'italic' }}
+            style={{
+              margin: '0 0 8px 0',
+              fontSize: '11px',
+              color: chartPalette.positive,
+              fontStyle: 'italic',
+            }}
           >
             ({data.aggregatedDays} days averaged)
           </p>
         )}
 
         <div style={{ marginBottom: '8px' }}>
-          <p style={{ margin: '2px 0', fontSize: '12px', fontWeight: '600', color: '#10b981' }}>
+          <p
+            style={{
+              margin: '2px 0',
+              fontSize: '12px',
+              fontWeight: '600',
+              color: chartPalette.positive,
+            }}
+          >
             Forecast:
           </p>
           <p
             style={{
               margin: '2px 0 2px 12px',
               fontSize: '11px',
-              color: 'var(--text-secondary, #6b7280)',
+              color: 'var(--text-secondary)',
             }}
           >
             High: {formatTemperature(data.forecastMax, unit)}
@@ -114,7 +121,7 @@ function HistoricalComparisonChart({
             style={{
               margin: '2px 0 2px 12px',
               fontSize: '11px',
-              color: 'var(--text-secondary, #6b7280)',
+              color: 'var(--text-secondary)',
             }}
           >
             Low: {formatTemperature(data.forecastMin, unit)}
@@ -123,7 +130,7 @@ function HistoricalComparisonChart({
             style={{
               margin: '2px 0 2px 12px',
               fontSize: '11px',
-              color: 'var(--text-secondary, #6b7280)',
+              color: 'var(--text-secondary)',
             }}
           >
             Avg: {formatTemperature(data.forecastAvg, unit)}
@@ -131,14 +138,21 @@ function HistoricalComparisonChart({
         </div>
 
         <div>
-          <p style={{ margin: '2px 0', fontSize: '12px', fontWeight: '600', color: '#10b981' }}>
+          <p
+            style={{
+              margin: '2px 0',
+              fontSize: '12px',
+              fontWeight: '600',
+              color: chartPalette.positive,
+            }}
+          >
             Historical Normal:
           </p>
           <p
             style={{
               margin: '2px 0 2px 12px',
               fontSize: '11px',
-              color: 'var(--text-secondary, #6b7280)',
+              color: 'var(--text-secondary)',
             }}
           >
             High: {formatTemperature(data.normalMax, unit)}
@@ -147,7 +161,7 @@ function HistoricalComparisonChart({
             style={{
               margin: '2px 0 2px 12px',
               fontSize: '11px',
-              color: 'var(--text-secondary, #6b7280)',
+              color: 'var(--text-secondary)',
             }}
           >
             Low: {formatTemperature(data.normalMin, unit)}
@@ -156,7 +170,7 @@ function HistoricalComparisonChart({
             style={{
               margin: '2px 0 2px 12px',
               fontSize: '11px',
-              color: 'var(--text-secondary, #6b7280)',
+              color: 'var(--text-secondary)',
             }}
           >
             Avg: {formatTemperature(data.normalAvg, unit)}
@@ -164,12 +178,18 @@ function HistoricalComparisonChart({
         </div>
 
         {data.comparison && (
-          <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #e5e7eb' }}>
+          <div
+            style={{
+              marginTop: '8px',
+              paddingTop: '8px',
+              borderTop: '1px solid var(--border-light)',
+            }}
+          >
             <p
               style={{
                 margin: '2px 0',
                 fontSize: '11px',
-                color: data.comparison.tempDiff > 0 ? '#ef4444' : '#3b82f6',
+                color: data.comparison.tempDiff > 0 ? chartPalette.hot : chartPalette.cool,
                 fontWeight: '600',
               }}
             >
@@ -195,7 +215,7 @@ function HistoricalComparisonChart({
         <h3
           style={{
             margin: 0,
-            color: 'var(--text-primary, #111827)',
+            color: 'var(--text-primary)',
             fontSize: '18px',
             fontWeight: '600',
           }}
@@ -208,29 +228,29 @@ function HistoricalComparisonChart({
         <ComposedChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
           <defs>
             <linearGradient id="normalRange" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#10b981" stopOpacity={0.15} />
-              <stop offset="95%" stopColor="#10b981" stopOpacity={0.05} />
+              <stop offset="5%" stopColor={chartPalette.positive} stopOpacity={0.15} />
+              <stop offset="95%" stopColor={chartPalette.positive} stopOpacity={0.05} />
             </linearGradient>
           </defs>
 
-          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+          <CartesianGrid strokeDasharray="3 3" stroke={chartPalette.grid} />
           <XAxis
             dataKey="displayDate"
-            tick={{ fontSize: 11, fill: '#6b7280' }}
-            stroke="#9ca3af"
+            tick={{ fontSize: 11, fill: chartPalette.textMuted }}
+            stroke={chartPalette.grid}
             angle={chartData.length > 20 ? -45 : 0}
             textAnchor={chartData.length > 20 ? 'end' : 'middle'}
             height={chartData.length > 20 ? 80 : 30}
             interval={chartData.length > 30 ? 'preserveStartEnd' : 0}
           />
           <YAxis
-            tick={{ fontSize: 12, fill: '#6b7280' }}
-            stroke="#9ca3af"
+            tick={{ fontSize: 12, fill: chartPalette.textMuted }}
+            stroke={chartPalette.grid}
             label={{
               value: `Temperature (°${unit})`,
               angle: -90,
               position: 'insideLeft',
-              style: { textAnchor: 'middle', fill: '#6b7280' },
+              style: { textAnchor: 'middle', fill: chartPalette.textMuted },
             }}
           />
           <Tooltip content={<CustomTooltip />} />
@@ -251,7 +271,7 @@ function HistoricalComparisonChart({
           <Line
             type="monotone"
             dataKey="normalAvg"
-            stroke="#10b981"
+            stroke={chartPalette.positive}
             strokeWidth={2}
             name="Historical Average"
             dot={{ r: 3 }}
@@ -262,7 +282,7 @@ function HistoricalComparisonChart({
           <Line
             type="monotone"
             dataKey="forecastMax"
-            stroke="#ef4444"
+            stroke={chartPalette.hot}
             strokeWidth={2}
             name="Forecast High"
             dot={{ r: 4 }}
@@ -270,7 +290,7 @@ function HistoricalComparisonChart({
           <Line
             type="monotone"
             dataKey="forecastMin"
-            stroke="#3b82f6"
+            stroke={chartPalette.cool}
             strokeWidth={2}
             name="Forecast Low"
             dot={{ r: 4 }}
@@ -278,7 +298,7 @@ function HistoricalComparisonChart({
           <Line
             type="monotone"
             dataKey="forecastAvg"
-            stroke="#10b981"
+            stroke={chartPalette.positive}
             strokeWidth={3}
             name="Forecast Average"
             dot={{ r: 5 }}
@@ -288,14 +308,19 @@ function HistoricalComparisonChart({
 
       {/* Legend explanation */}
       <div
-        style={{ marginTop: '16px', padding: '12px', background: '#f9fafb', borderRadius: '8px' }}
+        style={{
+          marginTop: '16px',
+          padding: '12px',
+          background: chartPalette.surface,
+          borderRadius: '8px',
+        }}
       >
         <p
           style={{
             margin: '0 0 8px 0',
             fontSize: '12px',
             fontWeight: '600',
-            color: 'var(--text-secondary, #374151)',
+            color: 'var(--text-secondary)',
           }}
         >
           Understanding the chart:
@@ -307,17 +332,17 @@ function HistoricalComparisonChart({
             gap: '8px',
           }}
         >
-          <div style={{ fontSize: '11px', color: 'var(--text-secondary, #6b7280)' }}>
-            <span style={{ color: '#10b981', fontWeight: '600' }}>Solid lines:</span> Current
-            forecast
+          <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+            <span style={{ color: chartPalette.positive, fontWeight: '600' }}>Solid lines:</span>{' '}
+            Current forecast
           </div>
-          <div style={{ fontSize: '11px', color: 'var(--text-secondary, #6b7280)' }}>
-            <span style={{ color: '#10b981', fontWeight: '600' }}>Dashed line:</span> Historical
-            average
+          <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+            <span style={{ color: chartPalette.positive, fontWeight: '600' }}>Dashed line:</span>{' '}
+            Historical average
           </div>
-          <div style={{ fontSize: '11px', color: 'var(--text-secondary, #6b7280)' }}>
-            <span style={{ color: '#10b981', fontWeight: '600' }}>Shaded area:</span> Normal
-            temperature range (10th-90th percentile)
+          <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+            <span style={{ color: chartPalette.positive, fontWeight: '600' }}>Shaded area:</span>{' '}
+            Normal temperature range (10th-90th percentile)
           </div>
         </div>
       </div>

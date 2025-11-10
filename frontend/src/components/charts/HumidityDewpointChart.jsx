@@ -9,6 +9,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
+import { chartPalette } from '../../constants';
 
 /**
  * HumidityDewpointChart Component
@@ -24,7 +25,7 @@ function HumidityDewpointChart({ data, days, unit = 'C', height = 300 }) {
 
   if (!data || data.length === 0) {
     return (
-      <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-tertiary, #9ca3af)' }}>
+      <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-tertiary)' }}>
         <p>No humidity data available</p>
       </div>
     );
@@ -52,10 +53,10 @@ function HumidityDewpointChart({ data, days, unit = 'C', height = 300 }) {
           <p style={{ margin: '0 0 8px 0', fontWeight: '600', color: 'var(--text-primary)' }}>
             {payload[0].payload.date}
           </p>
-          <p style={{ margin: '4px 0', color: '#60a5fa', fontWeight: '500' }}>
+          <p style={{ margin: '4px 0', color: chartPalette.cool, fontWeight: '500' }}>
             💧 Humidity: {payload[0].value}%
           </p>
-          <p style={{ margin: '4px 0', color: '#34d399', fontWeight: '500' }}>
+          <p style={{ margin: '4px 0', color: chartPalette.accentSecondary, fontWeight: '500' }}>
             🌡️ Dewpoint: {payload[1]?.value}°{unit}
           </p>
         </div>
@@ -71,7 +72,7 @@ function HumidityDewpointChart({ data, days, unit = 'C', height = 300 }) {
           margin: '0 0 8px 0',
           fontSize: '16px',
           fontWeight: '600',
-          color: 'var(--text-primary, #111827)',
+          color: 'var(--text-primary)',
         }}
       >
         💧 Humidity & Dewpoint - {getTimeLabel()}
@@ -79,36 +80,36 @@ function HumidityDewpointChart({ data, days, unit = 'C', height = 300 }) {
 
       <ResponsiveContainer width="100%" height={height}>
         <LineChart data={chartData} margin={{ top: 5, right: 40, left: 25, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" opacity={0.5} />
+          <CartesianGrid strokeDasharray="3 3" stroke={chartPalette.grid} opacity={0.5} />
           <XAxis
             dataKey="date"
-            stroke="#374151"
-            tick={{ fill: '#374151', fontSize: 13, fontWeight: 500 }}
+            stroke={chartPalette.textMuted}
+            tick={{ fill: chartPalette.textMuted, fontSize: 13, fontWeight: 500 }}
             style={{ fontSize: '13px' }}
           />
           <YAxis
             yAxisId="left"
-            stroke="#60a5fa"
-            tick={{ fill: '#374151', fontSize: 13, fontWeight: 500 }}
+            stroke={chartPalette.cool}
+            tick={{ fill: chartPalette.textMuted, fontSize: 13, fontWeight: 500 }}
             style={{ fontSize: '13px' }}
             label={{
               value: 'Humidity (%)',
               angle: -90,
               position: 'insideLeft',
-              style: { fill: '#111827', fontSize: 14, fontWeight: 600 },
+              style: { fill: 'var(--text-primary)', fontSize: 14, fontWeight: 600 },
             }}
           />
           <YAxis
             yAxisId="right"
             orientation="right"
-            stroke="#34d399"
-            tick={{ fill: '#374151', fontSize: 13, fontWeight: 500 }}
+            stroke={chartPalette.accentSecondary}
+            tick={{ fill: chartPalette.textMuted, fontSize: 13, fontWeight: 500 }}
             style={{ fontSize: '13px' }}
             label={{
               value: `Dewpoint (°${unit})`,
               angle: 90,
               position: 'insideRight',
-              style: { fill: '#111827', fontSize: 14, fontWeight: 600 },
+              style: { fill: 'var(--text-primary)', fontSize: 14, fontWeight: 600 },
             }}
           />
           <Tooltip content={<CustomTooltip />} />
@@ -120,7 +121,7 @@ function HumidityDewpointChart({ data, days, unit = 'C', height = 300 }) {
             yAxisId="left"
             type="monotone"
             dataKey="humidity"
-            stroke="#60a5fa"
+            stroke={chartPalette.cool}
             strokeWidth={2}
             name="Humidity (%)"
             dot={{ r: 4 }}
@@ -130,7 +131,7 @@ function HumidityDewpointChart({ data, days, unit = 'C', height = 300 }) {
             yAxisId="right"
             type="monotone"
             dataKey="dewpoint"
-            stroke="#34d399"
+            stroke={chartPalette.accentSecondary}
             strokeWidth={2}
             name={`Dewpoint (°${unit})`}
             dot={{ r: 4 }}

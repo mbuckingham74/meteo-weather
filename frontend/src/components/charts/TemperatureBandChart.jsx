@@ -9,6 +9,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from 'recharts';
+import { chartPalette } from '../../constants';
 import { TEMPERATURE_BANDS } from '../../utils/colorScales';
 import { formatTemperature, formatDateShort } from '../../utils/weatherHelpers';
 
@@ -25,9 +26,7 @@ function TemperatureBandChart({
 }) {
   if (!data || data.length === 0) {
     return (
-      <div
-        style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary, #6b7280)' }}
-      >
+      <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' }}>
         No temperature data available
       </div>
     );
@@ -61,32 +60,35 @@ function TemperatureBandChart({
     return (
       <div
         style={{
-          background: 'var(--bg-elevated, white)',
+          background: 'var(--bg-elevated)',
           padding: '12px',
-          border: '1px solid var(--border-light, #e5e7eb)',
+          border: '1px solid var(--border-light)',
           borderRadius: '8px',
           boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
         }}
       >
-        <p
-          style={{ margin: '0 0 8px 0', fontWeight: 'bold', color: 'var(--text-primary, #111827)' }}
-        >
+        <p style={{ margin: '0 0 8px 0', fontWeight: 'bold', color: 'var(--text-primary)' }}>
           {data.displayDate}
         </p>
         {data.aggregatedDays && (
           <p
-            style={{ margin: '0 0 8px 0', fontSize: '11px', color: '#10b981', fontStyle: 'italic' }}
+            style={{
+              margin: '0 0 8px 0',
+              fontSize: '11px',
+              color: chartPalette.positive,
+              fontStyle: 'italic',
+            }}
           >
             ({data.aggregatedDays} days averaged)
           </p>
         )}
-        <p style={{ margin: '4px 0', color: '#dc2626' }}>
+        <p style={{ margin: '4px 0', color: chartPalette.hot }}>
           High: {formatTemperature(data.high, unit)}
         </p>
-        <p style={{ margin: '4px 0', color: '#3b82f6' }}>
+        <p style={{ margin: '4px 0', color: chartPalette.cool }}>
           Low: {formatTemperature(data.low, unit)}
         </p>
-        <p style={{ margin: '4px 0', color: 'var(--text-secondary, #6b7280)' }}>
+        <p style={{ margin: '4px 0', color: 'var(--text-secondary)' }}>
           Avg: {formatTemperature(data.avg, unit)}
         </p>
       </div>
@@ -99,7 +101,7 @@ function TemperatureBandChart({
         style={{
           marginBottom: '8px',
           marginTop: '0',
-          color: 'var(--text-primary, #111827)',
+          color: 'var(--text-primary)',
           fontSize: '16px',
           fontWeight: '600',
         }}
@@ -108,24 +110,24 @@ function TemperatureBandChart({
       </h3>
       <ResponsiveContainer width="100%" height={height}>
         <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+          <CartesianGrid strokeDasharray="3 3" stroke={chartPalette.grid} />
           <XAxis
             dataKey="displayDate"
-            tick={{ fontSize: 11, fill: '#6b7280' }}
-            stroke="#9ca3af"
+            tick={{ fontSize: 11, fill: chartPalette.textMuted }}
+            stroke={chartPalette.grid}
             angle={chartData.length > 20 ? -45 : 0}
             textAnchor={chartData.length > 20 ? 'end' : 'middle'}
             height={chartData.length > 20 ? 80 : 30}
             interval={chartData.length > 30 ? 'preserveStartEnd' : 0}
           />
           <YAxis
-            tick={{ fontSize: 12, fill: '#6b7280' }}
-            stroke="#9ca3af"
+            tick={{ fontSize: 12, fill: chartPalette.textMuted }}
+            stroke={chartPalette.grid}
             label={{
               value: `Temperature (°${unit})`,
               angle: -90,
               position: 'insideLeft',
-              style: { textAnchor: 'middle', fill: '#6b7280' },
+              style: { textAnchor: 'middle', fill: chartPalette.textMuted },
             }}
           />
           <Tooltip content={<CustomTooltip />} />
@@ -135,8 +137,8 @@ function TemperatureBandChart({
           <Area
             type="monotone"
             dataKey="high"
-            stroke="#ef4444"
-            fill="#fecaca"
+            stroke={chartPalette.hot}
+            fill="var(--error-bg)"
             strokeWidth={2}
             name="High"
             fillOpacity={0.4}
@@ -146,8 +148,8 @@ function TemperatureBandChart({
           <Area
             type="monotone"
             dataKey="low"
-            stroke="#3b82f6"
-            fill="#bfdbfe"
+            stroke={chartPalette.cool}
+            fill="var(--info-bg)"
             strokeWidth={2}
             name="Low"
             fillOpacity={0.4}
@@ -157,7 +159,7 @@ function TemperatureBandChart({
           <Area
             type="monotone"
             dataKey="avg"
-            stroke="#8b5cf6"
+            stroke={chartPalette.accentSecondary}
             fill="none"
             strokeWidth={2}
             name="Average"
@@ -168,14 +170,19 @@ function TemperatureBandChart({
 
       {/* Temperature Band Legend */}
       <div
-        style={{ marginTop: '12px', padding: '8px', background: '#f9fafb', borderRadius: '8px' }}
+        style={{
+          marginTop: '12px',
+          padding: '8px',
+          background: chartPalette.surface,
+          borderRadius: '8px',
+        }}
       >
         <p
           style={{
             margin: '0 0 6px 0',
             fontSize: '13px',
             fontWeight: '600',
-            color: 'var(--text-secondary, #374151)',
+            color: 'var(--text-secondary)',
           }}
         >
           Temperature Comfort Zones:
@@ -191,7 +198,7 @@ function TemperatureBandChart({
                   borderRadius: '3px',
                 }}
               />
-              <span style={{ fontSize: '12px', color: 'var(--text-secondary, #6b7280)' }}>
+              <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
                 {band.name} ({band.min}°-{band.max}°C)
               </span>
             </div>
