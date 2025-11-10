@@ -32,20 +32,7 @@ const AdminPanel = lazy(() => import('./components/admin/AdminPanel'));
 
 // Loading fallback component
 function PageLoader() {
-  return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: '400px',
-        fontSize: '18px',
-        color: '#6b7280',
-      }}
-    >
-      Loading...
-    </div>
-  );
+  return <div className="page-loader">Loading...</div>;
 }
 
 function RouteAwareLocationManager() {
@@ -109,29 +96,8 @@ function RouteAwareLocationManager() {
 function ComparePage() {
   return (
     <>
-      <div style={{ padding: '20px 20px 0 20px', maxWidth: '1400px', margin: '0 auto' }}>
-        <Link
-          to="/"
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            padding: '8px 16px',
-            background: '#f3f4f6',
-            borderRadius: '8px',
-            textDecoration: 'none',
-            color: '#374151',
-            fontWeight: '600',
-            fontSize: '14px',
-            transition: 'background 0.2s',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = '#e5e7eb';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = '#f3f4f6';
-          }}
-        >
+      <div className="compare-page-wrapper">
+        <Link to="/" className="compare-back-link">
           ← Back to Dashboard
         </Link>
       </div>

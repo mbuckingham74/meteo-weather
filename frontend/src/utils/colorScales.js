@@ -1,3 +1,5 @@
+import { chartPalette } from '../constants';
+
 /**
  * Weather Spark-style color scales
  */
@@ -5,16 +7,16 @@
 /**
  * Temperature color bands (Weather Spark style)
  * @param {number} temp - Temperature in Celsius
- * @returns {string} Color hex code
+ * @returns {string} Color token
  */
 export function getTemperatureColor(temp) {
-  if (temp < 0) return '#1e3a8a';      // Frigid - Deep Blue
-  if (temp < 10) return '#3b82f6';     // Cold - Blue
-  if (temp < 15) return '#60a5fa';     // Cool - Light Blue
-  if (temp < 25) return '#10b981';     // Comfortable - Green
-  if (temp < 30) return '#fbbf24';     // Warm - Yellow
-  if (temp < 35) return '#f97316';     // Hot - Orange
-  return '#dc2626';                     // Sweltering - Red
+  if (temp < 0) return chartPalette.accent; // Frigid - Indigo
+  if (temp < 10) return chartPalette.cool; // Cold - Cool blue
+  if (temp < 15) return chartPalette.coolAccent; // Cool - Aqua
+  if (temp < 25) return chartPalette.positive; // Comfortable
+  if (temp < 30) return chartPalette.warning; // Warm
+  if (temp < 35) return chartPalette.hot; // Hot
+  return chartPalette.hot; // Sweltering
 }
 
 /**
@@ -36,37 +38,37 @@ export function getTemperatureBand(temp) {
  * Temperature bands for area chart
  */
 export const TEMPERATURE_BANDS = [
-  { name: 'Frigid', min: -40, max: 0, color: '#1e3a8a' },
-  { name: 'Cold', min: 0, max: 10, color: '#3b82f6' },
-  { name: 'Cool', min: 10, max: 15, color: '#60a5fa' },
-  { name: 'Comfortable', min: 15, max: 25, color: '#10b981' },
-  { name: 'Warm', min: 25, max: 30, color: '#fbbf24' },
-  { name: 'Hot', min: 30, max: 35, color: '#f97316' },
-  { name: 'Sweltering', min: 35, max: 50, color: '#dc2626' }
+  { name: 'Frigid', min: -40, max: 0, color: chartPalette.accent },
+  { name: 'Cold', min: 0, max: 10, color: chartPalette.cool },
+  { name: 'Cool', min: 10, max: 15, color: chartPalette.coolAccent },
+  { name: 'Comfortable', min: 15, max: 25, color: chartPalette.positive },
+  { name: 'Warm', min: 25, max: 30, color: chartPalette.warning },
+  { name: 'Hot', min: 30, max: 35, color: chartPalette.hot },
+  { name: 'Sweltering', min: 35, max: 50, color: chartPalette.hot },
 ];
 
 /**
  * Precipitation colors
  */
 export const PRECIPITATION_COLORS = {
-  rain: '#3b82f6',      // Blue
-  snow: '#e0f2fe',      // Light blue/white
-  mixed: '#8b5cf6',     // Purple
-  probability: '#f97316' // Orange (changed from gray for better visibility)
+  rain: chartPalette.cool,
+  snow: 'var(--bg-tertiary)',
+  mixed: chartPalette.accentSecondary,
+  probability: chartPalette.warning,
 };
 
 /**
  * Weather metric colors
  */
 export const METRIC_COLORS = {
-  temperature: '#ef4444',
-  feelsLike: '#f97316',
-  humidity: '#06b6d4',
-  precipitation: '#3b82f6',
-  cloudCover: '#94a3b8',
-  uvIndex: '#eab308',
-  windSpeed: '#10b981',
-  pressure: '#8b5cf6'
+  temperature: chartPalette.hot,
+  feelsLike: chartPalette.warning,
+  humidity: chartPalette.coolAccent,
+  precipitation: chartPalette.cool,
+  cloudCover: chartPalette.neutral,
+  uvIndex: chartPalette.warning,
+  windSpeed: chartPalette.positive,
+  pressure: chartPalette.accentSecondary,
 };
 
 /**
@@ -75,11 +77,11 @@ export const METRIC_COLORS = {
  * @returns {string} Color hex code
  */
 export function getUVIndexColor(uvIndex) {
-  if (uvIndex < 3) return '#10b981';   // Low - Green
-  if (uvIndex < 6) return '#fbbf24';   // Moderate - Yellow
-  if (uvIndex < 8) return '#f97316';   // High - Orange
-  if (uvIndex < 11) return '#dc2626';  // Very High - Red
-  return '#7c2d12';                     // Extreme - Dark Red
+  if (uvIndex < 3) return chartPalette.positive; // Low
+  if (uvIndex < 6) return chartPalette.warning; // Moderate
+  if (uvIndex < 8) return chartPalette.warning; // High
+  if (uvIndex < 11) return chartPalette.hot; // Very High
+  return chartPalette.hot; // Extreme
 }
 
 /**
@@ -88,10 +90,10 @@ export function getUVIndexColor(uvIndex) {
  * @returns {string} Color hex code
  */
 export function getCloudCoverColor(cloudCover) {
-  if (cloudCover < 20) return '#60a5fa';  // Clear - Light blue
-  if (cloudCover < 50) return '#94a3b8';  // Partly cloudy - Light gray
-  if (cloudCover < 80) return '#64748b';  // Mostly cloudy - Gray
-  return '#475569';                        // Overcast - Dark gray
+  if (cloudCover < 20) return chartPalette.cool; // Clear
+  if (cloudCover < 50) return chartPalette.neutral; // Partly cloudy
+  if (cloudCover < 80) return chartPalette.textMuted; // Mostly cloudy
+  return 'var(--text-secondary)'; // Overcast
 }
 
 /**
@@ -100,9 +102,9 @@ export function getCloudCoverColor(cloudCover) {
  * @returns {string} Color hex code
  */
 export function getWindSpeedColor(windSpeed) {
-  if (windSpeed < 10) return '#10b981';   // Calm - Green
-  if (windSpeed < 30) return '#fbbf24';   // Light - Yellow
-  if (windSpeed < 50) return '#f97316';   // Moderate - Orange
-  if (windSpeed < 70) return '#dc2626';   // Strong - Red
-  return '#7c2d12';                        // Gale - Dark Red
+  if (windSpeed < 10) return chartPalette.positive; // Calm
+  if (windSpeed < 30) return chartPalette.warning; // Light
+  if (windSpeed < 50) return chartPalette.warning; // Moderate
+  if (windSpeed < 70) return chartPalette.hot; // Strong
+  return chartPalette.hot; // Gale
 }

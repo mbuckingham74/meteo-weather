@@ -852,8 +852,8 @@
 .api-info {
   text-align: center;
   padding: var(--spacing-sm);
-  background: var(--bg-tertiary, #f9fafb);
-  border: 1px solid var(--border-light, #e5e7eb);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-light);
   border-radius: var(--radius-md);
   margin-bottom: var(--spacing-md);
 }
@@ -861,16 +861,16 @@
 .api-info p {
   margin: 0;
   font-size: 12px;
-  color: var(--text-tertiary, #6b7280);
+  color: var(--text-tertiary);
 }
 
 /* Footer */
 .dashboard-footer {
   text-align: center;
   padding: var(--spacing-lg);
-  color: #6b7280;
+  color: var(--text-tertiary);
   font-size: var(--font-base);
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--border-light);
   margin-top: 24px;
 }
 

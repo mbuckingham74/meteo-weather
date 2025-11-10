@@ -11,6 +11,7 @@ import {
 } from 'recharts';
 import { METRIC_COLORS } from '../../utils/colorScales';
 import { formatDateShort, formatWindSpeed, getWindDirection } from '../../utils/weatherHelpers';
+import { chartPalette } from '../../constants';
 
 /**
  * Wind Chart Component
@@ -19,9 +20,7 @@ import { formatDateShort, formatWindSpeed, getWindDirection } from '../../utils/
 function WindChart({ data, height = 350, days, aggregationLabel: _aggregationLabel }) {
   if (!data || data.length === 0) {
     return (
-      <div
-        style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary, #6b7280)' }}
-      >
+      <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' }}>
         No wind data available
       </div>
     );
@@ -55,29 +54,32 @@ function WindChart({ data, height = 350, days, aggregationLabel: _aggregationLab
     return (
       <div
         style={{
-          background: 'var(--bg-elevated, white)',
+          background: 'var(--bg-elevated)',
           padding: '12px',
-          border: '1px solid var(--border-light, #e5e7eb)',
+          border: '1px solid var(--border-light)',
           borderRadius: '8px',
           boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
         }}
       >
-        <p
-          style={{ margin: '0 0 8px 0', fontWeight: 'bold', color: 'var(--text-primary, #111827)' }}
-        >
+        <p style={{ margin: '0 0 8px 0', fontWeight: 'bold', color: 'var(--text-primary)' }}>
           {data.displayDate}
         </p>
         {data.aggregatedDays && (
           <p
-            style={{ margin: '0 0 8px 0', fontSize: '11px', color: '#10b981', fontStyle: 'italic' }}
+            style={{
+              margin: '0 0 8px 0',
+              fontSize: '11px',
+              color: chartPalette.positive,
+              fontStyle: 'italic',
+            }}
           >
             ({data.aggregatedDays} days averaged)
           </p>
         )}
-        <p style={{ margin: '4px 0', color: '#10b981' }}>
+        <p style={{ margin: '4px 0', color: chartPalette.positive }}>
           Speed: {formatWindSpeed(data.windSpeed)}
         </p>
-        <p style={{ margin: '4px 0', color: 'var(--text-secondary, #6b7280)' }}>
+        <p style={{ margin: '4px 0', color: 'var(--text-secondary)' }}>
           Direction: {data.windDirectionLabel} ({data.windDirection}°)
         </p>
       </div>
@@ -97,19 +99,19 @@ function WindChart({ data, height = 350, days, aggregationLabel: _aggregationLab
 
     return (
       <svg width={size} height={size} style={{ display: 'inline-block', verticalAlign: 'middle' }}>
-        <circle cx={centerX} cy={centerY} r={18} fill="#e5e7eb" />
+        <circle cx={centerX} cy={centerY} r={18} fill={chartPalette.grid} />
         <line
           x1={centerX}
           y1={centerY}
           x2={tipX}
           y2={tipY}
-          stroke="#10b981"
+          stroke={chartPalette.positive}
           strokeWidth="2"
           markerEnd="url(#arrowhead)"
         />
         <defs>
           <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="5" refY="3" orient="auto">
-            <polygon points="0 0, 10 3, 0 6" fill="#10b981" />
+            <polygon points="0 0, 10 3, 0 6" fill={chartPalette.positive} />
           </marker>
         </defs>
       </svg>
@@ -122,7 +124,7 @@ function WindChart({ data, height = 350, days, aggregationLabel: _aggregationLab
         style={{
           marginBottom: '8px',
           marginTop: '0',
-          color: 'var(--text-primary, #111827)',
+          color: 'var(--text-primary)',
           fontSize: '16px',
           fontWeight: '600',
         }}
@@ -132,24 +134,24 @@ function WindChart({ data, height = 350, days, aggregationLabel: _aggregationLab
 
       <ResponsiveContainer width="100%" height={height}>
         <LineChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+          <CartesianGrid strokeDasharray="3 3" stroke={chartPalette.grid} />
           <XAxis
             dataKey="displayDate"
-            tick={{ fontSize: 11, fill: '#6b7280' }}
-            stroke="#9ca3af"
+            tick={{ fontSize: 11, fill: chartPalette.textMuted }}
+            stroke={chartPalette.grid}
             angle={chartData.length > 20 ? -45 : 0}
             textAnchor={chartData.length > 20 ? 'end' : 'middle'}
             height={chartData.length > 20 ? 80 : 30}
             interval={chartData.length > 30 ? 'preserveStartEnd' : 0}
           />
           <YAxis
-            tick={{ fontSize: 12, fill: '#6b7280' }}
-            stroke="#9ca3af"
+            tick={{ fontSize: 12, fill: chartPalette.textMuted }}
+            stroke={chartPalette.grid}
             label={{
               value: 'Wind Speed (km/h)',
               angle: -90,
               position: 'insideLeft',
-              style: { textAnchor: 'middle', fill: '#6b7280' },
+              style: { textAnchor: 'middle', fill: chartPalette.textMuted },
             }}
           />
           <Tooltip content={<CustomTooltip />} />
@@ -169,14 +171,19 @@ function WindChart({ data, height = 350, days, aggregationLabel: _aggregationLab
 
       {/* Wind Direction Legend */}
       <div
-        style={{ marginTop: '20px', padding: '12px', background: '#f9fafb', borderRadius: '8px' }}
+        style={{
+          marginTop: '20px',
+          padding: '12px',
+          background: chartPalette.surface,
+          borderRadius: '8px',
+        }}
       >
         <p
           style={{
             margin: '0 0 12px 0',
             fontSize: '14px',
             fontWeight: '600',
-            color: 'var(--text-secondary, #374151)',
+            color: 'var(--text-secondary)',
           }}
         >
           Wind Directions by Day:
@@ -188,10 +195,10 @@ function WindChart({ data, height = 350, days, aggregationLabel: _aggregationLab
               style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}
             >
               <WindDirectionIndicator direction={day.windDirection} />
-              <span style={{ fontSize: '11px', color: 'var(--text-secondary, #6b7280)' }}>
+              <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
                 {day.displayDate.split(',')[0]}
               </span>
-              <span style={{ fontSize: '12px', fontWeight: '600', color: '#10b981' }}>
+              <span style={{ fontSize: '12px', fontWeight: '600', color: chartPalette.positive }}>
                 {day.windDirectionLabel}
               </span>
             </div>
@@ -201,14 +208,19 @@ function WindChart({ data, height = 350, days, aggregationLabel: _aggregationLab
 
       {/* Beaufort Scale Reference */}
       <div
-        style={{ marginTop: '12px', padding: '12px', background: '#f9fafb', borderRadius: '8px' }}
+        style={{
+          marginTop: '12px',
+          padding: '12px',
+          background: chartPalette.surface,
+          borderRadius: '8px',
+        }}
       >
         <p
           style={{
             margin: '0 0 8px 0',
             fontSize: '12px',
             fontWeight: '600',
-            color: 'var(--text-secondary, #374151)',
+            color: 'var(--text-secondary)',
           }}
         >
           Beaufort Scale Reference:
@@ -220,19 +232,19 @@ function WindChart({ data, height = 350, days, aggregationLabel: _aggregationLab
             gap: '8px',
           }}
         >
-          <div style={{ fontSize: '11px', color: 'var(--text-secondary, #6b7280)' }}>
+          <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
             <span style={{ fontWeight: '600' }}>Calm:</span> &lt; 10 km/h
           </div>
-          <div style={{ fontSize: '11px', color: 'var(--text-secondary, #6b7280)' }}>
+          <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
             <span style={{ fontWeight: '600' }}>Light:</span> 10-30 km/h
           </div>
-          <div style={{ fontSize: '11px', color: 'var(--text-secondary, #6b7280)' }}>
+          <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
             <span style={{ fontWeight: '600' }}>Moderate:</span> 30-50 km/h
           </div>
-          <div style={{ fontSize: '11px', color: 'var(--text-secondary, #6b7280)' }}>
+          <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
             <span style={{ fontWeight: '600' }}>Strong:</span> 50-70 km/h
           </div>
-          <div style={{ fontSize: '11px', color: 'var(--text-secondary, #6b7280)' }}>
+          <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
             <span style={{ fontWeight: '600' }}>Gale:</span> &gt; 70 km/h
           </div>
         </div>

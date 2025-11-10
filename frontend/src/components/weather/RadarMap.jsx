@@ -6,6 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import { getRadarMapData, getAllFrames, formatRadarTime } from '../../services/radarService';
 import { debugInfo, debugError } from '../../utils/debugLogger';
 import ErrorMessage from '../common/ErrorMessage';
+import { alertPalette } from '../../constants';
 import './RadarMap.css';
 
 // Import marker images
@@ -93,10 +94,10 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
   // Create custom alert icon
   const createAlertIcon = (severity) => {
     const colors = {
-      warning: '#ef4444',
-      watch: '#f59e0b',
-      advisory: '#3b82f6',
-      info: '#6b7280',
+      warning: alertPalette.critical,
+      watch: alertPalette.warning,
+      advisory: alertPalette.advisory,
+      info: alertPalette.info,
     };
 
     const color = colors[severity] || colors.info;

@@ -12,6 +12,7 @@ import {
 } from 'recharts';
 import { PRECIPITATION_COLORS } from '../../utils/colorScales';
 import { formatDateShort, formatPrecipitation } from '../../utils/weatherHelpers';
+import { chartPalette } from '../../constants';
 
 /**
  * Precipitation Chart Component
@@ -20,9 +21,7 @@ import { formatDateShort, formatPrecipitation } from '../../utils/weatherHelpers
 function PrecipitationChart({ data, height = 350, days, aggregationLabel }) {
   if (!data || data.length === 0) {
     return (
-      <div
-        style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary, #6b7280)' }}
-      >
+      <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' }}>
         No precipitation data available
       </div>
     );
@@ -56,31 +55,36 @@ function PrecipitationChart({ data, height = 350, days, aggregationLabel }) {
     return (
       <div
         style={{
-          background: 'var(--bg-elevated, white)',
+          background: 'var(--bg-elevated)',
           padding: '12px',
-          border: '1px solid var(--border-light, #e5e7eb)',
+          border: '1px solid var(--border-light)',
           borderRadius: '8px',
           boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
         }}
       >
-        <p
-          style={{ margin: '0 0 8px 0', fontWeight: 'bold', color: 'var(--text-primary, #111827)' }}
-        >
+        <p style={{ margin: '0 0 8px 0', fontWeight: 'bold', color: 'var(--text-primary)' }}>
           {data.displayDate}
         </p>
         {data.aggregatedDays && (
           <p
-            style={{ margin: '0 0 8px 0', fontSize: '11px', color: '#10b981', fontStyle: 'italic' }}
+            style={{
+              margin: '0 0 8px 0',
+              fontSize: '11px',
+              color: chartPalette.positive,
+              fontStyle: 'italic',
+            }}
           >
             ({data.aggregatedDays} days{' '}
             {aggregationLabel?.includes('monthly') ? 'summed' : 'averaged'})
           </p>
         )}
-        <p style={{ margin: '4px 0', color: '#3b82f6' }}>
+        <p style={{ margin: '4px 0', color: chartPalette.cool }}>
           Precipitation: {formatPrecipitation(data.precipitation)}
         </p>
         {data.snow > 0 && (
-          <p style={{ margin: '4px 0', color: '#e0f2fe' }}>Snow: {data.snow.toFixed(1)} mm</p>
+          <p style={{ margin: '4px 0', color: 'var(--bg-tertiary)' }}>
+            Snow: {data.snow.toFixed(1)} mm
+          </p>
         )}
         <p style={{ margin: '4px 0', color: PRECIPITATION_COLORS.probability, fontWeight: '600' }}>
           Probability: {Math.round(data.probability)}%
@@ -103,11 +107,11 @@ function PrecipitationChart({ data, height = 350, days, aggregationLabel }) {
       </h3>
       <ResponsiveContainer width="100%" height={height}>
         <ComposedChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+          <CartesianGrid strokeDasharray="3 3" stroke={chartPalette.grid} />
           <XAxis
             dataKey="displayDate"
-            tick={{ fontSize: 11, fill: '#6b7280' }}
-            stroke="#9ca3af"
+            tick={{ fontSize: 11, fill: chartPalette.textMuted }}
+            stroke={chartPalette.grid}
             angle={chartData.length > 20 ? -45 : 0}
             textAnchor={chartData.length > 20 ? 'end' : 'middle'}
             height={chartData.length > 20 ? 80 : 30}
@@ -115,26 +119,26 @@ function PrecipitationChart({ data, height = 350, days, aggregationLabel }) {
           />
           <YAxis
             yAxisId="left"
-            tick={{ fontSize: 12, fill: '#6b7280' }}
-            stroke="#9ca3af"
+            tick={{ fontSize: 12, fill: chartPalette.textMuted }}
+            stroke={chartPalette.grid}
             label={{
               value: 'Precipitation (mm)',
               angle: -90,
               position: 'insideLeft',
-              style: { textAnchor: 'middle', fill: '#6b7280' },
+              style: { textAnchor: 'middle', fill: chartPalette.textMuted },
             }}
           />
           <YAxis
             yAxisId="right"
             orientation="right"
             domain={[0, 100]}
-            tick={{ fontSize: 12, fill: '#6b7280' }}
-            stroke="#9ca3af"
+            tick={{ fontSize: 12, fill: chartPalette.textMuted }}
+            stroke={chartPalette.grid}
             label={{
               value: 'Probability (%)',
               angle: 90,
               position: 'insideRight',
-              style: { textAnchor: 'middle', fill: '#6b7280' },
+              style: { textAnchor: 'middle', fill: chartPalette.textMuted },
             }}
           />
           <Tooltip content={<CustomTooltip />} />

@@ -317,7 +317,7 @@
 
 .error-message--modal .error-message__button--retry {
   background: rgba(255, 255, 255, 0.9);
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 .error-message--modal .error-message__button--retry:hover {
@@ -329,7 +329,7 @@
 .error-message__help {
   margin: var(--spacing-sm) 0 0 0;
   font-size: var(--font-md);
-  color: #6b7280;
+  color: var(--text-tertiary);
   font-style: italic;
   line-height: 1.5;
 }
@@ -388,21 +388,21 @@
 
 /* Inline mode - minimal suggestions */
 .error-message--inline .error-message__suggestions {
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--border-light);
   margin-top: 8px;
   padding-top: 8px;
 }
 
 .error-message--inline .error-message__suggestions-label {
-  color: #374151;
+  color: var(--text-secondary);
 }
 
 .error-message--inline .error-message__suggestion-item {
-  color: #4b5563;
+  color: var(--text-secondary);
 }
 
 .error-message--inline .error-message__suggestion-item::before {
-  color: #9ca3af;
+  color: var(--text-tertiary);
 }
 
 /* Banner mode - full suggestions */
