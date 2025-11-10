@@ -564,7 +564,7 @@ This document details the complete CSS audit and fixes implemented across three 
 /* 37 lines of duplicate [data-theme] overrides */
 [data-theme='dark'] .admin-panel {
   --text-primary: #f9fafb; /* Redefining global variable locally! */
-  --text-secondary: #9ca3af;
+  --text-secondary: #7b89a6;
   --card-bg: #1f2937;
   /* ... */
 }

@@ -300,8 +300,8 @@ WeatherDashboard.css is the **largest and most complex CSS file** in the project
 }
 
 .toggle-all-button:hover {
-  background: var(--hover-bg, #e5e7eb);
-  border-color: var(--text-tertiary, #6b7280);
+  background: var(--hover-bg, #e6ebf5);
+  border-color: var(--text-tertiary, #7b89a6);
 }
 ```
 
