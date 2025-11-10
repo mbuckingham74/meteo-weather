@@ -8,7 +8,8 @@ const { reverseGeocodeNominatim } = require('./geocodingService');
  * Documentation: https://www.visualcrossing.com/weather-api
  */
 
-const API_BASE_URL = 'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline';
+const API_BASE_URL =
+  'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline';
 const API_KEY = process.env.VISUAL_CROSSING_API_KEY;
 
 if (!API_KEY) {
@@ -55,7 +56,9 @@ async function sanitizeResolvedAddress(resolvedAddress, latitude, longitude) {
     }
 
     // Fallback to coordinates if Nominatim fails
-    console.log(`📍 Using coordinates as fallback: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+    console.log(
+      `📍 Using coordinates as fallback: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`
+    );
     return `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
   }
 
@@ -69,7 +72,6 @@ const MAX_CONCURRENT_REQUESTS = 3;
 const MIN_REQUEST_INTERVAL = 100; // ms between requests
 let activeRequests = 0;
 let lastRequestTime = 0;
-const requestQueue = [];
 
 /**
  * Throttle API requests to stay within rate limits
@@ -79,14 +81,16 @@ const requestQueue = [];
 async function throttleRequest(requestFn) {
   // Wait if too many concurrent requests
   while (activeRequests >= MAX_CONCURRENT_REQUESTS) {
-    await new Promise(resolve => setTimeout(resolve, 50));
+    await new Promise((resolve) => setTimeout(resolve, 50));
   }
 
   // Ensure minimum interval between requests
   const now = Date.now();
   const timeSinceLastRequest = now - lastRequestTime;
   if (timeSinceLastRequest < MIN_REQUEST_INTERVAL) {
-    await new Promise(resolve => setTimeout(resolve, MIN_REQUEST_INTERVAL - timeSinceLastRequest));
+    await new Promise((resolve) =>
+      setTimeout(resolve, MIN_REQUEST_INTERVAL - timeSinceLastRequest)
+    );
   }
 
   activeRequests++;
@@ -123,9 +127,11 @@ function buildApiUrl(location, startDate = '', endDate = '', options = {}) {
     key: API_KEY,
     unitGroup: options.unitGroup || 'metric',
     include: options.include || 'days,hours,current,alerts',
-    elements: options.elements || 'datetime,tempmax,tempmin,temp,feelslike,feelslikemax,feelslikemin,dew,humidity,precip,precipprob,snow,snowdepth,windspeed,winddir,pressure,cloudcover,visibility,uvindex,sunrise,sunset,moonphase,conditions,description,icon',
+    elements:
+      options.elements ||
+      'datetime,tempmax,tempmin,temp,feelslike,feelslikemax,feelslikemin,dew,humidity,precip,precipprob,snow,snowdepth,windspeed,winddir,pressure,cloudcover,visibility,uvindex,sunrise,sunset,moonphase,conditions,description,icon',
     contentType: 'json',
-    ...options
+    ...options,
   });
 
   return `${url}?${params.toString()}`;
@@ -144,14 +150,14 @@ async function makeApiRequest(url, retries = 2, delay = 1000) {
       const response = await axios.get(url, {
         timeout: 10000, // 10 second timeout
         headers: {
-          'Accept': 'application/json'
-        }
+          Accept: 'application/json',
+        },
       });
 
       return {
         success: true,
         data: response.data,
-        queryCost: response.data.queryCost || 0
+        queryCost: response.data.queryCost || 0,
       };
     } catch (error) {
       const statusCode = error.response?.status || 0;
@@ -159,7 +165,7 @@ async function makeApiRequest(url, retries = 2, delay = 1000) {
       // Handle rate limiting with exponential backoff
       if (statusCode === 429 && retries > 0) {
         // console.log(`⏳ Rate limit hit, retrying in ${delay}ms... (${retries} retries left)`); // Disabled: reduce log volume
-        await new Promise(resolve => setTimeout(resolve, delay));
+        await new Promise((resolve) => setTimeout(resolve, delay));
         return makeApiRequest(url, retries - 1, delay * 2); // Exponential backoff
       }
 
@@ -167,29 +173,30 @@ async function makeApiRequest(url, retries = 2, delay = 1000) {
 
       if (error.response) {
         // API responded with error
-        const errorMsg = statusCode === 429
-          ? 'Rate limit exceeded. Please try again later or upgrade your API plan.'
-          : error.response.data?.message || 'API request failed';
+        const errorMsg =
+          statusCode === 429
+            ? 'Rate limit exceeded. Please try again later or upgrade your API plan.'
+            : error.response.data?.message || 'API request failed';
 
         return {
           success: false,
           error: errorMsg,
           statusCode: statusCode,
-          rateLimitExceeded: statusCode === 429
+          rateLimitExceeded: statusCode === 429,
         };
       } else if (error.request) {
         // No response received
         return {
           success: false,
           error: 'No response from Visual Crossing API',
-          statusCode: 0
+          statusCode: 0,
         };
       } else {
         // Request setup error
         return {
           success: false,
           error: error.message,
-          statusCode: 0
+          statusCode: 0,
         };
       }
     }
@@ -204,14 +211,14 @@ async function testApiConnection() {
   if (!API_KEY) {
     return {
       success: false,
-      error: 'API key not configured'
+      error: 'API key not configured',
     };
   }
 
   try {
     const url = buildApiUrl('New York,NY', '', '', {
       include: 'current',
-      elements: 'temp,conditions'
+      elements: 'temp,conditions',
     });
 
     const result = await makeApiRequest(url);
@@ -220,9 +227,13 @@ async function testApiConnection() {
       return {
         success: true,
         message: 'Visual Crossing API connection successful',
-        location: await sanitizeResolvedAddress(result.data.resolvedAddress, result.data.latitude, result.data.longitude),
+        location: await sanitizeResolvedAddress(
+          result.data.resolvedAddress,
+          result.data.latitude,
+          result.data.longitude
+        ),
         currentTemp: result.data.currentConditions?.temp,
-        queryCost: result.queryCost
+        queryCost: result.queryCost,
       };
     } else {
       return result;
@@ -230,7 +241,7 @@ async function testApiConnection() {
   } catch (error) {
     return {
       success: false,
-      error: error.message
+      error: error.message,
     };
   }
 }
@@ -246,7 +257,7 @@ async function getCurrentWeather(location) {
     { endpoint: 'current', location },
     async () => {
       const url = buildApiUrl(location, '', '', {
-        include: 'current'
+        include: 'current',
       });
 
       const result = await makeApiRequest(url);
@@ -261,10 +272,14 @@ async function getCurrentWeather(location) {
       return {
         success: true,
         location: {
-          address: await sanitizeResolvedAddress(data.resolvedAddress, data.latitude, data.longitude),
+          address: await sanitizeResolvedAddress(
+            data.resolvedAddress,
+            data.latitude,
+            data.longitude
+          ),
           latitude: data.latitude,
           longitude: data.longitude,
-          timezone: data.timezone
+          timezone: data.timezone,
         },
         current: {
           datetime: current.datetime,
@@ -280,9 +295,9 @@ async function getCurrentWeather(location) {
           visibility: current.visibility,
           uvIndex: current.uvindex,
           conditions: current.conditions,
-          icon: current.icon
+          icon: current.icon,
         },
-        queryCost: result.queryCost
+        queryCost: result.queryCost,
       };
     },
     CACHE_TTL.CURRENT_WEATHER
@@ -308,7 +323,7 @@ async function getForecast(location, days = 7) {
       const endDateStr = endDate.toISOString().split('T')[0];
 
       const url = buildApiUrl(location, startDateStr, endDateStr, {
-        include: 'days'
+        include: 'days',
       });
 
       const result = await makeApiRequest(url);
@@ -322,12 +337,16 @@ async function getForecast(location, days = 7) {
       return {
         success: true,
         location: {
-          address: await sanitizeResolvedAddress(data.resolvedAddress, data.latitude, data.longitude),
+          address: await sanitizeResolvedAddress(
+            data.resolvedAddress,
+            data.latitude,
+            data.longitude
+          ),
           latitude: data.latitude,
           longitude: data.longitude,
-          timezone: data.timezone
+          timezone: data.timezone,
         },
-        forecast: data.days.map(day => ({
+        forecast: data.days.map((day) => ({
           date: day.datetime,
           tempMax: day.tempmax,
           tempMin: day.tempmin,
@@ -348,9 +367,9 @@ async function getForecast(location, days = 7) {
           sunset: day.sunset,
           conditions: day.conditions,
           description: day.description,
-          icon: day.icon
+          icon: day.icon,
         })),
-        queryCost: result.queryCost
+        queryCost: result.queryCost,
       };
     },
     CACHE_TTL.FORECAST
@@ -373,7 +392,7 @@ async function getHourlyForecast(location, hours = 48) {
   const endDateStr = endDate.toISOString().split('T')[0];
 
   const url = buildApiUrl(location, startDateStr, endDateStr, {
-    include: 'hours'
+    include: 'hours',
   });
 
   const result = await makeApiRequest(url);
@@ -386,9 +405,9 @@ async function getHourlyForecast(location, hours = 48) {
 
   // Flatten hours from all days
   const allHours = [];
-  data.days.forEach(day => {
+  data.days.forEach((day) => {
     if (day.hours) {
-      day.hours.forEach(hour => {
+      day.hours.forEach((hour) => {
         allHours.push({
           datetime: `${day.datetime}T${hour.datetime}`,
           date: day.datetime,
@@ -411,7 +430,7 @@ async function getHourlyForecast(location, hours = 48) {
           solarEnergy: hour.solarenergy,
           dewPoint: hour.dew,
           conditions: hour.conditions,
-          icon: hour.icon
+          icon: hour.icon,
         });
       });
     }
@@ -423,13 +442,13 @@ async function getHourlyForecast(location, hours = 48) {
   return {
     success: true,
     location: {
-      address: sanitizeResolvedAddress(data.resolvedAddress, data.latitude, data.longitude),
+      address: await sanitizeResolvedAddress(data.resolvedAddress, data.latitude, data.longitude),
       latitude: data.latitude,
       longitude: data.longitude,
-      timezone: data.timezone
+      timezone: data.timezone,
     },
     hourly: limitedHours,
-    queryCost: result.queryCost
+    queryCost: result.queryCost,
   };
 }
 
@@ -458,7 +477,9 @@ async function getHistoricalWeather(location, startDate, endDate) {
       );
 
       if (dbResult.success && dbResult.data.length > 0) {
-        console.log(`✅ Using pre-populated data from database (${dbResult.count} records) - API call saved!`);
+        console.log(
+          `✅ Using pre-populated data from database (${dbResult.count} records) - API call saved!`
+        );
 
         return {
           success: true,
@@ -467,10 +488,10 @@ async function getHistoricalWeather(location, startDate, endDate) {
             address: `${dbLocation.city_name}, ${dbLocation.state || dbLocation.country}`,
             latitude: dbLocation.latitude,
             longitude: dbLocation.longitude,
-            timezone: dbLocation.timezone
+            timezone: dbLocation.timezone,
           },
           historical: dbResult.data,
-          queryCost: 0 // No API cost!
+          queryCost: 0, // No API cost!
         };
       }
     }
@@ -480,7 +501,7 @@ async function getHistoricalWeather(location, startDate, endDate) {
   console.log(`⚠️  Data not in database, falling back to API call...`);
 
   const url = buildApiUrl(location, startDate, endDate, {
-    include: 'days'
+    include: 'days',
   });
 
   const result = await makeApiRequest(url);
@@ -495,12 +516,12 @@ async function getHistoricalWeather(location, startDate, endDate) {
     success: true,
     source: 'api',
     location: {
-      address: sanitizeResolvedAddress(data.resolvedAddress, data.latitude, data.longitude),
+      address: await sanitizeResolvedAddress(data.resolvedAddress, data.latitude, data.longitude),
       latitude: data.latitude,
       longitude: data.longitude,
-      timezone: data.timezone
+      timezone: data.timezone,
     },
-    historical: data.days.map(day => ({
+    historical: data.days.map((day) => ({
       date: day.datetime,
       tempMax: day.tempmax,
       tempMin: day.tempmin,
@@ -521,9 +542,9 @@ async function getHistoricalWeather(location, startDate, endDate) {
       sunset: day.sunset,
       conditions: day.conditions,
       description: day.description,
-      icon: day.icon
+      icon: day.icon,
     })),
-    queryCost: result.queryCost
+    queryCost: result.queryCost,
   };
 }
 
@@ -538,115 +559,122 @@ async function getHistoricalWeather(location, startDate, endDate) {
  * @returns {Promise<Object>} Historical weather data with statistics
  */
 async function getHistoricalDateData(location, date, years = 25) {
-  const cacheKey = `historical-date:${location}:${date}:${years}`;
+  return withCache(
+    'historical_date',
+    { location, date, years },
+    async () => {
+      const [month, day] = date.split('-');
+      const currentYear = new Date().getFullYear();
+      let historicalData = [];
 
-  return withCache(cacheKey, async () => {
-    const [month, day] = date.split('-');
-    const currentYear = new Date().getFullYear();
-    let historicalData = [];
+      console.log(`📅 Fetching ${years} years of historical data for ${date} in ${location}...`);
 
-    console.log(`📅 Fetching ${years} years of historical data for ${date} in ${location}...`);
+      // Step 1: Try to get data from database first
+      const dbLocation = await historicalDataService.findLocationByAddress(location);
 
-    // Step 1: Try to get data from database first
-    const dbLocation = await historicalDataService.findLocationByAddress(location);
-
-    if (dbLocation) {
-      const dbResult = await historicalDataService.getHistoricalDateDataFromDb(
-        dbLocation.id,
-        date,
-        years
-      );
-
-      if (dbResult.success && dbResult.data.length > 0) {
-        console.log(`✅ Using ${dbResult.data.length} years from database - API calls saved!`);
-
-        return {
-          location,
+      if (dbLocation) {
+        const dbResult = await historicalDataService.getHistoricalDateDataFromDb(
+          dbLocation.id,
           date,
-          years: dbResult.data.length,
-          requestedYears: years,
-          source: 'database',
-          data: dbResult.data,
-          statistics: {
-            averagePrecipitation: dbResult.stats.avgPrecip,
-            maxPrecipitation: dbResult.stats.maxPrecip,
-            minPrecipitation: dbResult.stats.minPrecip
-          }
-        };
-      }
-    }
-
-    // Step 2: Fallback to API if data not in database
-    console.log(`⚠️  Data not in database, falling back to API calls...`);
-
-    // Fetch data for each year in parallel (in batches to respect rate limits)
-    const BATCH_SIZE = 3; // Match MAX_CONCURRENT_REQUESTS
-
-    for (let i = 0; i < years; i += BATCH_SIZE) {
-      const batch = [];
-
-      for (let j = 0; j < BATCH_SIZE && (i + j) < years; j++) {
-        const year = currentYear - i - j - 1; // Start from last year
-        const fullDate = `${year}-${month}-${day}`;
-
-        batch.push(
-          (async () => {
-            try {
-              const url = buildApiUrl(location, fullDate, fullDate, {
-                include: 'days',
-                elements: 'datetime,tempmax,tempmin,temp,precip,precipprob,snow,conditions,description,icon'
-              });
-
-              const data = await makeApiRequest(url);
-
-              if (data.days && data.days.length > 0) {
-                return {
-                  year,
-                  date: fullDate,
-                  ...data.days[0]
-                };
-              }
-              return null;
-            } catch (error) {
-              console.error(`⚠️  Failed to fetch data for ${fullDate}:`, error.message);
-              return null;
-            }
-          })()
+          years
         );
+
+        if (dbResult.success && dbResult.data.length > 0) {
+          console.log(`✅ Using ${dbResult.data.length} years from database - API calls saved!`);
+
+          return {
+            location,
+            date,
+            years: dbResult.data.length,
+            requestedYears: years,
+            source: 'database',
+            data: dbResult.data,
+            statistics: {
+              averagePrecipitation: dbResult.stats.avgPrecip,
+              maxPrecipitation: dbResult.stats.maxPrecip,
+              minPrecipitation: dbResult.stats.minPrecip,
+            },
+          };
+        }
       }
 
-      const batchResults = await Promise.all(batch);
-      historicalData.push(...batchResults.filter(d => d !== null));
+      // Step 2: Fallback to API if data not in database
+      console.log(`⚠️  Data not in database, falling back to API calls...`);
 
-      // Small delay between batches
-      if (i + BATCH_SIZE < years) {
-        await new Promise(resolve => setTimeout(resolve, 200));
+      // Fetch data for each year in parallel (in batches to respect rate limits)
+      const BATCH_SIZE = 3; // Match MAX_CONCURRENT_REQUESTS
+
+      for (let i = 0; i < years; i += BATCH_SIZE) {
+        const batch = [];
+
+        for (let j = 0; j < BATCH_SIZE && i + j < years; j++) {
+          const year = currentYear - i - j - 1; // Start from last year
+          const fullDate = `${year}-${month}-${day}`;
+
+          batch.push(
+            (async () => {
+              try {
+                const url = buildApiUrl(location, fullDate, fullDate, {
+                  include: 'days',
+                  elements:
+                    'datetime,tempmax,tempmin,temp,precip,precipprob,snow,conditions,description,icon',
+                });
+
+                const data = await makeApiRequest(url);
+
+                if (data.days && data.days.length > 0) {
+                  return {
+                    year,
+                    date: fullDate,
+                    ...data.days[0],
+                  };
+                }
+                return null;
+              } catch (error) {
+                console.error(`⚠️  Failed to fetch data for ${fullDate}:`, error.message);
+                return null;
+              }
+            })()
+          );
+        }
+
+        const batchResults = await Promise.all(batch);
+        historicalData.push(...batchResults.filter((d) => d !== null));
+
+        // Small delay between batches
+        if (i + BATCH_SIZE < years) {
+          await new Promise((resolve) => setTimeout(resolve, 200));
+        }
       }
-    }
 
-    console.log(`✅ Retrieved ${historicalData.length}/${years} years of data`);
+      console.log(`✅ Retrieved ${historicalData.length}/${years} years of data`);
 
-    // Calculate statistics
-    const precipData = historicalData.map(d => d.precip || 0);
-    const avgPrecip = precipData.reduce((sum, val) => sum + val, 0) / precipData.length;
-    const maxPrecip = Math.max(...precipData);
-    const minPrecip = Math.min(...precipData);
+      // Calculate statistics
+      const precipData = historicalData.map((d) => d.precip || 0);
+      const avgPrecip = precipData.reduce((sum, val) => sum + val, 0) / precipData.length;
+      const maxPrecip = Math.max(...precipData);
+      const minPrecip = Math.min(...precipData);
 
-    return {
-      location,
-      date,
-      years: historicalData.length,
-      requestedYears: years,
-      data: historicalData.sort((a, b) => b.year - a.year), // Most recent first
-      statistics: {
-        averagePrecipitation: avgPrecip,
-        maxPrecipitation: maxPrecip,
-        minPrecipitation: minPrecip,
-        rainyDays: precipData.filter(p => p > 0.1).length, // Days with > 0.1mm rain
-        rainyDayPercentage: (precipData.filter(p => p > 0.1).length / precipData.length * 100).toFixed(1)
-      }
-    };
-  }, CACHE_TTL.HISTORICAL); // 7 days cache
+      return {
+        location,
+        date,
+        years: historicalData.length,
+        requestedYears: years,
+        data: historicalData.sort((a, b) => b.year - a.year), // Most recent first
+        statistics: {
+          averagePrecipitation: avgPrecip,
+          maxPrecipitation: maxPrecip,
+          minPrecipitation: minPrecip,
+          rainyDays: precipData.filter((p) => p > 0.1).length, // Days with > 0.1mm rain
+          rainyDayPercentage: (
+            (precipData.filter((p) => p > 0.1).length / precipData.length) *
+            100
+          ).toFixed(1),
+        },
+      };
+    },
+    CACHE_TTL.HISTORICAL
+  ); // 7 days cache
 }
 
 module.exports = {
@@ -657,5 +685,5 @@ module.exports = {
   getHistoricalWeather,
   getHistoricalDateData,
   // Exported for testing
-  buildApiUrl
+  buildApiUrl,
 };

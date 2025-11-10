@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef, lazy, Suspense } from 'react';
 import {
   BrowserRouter,
   Routes,
@@ -11,21 +11,29 @@ import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { LocationProvider, useLocation as useLocationContext } from './contexts/LocationContext';
 import { TemperatureUnitProvider } from './contexts/TemperatureUnitContext';
+import { ToastProvider } from './components/common/ToastContainer';
 import ErrorBoundary from './components/common/ErrorBoundary';
 import SkipToContent from './components/common/SkipToContent';
 import AuthHeader from './components/auth/AuthHeader';
 import WeatherDashboard from './components/weather/WeatherDashboard';
-import LocationComparisonView from './components/location/LocationComparisonView';
 import PrivacyPolicy from './components/legal/PrivacyPolicy';
-import AIWeatherPage from './components/ai/AIWeatherPage';
-import SharedAnswerPage from './components/ai/SharedAnswerPage';
-import UserPreferencesPage from './components/settings/UserPreferencesPage';
-import AboutPage from './components/about/AboutPage';
 import { parseLocationSlug } from './utils/urlHelpers';
 import { geocodeLocation } from './services/weatherApi';
-import './styles/themes.css';
-import './App.css';
-import './styles/density-compact.css'; // MUST be last to override component styles
+import './styles/main.css'; // ITCSS architecture - imports all base styles
+import './App.css'; // App-specific styles
+
+// Code-split heavy components that aren't needed on initial load
+const LocationComparisonView = lazy(() => import('./components/location/LocationComparisonView'));
+const AIWeatherPage = lazy(() => import('./components/ai/AIWeatherPage'));
+const SharedAnswerPage = lazy(() => import('./components/ai/SharedAnswerPage'));
+const UserPreferencesPage = lazy(() => import('./components/settings/UserPreferencesPage'));
+const AboutPage = lazy(() => import('./components/about/AboutPage'));
+const AdminPanel = lazy(() => import('./components/admin/AdminPanel'));
+
+// Loading fallback component
+function PageLoader() {
+  return <div className="page-loader">Loading...</div>;
+}
 
 function RouteAwareLocationManager() {
   const routerLocation = useRouterLocation();
@@ -33,6 +41,12 @@ function RouteAwareLocationManager() {
   const lastSyncedRef = useRef(null);
 
   useEffect(() => {
+    // Skip location management for non-weather routes
+    const skipRoutes = ['/admin', '/compare', '/about', '/privacy', '/preferences', '/ai-weather'];
+    if (skipRoutes.some((route) => routerLocation.pathname.startsWith(route))) {
+      return;
+    }
+
     const locationState = routerLocation.state?.location;
     if (locationState && locationState.address) {
       const key = `state:${locationState.latitude},${locationState.longitude}`;
@@ -66,7 +80,6 @@ function RouteAwareLocationManager() {
         }
       } catch (error) {
         if (!isCancelled) {
-          // eslint-disable-next-line no-console
           console.error('Error loading location from URL:', error);
         }
       }
@@ -83,29 +96,8 @@ function RouteAwareLocationManager() {
 function ComparePage() {
   return (
     <>
-      <div style={{ padding: '20px 20px 0 20px', maxWidth: '1400px', margin: '0 auto' }}>
-        <Link
-          to="/"
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            padding: '8px 16px',
-            background: '#f3f4f6',
-            borderRadius: '8px',
-            textDecoration: 'none',
-            color: '#374151',
-            fontWeight: '600',
-            fontSize: '14px',
-            transition: 'background 0.2s',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = '#e5e7eb';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = '#f3f4f6';
-          }}
-        >
+      <div className="compare-page-wrapper">
+        <Link to="/" className="compare-back-link">
           ← Back to Dashboard
         </Link>
       </div>
@@ -121,17 +113,20 @@ function AppShell() {
       <AuthHeader />
       <RouteAwareLocationManager />
       <main id="main-content" tabIndex={-1}>
-        <Routes>
-          <Route path="/" element={<WeatherDashboard />} />
-          <Route path="/location/:slug" element={<WeatherDashboard />} />
-          <Route path="/compare" element={<ComparePage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/privacy" element={<PrivacyPolicy />} />
-          <Route path="/preferences" element={<UserPreferencesPage />} />
-          <Route path="/ai-weather" element={<AIWeatherPage />} />
-          <Route path="/ai-weather/shared/:shareId" element={<SharedAnswerPage />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            <Route path="/" element={<WeatherDashboard />} />
+            <Route path="/location/:slug" element={<WeatherDashboard />} />
+            <Route path="/compare" element={<ComparePage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/preferences" element={<UserPreferencesPage />} />
+            <Route path="/ai-weather" element={<AIWeatherPage />} />
+            <Route path="/ai-weather/shared/:shareId" element={<SharedAnswerPage />} />
+            <Route path="/admin" element={<AdminPanel />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Suspense>
       </main>
     </div>
   );
@@ -140,17 +135,19 @@ function AppShell() {
 function App() {
   return (
     <ErrorBoundary>
-      <AuthProvider>
-        <ThemeProvider>
-          <TemperatureUnitProvider>
-            <LocationProvider>
-              <BrowserRouter>
-                <AppShell />
-              </BrowserRouter>
-            </LocationProvider>
-          </TemperatureUnitProvider>
-        </ThemeProvider>
-      </AuthProvider>
+      <ToastProvider>
+        <AuthProvider>
+          <ThemeProvider>
+            <TemperatureUnitProvider>
+              <LocationProvider>
+                <BrowserRouter>
+                  <AppShell />
+                </BrowserRouter>
+              </LocationProvider>
+            </TemperatureUnitProvider>
+          </ThemeProvider>
+        </AuthProvider>
+      </ToastProvider>
     </ErrorBoundary>
   );
 }

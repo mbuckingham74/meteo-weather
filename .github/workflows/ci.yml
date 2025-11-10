@@ -1,83 +1,185 @@
-name: CI
+name: CI Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, develop ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, develop ]
+
+# Cancel in-progress workflows when new commit is pushed
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '20.x'
 
 jobs:
-    # Backend testing and linting
-    backend:
-      name: Backend Tests
-      runs-on: ubuntu-latest
+  # ============================================================================
+  # BACKEND JOBS
+  # ============================================================================
 
-      strategy:
-        matrix:
-          node-version: [20.x]
+  backend-lint:
+    name: Backend Lint
+    runs-on: ubuntu-latest
+    # Skip if commit message contains [skip ci]
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
 
-      steps:
-      - uses: actions/checkout@v3
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd backend
+          npm ci
+
+      - name: Run ESLint
+        run: |
+          cd backend
+          npm run lint
+
+  backend-test:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: test_password
+          MYSQL_DATABASE: meteo_app_test
+        ports:
+          - 3307:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    strategy:
+      matrix:
+        node-version: [20.x, 22.x]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
           cache-dependency-path: backend/package-lock.json
 
-      - name: Install backend dependencies
+      - name: Install dependencies
         run: |
           cd backend
-          npm install
+          npm ci
 
-      - name: Lint backend code
+      - name: Create test environment file
         run: |
           cd backend
-          npm run lint || echo "Linting not configured yet"
+          cat > .env.test << EOF
+          NODE_ENV=test
+          DB_HOST=127.0.0.1
+          DB_PORT=3307
+          DB_NAME=meteo_app_test
+          DB_USER=root
+          DB_PASSWORD=test_password
+          VISUAL_CROSSING_API_KEY=test_key
+          JWT_SECRET=test_secret
+          EOF
 
-      - name: Run backend tests
+      - name: Run tests
         run: |
           cd backend
-          npm test || echo "Tests not implemented yet"
+          npm test
         env:
           NODE_ENV: test
 
-    # Frontend testing and linting
-    frontend:
-      name: Frontend Tests
-      runs-on: ubuntu-latest
-
-      strategy:
-        matrix:
-          node-version: [20.x]
-
-      steps:
-      - uses: actions/checkout@v3
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          name: backend-test-results-node-${{ matrix.node-version }}
+          path: backend/coverage/
+          retention-days: 7
+
+  # ============================================================================
+  # FRONTEND JOBS
+  # ============================================================================
+
+  frontend-lint:
+    name: Frontend Lint
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
 
-      - name: Install frontend dependencies
+      - name: Install dependencies
         run: |
           cd frontend
-          npm install
+          npm ci
 
       - name: Validate build configuration
         run: |
           cd frontend
           npm run validate
 
-      - name: Lint frontend code
+      - name: Run ESLint
         run: |
           cd frontend
           npm run lint
 
-      - name: Run frontend tests with coverage
+      - name: Run Stylelint
+        run: |
+          cd frontend
+          npm run lint:css
+
+  frontend-test:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+
+    strategy:
+      matrix:
+        node-version: [20.x, 22.x]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm ci
+
+      - name: Run tests with coverage
         run: |
           cd frontend
           npm run test:ci
@@ -87,7 +189,6 @@ jobs:
       - name: Check coverage thresholds
         run: |
           cd frontend
-          # Extract coverage from coverage-summary.json (already generated from previous step)
           if [ -f coverage/coverage-summary.json ]; then
             STATEMENTS=$(cat coverage/coverage-summary.json | grep -o '"statements":{"total":[0-9]*,"covered":[0-9]*,"skipped":[0-9]*,"pct":[0-9.]*' | grep -o 'pct":[0-9.]*' | cut -d: -f2 | head -1)
             BRANCHES=$(cat coverage/coverage-summary.json | grep -o '"branches":{"total":[0-9]*,"covered":[0-9]*,"skipped":[0-9]*,"pct":[0-9.]*' | grep -o 'pct":[0-9.]*' | cut -d: -f2 | head -1)
@@ -140,22 +241,21 @@ jobs:
             echo "⚠️ Coverage summary file not found"
             exit 1
           fi
-        continue-on-error: false
 
       - name: Upload coverage reports
+        if: matrix.node-version == '20.x'
         uses: actions/upload-artifact@v4
-        if: always()
         with:
-          name: coverage-report
+          name: frontend-coverage-report
           path: frontend/coverage/
           retention-days: 30
 
       - name: Generate coverage summary
-        if: always()
+        if: matrix.node-version == '20.x' && always()
         run: |
           cd frontend
           if [ -f coverage/coverage-summary.json ]; then
-            echo "## Test Coverage Summary" >> $GITHUB_STEP_SUMMARY
+            echo "## 📊 Test Coverage Summary" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "| Metric | Coverage |" >> $GITHUB_STEP_SUMMARY
             echo "|--------|----------|" >> $GITHUB_STEP_SUMMARY
@@ -171,74 +271,172 @@ jobs:
             echo "| Lines | $LINES% |" >> $GITHUB_STEP_SUMMARY
           fi
 
-      - name: Comment PR with test results
-        if: github.event_name == 'pull_request' && always()
-        uses: actions/github-script@v6
+  frontend-build:
+    name: Frontend Build
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm ci
+
+      - name: Build production bundle
+        run: |
+          cd frontend
+          npm run build
+        env:
+          VITE_API_URL: https://api.meteo-beta.tachyonfuture.com/api
+          CI: true
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: frontend/dist/
+          retention-days: 7
+
+  # ============================================================================
+  # DOCKER JOBS
+  # ============================================================================
+
+  docker-build:
+    name: Docker Build Test
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+
+    strategy:
+      matrix:
+        component: [backend, frontend]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build ${{ matrix.component }} Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./${{ matrix.component }}
+          push: false
+          tags: meteo-${{ matrix.component }}:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  docker-compose-validation:
+    name: Docker Compose Validation
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate docker-compose.yml
+        run: docker compose config
+
+      - name: Create dummy .env.production for validation
+        run: cp .env.example .env.production
+
+      - name: Validate docker-compose.prod.yml
+        run: docker compose -f docker-compose.prod.yml config
+
+  # ============================================================================
+  # PR FEEDBACK JOB
+  # ============================================================================
+
+  pr-comment:
+    name: Post PR Comment
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    needs: [frontend-test, backend-test]
+
+    steps:
+      - name: Download coverage report
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-coverage-report
+          path: coverage/
+
+      - name: Comment PR with results
+        uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
-            const coveragePath = 'frontend/coverage/coverage-summary.json';
+            const coveragePath = 'coverage/coverage-summary.json';
 
-            let coverageComment = '## 🧪 Test Results\n\n';
+            let comment = '## 🧪 CI Test Results\n\n';
+            comment += '✅ All tests passed!\n\n';
 
             if (fs.existsSync(coveragePath)) {
               const coverage = JSON.parse(fs.readFileSync(coveragePath, 'utf8'));
               const total = coverage.total;
 
-              coverageComment += '### Coverage Summary\n\n';
-              coverageComment += '| Metric | Coverage |\n';
-              coverageComment += '|--------|----------|\n';
-              coverageComment += `| Statements | ${total.statements.pct}% |\n`;
-              coverageComment += `| Branches | ${total.branches.pct}% |\n`;
-              coverageComment += `| Functions | ${total.functions.pct}% |\n`;
-              coverageComment += `| Lines | ${total.lines.pct}% |\n\n`;
-
-              const threshold = 25;
-              if (total.statements.pct >= threshold) {
-                coverageComment += `✅ Coverage meets minimum threshold (${threshold}%)\n`;
-              } else {
-                coverageComment += `❌ Coverage below minimum threshold (${threshold}%)\n`;
-              }
-            } else {
-              coverageComment += '⚠️ Coverage report not found\n';
+              comment += '### 📊 Frontend Coverage\n\n';
+              comment += '| Metric | Coverage | Status |\n';
+              comment += '|--------|----------|--------|\n';
+              comment += `| Statements | ${total.statements.pct}% | ${total.statements.pct >= 25 ? '✅' : '❌'} |\n`;
+              comment += `| Branches | ${total.branches.pct}% | ${total.branches.pct >= 15 ? '✅' : '❌'} |\n`;
+              comment += `| Functions | ${total.functions.pct}% | ${total.functions.pct >= 20 ? '✅' : '❌'} |\n`;
+              comment += `| Lines | ${total.lines.pct}% | ${total.lines.pct >= 25 ? '✅' : '❌'} |\n\n`;
             }
+
+            comment += '---\n';
+            comment += '*CI Pipeline completed in Node.js 20.x and 22.x*\n';
 
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: coverageComment
+              body: comment
             });
 
-      - name: Build frontend
+  # ============================================================================
+  # FINAL STATUS CHECK (Required for branch protection)
+  # ============================================================================
+
+  ci-success:
+    name: CI Success
+    runs-on: ubuntu-latest
+    needs:
+      - backend-lint
+      - backend-test
+      - frontend-lint
+      - frontend-test
+      - frontend-build
+      - docker-build
+      - docker-compose-validation
+    if: always()
+
+    steps:
+      - name: Check all jobs success
         run: |
-          cd frontend
-          npm run build
-        env:
-          VITE_API_URL: http://localhost:5001/api
-          CI: true
+          if [ "${{ contains(needs.*.result, 'failure') }}" == "true" ] || [ "${{ contains(needs.*.result, 'cancelled') }}" == "true" ]; then
+            echo "❌ One or more CI jobs failed or were cancelled"
+            exit 1
+          fi
+          echo "✅ All CI jobs passed successfully!"
 
-    # Docker build validation
-    docker:
-      name: Docker Build
-      runs-on: ubuntu-latest
-
-      steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Build backend Docker image
+      - name: Summary
         run: |
-          cd backend
-          docker build -t meteo-backend:test .
-
-      - name: Build frontend Docker image
-        run: |
-          cd frontend
-          docker build -t meteo-frontend:test .
-
-      - name: Verify Docker Compose configuration
-        run: |
-          docker compose config
+          echo "## ✅ CI Pipeline Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "All quality checks passed:" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Backend linting and tests" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Frontend linting and tests" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Frontend production build" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Docker images build" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Docker Compose validation" >> $GITHUB_STEP_SUMMARY

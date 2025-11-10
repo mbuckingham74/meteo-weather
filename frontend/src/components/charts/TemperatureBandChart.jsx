@@ -7,9 +7,9 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Legend
+  Legend,
 } from 'recharts';
-import './charts.css';
+import { chartPalette } from '../../constants';
 import { TEMPERATURE_BANDS } from '../../utils/colorScales';
 import { formatTemperature, formatDateShort } from '../../utils/weatherHelpers';
 
@@ -17,10 +17,16 @@ import { formatTemperature, formatDateShort } from '../../utils/weatherHelpers';
  * Temperature Band Chart Component
  * Weather Spark-style color-coded temperature visualization
  */
-function TemperatureBandChart({ data, unit = 'C', height = 400, days, aggregationLabel }) {
+function TemperatureBandChart({
+  data,
+  unit = 'C',
+  height = 400,
+  days,
+  aggregationLabel: _aggregationLabel,
+}) {
   if (!data || data.length === 0) {
     return (
-      <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary, #6b7280)' }}>
+      <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' }}>
         No temperature data available
       </div>
     );
@@ -36,13 +42,13 @@ function TemperatureBandChart({ data, unit = 'C', height = 400, days, aggregatio
   };
 
   // Format data for Recharts
-  const chartData = data.map(day => ({
+  const chartData = data.map((day) => ({
     date: day.date,
     displayDate: day.displayLabel || formatDateShort(day.date), // Use displayLabel if available (for aggregated data)
     high: day.tempMax || day.tempHigh,
     low: day.tempMin || day.tempLow,
     avg: day.tempAvg || day.temp,
-    aggregatedDays: day.aggregatedDays // Track if this is aggregated data
+    aggregatedDays: day.aggregatedDays, // Track if this is aggregated data
   }));
 
   // Custom tooltip
@@ -52,28 +58,37 @@ function TemperatureBandChart({ data, unit = 'C', height = 400, days, aggregatio
     const data = payload[0].payload;
 
     return (
-      <div style={{
-        background: 'var(--bg-elevated, white)',
-        padding: '12px',
-        border: '1px solid var(--border-light, #e5e7eb)',
-        borderRadius: '8px',
-        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-      }}>
-        <p style={{ margin: '0 0 8px 0', fontWeight: 'bold', color: 'var(--text-primary, #111827)' }}>
+      <div
+        style={{
+          background: 'var(--bg-elevated)',
+          padding: '12px',
+          border: '1px solid var(--border-light)',
+          borderRadius: '8px',
+          boxShadow: 'var(--shadow-sm, 0 4px 6px rgba(0, 0, 0, 0.1))',
+        }}
+      >
+        <p style={{ margin: '0 0 8px 0', fontWeight: 'bold', color: 'var(--text-primary)' }}>
           {data.displayDate}
         </p>
         {data.aggregatedDays && (
-          <p style={{ margin: '0 0 8px 0', fontSize: '11px', color: '#667eea', fontStyle: 'italic' }}>
+          <p
+            style={{
+              margin: '0 0 8px 0',
+              fontSize: '11px',
+              color: chartPalette.positive,
+              fontStyle: 'italic',
+            }}
+          >
             ({data.aggregatedDays} days averaged)
           </p>
         )}
-        <p style={{ margin: '4px 0', color: '#dc2626' }}>
+        <p style={{ margin: '4px 0', color: chartPalette.hot }}>
           High: {formatTemperature(data.high, unit)}
         </p>
-        <p style={{ margin: '4px 0', color: '#3b82f6' }}>
+        <p style={{ margin: '4px 0', color: chartPalette.cool }}>
           Low: {formatTemperature(data.low, unit)}
         </p>
-        <p style={{ margin: '4px 0', color: 'var(--text-secondary, #6b7280)' }}>
+        <p style={{ margin: '4px 0', color: 'var(--text-secondary)' }}>
           Avg: {formatTemperature(data.avg, unit)}
         </p>
       </div>
@@ -82,46 +97,48 @@ function TemperatureBandChart({ data, unit = 'C', height = 400, days, aggregatio
 
   return (
     <div>
-      <h3 style={{ marginBottom: '8px', marginTop: '0', color: 'var(--text-primary, #111827)', fontSize: '16px', fontWeight: '600' }}>
+      <h3
+        style={{
+          marginBottom: '8px',
+          marginTop: '0',
+          color: 'var(--text-primary)',
+          fontSize: '16px',
+          fontWeight: '600',
+        }}
+      >
         Temperature Range - {getTimeLabel()}
       </h3>
       <ResponsiveContainer width="100%" height={height}>
-        <AreaChart
-          data={chartData}
-          margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+        <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke={chartPalette.grid} />
           <XAxis
             dataKey="displayDate"
-            tick={{ fontSize: 11, fill: '#6b7280' }}
-            stroke="#9ca3af"
+            tick={{ fontSize: 11, fill: chartPalette.textMuted }}
+            stroke={chartPalette.grid}
             angle={chartData.length > 20 ? -45 : 0}
             textAnchor={chartData.length > 20 ? 'end' : 'middle'}
             height={chartData.length > 20 ? 80 : 30}
             interval={chartData.length > 30 ? 'preserveStartEnd' : 0}
           />
           <YAxis
-            tick={{ fontSize: 12, fill: '#6b7280' }}
-            stroke="#9ca3af"
+            tick={{ fontSize: 12, fill: chartPalette.textMuted }}
+            stroke={chartPalette.grid}
             label={{
               value: `Temperature (°${unit})`,
               angle: -90,
               position: 'insideLeft',
-              style: { textAnchor: 'middle', fill: '#6b7280' }
+              style: { textAnchor: 'middle', fill: chartPalette.textMuted },
             }}
           />
           <Tooltip content={<CustomTooltip />} />
-          <Legend
-            wrapperStyle={{ paddingTop: '20px' }}
-            iconType="line"
-          />
+          <Legend wrapperStyle={{ paddingTop: '20px' }} iconType="line" />
 
           {/* Temperature high area */}
           <Area
             type="monotone"
             dataKey="high"
-            stroke="#ef4444"
-            fill="#fecaca"
+            stroke={chartPalette.hot}
+            fill="var(--error-bg)"
             strokeWidth={2}
             name="High"
             fillOpacity={0.4}
@@ -131,8 +148,8 @@ function TemperatureBandChart({ data, unit = 'C', height = 400, days, aggregatio
           <Area
             type="monotone"
             dataKey="low"
-            stroke="#3b82f6"
-            fill="#bfdbfe"
+            stroke={chartPalette.cool}
+            fill="var(--info-bg)"
             strokeWidth={2}
             name="Low"
             fillOpacity={0.4}
@@ -142,7 +159,7 @@ function TemperatureBandChart({ data, unit = 'C', height = 400, days, aggregatio
           <Area
             type="monotone"
             dataKey="avg"
-            stroke="#8b5cf6"
+            stroke={chartPalette.accentSecondary}
             fill="none"
             strokeWidth={2}
             name="Average"
@@ -152,20 +169,36 @@ function TemperatureBandChart({ data, unit = 'C', height = 400, days, aggregatio
       </ResponsiveContainer>
 
       {/* Temperature Band Legend */}
-      <div style={{ marginTop: '12px', padding: '8px', background: '#f9fafb', borderRadius: '8px' }}>
-        <p style={{ margin: '0 0 6px 0', fontSize: '13px', fontWeight: '600', color: 'var(--text-secondary, #374151)' }}>
+      <div
+        style={{
+          marginTop: '12px',
+          padding: '8px',
+          background: chartPalette.surface,
+          borderRadius: '8px',
+        }}
+      >
+        <p
+          style={{
+            margin: '0 0 6px 0',
+            fontSize: '13px',
+            fontWeight: '600',
+            color: 'var(--text-secondary)',
+          }}
+        >
           Temperature Comfort Zones:
         </p>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-          {TEMPERATURE_BANDS.map(band => (
+          {TEMPERATURE_BANDS.map((band) => (
             <div key={band.name} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <div style={{
-                width: '16px',
-                height: '16px',
-                backgroundColor: band.color,
-                borderRadius: '3px'
-              }} />
-              <span style={{ fontSize: '12px', color: 'var(--text-secondary, #6b7280)' }}>
+              <div
+                style={{
+                  width: '16px',
+                  height: '16px',
+                  backgroundColor: band.color,
+                  borderRadius: '3px',
+                }}
+              />
+              <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
                 {band.name} ({band.min}°-{band.max}°C)
               </span>
             </div>

@@ -18,14 +18,14 @@ import useKeyboardShortcuts, {
 import useLocationConfirmation from '../../../hooks/useLocationConfirmation';
 import { WEATHER_CONFIG } from '../../../constants/weather';
 import WeatherAlertsBanner from '../WeatherAlertsBanner';
-import DashboardSkeleton from '../../common/DashboardSkeleton';
 import UniversalSearchBar from '../../ai/UniversalSearchBar';
 import LocationConfirmationModal from '../../location/LocationConfirmationModal';
-import TemperatureUnitToggle from '../../units/TemperatureUnitToggle';
 import RadarMap from '../RadarMap';
 import TodaysHighlights from './TodaysHighlights';
 import ChartsGrid from './ChartsGrid';
+import { Button, Grid, Stack, Surface } from '@components/ui/primitives';
 import '../WeatherDashboard.css';
+import HeroControls from './HeroControls';
 
 /**
  * Weather Dashboard Component
@@ -96,6 +96,17 @@ function WeatherDashboard() {
       announce(`Location changed to ${locationData.address}`);
     }
   }, [locationData?.address, announce]);
+
+  // Announce weather data loading status to screen readers
+  useEffect(() => {
+    if (loading) {
+      announce('Loading weather data...');
+    } else if (error) {
+      announce(`Error loading weather data: ${error}`);
+    } else if (data) {
+      announce('Weather data loaded successfully');
+    }
+  }, [loading, error, data, announce]);
 
   // Auto-detect location on home page if no location saved
   useEffect(() => {
@@ -202,35 +213,37 @@ function WeatherDashboard() {
     return unit === 'F' ? Math.round(celsiusToFahrenheit(tempCelsius)) : Math.round(tempCelsius);
   };
 
-  // Get city name for button (extract first part of address, truncate if too long)
-  const getCityName = () => {
-    const address = data?.location?.address || locationData?.address || location || 'Location';
-
-    // If address is a placeholder, return "Your Location"
-    if (/^(old location|location|unknown|coordinates?|unnamed)$/i.test(address.trim())) {
-      return 'Your Location';
-    }
-
-    const cityName = address.split(',')[0].trim();
-    return cityName.length > 20 ? cityName.substring(0, 20) + '...' : cityName;
-  };
-
   // Format location name to show city name (extracted from address)
   const getFormattedLocationName = () => {
-    const address =
-      data?.location?.address || locationData?.address || location || 'Unknown Location';
+    // CRITICAL FIX: Prioritize API-resolved address over stored coordinates
+    // The API (via Nominatim reverse geocoding) resolves coordinates to city names
+    // We should use that resolved name, not fall back to showing "Your Location"
+    // See docs/troubleshooting/OLD_LOCATION_BUG_FIX.md for context
+
+    // Check if API has returned a resolved address (not coordinates)
+    const apiAddress = data?.location?.address;
+    const isApiAddressResolved = apiAddress && !/^-?\d+\.\d+,\s*-?\d+\.\d+$/.test(apiAddress);
+
+    // Use API-resolved address if available, otherwise fall back to stored data
+    const address = isApiAddressResolved
+      ? apiAddress
+      : locationData?.address || location || 'Unknown Location';
 
     // If it's coordinates (lat,lon pattern), show "Your Location" as user-friendly display
     // NOTE: This is for DISPLAY ONLY - the coordinates are still sent to the API for accurate weather
     // See docs/troubleshooting/OLD_LOCATION_BUG_FIX.md for full context
     if (/^-?\d+\.\d+,\s*-?\d+\.\d+$/.test(address)) {
+      // If API has a displayName, use that instead of "Your Location"
+      if (data?.location?.displayName) {
+        return data.location.displayName;
+      }
       return 'Your Location';
     }
 
     // If address is a placeholder or generic name (API couldn't resolve it)
     // This fixes cached "Old Location" values from earlier API responses
     if (/^(old location|location|unknown|coordinates?|unnamed)$/i.test(address.trim())) {
-      return 'Your Location';
+      return data?.location?.displayName || locationData?.displayName || 'Your Location';
     }
 
     // If address is the generic fallback, use displayName if available
@@ -256,8 +269,23 @@ function WeatherDashboard() {
 
   return (
     <div className="weather-dashboard">
+      {/* Main page heading for accessibility */}
+      <h1 className="sr-only">Meteo Weather Dashboard</h1>
+
+      {/* Live region for screen reader announcements */}
+      <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
+        {loading && 'Loading weather data...'}
+        {error && `Error: ${error}`}
+        {!loading && !error && data && 'Weather data loaded'}
+      </div>
+
       {/* Loading State */}
-      {loading && <DashboardSkeleton />}
+      {loading && (
+        <div className="loading-state">
+          <div className="spinner"></div>
+          <p>Loading weather data...</p>
+        </div>
+      )}
 
       {/* Error State */}
       {error && (
@@ -272,18 +300,36 @@ function WeatherDashboard() {
       {!loading && !error && data && (
         <>
           {/* UNIFIED HERO CARD - Everything in one place */}
-          <div className="unified-hero-card">
+          <Surface
+            as="section"
+            padding="none"
+            radius="lg"
+            elevation="xl"
+            className="unified-hero-card"
+          >
             {/* Search Section */}
-            <div className="hero-search-section">
+            <Surface
+              as="div"
+              padding="md"
+              background="var(--bg-secondary)"
+              border="transparent"
+              className="hero-search-section"
+            >
               <UniversalSearchBar />
-            </div>
+            </Surface>
 
             {/* Main Weather Display - Two Column Layout */}
-            <div className="hero-weather-display">
+            <Grid
+              as="div"
+              columns={{ base: 1, lg: 2 }}
+              gap="lg"
+              align="start"
+              className="hero-weather-display"
+            >
               {/* LEFT COLUMN: Weather Info */}
-              <div className="hero-left-column">
+              <Stack as="div" gap="md" className="hero-left-column">
                 {/* Location Header */}
-                <div className="hero-location-header">
+                <Stack as="div" gap="xs" className="hero-location-header">
                   <h2 className="hero-location-name">{getFormattedLocationName()}</h2>
                   <p className="hero-location-coords">
                     {data.location?.latitude?.toFixed(4) || locationData?.latitude?.toFixed(4)},{' '}
@@ -291,7 +337,7 @@ function WeatherDashboard() {
                     {(data.location?.timezone || locationData?.timezone) &&
                       ` • ${data.location?.timezone || locationData?.timezone}`}
                   </p>
-                </div>
+                </Stack>
 
                 {/* Current Temperature & Conditions */}
                 {currentWeather?.data && !currentWeather.loading && (
@@ -300,34 +346,68 @@ function WeatherDashboard() {
                       <div className="hero-temperature">
                         {convertTemp(currentWeather.data.current.temperature)}°{unit}
                       </div>
-                      <div className="hero-conditions-text">
-                        <div className="hero-condition-primary">
-                          {currentWeather.data.current.conditions}
-                        </div>
-                        <div className="hero-feels-like">
-                          Feels like {convertTemp(currentWeather.data.current.feelsLike)}°{unit}
-                        </div>
+                      <div className="hero-feels-like">
+                        Feels like {convertTemp(currentWeather.data.current.feelsLike)}°{unit}
                       </div>
                     </div>
 
-                    {/* Quick Stats Bar - Compact 3 column */}
-                    <div className="hero-quick-stats">
+                    {/* Quick Stats Bar - Compact 5 column with conditions */}
+                    <Grid
+                      as="div"
+                      columns={{ base: 2, md: 3, xl: 5 }}
+                      gap="xs"
+                      className="hero-quick-stats"
+                    >
                       <div className="hero-stat">
-                        <span className="hero-stat-icon">💨</span>
+                        <span className="hero-stat-icon" aria-hidden="true">
+                          {currentWeather.data.current.conditions?.toLowerCase().includes('rain')
+                            ? '🌧️'
+                            : currentWeather.data.current.conditions
+                                  ?.toLowerCase()
+                                  .includes('cloud')
+                              ? '☁️'
+                              : currentWeather.data.current.conditions
+                                    ?.toLowerCase()
+                                    .includes('clear')
+                                ? '☀️'
+                                : '🌤️'}
+                        </span>
+                        <span className="hero-stat-value">
+                          {currentWeather.data.current.conditions}
+                        </span>
+                        <span className="hero-stat-label">Conditions</span>
+                      </div>
+                      <div className="hero-stat">
+                        <span className="hero-stat-icon" aria-hidden="true">
+                          💧
+                        </span>
+                        <span className="hero-stat-value">
+                          {data.forecast?.[0]?.precipProbability ?? 0}%
+                        </span>
+                        <span className="hero-stat-label">Precip Chance</span>
+                      </div>
+                      <div className="hero-stat">
+                        <span className="hero-stat-icon" aria-hidden="true">
+                          💨
+                        </span>
                         <span className="hero-stat-value">
                           {Math.round(currentWeather.data.current.windSpeed)} mph
                         </span>
                         <span className="hero-stat-label">Wind</span>
                       </div>
                       <div className="hero-stat">
-                        <span className="hero-stat-icon">💧</span>
+                        <span className="hero-stat-icon" aria-hidden="true">
+                          💧
+                        </span>
                         <span className="hero-stat-value">
                           {currentWeather.data.current.humidity}%
                         </span>
                         <span className="hero-stat-label">Humidity</span>
                       </div>
                       <div className="hero-stat">
-                        <span className="hero-stat-icon">🌧️</span>
+                        <span className="hero-stat-icon" aria-hidden="true">
+                          🌧️
+                        </span>
                         <span className="hero-stat-value">
                           {hourlyData?.data?.hourly
                             ? hourlyData.data.hourly
@@ -339,7 +419,7 @@ function WeatherDashboard() {
                         </span>
                         <span className="hero-stat-label">24h Precip</span>
                       </div>
-                    </div>
+                    </Grid>
                   </div>
                 )}
 
@@ -356,32 +436,15 @@ function WeatherDashboard() {
                 )}
 
                 {/* Quick Actions - Compact */}
-                <div className="hero-actions-section">
-                  <div className="hero-action-buttons">
-                    <button
-                      className="hero-action-btn"
-                      onClick={handleDetectLocation}
-                      disabled={detectingLocation}
-                    >
-                      <span>{detectingLocation ? '🔄' : '📍'}</span>
-                      {detectingLocation ? 'Detecting...' : 'Use My Location'}
-                    </button>
-                    <a href="/compare" className="hero-action-btn">
-                      <span>📊</span> Compare
-                    </a>
-                    <a href="/ai-weather" className="hero-action-btn">
-                      <span>🤖</span> Ask AI
-                    </a>
-                    <div className="hero-temp-toggle">
-                      <TemperatureUnitToggle />
-                    </div>
-                  </div>
-                  {locationError && <div className="hero-location-error">⚠️ {locationError}</div>}
-                </div>
-              </div>
+                <HeroControls
+                  detectingLocation={detectingLocation}
+                  handleDetectLocation={handleDetectLocation}
+                  locationError={locationError}
+                />
+              </Stack>
 
               {/* RIGHT COLUMN: Radar Map */}
-              <div className="hero-right-column">
+              <Stack as="div" gap="md" className="hero-right-column">
                 {data.location && (
                   <div className="hero-radar-section">
                     <RadarMap
@@ -393,9 +456,9 @@ function WeatherDashboard() {
                     />
                   </div>
                 )}
-              </div>
-            </div>
-          </div>
+              </Stack>
+            </Grid>
+          </Surface>
 
           {/* Weather Alerts */}
           {data.alerts && data.alerts.length > 0 && <WeatherAlertsBanner alerts={data.alerts} />}
@@ -403,52 +466,76 @@ function WeatherDashboard() {
           {/* Forecast Section Header */}
           <div id="forecast-section" className="section-header forecast-header">
             <h3 className="section-title">
-              <span className="section-icon">📊</span>
+              <span className="section-icon" aria-hidden="true">
+                📊
+              </span>
               Forecast & Charts
             </h3>
           </div>
 
           {/* Tab Navigation */}
-          <div className="chart-tabs">
-            <button
+          <div className="chart-tabs" role="tablist" aria-label="Chart categories">
+            <Button
+              variant="ghost"
+              size="sm"
               className={`chart-tab ${activeTab === 'forecast' ? 'active' : ''}`}
               onClick={() => setActiveTab('forecast')}
+              role="tab"
+              aria-selected={activeTab === 'forecast'}
+              aria-controls="chart-content"
             >
-              📈 Forecast
-            </button>
-            <button
+              <span aria-hidden="true">📈</span> Forecast
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
               className={`chart-tab ${activeTab === 'details' ? 'active' : ''}`}
               onClick={() => setActiveTab('details')}
+              role="tab"
+              aria-selected={activeTab === 'details'}
+              aria-controls="chart-content"
             >
-              🔍 Details
-            </button>
-            <button
+              <span aria-hidden="true">🔍</span> Details
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
               className={`chart-tab ${activeTab === 'historical' ? 'active' : ''}`}
               onClick={() => setActiveTab('historical')}
+              role="tab"
+              aria-selected={activeTab === 'historical'}
+              aria-controls="chart-content"
             >
-              📅 Historical
-            </button>
-            <button
+              <span aria-hidden="true">📅</span> Historical
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
               className={`chart-tab ${activeTab === 'air-quality' ? 'active' : ''}`}
               onClick={() => setActiveTab('air-quality')}
+              role="tab"
+              aria-selected={activeTab === 'air-quality'}
+              aria-controls="chart-content"
             >
-              💨 Air Quality
-            </button>
+              <span aria-hidden="true">💨</span> Air Quality
+            </Button>
           </div>
 
           {/* Charts */}
-          <ChartsGrid
-            activeTab={activeTab}
-            visibleCharts={visibleCharts}
-            data={data}
-            hourlyData={hourlyData}
-            thisDayHistory={thisDayHistory}
-            forecastComparison={forecastComparison}
-            recordTemps={recordTemps}
-            tempProbability={tempProbability}
-            unit={unit}
-            days={days}
-          />
+          <div id="chart-content" role="tabpanel" aria-labelledby={`tab-${activeTab}`}>
+            <ChartsGrid
+              activeTab={activeTab}
+              visibleCharts={visibleCharts}
+              data={data}
+              hourlyData={hourlyData}
+              thisDayHistory={thisDayHistory}
+              forecastComparison={forecastComparison}
+              recordTemps={recordTemps}
+              tempProbability={tempProbability}
+              unit={unit}
+              days={days}
+            />
+          </div>
 
           {/* API Cost Info */}
           {data.queryCost && (

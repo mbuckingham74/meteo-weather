@@ -1,0 +1,143 @@
+/**
+ * ITCSS Layer 5: Objects
+ *
+ * Layout patterns, structural components
+ * Non-cosmetic, reusable patterns (flexbox, grid, containers)
+ * Class-based selectors with `.o-` prefix (object)
+ */
+
+/* Container */
+.o-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+}
+
+.o-container--narrow {
+  max-width: 800px;
+}
+
+.o-container--wide {
+  max-width: 1600px;
+}
+
+/* Flex layouts */
+.o-flex {
+  display: flex;
+}
+
+.o-flex--column {
+  flex-direction: column;
+}
+
+.o-flex--center {
+  align-items: center;
+  justify-content: center;
+}
+
+.o-flex--between {
+  justify-content: space-between;
+}
+
+.o-flex--wrap {
+  flex-wrap: wrap;
+}
+
+.o-flex--gap-sm {
+  gap: var(--spacing-sm);
+}
+
+.o-flex--gap-md {
+  gap: var(--spacing-md);
+}
+
+.o-flex--gap-lg {
+  gap: var(--spacing-lg);
+}
+
+/* Grid layouts */
+.o-grid {
+  display: grid;
+}
+
+.o-grid--2col {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.o-grid--3col {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.o-grid--4col {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.o-grid--auto-fit {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.o-grid--gap-sm {
+  gap: var(--spacing-sm);
+}
+
+.o-grid--gap-md {
+  gap: var(--spacing-md);
+}
+
+.o-grid--gap-lg {
+  gap: var(--spacing-lg);
+}
+
+/* Stack layout (vertical spacing) */
+.o-stack > * + * {
+  margin-top: var(--spacing-md);
+}
+
+.o-stack--sm > * + * {
+  margin-top: var(--spacing-sm);
+}
+
+.o-stack--lg > * + * {
+  margin-top: var(--spacing-lg);
+}
+
+/* Cluster layout (horizontal spacing with wrapping) */
+.o-cluster {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.o-cluster--sm {
+  gap: var(--spacing-sm);
+}
+
+.o-cluster--lg {
+  gap: var(--spacing-lg);
+}
+
+/* Center layout */
+.o-center {
+  box-sizing: content-box;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: var(--measure, 60ch);
+}
+
+/* Sidebar layout */
+.o-sidebar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-lg);
+}
+
+.o-sidebar > :first-child {
+  flex-basis: 20rem;
+  flex-grow: 1;
+}
+
+.o-sidebar > :last-child {
+  flex-basis: 0;
+  flex-grow: 999;
+  min-width: 50%;
+}

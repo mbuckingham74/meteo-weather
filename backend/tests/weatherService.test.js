@@ -1,6 +1,5 @@
 const nock = require('nock');
 const weatherService = require('../services/weatherService');
-const cacheService = require('../services/cacheService');
 
 // Mock the historical data service to prevent database calls
 jest.mock('../services/historicalDataService', () => ({
@@ -32,12 +31,12 @@ describe('Weather Service', () => {
           cloudcover: 40,
           uvindex: 5,
           conditions: 'Partially cloudy',
-          icon: 'partly-cloudy-day'
+          icon: 'partly-cloudy-day',
         },
         address: 'Seattle, WA, United States',
         timezone: 'America/Los_Angeles',
         latitude: 47.6062,
-        longitude: -122.3321
+        longitude: -122.3321,
       };
 
       nock(API_BASE_URL)
@@ -47,13 +46,15 @@ describe('Weather Service', () => {
 
       const result = await weatherService.getCurrentWeather('Seattle, WA');
 
-      expect(result).toEqual(expect.objectContaining({
-        currentConditions: expect.objectContaining({
-          temp: 22.5,
-          conditions: 'Partially cloudy'
-        }),
-        address: 'Seattle, WA, United States'
-      }));
+      expect(result).toEqual(
+        expect.objectContaining({
+          currentConditions: expect.objectContaining({
+            temp: 22.5,
+            conditions: 'Partially cloudy',
+          }),
+          address: 'Seattle, WA, United States',
+        })
+      );
     });
 
     it('caches current weather for 30 minutes', async () => {
@@ -69,7 +70,7 @@ describe('Weather Service', () => {
 
       // First call - hits API
       const result1 = await weatherService.getCurrentWeather('New York');
-      
+
       // Second call - should use cache (no nock mock needed)
       const result2 = await weatherService.getCurrentWeather('New York');
 
@@ -83,9 +84,7 @@ describe('Weather Service', () => {
         .query(true)
         .reply(500, { error: 'Internal Server Error' });
 
-      await expect(weatherService.getCurrentWeather('InvalidCity'))
-        .rejects
-        .toThrow();
+      await expect(weatherService.getCurrentWeather('InvalidCity')).rejects.toThrow();
     });
 
     it('handles rate limit errors with retry', async () => {
@@ -118,9 +117,7 @@ describe('Weather Service', () => {
         .delayConnection(15000) // Delay longer than 10s timeout
         .reply(200, {});
 
-      await expect(weatherService.getCurrentWeather('Seattle'))
-        .rejects
-        .toThrow();
+      await expect(weatherService.getCurrentWeather('Seattle')).rejects.toThrow();
     }, 20000); // Increase test timeout
   });
 
@@ -147,9 +144,9 @@ describe('Weather Service', () => {
             precip: 0,
             precipprob: 10,
             conditions: 'Partly cloudy',
-          }
+          },
         ],
-        address: 'Seattle, WA'
+        address: 'Seattle, WA',
       };
 
       nock(API_BASE_URL)
@@ -167,7 +164,7 @@ describe('Weather Service', () => {
     it('caches forecast for 6 hours', async () => {
       const mockData = {
         days: [{ datetime: '2025-01-15', temp: 20 }],
-        address: 'Boston, MA'
+        address: 'Boston, MA',
       };
 
       nock(API_BASE_URL)
@@ -177,7 +174,7 @@ describe('Weather Service', () => {
 
       // First call
       const result1 = await weatherService.getForecast('Boston, MA', 7);
-      
+
       // Second call - from cache
       const result2 = await weatherService.getForecast('Boston, MA', 7);
 
@@ -188,7 +185,7 @@ describe('Weather Service', () => {
   describe('buildApiUrl', () => {
     it('builds URL for current weather', () => {
       const url = weatherService.buildApiUrl('Seattle, WA');
-      
+
       expect(url).toContain('Seattle%2C%20WA');
       expect(url).toContain('unitGroup=metric');
       expect(url).toContain('contentType=json');
@@ -196,13 +193,13 @@ describe('Weather Service', () => {
 
     it('builds URL with date range', () => {
       const url = weatherService.buildApiUrl('New York', '2025-01-01', '2025-01-07');
-      
+
       expect(url).toContain('New%20York/2025-01-01/2025-01-07');
     });
 
     it('includes custom options', () => {
       const url = weatherService.buildApiUrl('Boston', '', '', { unitGroup: 'us' });
-      
+
       expect(url).toContain('unitGroup=us');
     });
   });
@@ -211,7 +208,7 @@ describe('Weather Service', () => {
     it('limits concurrent requests', async () => {
       const mockData = {
         currentConditions: { temp: 20 },
-        address: 'Test City'
+        address: 'Test City',
       };
 
       // Mock 5 different API calls
@@ -223,7 +220,7 @@ describe('Weather Service', () => {
       }
 
       const startTime = Date.now();
-      
+
       // Fire 5 requests simultaneously
       const promises = [
         weatherService.getCurrentWeather('City1'),

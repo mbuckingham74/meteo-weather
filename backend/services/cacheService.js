@@ -11,11 +11,11 @@ const crypto = require('crypto');
  * Optimized for reducing API calls and staying within rate limits
  */
 const CACHE_TTL = {
-  CURRENT_WEATHER: 30,      // 30 minutes (increased from 15)
-  FORECAST: 360,            // 6 hours (increased from 2 hours)
-  HISTORICAL: 10080,        // 7 days (increased from 24 hours - historical data doesn't change)
-  AIR_QUALITY: 60,          // 60 minutes (increased from 30)
-  CLIMATE_STATS: 43200      // 30 days (increased from 7 days - climate stats are long-term)
+  CURRENT_WEATHER: 30, // 30 minutes (increased from 15)
+  FORECAST: 360, // 6 hours (increased from 2 hours)
+  HISTORICAL: 10080, // 7 days (increased from 24 hours - historical data doesn't change)
+  AIR_QUALITY: 60, // 60 minutes (increased from 30)
+  CLIMATE_STATS: 43200, // 30 days (increased from 7 days - climate stats are long-term)
 };
 
 /**
@@ -26,10 +26,7 @@ const CACHE_TTL = {
  */
 function generateCacheKey(apiSource, params) {
   const paramsString = JSON.stringify(params);
-  return crypto
-    .createHash('md5')
-    .update(`${apiSource}:${paramsString}`)
-    .digest('hex');
+  return crypto.createHash('md5').update(`${apiSource}:${paramsString}`).digest('hex');
 }
 
 /**
@@ -65,7 +62,14 @@ async function getCachedResponse(cacheKey) {
  * @param {number} ttlMinutes - Time to live in minutes
  * @returns {Promise<boolean>} Success status
  */
-async function setCachedResponse(cacheKey, apiSource, locationId, requestParams, responseData, ttlMinutes) {
+async function setCachedResponse(
+  cacheKey,
+  apiSource,
+  locationId,
+  requestParams,
+  responseData,
+  ttlMinutes
+) {
   try {
     const expiresAt = new Date(Date.now() + ttlMinutes * 60 * 1000);
 
@@ -82,7 +86,7 @@ async function setCachedResponse(cacheKey, apiSource, locationId, requestParams,
         apiSource,
         JSON.stringify(requestParams),
         JSON.stringify(responseData),
-        expiresAt
+        expiresAt,
       ]
     );
 
@@ -99,9 +103,7 @@ async function setCachedResponse(cacheKey, apiSource, locationId, requestParams,
  */
 async function clearExpiredCache() {
   try {
-    const [result] = await pool.query(
-      'DELETE FROM api_cache WHERE expires_at < NOW()'
-    );
+    const [result] = await pool.query('DELETE FROM api_cache WHERE expires_at < NOW()');
 
     return result.affectedRows || 0;
   } catch (error) {
@@ -117,10 +119,7 @@ async function clearExpiredCache() {
  */
 async function clearLocationCache(locationId) {
   try {
-    const [result] = await pool.query(
-      'DELETE FROM api_cache WHERE location_id = ?',
-      [locationId]
-    );
+    const [result] = await pool.query('DELETE FROM api_cache WHERE location_id = ?', [locationId]);
 
     return result.affectedRows || 0;
   } catch (error) {
@@ -171,7 +170,7 @@ async function withCache(apiSource, params, apiFunction, ttlMinutes = 60, locati
     // console.log(`✓ Cache hit for ${apiSource}:`, params); // Disabled: causes 69 GB/day logs
     return {
       ...cached,
-      fromCache: true
+      fromCache: true,
     };
   }
 
@@ -182,31 +181,27 @@ async function withCache(apiSource, params, apiFunction, ttlMinutes = 60, locati
 
   // Only cache successful responses
   if (response && response.success) {
-    await setCachedResponse(
-      cacheKey,
-      apiSource,
-      locationId,
-      params,
-      response,
-      ttlMinutes
-    );
+    await setCachedResponse(cacheKey, apiSource, locationId, params, response, ttlMinutes);
   }
 
   return {
     ...response,
-    fromCache: false
+    fromCache: false,
   };
 }
 
 // Schedule automatic cleanup of expired cache entries every hour
-setInterval(() => {
-  clearExpiredCache().then(count => {
-    // Only log if significant cleanup occurred (disabled to reduce log volume)
-    // if (count > 0) {
-    //   console.log(`🧹 Auto cleanup: Removed ${count} expired cache entries`);
-    // }
-  });
-}, 60 * 60 * 1000); // 1 hour
+setInterval(
+  () => {
+    clearExpiredCache().then(() => {
+      // Only log if significant cleanup occurred (disabled to reduce log volume)
+      // if (count > 0) {
+      //   console.log(`🧹 Auto cleanup: Removed ${count} expired cache entries`);
+      // }
+    });
+  },
+  60 * 60 * 1000
+); // 1 hour
 
 module.exports = {
   generateCacheKey,
@@ -216,5 +211,5 @@ module.exports = {
   clearLocationCache,
   getCacheStats,
   withCache,
-  CACHE_TTL
+  CACHE_TTL,
 };

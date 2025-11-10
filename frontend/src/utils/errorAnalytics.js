@@ -18,7 +18,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import { debugInfo, debugError } from './debugLogger';
+import { debugInfo } from './debugLogger';
 import { ERROR_CODES } from './errorHandler';
 
 /**

@@ -93,7 +93,7 @@ describe('ThemeToggle Component', () => {
       expect(screen.getByText('🌙')).toBeInTheDocument();
     });
 
-    it('renders compact mode when compact prop is true', () => {
+    it('hides the label when compact prop is true', () => {
       useTheme.mockReturnValue({
         themePreference: 'light',
         actualTheme: 'light',
@@ -102,11 +102,10 @@ describe('ThemeToggle Component', () => {
 
       render(<ThemeToggle compact={true} />);
 
-      const button = screen.getByRole('button');
-      expect(button).toHaveClass('compact');
+      expect(screen.queryByText('Light')).not.toBeInTheDocument();
     });
 
-    it('does not have compact class when compact prop is false', () => {
+    it('shows the label when compact prop is false', () => {
       useTheme.mockReturnValue({
         themePreference: 'light',
         actualTheme: 'light',
@@ -115,8 +114,7 @@ describe('ThemeToggle Component', () => {
 
       render(<ThemeToggle compact={false} />);
 
-      const button = screen.getByRole('button');
-      expect(button).not.toHaveClass('compact');
+      expect(screen.getByText('Light')).toBeInTheDocument();
     });
   });
 

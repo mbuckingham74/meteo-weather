@@ -148,7 +148,7 @@ Brief description of changes
    - Frontend: http://localhost:3000
    - Backend API: http://localhost:5001
 
-**For detailed setup instructions, see [docs/development/SETUP_GUIDE.md](docs/development/SETUP_GUIDE.md)**
+**For detailed setup instructions, see [docs/getting-started/SETUP_GUIDE.md](docs/getting-started/SETUP_GUIDE.md)**
 
 ### Running Tests
 
@@ -347,9 +347,9 @@ Look for issues tagged with `good-first-issue` - these are beginner-friendly tas
 
 Some files have regression tests that run automatically:
 
-- **`frontend/src/services/geolocationService.js`** - See [docs/REGRESSION_PREVENTION.md](docs/REGRESSION_PREVENTION.md)
-- **`frontend/src/contexts/LocationContext.jsx`** - See [docs/REGRESSION_PREVENTION.md](docs/REGRESSION_PREVENTION.md)
-- **`backend/services/weatherService.js`** - See [docs/REGRESSION_PREVENTION.md](docs/REGRESSION_PREVENTION.md)
+- **`frontend/src/services/geolocationService.js`** - See [docs/troubleshooting/REGRESSION_PREVENTION.md](docs/troubleshooting/REGRESSION_PREVENTION.md)
+- **`frontend/src/contexts/LocationContext.jsx`** - See [docs/troubleshooting/REGRESSION_PREVENTION.md](docs/troubleshooting/REGRESSION_PREVENTION.md)
+- **`backend/services/weatherService.js`** - See [docs/troubleshooting/REGRESSION_PREVENTION.md](docs/troubleshooting/REGRESSION_PREVENTION.md)
 
 If you modify these files, the pre-commit hook will run regression tests to prevent the "Old Location" bug from being reintroduced.
 
@@ -398,10 +398,10 @@ Don't hesitate to ask questions in:
 
 ## 📚 Additional Resources
 
-- **[Developer Setup Guide](docs/development/SETUP_GUIDE.md)** - Comprehensive setup instructions
+- **[Developer Setup Guide](docs/getting-started/SETUP_GUIDE.md)** - Comprehensive setup instructions
 - **[Architecture Documentation](ARCHITECTURE.md)** - System design and architecture
 - **[Troubleshooting Guide](TROUBLESHOOTING.md)** - Common issues and solutions
-- **[Regression Prevention](docs/REGRESSION_PREVENTION.md)** - Critical bug prevention
+- **[Regression Prevention](docs/troubleshooting/REGRESSION_PREVENTION.md)** - Critical bug prevention
 
 ---
 

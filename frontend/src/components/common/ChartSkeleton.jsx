@@ -1,6 +1,5 @@
-import React from 'react';
-import { Skeleton } from './Skeleton';
-import './ChartSkeleton.css';
+import Skeleton from './Skeleton';
+import styles from './ChartSkeleton.module.css';
 
 /**
  * ChartSkeleton Component
@@ -9,19 +8,19 @@ import './ChartSkeleton.css';
  */
 const ChartSkeleton = ({ height = '450px', showLegend = true, showTitle = true }) => {
   return (
-    <div className="chart-skeleton-container">
+    <div className={styles.container}>
       {/* Chart Title */}
       {showTitle && (
-        <div className="chart-skeleton-header">
+        <div className={styles.header}>
           <Skeleton width="300px" height="1.5rem" />
         </div>
       )}
 
       {/* Legend */}
       {showLegend && (
-        <div className="chart-skeleton-legend">
+        <div className={styles.legend}>
           {Array.from({ length: 3 }).map((_, index) => (
-            <div key={index} className="chart-skeleton-legend-item">
+            <div key={index} className={styles.legendItem}>
               <Skeleton width="12px" height="12px" variant="circular" />
               <Skeleton width="80px" height="1rem" />
             </div>
@@ -30,32 +29,29 @@ const ChartSkeleton = ({ height = '450px', showLegend = true, showTitle = true }
       )}
 
       {/* Chart Area */}
-      <div className="chart-skeleton-chart" style={{ height }}>
+      <div className={styles.chart} style={{ height }}>
         {/* Y-Axis Labels */}
-        <div className="chart-skeleton-y-axis">
+        <div className={styles.yAxis}>
           {Array.from({ length: 5 }).map((_, index) => (
             <Skeleton key={index} width="40px" height="0.875rem" />
           ))}
         </div>
 
         {/* Chart Grid & Bars */}
-        <div className="chart-skeleton-grid">
+        <div className={styles.grid}>
           {/* Grid Lines */}
-          <div className="chart-skeleton-grid-lines">
+          <div className={styles.gridLines}>
             {Array.from({ length: 5 }).map((_, index) => (
-              <div key={index} className="chart-skeleton-grid-line" />
+              <div key={index} className={styles.gridLine} />
             ))}
           </div>
 
           {/* Bar Chart Representation */}
-          <div className="chart-skeleton-bars">
+          <div className={styles.bars}>
             {Array.from({ length: 12 }).map((_, index) => {
               const randomHeight = Math.floor(Math.random() * 70) + 20; // Random height between 20-90%
               return (
-                <div
-                  key={index}
-                  className="chart-skeleton-bar-wrapper"
-                >
+                <div key={index} className={styles.barWrapper}>
                   <Skeleton
                     width="100%"
                     height={`${randomHeight}%`}
@@ -69,7 +65,7 @@ const ChartSkeleton = ({ height = '450px', showLegend = true, showTitle = true }
         </div>
 
         {/* X-Axis Labels */}
-        <div className="chart-skeleton-x-axis">
+        <div className={styles.xAxis}>
           {Array.from({ length: 12 }).map((_, index) => (
             <Skeleton key={index} width="50px" height="0.875rem" />
           ))}

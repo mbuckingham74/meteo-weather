@@ -1,0 +1,105 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Variants */
+.primary {
+  background: var(--gradient-primary);
+  color: white;
+  border-color: transparent;
+  box-shadow: var(--shadow-sm);
+}
+
+.primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.secondary {
+  background: var(--bg-primary);
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
+}
+
+.secondary:hover:not(:disabled) {
+  background: var(--bg-tertiary);
+}
+
+.ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border-color: var(--border-light);
+}
+
+.ghost:hover:not(:disabled) {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background: var(--bg-tertiary);
+}
+
+.danger {
+  background: var(--error-text);
+  color: var(--text-on-accent);
+  border-color: var(--error-text);
+}
+
+.danger:hover:not(:disabled) {
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--error-text) 40%, transparent);
+}
+
+.outline {
+  background: transparent;
+  color: var(--text-primary);
+  border-color: var(--border-light);
+}
+
+.outline:hover:not(:disabled) {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background: var(--bg-tertiary);
+}
+
+/* Sizes */
+.sm {
+  padding: var(--spacing-xs) 12px;
+  font-size: var(--font-sm);
+}
+
+.md {
+  padding: var(--spacing-sm) 16px;
+  font-size: var(--font-base);
+}
+
+.lg {
+  padding: var(--spacing-md) 20px;
+  font-size: var(--font-lg);
+}
+
+.fullWidth {
+  width: 100%;
+}

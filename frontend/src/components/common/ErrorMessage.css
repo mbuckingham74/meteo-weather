@@ -7,16 +7,27 @@
 
 /* ==================== BASE STYLES ==================== */
 
+:root {
+  --error-message-retry-bg: color-mix(in srgb, var(--text-on-accent) 22%, transparent);
+  --error-message-retry-bg-hover: color-mix(in srgb, var(--text-on-accent) 35%, transparent);
+  --error-message-overlay-strong: var(--overlay-strong);
+  --error-message-overlay-medium: var(--overlay-medium);
+  --error-message-overlay-soft: var(--overlay-soft);
+  --error-message-toast-surface: color-mix(in srgb, var(--bg-primary) 80%, transparent);
+  --error-message-toast-text-strong: color-mix(in srgb, var(--text-on-accent) 90%, transparent);
+  --error-message-toast-text-soft: color-mix(in srgb, var(--text-on-accent) 65%, transparent);
+}
+
 .error-message {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--spacing-md);
   font-family:
     -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
     'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-  font-size: 14px;
+  font-size: var(--font-base);
   line-height: 1.5;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   transition:
     opacity 0.3s ease-out,
     transform 0.3s ease-out;
@@ -32,7 +43,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--spacing-xs);
 }
 
 .error-message__text {
@@ -48,7 +59,7 @@
 
 .error-message__actions {
   display: flex;
-  gap: 8px;
+  gap: var(--spacing-sm);
   align-items: center;
   flex-shrink: 0;
 }
@@ -57,10 +68,12 @@
   padding: 6px 12px;
   border: none;
   border-radius: 4px;
-  font-size: 13px;
+  font-size: var(--font-md);
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
   background: transparent;
   color: inherit;
 }
@@ -80,12 +93,16 @@
 }
 
 .error-message__button--retry {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--error-message-retry-bg);
+}
+
+.error-message__button--retry:hover {
+  background: var(--error-message-retry-bg-hover);
 }
 
 .error-message__button--dismiss {
-  padding: 4px 8px;
-  font-size: 16px;
+  padding: var(--spacing-xs) 8px;
+  font-size: var(--font-lg);
   line-height: 1;
   opacity: 0.6;
 }
@@ -98,55 +115,55 @@
 
 /* Error (Red) */
 .error-message--error {
-  background: rgba(239, 68, 68, 0.95);
-  color: white;
-  border: 1px solid rgba(220, 38, 38, 0.5);
+  background: var(--error-surface-strong);
+  color: var(--text-on-accent);
+  border: 1px solid var(--error-border-strong);
 }
 
 /* Warning (Orange/Yellow) */
 .error-message--warning {
-  background: rgba(245, 158, 11, 0.95);
-  color: white;
-  border: 1px solid rgba(217, 119, 6, 0.5);
+  background: var(--warning-surface-strong);
+  color: var(--text-on-accent);
+  border: 1px solid var(--warning-border-strong);
 }
 
 /* Info (Blue) */
 .error-message--info {
-  background: rgba(59, 130, 246, 0.95);
-  color: white;
-  border: 1px solid rgba(37, 99, 235, 0.5);
+  background: var(--info-surface-strong);
+  color: var(--text-on-accent);
+  border: 1px solid var(--info-border-strong);
 }
 
 /* Success (Green) */
 .error-message--success {
-  background: rgba(34, 197, 94, 0.95);
-  color: white;
-  border: 1px solid rgba(22, 163, 74, 0.5);
+  background: var(--success-surface-strong);
+  color: var(--text-on-accent);
+  border: 1px solid var(--success-border-strong);
 }
 
 /* ==================== MODE: INLINE ==================== */
 
 .error-message--inline {
-  padding: 12px 16px;
+  padding: var(--spacing-md) 16px;
   width: 100%;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px var(--error-message-overlay-soft);
 }
 
 .error-message--inline .error-message__text {
-  font-size: 13px;
+  font-size: var(--font-md);
 }
 
 /* Inline error variant with lighter background for forms */
 .error-message--inline.error-message--error {
-  background: rgba(254, 242, 242, 1);
-  color: rgb(185, 28, 28);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: var(--error-bg);
+  color: var(--error-text);
+  border: 1px solid var(--error-border);
 }
 
 .error-message--inline.error-message--warning {
-  background: rgba(254, 252, 232, 1);
-  color: rgb(146, 64, 14);
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  background: var(--warning-bg);
+  color: var(--warning-text);
+  border: 1px solid var(--warning-border);
 }
 
 /* ==================== MODE: TOAST ==================== */
@@ -160,12 +177,12 @@
   min-width: 300px;
   max-width: 500px;
   z-index: 2000;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-  animation: toast-slide-in 0.3s ease-out;
+  box-shadow: 0 10px 25px var(--error-message-overlay-medium);
+  animation: error-toast-slide-in 0.3s ease-out;
   backdrop-filter: blur(10px);
 }
 
-@keyframes toast-slide-in {
+@keyframes error-toast-slide-in {
   from {
     opacity: 0;
     transform: translateX(-50%) translateY(-20px);
@@ -177,10 +194,10 @@
 }
 
 .error-message--toast.error-message--exiting {
-  animation: toast-slide-out 0.3s ease-out forwards;
+  animation: error-toast-slide-out 0.3s ease-out forwards;
 }
 
-@keyframes toast-slide-out {
+@keyframes error-toast-slide-out {
   from {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
@@ -201,7 +218,7 @@
   padding: 16px 24px;
   border-radius: 0;
   z-index: 1500;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 8px var(--error-message-overlay-soft);
   animation: banner-slide-down 0.3s ease-out;
 }
 
@@ -239,7 +256,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--error-message-overlay-strong);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -259,13 +276,13 @@
 
 .error-message--modal {
   position: relative;
-  padding: 24px 28px;
+  padding: var(--spacing-xl) 28px;
   min-width: 400px;
   max-width: 600px;
   flex-direction: column;
   align-items: stretch;
-  gap: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  gap: var(--spacing-lg);
+  box-shadow: 0 20px 60px var(--error-message-overlay-strong);
   animation: modal-scale-in 0.3s ease-out;
 }
 
@@ -296,11 +313,11 @@
 }
 
 .error-message--modal .error-message__icon {
-  font-size: 32px;
+  font-size: var(--font-3xl);
 }
 
 .error-message--modal .error-message__text {
-  font-size: 16px;
+  font-size: var(--font-lg);
 }
 
 .error-message--modal .error-message__actions {
@@ -310,16 +327,118 @@
 
 .error-message--modal .error-message__button {
   padding: 10px 20px;
-  font-size: 14px;
+  font-size: var(--font-base);
 }
 
 .error-message--modal .error-message__button--retry {
-  background: rgba(255, 255, 255, 0.9);
-  color: #1f2937;
+  background: color-mix(in srgb, var(--text-on-accent) 90%, transparent);
+  color: var(--accent-primary);
 }
 
 .error-message--modal .error-message__button--retry:hover {
-  background: white;
+  background: color-mix(in srgb, var(--text-on-accent) 100%, transparent);
+}
+
+/* ==================== SUGGESTIONS (WCAG 3.3.3 Level AA) ==================== */
+
+.error-message__help {
+  margin: var(--spacing-sm) 0 0 0;
+  font-size: var(--font-md);
+  color: var(--text-tertiary);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.error-message__suggestions {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid color-mix(in srgb, var(--text-on-accent) 20%, transparent);
+}
+
+.error-message__suggestions-label {
+  margin: 0 0 8px 0;
+  font-size: var(--font-md);
+  font-weight: 600;
+  color: var(--error-message-toast-text-strong);
+}
+
+.error-message__suggestions-list {
+  margin: 0;
+  padding: 0 0 0 20px;
+  list-style: none;
+}
+
+.error-message__suggestion-item {
+  position: relative;
+  margin: 6px 0;
+  font-size: var(--font-md);
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--text-on-accent) 85%, transparent);
+  padding-left: 0;
+}
+
+.error-message__suggestion-item::before {
+  content: '•';
+  position: absolute;
+  left: -16px;
+  color: color-mix(in srgb, var(--text-on-accent) 60%, transparent);
+  font-weight: bold;
+}
+
+/* Toast mode - compact suggestions */
+.error-message--toast .error-message__suggestions {
+  margin-top: 8px;
+  padding-top: 8px;
+}
+
+.error-message--toast .error-message__suggestions-label {
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.error-message--toast .error-message__suggestion-item {
+  font-size: 12px;
+  margin: var(--spacing-xs) 0;
+}
+
+/* Inline mode - minimal suggestions */
+.error-message--inline .error-message__suggestions {
+  border-top: 1px solid var(--border-light);
+  margin-top: 8px;
+  padding-top: 8px;
+}
+
+.error-message--inline .error-message__suggestions-label {
+  color: var(--text-secondary);
+}
+
+.error-message--inline .error-message__suggestion-item {
+  color: var(--text-secondary);
+}
+
+.error-message--inline .error-message__suggestion-item::before {
+  color: var(--text-tertiary);
+}
+
+/* Banner mode - full suggestions */
+.error-message--banner .error-message__suggestions {
+  margin-top: 12px;
+}
+
+/* Modal mode - prominent suggestions */
+.error-message--modal .error-message__suggestions {
+  border-top: 1px solid color-mix(in srgb, var(--text-on-accent) 30%, transparent);
+  margin-top: 16px;
+  padding-top: 16px;
+}
+
+.error-message--modal .error-message__suggestions-label {
+  font-size: var(--font-base);
+}
+
+.error-message--modal .error-message__suggestion-item {
+  font-size: var(--font-base);
+  margin: var(--spacing-sm) 0;
 }
 
 /* ==================== RESPONSIVE ==================== */
@@ -363,12 +482,12 @@
   .error-message--modal {
     min-width: auto;
     max-width: calc(100% - 32px);
-    padding: 20px 24px;
+    padding: var(--spacing-lg) 24px;
   }
 
   .error-message--banner {
-    padding: 12px 16px;
-    font-size: 13px;
+    padding: var(--spacing-md) 16px;
+    font-size: var(--font-md);
   }
 
   .error-message__actions {
@@ -420,7 +539,7 @@
 
 /* Focus visible (keyboard navigation) */
 .error-message:focus-visible {
-  outline: 3px solid rgba(59, 130, 246, 0.5);
+  outline: 3px solid color-mix(in srgb, var(--accent-primary) 50%, transparent);
   outline-offset: 2px;
 }
 
@@ -437,18 +556,4 @@
   border-width: 0;
 }
 
-/* ==================== DARK MODE (Optional) ==================== */
-
-@media (prefers-color-scheme: dark) {
-  .error-message--inline.error-message--error {
-    background: rgba(127, 29, 29, 0.9);
-    color: rgb(254, 202, 202);
-    border-color: rgba(239, 68, 68, 0.4);
-  }
-
-  .error-message--inline.error-message--warning {
-    background: rgba(120, 53, 15, 0.9);
-    color: rgb(253, 230, 138);
-    border-color: rgba(245, 158, 11, 0.4);
-  }
-}
+/* Tokens handle dark mode automatically */

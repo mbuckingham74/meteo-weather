@@ -7,9 +7,9 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer
+  ResponsiveContainer,
 } from 'recharts';
-import './charts.css';
+import { chartPalette } from '../../constants';
 
 /**
  * SunChart Component
@@ -25,7 +25,7 @@ function SunChart({ data, days, height = 300 }) {
 
   if (!data || data.length === 0) {
     return (
-      <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-tertiary, #9ca3af)' }}>
+      <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-tertiary)' }}>
         <p>No sunrise/sunset data available</p>
       </div>
     );
@@ -47,7 +47,7 @@ function SunChart({ data, days, height = 300 }) {
   };
 
   // Prepare chart data
-  const chartData = data.map(day => {
+  const chartData = data.map((day) => {
     const sunriseMinutes = timeToMinutes(day.sunrise);
     const sunsetMinutes = timeToMinutes(day.sunset);
     const daylightMinutes = sunsetMinutes - sunriseMinutes;
@@ -60,7 +60,7 @@ function SunChart({ data, days, height = 300 }) {
       daylight: daylightMinutes,
       daylightHours,
       sunriseTime: day.sunrise,
-      sunsetTime: day.sunset
+      sunsetTime: day.sunset,
     };
   });
 
@@ -68,23 +68,25 @@ function SunChart({ data, days, height = 300 }) {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
-        <div style={{
-          background: 'var(--bg-elevated)',
-          border: '2px solid var(--border-light)',
-          borderRadius: '8px',
-          padding: '12px',
-          boxShadow: 'var(--shadow-md)'
-        }}>
+        <div
+          style={{
+            background: 'var(--bg-elevated)',
+            border: '2px solid var(--border-light)',
+            borderRadius: '8px',
+            padding: '12px',
+            boxShadow: 'var(--shadow-md)',
+          }}
+        >
           <p style={{ margin: '0 0 8px 0', fontWeight: '600', color: 'var(--text-primary)' }}>
             {data.date}
           </p>
-          <p style={{ margin: '4px 0', color: '#f59e0b', fontWeight: '500' }}>
+          <p style={{ margin: '4px 0', color: chartPalette.warning, fontWeight: '500' }}>
             🌅 Sunrise: {data.sunriseTime}
           </p>
-          <p style={{ margin: '4px 0', color: '#f97316', fontWeight: '500' }}>
+          <p style={{ margin: '4px 0', color: chartPalette.hot, fontWeight: '500' }}>
             🌇 Sunset: {data.sunsetTime}
           </p>
-          <p style={{ margin: '4px 0', color: '#3b82f6', fontWeight: '500' }}>
+          <p style={{ margin: '4px 0', color: chartPalette.cool, fontWeight: '500' }}>
             ☀️ Daylight: {data.daylightHours} hours
           </p>
         </div>
@@ -95,27 +97,29 @@ function SunChart({ data, days, height = 300 }) {
 
   return (
     <div style={{ width: '100%' }}>
-      <h3 style={{
-        margin: '0 0 8px 0',
-        fontSize: '16px',
-        fontWeight: '600',
-        color: 'var(--text-primary, #111827)'
-      }}>
+      <h3
+        style={{
+          margin: '0 0 8px 0',
+          fontSize: '16px',
+          fontWeight: '600',
+          color: 'var(--text-primary)',
+        }}
+      >
         🌅 Sunrise & Sunset - {getTimeLabel()}
       </h3>
 
       <ResponsiveContainer width="100%" height={height}>
         <BarChart data={chartData} margin={{ top: 5, right: 30, left: 30, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" opacity={0.5} />
+          <CartesianGrid strokeDasharray="3 3" stroke={chartPalette.grid} opacity={0.5} />
           <XAxis
             dataKey="date"
-            stroke="#374151"
-            tick={{ fill: '#374151', fontSize: 13, fontWeight: 500 }}
+            stroke={chartPalette.textMuted}
+            tick={{ fill: chartPalette.textMuted, fontSize: 13, fontWeight: 500 }}
             style={{ fontSize: '13px' }}
           />
           <YAxis
-            stroke="#374151"
-            tick={{ fill: '#374151', fontSize: 13, fontWeight: 500 }}
+            stroke={chartPalette.textMuted}
+            tick={{ fill: chartPalette.textMuted, fontSize: 13, fontWeight: 500 }}
             style={{ fontSize: '13px' }}
             tickFormatter={minutesToTime}
             domain={[300, 1200]} // 5 AM to 8 PM
@@ -124,33 +128,45 @@ function SunChart({ data, days, height = 300 }) {
               value: 'Time of Day',
               angle: -90,
               position: 'insideLeft',
-              style: { fill: '#111827', fontSize: 14, fontWeight: 600 }
+              style: { fill: 'var(--text-primary)', fontSize: 14, fontWeight: 600 },
             }}
           />
           <Tooltip content={<CustomTooltip />} />
           <Legend wrapperStyle={{ paddingTop: '20px', fontSize: '14px', fontWeight: 600 }} />
-          <Bar dataKey="sunrise" fill="#f59e0b" name="Sunrise" radius={[4, 4, 0, 0]} />
-          <Bar dataKey="sunset" fill="#f97316" name="Sunset" radius={[4, 4, 0, 0]} />
-          <Bar dataKey="daylight" fill="#3b82f6" name="Daylight Duration (min)" hide />
+          <Bar dataKey="sunrise" fill={chartPalette.warning} name="Sunrise" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="sunset" fill={chartPalette.hot} name="Sunset" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="daylight" fill={chartPalette.cool} name="Daylight Duration (min)" hide />
         </BarChart>
       </ResponsiveContainer>
 
-      <div style={{
-        marginTop: '16px',
-        padding: '12px',
-        background: 'var(--bg-tertiary)',
-        borderRadius: '8px',
-        fontSize: '13px',
-        color: 'var(--text-secondary)'
-      }}>
+      <div
+        style={{
+          marginTop: '16px',
+          padding: '12px',
+          background: 'var(--bg-tertiary)',
+          borderRadius: '8px',
+          fontSize: '13px',
+          color: 'var(--text-secondary)',
+        }}
+      >
         <p style={{ margin: '0 0 8px 0' }}>
-          💡 <strong>Daylight Hours:</strong> The chart shows sunrise and sunset times.
-          Longer bars indicate more daylight hours.
+          💡 <strong>Daylight Hours:</strong> The chart shows sunrise and sunset times. Longer bars
+          indicate more daylight hours.
         </p>
         <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-          <span>📊 Avg: {(chartData.reduce((sum, d) => sum + parseFloat(d.daylightHours), 0) / chartData.length).toFixed(1)}h</span>
-          <span>⬆️ Max: {Math.max(...chartData.map(d => parseFloat(d.daylightHours))).toFixed(1)}h</span>
-          <span>⬇️ Min: {Math.min(...chartData.map(d => parseFloat(d.daylightHours))).toFixed(1)}h</span>
+          <span>
+            📊 Avg:{' '}
+            {(
+              chartData.reduce((sum, d) => sum + parseFloat(d.daylightHours), 0) / chartData.length
+            ).toFixed(1)}
+            h
+          </span>
+          <span>
+            ⬆️ Max: {Math.max(...chartData.map((d) => parseFloat(d.daylightHours))).toFixed(1)}h
+          </span>
+          <span>
+            ⬇️ Min: {Math.min(...chartData.map((d) => parseFloat(d.daylightHours))).toFixed(1)}h
+          </span>
         </div>
       </div>
     </div>
