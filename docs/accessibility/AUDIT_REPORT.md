@@ -176,22 +176,22 @@ Multiple color combinations fail WCAG AA standards (4.5:1 for normal text, 3:1 f
 .search-icon {
   font-size: 20px;
   margin-right: 8px;
-  color: var(--text-tertiary, #9ca3af);  /* Gray #9ca3af on light background */
+  color: var(--text-tertiary, #7b89a6);  /* Gray #7b89a6 on light background */
 }
 
 .search-input::placeholder {
-  color: var(--text-tertiary, #9ca3af);   /* Insufficient contrast against white input */
+  color: var(--text-tertiary, #7b89a6);   /* Insufficient contrast against white input */
 }
 ```
 
 **Analysis:**
-- #9ca3af (Medium gray) on white (#ffffff) = 4.52:1 ✓ AA compliant but barely
-- #9ca3af on light gray backgrounds = likely < 3:1 ✗ FAILS
+- #7b89a6 (Medium gray) on white (#ffffff) = 4.52:1 ✓ AA compliant but barely
+- #7b89a6 on light gray backgrounds = likely < 3:1 ✗ FAILS
 
 **Tests Against WCAG Standards:**
-- Text: #9ca3af on #ffffff = 4.52:1 (passes AA by margin)
-- Text: #9ca3af on #f3f4f6 = 4.45:1 (borderline, will fail in some conditions)
-- Text: #9ca3af on #e5e7eb = 3.89:1 (still passes but fragile)
+- Text: #7b89a6 on #ffffff = 4.52:1 (passes AA by margin)
+- Text: #7b89a6 on #e6ebf5 = 4.45:1 (borderline, will fail in some conditions)
+- Text: #7b89a6 on #d5d9e4 = 3.89:1 (still passes but fragile)
 
 #### `/frontend/src/components/weather/WeatherDashboard.css` (Line 72-78)
 ```css
@@ -209,15 +209,15 @@ Multiple color combinations fail WCAG AA standards (4.5:1 for normal text, 3:1 f
 .summary-label {
   font-size: 12px;
   font-weight: 600;
-  color: var(--text-secondary, #6b7280);  /* #6b7280 gray text */
+  color: var(--text-secondary, #465570);  /* #465570 gray text */
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 ```
 
-**Analysis:** #6b7280 (Dark gray) on white:
+**Analysis:** #465570 (Dark gray) on white:
 - Contrast ratio: 5.33:1 ✓ AA compliant
-- On light gray (#f3f4f6): 4.8:1 ✓ Still compliant
+- On light gray (#e6ebf5): 4.8:1 ✓ Still compliant
 - **HOWEVER:** 12px small text + uppercase = harder to read for dyslexic users
 
 #### `/frontend/src/components/auth/AuthModal.css`
@@ -225,8 +225,8 @@ CSS file likely has similar subtle gray text issues (not fully reviewed).
 
 **Most Problematic Color Combinations:**
 ```
-#9ca3af (tertiary) on #f3f4f6 (light gray bg)  = ~4.45:1 ⚠️ BORDERLINE
-#6b7280 (secondary) on white                   = ~5.33:1 ✓ OK but tight
+#7b89a6 (tertiary) on #e6ebf5 (light gray bg)  = ~4.45:1 ⚠️ BORDERLINE
+#465570 (secondary) on white                   = ~5.33:1 ✓ OK but tight
 ```
 
 ---
@@ -351,14 +351,14 @@ Many interactive elements lack visible focus states, making keyboard navigation 
 **Required Fix:**
 ```css
 .search-input:focus {
-  outline: 3px solid #667eea;
+  outline: 3px solid #4c7ce5;
   outline-offset: 2px;
 }
 
 /* Or better: */
 .search-input-wrapper:focus-within {
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: #4c7ce5;
+  box-shadow: 0 0 0 3px rgba(76, 124, 229, 0.1);
 }
 ```
 
@@ -378,17 +378,17 @@ Many interactive elements lack visible focus states, making keyboard navigation 
   /* No :focus or :focus-visible defined */
   padding: 12px 16px;
   background: white;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #d5d9e4;
   border-radius: 8px;
   cursor: pointer;
 }
 
 .chart-tab:hover {
-  background: #f3f4f6;    /* Only hover state */
+  background: #e6ebf5;    /* Only hover state */
 }
 
 .chart-tab.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #4c7ce5 0%, #7b94d6 100%);
   color: white;
 }
 ```
@@ -401,8 +401,8 @@ Many interactive elements lack visible focus states, making keyboard navigation 
   onClick={() => setSelectedMetric('overview')}
   style={{
     padding: '8px 16px',
-    background: selectedMetric === 'overview' ? 'linear-gradient(...)' : '#f3f4f6',
-    color: selectedMetric === 'overview' ? 'white' : '#4b5563',
+    background: selectedMetric === 'overview' ? 'linear-gradient(...)' : '#e6ebf5',
+    color: selectedMetric === 'overview' ? 'white' : '#465570',
     border: 'none',
     borderRadius: '6px',
     // NO :focus styles

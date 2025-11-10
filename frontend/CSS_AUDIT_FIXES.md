@@ -386,8 +386,8 @@ This document details the complete CSS audit and fixes implemented across three 
 
 ```css
 .ai-weather-hero {
-  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
-  box-shadow: 0 12px 36px rgba(102, 126, 234, 0.3);
+  background: linear-gradient(135deg, #4c7ce5 0%, #7b94d6 100%);
+  box-shadow: 0 12px 36px rgba(76, 124, 229, 0.3);
 }
 
 .ai-hero-input {

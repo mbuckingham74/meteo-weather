@@ -5,6 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Offline - Meteo Weather</title>
   <style>
+    :root {
+      --indigo-50: #f5f7fb;
+      --indigo-100: #e8eeff;
+      --indigo-150: #dbe4ff;
+      --indigo-200: #c0d2ff;
+      --indigo-400: #7b94d6;
+      --indigo-500: #5b8fff;
+      --indigo-600: #4c7ce5;
+      --indigo-700: #3b68c9;
+      --indigo-800: #2a4cbf;
+      --card-bg: #ffffff;
+      --text-strong: #0f172a;
+      --text-muted: #465570;
+      --text-soft: #7b89a6;
+      --border-soft: #d5d9e4;
+      --shadow-strong: 0 20px 60px rgba(15, 23, 42, 0.25);
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -16,22 +34,22 @@
         'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, var(--indigo-600) 0%, var(--indigo-400) 100%);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 20px;
-      color: #1f2937;
+      color: var(--text-strong);
     }
 
     .offline-container {
       max-width: 600px;
       width: 100%;
-      background: white;
+      background: var(--card-bg);
       border-radius: 16px;
       padding: 48px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      box-shadow: var(--shadow-strong);
       text-align: center;
       animation: fadeIn 0.5s ease-in-out;
     }
@@ -65,13 +83,13 @@
     h1 {
       font-size: 2rem;
       font-weight: 700;
-      color: #111827;
+      color: var(--text-strong);
       margin-bottom: 16px;
     }
 
     p {
       font-size: 1.125rem;
-      color: #6b7280;
+      color: var(--text-muted);
       margin-bottom: 32px;
       line-height: 1.6;
     }
@@ -95,35 +113,35 @@
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, var(--indigo-600) 0%, var(--indigo-400) 100%);
       color: white;
     }
 
     .btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+      box-shadow: 0 8px 20px rgba(76, 124, 229, 0.35);
     }
 
     .btn-secondary {
-      background: #f3f4f6;
-      color: #111827;
+      background: var(--indigo-100);
+      color: var(--text-strong);
     }
 
     .btn-secondary:hover {
-      background: #e5e7eb;
+      background: var(--indigo-150);
     }
 
     .offline-tips {
       margin-top: 40px;
       padding-top: 32px;
-      border-top: 1px solid #e5e7eb;
+      border-top: 1px solid var(--border-soft);
       text-align: left;
     }
 
     .offline-tips h2 {
       font-size: 1.25rem;
       font-weight: 600;
-      color: #111827;
+      color: var(--text-strong);
       margin-bottom: 16px;
     }
 
@@ -134,7 +152,7 @@
 
     .offline-tips li {
       padding: 8px 0;
-      color: #6b7280;
+      color: var(--text-muted);
       display: flex;
       align-items: flex-start;
       gap: 12px;
@@ -142,7 +160,7 @@
 
     .offline-tips li::before {
       content: "✓";
-      color: #10b981;
+      color: var(--indigo-600);
       font-weight: 700;
       font-size: 1.25rem;
       flex-shrink: 0;
@@ -151,18 +169,18 @@
     .status {
       margin-top: 24px;
       padding: 12px;
-      background: #fef3c7;
-      border: 1px solid #fbbf24;
+      background: var(--indigo-100);
+      border: 1px solid var(--indigo-200);
       border-radius: 8px;
-      color: #92400e;
+      color: var(--indigo-800);
       font-size: 0.875rem;
       display: none;
     }
 
     .status.online {
-      background: #d1fae5;
-      border-color: #10b981;
-      color: #065f46;
+      background: rgba(91, 143, 255, 0.16);
+      border-color: var(--indigo-600);
+      color: var(--indigo-700);
       display: block;
     }
 
@@ -187,41 +205,58 @@
     /* Dark mode support */
     @media (prefers-color-scheme: dark) {
       body {
-        background: #111827;
+        background: #0f172a;
       }
 
       .offline-container {
-        background: #1f2937;
-        color: #f9fafb;
+        background: #18233a;
+        color: #f8fafc;
+        box-shadow: 0 20px 50px rgba(2, 6, 23, 0.55);
       }
 
       h1 {
-        color: #f9fafb;
+        color: #f8fafc;
       }
 
       p {
-        color: #d1d5db;
+        color: #c0cae2;
       }
 
       .btn-secondary {
-        background: #374151;
-        color: #f9fafb;
+        background: #273554;
+        color: #f8fafc;
       }
 
       .btn-secondary:hover {
-        background: #4b5563;
+        background: #324269;
       }
 
       .offline-tips {
-        border-top-color: #374151;
+        border-top-color: #273554;
       }
 
       .offline-tips h2 {
-        color: #f9fafb;
+        color: #f8fafc;
       }
 
       .offline-tips li {
-        color: #d1d5db;
+        color: #c0cae2;
+      }
+
+      .offline-tips li::before {
+        color: #82a7ff;
+      }
+
+      .status {
+        background: rgba(59, 104, 201, 0.2);
+        border-color: #5b8fff;
+        color: #aecbff;
+      }
+
+      .status.online {
+        background: rgba(130, 167, 255, 0.25);
+        border-color: #82a7ff;
+        color: #f8fafc;
       }
     }
   </style>

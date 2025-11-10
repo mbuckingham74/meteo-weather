@@ -70,7 +70,7 @@ Successfully implemented all critical WCAG Level A accessibility fixes for the M
 
 **Fix:**
 - Added comprehensive global focus styles:
-  - 3px purple outline (`#667eea`) with 2px offset for all interactive elements
+  - 3px purple outline (`#4c7ce5`) with 2px offset for all interactive elements
   - `:focus-visible` to show focus only for keyboard users (not mouse)
   - Special styling for form inputs (2px outline, no offset)
   - High contrast mode support (4px outline)
@@ -78,7 +78,7 @@ Successfully implemented all critical WCAG Level A accessibility fixes for the M
 **CSS Rules Added:**
 ```css
 :focus-visible {
-  outline: 3px solid #667eea;
+  outline: 3px solid #4c7ce5;
   outline-offset: 2px;
 }
 
@@ -156,10 +156,10 @@ Successfully implemented all critical WCAG Level A accessibility fixes for the M
 ---
 
 ### 8. Color Contrast (WCAG 1.4.3) ✅
-**Issue:** Gray text color `#9ca3af` had insufficient contrast (2.84:1) on white backgrounds.
+**Issue:** Gray text color `#7b89a6` had insufficient contrast (2.84:1) on white backgrounds.
 
 **Fix:**
-- Replaced all instances of `#9ca3af` (gray-400) with `#6b7280` (gray-500)
+- Replaced all instances of `#7b89a6` (gray-400) with `#465570` (gray-500)
 - New contrast ratio: 4.59:1 (PASSES WCAG AA)
 - Maintains visual hierarchy while ensuring readability
 

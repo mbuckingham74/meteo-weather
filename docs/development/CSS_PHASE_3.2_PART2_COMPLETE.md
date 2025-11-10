@@ -153,7 +153,7 @@ WeatherDashboard.css is the **largest and most complex CSS file** in the project
 
 .hero-view-charts-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 6px 20px rgba(76, 124, 229, 0.4);
 }
 ```
 
@@ -213,7 +213,7 @@ WeatherDashboard.css is the **largest and most complex CSS file** in the project
 
 .view-forecast-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 6px 16px rgba(76, 124, 229, 0.4);
 }
 ```
 
