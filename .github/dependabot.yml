@@ -1,6 +1,6 @@
 version: 2
 updates:
-  # Frontend dependencies (React application)
+  # Frontend dependencies
   - package-ecosystem: "npm"
     directory: "/frontend"
     schedule:
@@ -8,16 +8,40 @@ updates:
       day: "monday"
       time: "09:00"
     open-pull-requests-limit: 5
-    assignees:
-      - "mbuckingham74"
-    commit-message:
-      prefix: "chore"
-      include: "scope"
-    labels:
-      - "dependencies"
-      - "frontend"
+    groups:
+      # Group React ecosystem together
+      react:
+        patterns:
+          - "react*"
+          - "@types/react*"
+      # Group testing libraries
+      testing:
+        patterns:
+          - "@testing-library/*"
+          - "vitest*"
+          - "@vitest/*"
+          - "jsdom"
+      # Group build tools
+      build-tools:
+        patterns:
+          - "vite*"
+          - "@vitejs/*"
+          - "eslint*"
+          - "prettier"
+          - "stylelint*"
+      # Group UI libraries
+      ui-libraries:
+        patterns:
+          - "recharts"
+          - "leaflet"
+          - "react-leaflet"
+          - "clsx"
+          - "web-vitals"
+      # Everything else ungrouped (axios, etc)
+    allow:
+      - dependency-type: "all"
 
-  # Backend dependencies (Express API)
+  # Backend dependencies
   - package-ecosystem: "npm"
     directory: "/backend"
     schedule:
@@ -25,16 +49,39 @@ updates:
       day: "monday"
       time: "09:00"
     open-pull-requests-limit: 5
-    assignees:
-      - "mbuckingham74"
-    commit-message:
-      prefix: "chore"
-      include: "scope"
-    labels:
-      - "dependencies"
-      - "backend"
+    groups:
+      # Group Express ecosystem
+      express:
+        patterns:
+          - "express*"
+      # Group security/auth
+      security:
+        patterns:
+          - "helmet"
+          - "cors"
+          - "express-rate-limit"
+          - "jsonwebtoken"
+          - "bcrypt*"
+      # Group database
+      database:
+        patterns:
+          - "mysql*"
+          - "sequelize"
+      # Group testing
+      testing:
+        patterns:
+          - "jest*"
+          - "supertest"
+      # Group utilities
+      utilities:
+        patterns:
+          - "dotenv"
+          - "axios"
+          - "@anthropic-ai/sdk"
+    allow:
+      - dependency-type: "all"
 
-  # GitHub Actions workflows
+  # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -42,26 +89,7 @@ updates:
       day: "monday"
       time: "09:00"
     open-pull-requests-limit: 3
-    assignees:
-      - "mbuckingham74"
-    commit-message:
-      prefix: "ci"
-    labels:
-      - "dependencies"
-      - "ci/cd"
-
-  # Docker dependencies
-  - package-ecosystem: "docker"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-    open-pull-requests-limit: 3
-    assignees:
-      - "mbuckingham74"
-    commit-message:
-      prefix: "chore"
-    labels:
-      - "dependencies"
-      - "docker"
+    groups:
+      actions:
+        patterns:
+          - "*"
