@@ -7,7 +7,7 @@
 .prompt {
   width: 100%;
   padding: 16px 20px;
-  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+  background: var(--gradient-primary);
   border: none;
   border-radius: var(--radius-lg);
   display: flex;
@@ -33,15 +33,15 @@
 .promptText {
   flex: 1;
   text-align: left;
-  color: white;
+  color: var(--text-on-accent);
   font-size: var(--font-lg);
   font-weight: 500;
   opacity: 0.95;
 }
 
 .badge {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
+  background: color-mix(in srgb, var(--text-on-accent) 20%, transparent);
+  color: var(--text-on-accent);
   padding: var(--spacing-xs) 12px;
   border-radius: var(--radius-lg);
   font-size: 12px;
@@ -51,8 +51,8 @@
 
 /* Expanded State */
 .expandedView {
-  background: var(--bg-elevated, #1a1a2e);
-  border: 2px solid #10b981;
+  background: var(--bg-elevated);
+  border: 2px solid var(--accent-primary);
   border-radius: var(--radius-lg);
   padding: var(--spacing-lg);
   position: relative;
@@ -85,29 +85,29 @@
 .input {
   flex: 1;
   padding: var(--spacing-md) 16px;
-  background: var(--bg-secondary, #2a2a3e);
-  border: 1px solid var(--border-color, #3a3a4e);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  color: var(--text-primary, white);
+  color: var(--text-primary);
   font-size: 15px;
   outline: none;
   transition: border-color 0.2s ease;
 }
 
 .input:focus {
-  border-color: #10b981;
+  border-color: var(--accent-primary);
 }
 
 .input::placeholder {
-  color: var(--text-secondary, #888);
+  color: var(--text-secondary);
 }
 
 .askButton {
   padding: var(--spacing-md) 24px;
-  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+  background: var(--gradient-primary);
   border: none;
   border-radius: var(--radius-md);
-  color: white;
+  color: var(--text-on-accent);
   font-weight: 600;
   cursor: pointer;
   transition:
@@ -118,7 +118,7 @@
 
 .askButton:hover {
   transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--accent-primary) 32%, transparent);
 }
 
 /* Example Questions */
@@ -130,7 +130,7 @@
 }
 
 .examplesLabel {
-  color: var(--text-secondary, #888);
+  color: var(--text-secondary);
   font-size: var(--font-md);
   font-weight: 500;
   margin-right: 4px;
@@ -138,10 +138,10 @@
 
 .exampleChip {
   padding: 6px 12px;
-  background: var(--bg-secondary, #2a2a3e);
-  border: 1px solid var(--border-color, #3a3a4e);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-xl);
-  color: var(--text-primary, white);
+  color: var(--text-primary);
   font-size: var(--font-md);
   cursor: pointer;
   transition:
@@ -151,8 +151,8 @@
 }
 
 .exampleChip:hover {
-  background: #10b981;
-  border-color: #10b981;
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
   transform: translateY(-1px);
 }
 
@@ -163,10 +163,10 @@
   right: 12px;
   width: 28px;
   height: 28px;
-  background: var(--bg-secondary, #2a2a3e);
-  border: 1px solid var(--border-color, #3a3a4e);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
   border-radius: 50%;
-  color: var(--text-secondary, #888);
+  color: var(--text-secondary);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -179,32 +179,9 @@
 }
 
 .collapseButton:hover {
-  background: #10b981;
-  color: white;
-  border-color: #10b981;
-}
-
-/* Dark Theme Support */
-[data-theme='light'] .input,
-[data-theme='light'] .exampleChip {
-  background: #f5f5f5;
-  border-color: #e0e0e0;
-  color: #333;
-}
-
-[data-theme='light'] .expandedView {
-  background: white;
-  border-color: #10b981;
-}
-
-[data-theme='light'] .collapseButton {
-  background: #f5f5f5;
-  border-color: #e0e0e0;
-  color: #666;
-}
-
-[data-theme='light'] .examplesLabel {
-  color: #666;
+  background: var(--accent-primary);
+  color: var(--text-on-accent);
+  border-color: var(--accent-primary);
 }
 
 /* Responsive Design */

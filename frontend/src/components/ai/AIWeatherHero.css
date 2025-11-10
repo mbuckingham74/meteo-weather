@@ -8,24 +8,25 @@
 :root {
   /* AI Hero Component Variables - Light Theme */
   --ai-hero-bg-gradient: var(--gradient-primary);
-  --ai-hero-shadow: 0 12px 36px rgba(16, 185, 129, 0.3);
-  --ai-hero-badge-bg: rgba(255, 255, 255, 0.2);
-  --ai-hero-badge-text: #ffffff;
-  --ai-hero-title-color: #ffffff;
-  --ai-hero-subtitle-color: rgba(255, 255, 255, 0.95);
+  --ai-hero-shadow: 0 12px 36px color-mix(in srgb, var(--accent-primary) 35%, transparent);
+  --ai-hero-badge-bg: color-mix(in srgb, var(--text-on-accent) 25%, transparent);
+  --ai-hero-badge-text: var(--text-on-accent);
+  --ai-hero-title-color: var(--text-on-accent);
+  --ai-hero-subtitle-color: color-mix(in srgb, var(--text-on-accent) 85%, transparent);
   --ai-hero-input-bg: var(--bg-elevated);
   --ai-hero-input-text: var(--text-primary);
   --ai-hero-input-placeholder: var(--text-tertiary);
   --ai-hero-input-shadow: var(--shadow-md);
   --ai-hero-input-shadow-focus: 0 6px 20px rgba(0, 0, 0, 0.15);
-  --ai-hero-button-bg: #ffffff;
+  --ai-hero-button-bg: var(--text-on-accent);
   --ai-hero-button-text: var(--accent-primary);
-  --ai-hero-button-shadow: var(--shadow-md);
-  --ai-hero-button-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.15);
-  --ai-hero-warning-bg: rgba(255, 255, 255, 0.2);
-  --ai-hero-chip-bg: rgba(255, 255, 255, 0.15);
-  --ai-hero-chip-bg-hover: rgba(255, 255, 255, 0.25);
-  --ai-hero-chip-border: rgba(255, 255, 255, 0.2);
+  --ai-hero-button-shadow: 0 4px 12px color-mix(in srgb, var(--text-on-accent) 35%, transparent);
+  --ai-hero-button-shadow-hover: 0 8px 24px
+    color-mix(in srgb, var(--text-on-accent) 45%, transparent);
+  --ai-hero-warning-bg: color-mix(in srgb, var(--text-on-accent) 20%, transparent);
+  --ai-hero-chip-bg: color-mix(in srgb, var(--text-on-accent) 15%, transparent);
+  --ai-hero-chip-bg-hover: color-mix(in srgb, var(--text-on-accent) 25%, transparent);
+  --ai-hero-chip-border: color-mix(in srgb, var(--text-on-accent) 25%, transparent);
   --ai-hero-chip-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   --ai-hero-feature-bg: rgba(255, 255, 255, 0.1);
   --ai-hero-feature-border: rgba(255, 255, 255, 0.2);
@@ -35,7 +36,7 @@
 [data-theme='dark'] {
   /* AI Hero Component Variables - Dark Theme */
   --ai-hero-bg-gradient: var(--gradient-primary);
-  --ai-hero-shadow: 0 12px 36px rgba(52, 211, 153, 0.3);
+  --ai-hero-shadow: 0 12px 36px color-mix(in srgb, var(--accent-primary) 30%, transparent);
   /* Keep hero colorful in dark mode, adjust shadows only */
 }
 
