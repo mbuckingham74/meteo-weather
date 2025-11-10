@@ -109,7 +109,7 @@ const UserPreferencesPage = () => {
         throw new Error(errorData.error || 'Failed to save preferences');
       }
 
-      const data = await response.json();
+      await response.json();
       setMessage('Preferences saved successfully!');
 
       // Update local context if needed

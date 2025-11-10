@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import API_CONFIG from '../../config/api';
-import './AirQualityCard.css';
+import styles from './AirQualityCard.module.css';
 
 /**
  * AirQualityCard Component
@@ -43,9 +43,9 @@ function AirQualityCard({ latitude, longitude }) {
 
   if (loading) {
     return (
-      <div className="aqi-card">
-        <div className="aqi-loading">
-          <div className="aqi-spinner"></div>
+      <div className={styles.card}>
+        <div className={styles.loading}>
+          <div className={styles.spinner}></div>
           <p>Loading air quality data...</p>
         </div>
       </div>
@@ -54,9 +54,9 @@ function AirQualityCard({ latitude, longitude }) {
 
   if (error) {
     return (
-      <div className="aqi-card">
-        <div className="aqi-error">
-          <span className="error-icon">⚠️</span>
+      <div className={styles.card}>
+        <div className={styles.error}>
+          <span className={styles.errorIcon}>⚠️</span>
           <p>{error}</p>
         </div>
       </div>
@@ -72,65 +72,72 @@ function AirQualityCard({ latitude, longitude }) {
   const level = current.aqiLevel;
 
   return (
-    <div className="aqi-card">
-      <h3 className="aqi-card-title">
+    <div className={styles.card}>
+      <h3 className={styles.title}>
         <span>💨</span> Air Quality Index
       </h3>
 
       {/* Main AQI Display */}
       <div
-        className="aqi-main"
-        style={{ borderColor: level?.color || '#9ca3af' }}
+        className={styles.main}
+        style={{ borderColor: level?.color || 'var(--border-light, #d5d9e4)' }}
       >
-        <div className="aqi-value-container">
-          <div className="aqi-value" style={{ color: level?.color || '#9ca3af' }}>
+        <div className={styles.valueContainer}>
+          <div
+            className={styles.value}
+            style={{ color: level?.color || 'var(--text-primary, #0f172a)' }}
+          >
             {aqi !== null && aqi !== undefined ? Math.round(aqi) : '—'}
           </div>
-          <div className="aqi-label">{level?.level || 'Unknown'}</div>
+          <div className={styles.label}>{level?.level || 'Unknown'}</div>
         </div>
-        {level?.description && (
-          <p className="aqi-description">{level.description}</p>
-        )}
+        {level?.description && <p className={styles.description}>{level.description}</p>}
       </div>
 
       {/* Pollutant Details */}
-      <div className="aqi-pollutants">
-        <h4 className="pollutants-title">Pollutant Levels</h4>
-        <div className="pollutants-grid">
+      <div className={styles.pollutants}>
+        <h4 className={styles.pollutantsTitle}>Pollutant Levels</h4>
+        <div className={styles.pollutantsGrid}>
           {current.pm2_5 !== null && current.pm2_5 !== undefined && (
-            <div className="pollutant-item">
-              <span className="pollutant-label">PM2.5</span>
-              <span className="pollutant-value">{current.pm2_5.toFixed(1)} µg/m³</span>
+            <div className={styles.pollutantItem}>
+              <span className={styles.pollutantLabel}>PM2.5</span>
+              <span className={styles.pollutantValue}>{current.pm2_5.toFixed(1)} µg/m³</span>
             </div>
           )}
           {current.pm10 !== null && current.pm10 !== undefined && (
-            <div className="pollutant-item">
-              <span className="pollutant-label">PM10</span>
-              <span className="pollutant-value">{current.pm10.toFixed(1)} µg/m³</span>
+            <div className={styles.pollutantItem}>
+              <span className={styles.pollutantLabel}>PM10</span>
+              <span className={styles.pollutantValue}>{current.pm10.toFixed(1)} µg/m³</span>
             </div>
           )}
           {current.ozone !== null && current.ozone !== undefined && (
-            <div className="pollutant-item">
-              <span className="pollutant-label">O₃</span>
-              <span className="pollutant-value">{current.ozone.toFixed(1)} µg/m³</span>
+            <div className={styles.pollutantItem}>
+              <span className={styles.pollutantLabel}>O₃</span>
+              <span className={styles.pollutantValue}>{current.ozone.toFixed(1)} µg/m³</span>
             </div>
           )}
           {current.nitrogenDioxide !== null && current.nitrogenDioxide !== undefined && (
-            <div className="pollutant-item">
-              <span className="pollutant-label">NO₂</span>
-              <span className="pollutant-value">{current.nitrogenDioxide.toFixed(1)} µg/m³</span>
+            <div className={styles.pollutantItem}>
+              <span className={styles.pollutantLabel}>NO₂</span>
+              <span className={styles.pollutantValue}>
+                {current.nitrogenDioxide.toFixed(1)} µg/m³
+              </span>
             </div>
           )}
           {current.carbonMonoxide !== null && current.carbonMonoxide !== undefined && (
-            <div className="pollutant-item">
-              <span className="pollutant-label">CO</span>
-              <span className="pollutant-value">{current.carbonMonoxide.toFixed(0)} µg/m³</span>
+            <div className={styles.pollutantItem}>
+              <span className={styles.pollutantLabel}>CO</span>
+              <span className={styles.pollutantValue}>
+                {current.carbonMonoxide.toFixed(0)} µg/m³
+              </span>
             </div>
           )}
           {current.sulphurDioxide !== null && current.sulphurDioxide !== undefined && (
-            <div className="pollutant-item">
-              <span className="pollutant-label">SO₂</span>
-              <span className="pollutant-value">{current.sulphurDioxide.toFixed(1)} µg/m³</span>
+            <div className={styles.pollutantItem}>
+              <span className={styles.pollutantLabel}>SO₂</span>
+              <span className={styles.pollutantValue}>
+                {current.sulphurDioxide.toFixed(1)} µg/m³
+              </span>
             </div>
           )}
         </div>
@@ -138,9 +145,9 @@ function AirQualityCard({ latitude, longitude }) {
 
       {/* Health Recommendations */}
       {current.healthRecommendation && current.healthRecommendation.length > 0 && (
-        <div className="aqi-recommendations">
-          <h4 className="recommendations-title">Health Recommendations</h4>
-          <ul className="recommendations-list">
+        <div className={styles.recommendations}>
+          <h4 className={styles.recommendationsTitle}>Health Recommendations</h4>
+          <ul className={styles.recommendationsList}>
             {current.healthRecommendation.map((rec, index) => (
               <li key={index}>{rec}</li>
             ))}
@@ -149,8 +156,8 @@ function AirQualityCard({ latitude, longitude }) {
       )}
 
       {/* Data Source */}
-      <div className="aqi-footer">
-        <p className="data-source">Data: Open-Meteo Air Quality API</p>
+      <div className={styles.footer}>
+        <p className={styles.dataSource}>Data: Open-Meteo Air Quality API</p>
       </div>
     </div>
   );

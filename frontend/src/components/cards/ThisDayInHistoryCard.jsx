@@ -1,6 +1,20 @@
 import React from 'react';
 import { formatTemperature } from '../../utils/weatherHelpers';
 
+const FROSTED_PANEL_STYLE = {
+  padding: '10px',
+  background: 'var(--overlay-accent, rgba(255, 255, 255, 0.15))',
+  borderRadius: '10px',
+  backdropFilter: 'blur(10px)',
+};
+
+const FROSTED_BLOCK_STYLE = {
+  padding: '12px',
+  background: 'var(--overlay-accent, rgba(255, 255, 255, 0.1))',
+  borderRadius: '8px',
+  backdropFilter: 'blur(10px)',
+};
+
 /**
  * This Day in History Card Component
  * Displays historical weather records for the current date
@@ -8,14 +22,16 @@ import { formatTemperature } from '../../utils/weatherHelpers';
 function ThisDayInHistoryCard({ historyData, unit = 'C' }) {
   if (!historyData || !historyData.records) {
     return (
-      <div style={{
-        padding: '12px',
-        background: 'white',
-        borderRadius: '8px',
-        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-        textAlign: 'center',
-        color: '#6b7280'
-      }}>
+      <div
+        style={{
+          padding: '12px',
+          background: 'var(--bg-elevated, #ffffff)',
+          borderRadius: '8px',
+          boxShadow: 'var(--shadow-md, 0 12px 32px rgba(15, 23, 42, 0.12))',
+          textAlign: 'center',
+          color: 'var(--text-tertiary, #7b89a6)',
+        }}
+      >
         Loading historical data...
       </div>
     );
@@ -26,18 +42,33 @@ function ThisDayInHistoryCard({ historyData, unit = 'C' }) {
   // Format date for display
   const formatDate = (dateStr) => {
     const [month, day] = dateStr.split('-');
-    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const monthNames = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
     return `${monthNames[parseInt(month) - 1]} ${parseInt(day)}`;
   };
 
   return (
-    <div style={{
-      padding: '12px',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      borderRadius: '8px',
-      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-      color: 'white'
-    }}>
+    <div
+      style={{
+        padding: '12px',
+        background: 'var(--gradient-primary, linear-gradient(135deg, #4c7ce5 0%, #7b94d6 100%))',
+        borderRadius: '8px',
+        boxShadow: 'var(--shadow-lg, 0 18px 48px rgba(15, 23, 42, 0.18))',
+        color: 'var(--text-on-accent, #ffffff)',
+      }}
+    >
       {/* Header */}
       <div style={{ marginBottom: '12px', textAlign: 'center' }}>
         <h3 style={{ margin: '0 0 6px 0', fontSize: '18px', fontWeight: '600' }}>
@@ -52,14 +83,16 @@ function ThisDayInHistoryCard({ historyData, unit = 'C' }) {
       </div>
 
       {/* Record temperatures */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px', marginBottom: '12px' }}>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gap: '10px',
+          marginBottom: '12px',
+        }}
+      >
         {/* Record High */}
-        <div style={{
-          padding: '10px',
-          background: 'rgba(255, 255, 255, 0.15)',
-          borderRadius: '10px',
-          backdropFilter: 'blur(10px)'
-        }}>
+        <div style={FROSTED_PANEL_STYLE}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
             <span style={{ fontSize: '24px' }}>🔥</span>
             <p style={{ margin: 0, fontSize: '13px', opacity: 0.9, fontWeight: '600' }}>
@@ -75,12 +108,7 @@ function ThisDayInHistoryCard({ historyData, unit = 'C' }) {
         </div>
 
         {/* Record Low */}
-        <div style={{
-          padding: '10px',
-          background: 'rgba(255, 255, 255, 0.15)',
-          borderRadius: '10px',
-          backdropFilter: 'blur(10px)'
-        }}>
+        <div style={FROSTED_PANEL_STYLE}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
             <span style={{ fontSize: '24px' }}>❄️</span>
             <p style={{ margin: 0, fontSize: '13px', opacity: 0.9, fontWeight: '600' }}>
@@ -97,18 +125,20 @@ function ThisDayInHistoryCard({ historyData, unit = 'C' }) {
       </div>
 
       {/* Average temperatures */}
-      <div style={{
-        padding: '10px',
-        background: 'rgba(255, 255, 255, 0.15)',
-        borderRadius: '10px',
-        backdropFilter: 'blur(10px)'
-      }}>
+      <div style={FROSTED_PANEL_STYLE}>
         <p style={{ margin: '0 0 8px 0', fontSize: '13px', fontWeight: '600', opacity: 0.9 }}>
           📊 Historical Averages
         </p>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
           <div>
-            <p style={{ margin: '0 0 4px 0', fontSize: '11px', opacity: 0.75, textTransform: 'uppercase' }}>
+            <p
+              style={{
+                margin: '0 0 4px 0',
+                fontSize: '11px',
+                opacity: 0.75,
+                textTransform: 'uppercase',
+              }}
+            >
               High
             </p>
             <p style={{ margin: 0, fontSize: '18px', fontWeight: '600' }}>
@@ -116,7 +146,14 @@ function ThisDayInHistoryCard({ historyData, unit = 'C' }) {
             </p>
           </div>
           <div>
-            <p style={{ margin: '0 0 4px 0', fontSize: '11px', opacity: 0.75, textTransform: 'uppercase' }}>
+            <p
+              style={{
+                margin: '0 0 4px 0',
+                fontSize: '11px',
+                opacity: 0.75,
+                textTransform: 'uppercase',
+              }}
+            >
               Average
             </p>
             <p style={{ margin: 0, fontSize: '18px', fontWeight: '600' }}>
@@ -124,7 +161,14 @@ function ThisDayInHistoryCard({ historyData, unit = 'C' }) {
             </p>
           </div>
           <div>
-            <p style={{ margin: '0 0 4px 0', fontSize: '11px', opacity: 0.75, textTransform: 'uppercase' }}>
+            <p
+              style={{
+                margin: '0 0 4px 0',
+                fontSize: '11px',
+                opacity: 0.75,
+                textTransform: 'uppercase',
+              }}
+            >
               Low
             </p>
             <p style={{ margin: 0, fontSize: '18px', fontWeight: '600' }}>
@@ -136,19 +180,11 @@ function ThisDayInHistoryCard({ historyData, unit = 'C' }) {
 
       {/* Precipitation record */}
       {records.maxPrecipitation && records.maxPrecipitation.value > 0 && (
-        <div style={{
-          marginTop: '16px',
-          padding: '12px',
-          background: 'rgba(255, 255, 255, 0.1)',
-          borderRadius: '8px',
-          backdropFilter: 'blur(10px)'
-        }}>
+        <div style={{ ...FROSTED_BLOCK_STYLE, marginTop: '16px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{ fontSize: '18px' }}>🌧️</span>
-              <p style={{ margin: 0, fontSize: '12px', opacity: 0.9 }}>
-                Most Precipitation
-              </p>
+              <p style={{ margin: 0, fontSize: '12px', opacity: 0.9 }}>Most Precipitation</p>
             </div>
             <div style={{ textAlign: 'right' }}>
               <p style={{ margin: '0 0 2px 0', fontSize: '16px', fontWeight: '600' }}>
@@ -163,14 +199,13 @@ function ThisDayInHistoryCard({ historyData, unit = 'C' }) {
       )}
 
       {/* Fun fact */}
-      <div style={{
-        marginTop: '16px',
-        padding: '12px',
-        background: 'rgba(255, 255, 255, 0.1)',
-        borderRadius: '8px',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid rgba(255, 255, 255, 0.2)'
-      }}>
+      <div
+        style={{
+          ...FROSTED_BLOCK_STYLE,
+          marginTop: '16px',
+          border: '1px solid var(--overlay-accent-strong, rgba(255, 255, 255, 0.2))',
+        }}
+      >
         <p style={{ margin: 0, fontSize: '11px', opacity: 0.85, lineHeight: '1.5' }}>
           💡 <strong>Did you know?</strong> The temperature on this day has varied by{' '}
           {Math.abs(records.highTemperature.value - records.lowTemperature.value).toFixed(1)}°{unit}{' '}

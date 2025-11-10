@@ -6,6 +6,11 @@ import path from 'path';
 export default defineConfig({
   plugins: [react()],
 
+  // PostCSS configuration (includes PurgeCSS in production)
+  css: {
+    postcss: './postcss.config.cjs',
+  },
+
   // Path resolution
   resolve: {
     alias: {
@@ -20,6 +25,12 @@ export default defineConfig({
   server: {
     port: 3000,
     host: true,
+    headers: {
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      Pragma: 'no-cache',
+      Expires: '0',
+      'Surrogate-Control': 'no-store',
+    },
     proxy: {
       '/api': {
         target: process.env.VITE_API_URL || 'http://localhost:5001',
@@ -27,6 +38,8 @@ export default defineConfig({
         secure: false,
       },
     },
+    // Enable SPA fallback for client-side routing
+    historyApiFallback: true,
   },
 
   // esbuild configuration for JSX in .js files
@@ -48,6 +61,9 @@ export default defineConfig({
   build: {
     outDir: 'build',
     sourcemap: true,
+    // Disable CSS code splitting to prevent FOUC (Flash of Unstyled Content)
+    // All CSS will be bundled into a single file that loads before JS
+    cssCodeSplit: false,
     rollupOptions: {
       output: {
         manualChunks: {
@@ -55,6 +71,13 @@ export default defineConfig({
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
           'chart-vendor': ['recharts'],
           'map-vendor': ['leaflet', 'react-leaflet'],
+        },
+        // Ensure CSS loads before JS to prevent FOUC
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name.endsWith('.css')) {
+            return 'assets/[name]-[hash][extname]';
+          }
+          return 'assets/[name]-[hash][extname]';
         },
       },
     },
@@ -75,14 +98,14 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-    setupFiles: './src/setupTests.js',
+    setupFiles: './src/setupTests.jsx',
     css: true,
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov', 'json-summary'],
       exclude: [
         'node_modules/',
-        'src/setupTests.js',
+        'src/setupTests.jsx',
         'src/reportWebVitals.js',
         '**/*.test.{js,jsx,ts,tsx}',
         '**/__tests__/**',

@@ -1,0 +1,44 @@
+=================================================================
+NGINX SECURITY HEADERS - ADD VIA NGINX PROXY MANAGER
+=================================================================
+
+Access Nginx Proxy Manager: http://tachyonfuture.com:81
+Login: michael.buckingham74@gmail.com
+
+=================================================================
+FRONTEND CONFIG: meteo-beta.tachyonfuture.com
+=================================================================
+
+Navigation: Proxy Hosts → meteo-beta.tachyonfuture.com → Edit → Advanced tab
+
+Paste in "Custom Nginx Configuration":
+
+# Security Headers (Frontend)
+add_header X-Frame-Options "SAMEORIGIN" always;
+add_header X-Content-Type-Options "nosniff" always;
+add_header X-XSS-Protection "1; mode=block" always;
+add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+add_header Permissions-Policy "geolocation=(self), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=(), interest-cohort=()" always;
+
+Click SAVE
+
+=================================================================
+API CONFIG: api.meteo-beta.tachyonfuture.com
+=================================================================
+
+Navigation: Proxy Hosts → api.meteo-beta.tachyonfuture.com → Edit → Advanced tab
+
+Paste in "Custom Nginx Configuration":
+
+# Security Headers (API)
+add_header X-Frame-Options "DENY" always;
+add_header X-Content-Type-Options "nosniff" always;
+add_header X-XSS-Protection "1; mode=block" always;
+add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+add_header Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=()" always;
+
+Click SAVE
+
+=================================================================
+NOTE: HSTS header already added by Helmet (Express), don't duplicate
+=================================================================

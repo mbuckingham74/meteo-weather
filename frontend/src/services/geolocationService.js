@@ -20,9 +20,10 @@ async function getLocationFromIP() {
       url: 'https://ipapi.co/json/',
       parser: (data) => {
         const hasValidCity = data.city && data.city !== 'Unknown' && data.city.trim() !== '';
+        // Return coordinates if no city name available (API needs coordinates, not "Your Location")
         const address = hasValidCity
           ? `${data.city}, ${data.region_code || data.region}, ${data.country_name}`
-          : 'Your Location';
+          : `${data.latitude}, ${data.longitude}`;
 
         return {
           address,
@@ -32,32 +33,34 @@ async function getLocationFromIP() {
           accuracy: 5000,
           method: 'ip',
           requiresConfirmation: true, // IP-based locations should be confirmed
-          detectionMethod: 'IP Geolocation (ipapi.co)'
+          detectionMethod: 'IP Geolocation (ipapi.co)',
         };
-      }
+      },
     },
     {
       name: 'geojs.io',
       url: 'https://get.geojs.io/v1/ip/geo.json',
       parser: (data) => {
-        // Use city name if available, otherwise fall back to "Your Location"
+        // Use city name if available, otherwise return coordinates (API needs them)
         const hasValidCity = data.city && data.city !== 'Unknown' && data.city.trim() !== '';
+        const latitude = parseFloat(data.latitude);
+        const longitude = parseFloat(data.longitude);
         const address = hasValidCity
           ? `${data.city}, ${data.region}, ${data.country}`
-          : 'Your Location';
+          : `${latitude}, ${longitude}`;
 
         return {
           address,
-          latitude: parseFloat(data.latitude),
-          longitude: parseFloat(data.longitude),
+          latitude,
+          longitude,
           timezone: data.timezone,
           accuracy: 5000,
           method: 'ip',
           requiresConfirmation: true, // IP-based locations should be confirmed
-          detectionMethod: 'IP Geolocation (geojs.io)'
+          detectionMethod: 'IP Geolocation (geojs.io)',
         };
-      }
-    }
+      },
+    },
   ];
 
   // Try each service until one succeeds
@@ -112,14 +115,14 @@ export async function getCurrentLocation() {
     const defaultOptions = {
       enableHighAccuracy: false,
       timeout: 20000,
-      maximumAge: 0 // Don't use cached position to avoid stale data issues
+      maximumAge: 0, // Don't use cached position to avoid stale data issues
     };
 
     // Fallback to high accuracy with longer timeout if first attempt fails
     const highAccuracyOptions = {
       enableHighAccuracy: true,
       timeout: 30000,
-      maximumAge: 0
+      maximumAge: 0,
     };
 
     const attemptGeolocation = (options, isRetry = false) => {
@@ -127,7 +130,12 @@ export async function getCurrentLocation() {
         async (position) => {
           const { latitude, longitude } = position.coords;
 
-          console.log(`📍 Got coordinates (${options.enableHighAccuracy ? 'high' : 'low'} accuracy):`, latitude, longitude, `±${position.coords.accuracy}m`);
+          console.log(
+            `📍 Got coordinates (${options.enableHighAccuracy ? 'high' : 'low'} accuracy):`,
+            latitude,
+            longitude,
+            `±${position.coords.accuracy}m`
+          );
 
           try {
             // Try to reverse geocode to get address
@@ -140,41 +148,50 @@ export async function getCurrentLocation() {
             const isCoordinatesOnly = /^-?\d+\.\d+,\s*-?\d+\.\d+$/.test(location.address);
 
             if (isCoordinatesOnly) {
-              console.warn('⚠️ Reverse geocoding returned coordinates as address, using friendly fallback');
+              console.warn(
+                '⚠️ Reverse geocoding returned coordinates as address, will use coords for API'
+              );
               // Keep coordinates as address (API understands "lat,lon" format)
-              // But add displayName for UI
+              // DO NOT replace with "Your Location" - the weather API needs the coordinates!
               resolve({
                 ...location,
-                // address stays as coordinates for API
-                displayName: 'Your Location', // User-friendly display for UI
+                // location.address already contains coordinates, keep it
                 accuracy: position.coords.accuracy,
                 method: options.enableHighAccuracy ? 'gps' : 'browser',
                 requiresConfirmation: position.coords.accuracy > 1000, // Confirm if accuracy is poor
-                detectionMethod: options.enableHighAccuracy ? 'GPS (High Accuracy)' : 'Browser Geolocation'
+                detectionMethod: options.enableHighAccuracy
+                  ? 'GPS (High Accuracy)'
+                  : 'Browser Geolocation',
               });
             } else {
+              // Successful reverse geocoding - location.address has the full address
+              // Don't set displayName - let the UI extract city name from address
               resolve({
                 ...location,
                 accuracy: position.coords.accuracy,
                 method: options.enableHighAccuracy ? 'gps' : 'browser',
                 requiresConfirmation: position.coords.accuracy > 1000, // Confirm if accuracy is poor
-                detectionMethod: options.enableHighAccuracy ? 'GPS (High Accuracy)' : 'Browser Geolocation'
+                detectionMethod: options.enableHighAccuracy
+                  ? 'GPS (High Accuracy)'
+                  : 'Browser Geolocation',
               });
             }
           } catch (error) {
             console.warn('⚠️ Reverse geocoding failed, using coordinates only:', error.message);
 
-            // If reverse geocoding fails (e.g., API rate limit), return user-friendly fallback
-            // The weather API can still work with lat,lon coordinates
+            // If reverse geocoding fails (e.g., API rate limit), return coordinates
+            // The weather API understands "lat,lon" format
             const fallbackLocation = {
-              address: 'Your Location', // User-friendly display instead of raw coordinates
+              address: `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`, // Coordinates for API
               latitude: latitude,
               longitude: longitude,
               timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
               accuracy: position.coords.accuracy,
               method: options.enableHighAccuracy ? 'gps' : 'browser',
               requiresConfirmation: position.coords.accuracy > 1000, // Confirm if accuracy is poor
-              detectionMethod: options.enableHighAccuracy ? 'GPS (High Accuracy)' : 'Browser Geolocation'
+              detectionMethod: options.enableHighAccuracy
+                ? 'GPS (High Accuracy)'
+                : 'Browser Geolocation',
             };
 
             console.log('📍 Using fallback location:', fallbackLocation);
@@ -182,7 +199,9 @@ export async function getCurrentLocation() {
           }
         },
         (error) => {
-          console.error(`❌ Geolocation error (${options.enableHighAccuracy ? 'high' : 'low'} accuracy):`);
+          console.error(
+            `❌ Geolocation error (${options.enableHighAccuracy ? 'high' : 'low'} accuracy):`
+          );
           console.error('   Error code:', error.code);
           console.error('   Error message:', error.message);
           console.error('   Full error:', error);
@@ -191,7 +210,7 @@ export async function getCurrentLocation() {
           const errorCodes = {
             1: 'PERMISSION_DENIED',
             2: 'POSITION_UNAVAILABLE',
-            3: 'TIMEOUT'
+            3: 'TIMEOUT',
           };
           console.error('   Error type:', errorCodes[error.code] || 'UNKNOWN');
 
@@ -207,11 +226,11 @@ export async function getCurrentLocation() {
           console.log('💡 Browser geolocation failed, trying IP-based location...');
 
           getLocationFromIP()
-            .then(location => {
+            .then((location) => {
               console.log('✅ Successfully got location via IP fallback');
               resolve(location);
             })
-            .catch(ipError => {
+            .catch((ipError) => {
               // All methods failed - return final error
               console.error('❌ IP geolocation also failed:', ipError.message);
 
@@ -219,13 +238,16 @@ export async function getCurrentLocation() {
 
               switch (error.code) {
                 case 1: // PERMISSION_DENIED
-                  errorMessage = 'Location permission denied. Please allow location access in your browser settings.';
+                  errorMessage =
+                    'Location permission denied. Please allow location access in your browser settings.';
                   break;
                 case 2: // POSITION_UNAVAILABLE
-                  errorMessage = 'Location unavailable. Please check System Settings → Privacy & Security → Location Services, ensure it\'s enabled and your browser has access. Or try entering a city name.';
+                  errorMessage =
+                    "Location unavailable. Please check System Settings → Privacy & Security → Location Services, ensure it's enabled and your browser has access. Or try entering a city name.";
                   break;
                 case 3: // TIMEOUT
-                  errorMessage = 'Location request timed out. Please try again or enter a city name.';
+                  errorMessage =
+                    'Location request timed out. Please try again or enter a city name.';
                   break;
                 default:
                   errorMessage = 'Location detection failed. Please try entering a city name.';

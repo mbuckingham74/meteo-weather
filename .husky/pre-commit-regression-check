@@ -1,0 +1,105 @@
+#!/bin/sh
+# Pre-commit hook: Run critical regression tests
+# Prevents "Old Location" bug from being re-introduced
+
+echo "🔍 Running critical regression tests..."
+
+FRONTEND_CHANGED=0
+BACKEND_CHANGED=0
+
+# Check if geolocationService.js was modified (FRONTEND)
+if git diff --cached --name-only | grep -q "frontend/src/services/geolocationService.js"; then
+  echo "⚠️  Frontend geolocationService.js modified - running regression tests..."
+  FRONTEND_CHANGED=1
+
+  # Run frontend regression tests
+  cd frontend
+  npm run test -- geolocationService.regression.test.js --run
+
+  if [ $? -ne 0 ]; then
+    echo ""
+    echo "❌ CRITICAL REGRESSION DETECTED IN FRONTEND!"
+    echo ""
+    echo "The 'Old Location' bug has been re-introduced in geolocationService.js"
+    echo "Please fix the issues before committing."
+    echo ""
+    echo "Common fix:"
+    echo "  WRONG: address = 'Your Location'"
+    echo "  RIGHT: address = \`\${latitude}, \${longitude}\`"
+    echo ""
+    echo "See: docs/troubleshooting/OLD_LOCATION_BUG_FIX.md"
+    echo ""
+    exit 1
+  fi
+
+  echo "✅ Frontend regression tests passed"
+  cd ..
+fi
+
+# Check if LocationContext.jsx was modified (FRONTEND)
+if git diff --cached --name-only | grep -q "frontend/src/contexts/LocationContext.jsx"; then
+  echo "⚠️  Frontend LocationContext.jsx modified - running regression tests..."
+  FRONTEND_CHANGED=1
+
+  # Run LocationContext regression tests
+  cd frontend
+  npm run test -- LocationContext.regression.test.jsx --run
+
+  if [ $? -ne 0 ]; then
+    echo ""
+    echo "❌ CRITICAL REGRESSION DETECTED IN FRONTEND!"
+    echo ""
+    echo "The 'Old Location' bug has been re-introduced in LocationContext.jsx"
+    echo "Please fix the issues before committing."
+    echo ""
+    echo "Common fix:"
+    echo "  - Ensure 'your location' is in isPlaceholderAddress() pattern"
+    echo "  - Replace placeholders with coordinates, NOT 'Your Location'"
+    echo "  - Call sanitizeLocationData() when loading from localStorage"
+    echo ""
+    echo "See: docs/troubleshooting/OLD_LOCATION_BUG_FIX.md"
+    echo ""
+    exit 1
+  fi
+
+  echo "✅ LocationContext regression tests passed"
+  cd ..
+fi
+
+# Check if weatherService.js was modified (BACKEND)
+if git diff --cached --name-only | grep -q "backend/services/weatherService.js"; then
+  echo "⚠️  Backend weatherService.js modified - running regression tests..."
+  BACKEND_CHANGED=1
+
+  # Run backend regression tests
+  cd backend
+  npm test -- weatherService.regression.test.js
+
+  if [ $? -ne 0 ]; then
+    echo ""
+    echo "❌ CRITICAL REGRESSION DETECTED IN BACKEND!"
+    echo ""
+    echo "The 'Old Location' bug has been re-introduced in weatherService.js"
+    echo "Please fix the issues before committing."
+    echo ""
+    echo "Common fix:"
+    echo "  - Check for BOTH placeholder AND coordinate patterns"
+    echo "  - Call reverseGeocodeNominatim when Visual Crossing returns placeholders"
+    echo "  - Ensure isPlaceholder || isCoordinates logic is present"
+    echo ""
+    echo "See: docs/troubleshooting/OLD_LOCATION_BUG_FIX.md"
+    echo ""
+    exit 1
+  fi
+
+  echo "✅ Backend regression tests passed"
+  cd ..
+fi
+
+if [ $FRONTEND_CHANGED -eq 1 ] || [ $BACKEND_CHANGED -eq 1 ]; then
+  echo "✅ All regression tests passed"
+else
+  echo "ℹ️  No critical files modified, skipping regression tests"
+fi
+
+echo "✅ Pre-commit checks complete"

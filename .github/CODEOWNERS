@@ -1,0 +1,222 @@
+# CODEOWNERS
+#
+# This file defines code ownership for automatic review assignment on pull requests.
+# Learn more: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+#
+# Format: path/to/file @github-username
+# Patterns follow .gitignore rules
+
+# =============================================================================
+# GLOBAL OWNERS (Default for everything)
+# =============================================================================
+
+# Michael Buckingham is the default owner for all files
+* @mbuckingham74
+
+# =============================================================================
+# DOCUMENTATION
+# =============================================================================
+
+# All documentation files
+/docs/ @mbuckingham74
+*.md @mbuckingham74
+/README.md @mbuckingham74
+/CHANGELOG.md @mbuckingham74
+/CONTRIBUTING.md @mbuckingham74
+/SECURITY.md @mbuckingham74
+/SUPPORT.md @mbuckingham74
+/LICENSE @mbuckingham74
+
+# Claude Code context and instructions
+/.claude/ @mbuckingham74
+/CLAUDE.md @mbuckingham74
+
+# =============================================================================
+# FRONTEND
+# =============================================================================
+
+# All frontend code
+/frontend/ @mbuckingham74
+
+# React components
+/frontend/src/components/ @mbuckingham74
+
+# Context providers
+/frontend/src/contexts/ @mbuckingham74
+
+# Utilities and helpers
+/frontend/src/utils/ @mbuckingham74
+/frontend/src/hooks/ @mbuckingham74
+
+# Services and API clients
+/frontend/src/services/ @mbuckingham74
+
+# Styles and themes
+/frontend/src/styles/ @mbuckingham74
+
+# Frontend configuration
+/frontend/vite.config.js @mbuckingham74
+/frontend/package.json @mbuckingham74
+/frontend/.eslintrc.json @mbuckingham74
+/frontend/tsconfig.json @mbuckingham74
+
+# =============================================================================
+# BACKEND
+# =============================================================================
+
+# All backend code
+/backend/ @mbuckingham74
+
+# API routes
+/backend/routes/ @mbuckingham74
+
+# Business logic services
+/backend/services/ @mbuckingham74
+
+# Middleware
+/backend/middleware/ @mbuckingham74
+
+# Backend configuration
+/backend/server.js @mbuckingham74
+/backend/package.json @mbuckingham74
+/backend/.eslintrc.json @mbuckingham74
+
+# =============================================================================
+# DATABASE
+# =============================================================================
+
+# Database schema and migrations
+/database/ @mbuckingham74
+/database/schema.sql @mbuckingham74
+/database/migrations/ @mbuckingham74
+/database/seed.sql @mbuckingham74
+
+# =============================================================================
+# DEPLOYMENT & INFRASTRUCTURE
+# =============================================================================
+
+# Docker configuration
+/Dockerfile @mbuckingham74
+/backend/Dockerfile @mbuckingham74
+/frontend/Dockerfile @mbuckingham74
+/frontend/Dockerfile.dev @mbuckingham74
+docker-compose.yml @mbuckingham74
+docker-compose.prod.yml @mbuckingham74
+.dockerignore @mbuckingham74
+
+# Deployment scripts
+/scripts/ @mbuckingham74
+/scripts/deploy-beta.sh @mbuckingham74
+/scripts/verify-security.sh @mbuckingham74
+
+# =============================================================================
+# CI/CD & GITHUB WORKFLOWS
+# =============================================================================
+
+# All GitHub Actions workflows
+/.github/workflows/ @mbuckingham74
+
+# Specific critical workflows
+/.github/workflows/deploy.yml @mbuckingham74
+/.github/workflows/ci.yml @mbuckingham74
+/.github/workflows/security-scan.yml @mbuckingham74
+/.github/workflows/codeql.yml @mbuckingham74
+
+# GitHub configuration
+/.github/dependabot.yml @mbuckingham74
+/.github/CODEOWNERS @mbuckingham74
+/.github/ISSUE_TEMPLATE/ @mbuckingham74
+/.github/PULL_REQUEST_TEMPLATE.md @mbuckingham74
+
+# =============================================================================
+# SECURITY & SECRETS
+# =============================================================================
+
+# Security configuration
+/SECURITY.md @mbuckingham74
+/.gitleaks.toml @mbuckingham74
+.env.example @mbuckingham74
+
+# Pre-commit hooks
+/.husky/ @mbuckingham74
+
+# =============================================================================
+# TESTING
+# =============================================================================
+
+# All test files
+**/*.test.js @mbuckingham74
+**/*.test.jsx @mbuckingham74
+**/*.spec.js @mbuckingham74
+**/setupTests.jsx @mbuckingham74
+
+# Test configuration
+/frontend/vitest.config.js @mbuckingham74
+/backend/jest.config.js @mbuckingham74
+
+# Regression tests
+/frontend/src/services/geolocationService.regression.test.js @mbuckingham74
+/backend/tests/ @mbuckingham74
+
+# =============================================================================
+# CONFIGURATION FILES
+# =============================================================================
+
+# Root configuration
+/package.json @mbuckingham74
+/.gitignore @mbuckingham74
+/.prettierrc @mbuckingham74
+/.eslintrc-custom-rules.js @mbuckingham74
+
+# Environment configuration
+/.env.example @mbuckingham74
+/config/ @mbuckingham74
+
+# =============================================================================
+# SPECIAL RULES
+# =============================================================================
+
+# Critical files that require extra attention
+# These patterns override earlier matches
+
+# Database migrations (require careful review)
+/database/migrations/*.sql @mbuckingham74
+
+# Security-related routes (authentication, authorization)
+/backend/routes/auth.js @mbuckingham74
+/backend/services/authService.js @mbuckingham74
+/backend/middleware/authMiddleware.js @mbuckingham74
+
+# Rate limiting and security middleware
+/backend/services/rateLimitService.js @mbuckingham74
+
+# Critical regression-monitored files (see docs/troubleshooting/REGRESSION_PREVENTION.md)
+/frontend/src/services/geolocationService.js @mbuckingham74
+/frontend/src/contexts/LocationContext.jsx @mbuckingham74
+/backend/services/weatherService.js @mbuckingham74
+
+# Production deployment script
+/scripts/deploy-beta.sh @mbuckingham74
+
+# Production Docker Compose
+docker-compose.prod.yml @mbuckingham74
+
+# =============================================================================
+# NOTES
+# =============================================================================
+
+# How this file works:
+# 1. Patterns are matched from top to bottom
+# 2. Last matching pattern takes precedence
+# 3. When a PR is opened, GitHub automatically requests review from owners
+# 4. Use @github-username or @org/team-name for ownership
+# 5. Multiple owners can be specified: path/ @user1 @user2
+
+# Solo project note:
+# This file currently lists only @mbuckingham74 as the owner.
+# When the project grows and new maintainers join, add them here:
+#   Example: /frontend/ @mbuckingham74 @new-maintainer
+#   Example: /docs/ @mbuckingham74 @documentation-team
+
+# For more information:
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners

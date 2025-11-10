@@ -1,0 +1,263 @@
+/**
+ * ITCSS Layer 7: Utilities
+ *
+ * Helper classes, overrides, utilities
+ * Highest specificity, single-purpose classes with `.u-` prefix
+ */
+
+/* Display utilities */
+.u-hidden {
+  display: none !important;
+}
+
+.u-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.u-block {
+  display: block !important;
+}
+
+.u-inline-block {
+  display: inline-block !important;
+}
+
+.u-flex {
+  display: flex !important;
+}
+
+.u-grid {
+  display: grid !important;
+}
+
+/* Text utilities */
+.u-text-center {
+  text-align: center !important;
+}
+
+.u-text-left {
+  text-align: left !important;
+}
+
+.u-text-right {
+  text-align: right !important;
+}
+
+.u-text-uppercase {
+  text-transform: uppercase !important;
+}
+
+.u-text-lowercase {
+  text-transform: lowercase !important;
+}
+
+.u-text-capitalize {
+  text-transform: capitalize !important;
+}
+
+/* Font weight utilities */
+.u-fw-normal {
+  font-weight: 400 !important;
+}
+
+.u-fw-medium {
+  font-weight: 500 !important;
+}
+
+.u-fw-semibold {
+  font-weight: 600 !important;
+}
+
+.u-fw-bold {
+  font-weight: 700 !important;
+}
+
+/* Color utilities */
+.u-text-primary {
+  color: var(--text-primary) !important;
+}
+
+.u-text-secondary {
+  color: var(--text-secondary) !important;
+}
+
+.u-text-tertiary {
+  color: var(--text-tertiary) !important;
+}
+
+.u-text-accent {
+  color: var(--accent-primary) !important;
+}
+
+.u-text-error {
+  color: var(--error-text) !important;
+}
+
+.u-text-success {
+  color: var(--success-text) !important;
+}
+
+/* Background utilities */
+.u-bg-primary {
+  background-color: var(--bg-primary) !important;
+}
+
+.u-bg-secondary {
+  background-color: var(--bg-secondary) !important;
+}
+
+.u-bg-elevated {
+  background-color: var(--bg-elevated) !important;
+}
+
+/* Spacing utilities */
+.u-m-0 {
+  margin: 0 !important;
+}
+
+.u-mt-xs {
+  margin-top: var(--spacing-xs) !important;
+}
+
+.u-mt-sm {
+  margin-top: var(--spacing-sm) !important;
+}
+
+.u-mt-md {
+  margin-top: var(--spacing-md) !important;
+}
+
+.u-mt-lg {
+  margin-top: var(--spacing-lg) !important;
+}
+
+.u-mb-xs {
+  margin-bottom: var(--spacing-xs) !important;
+}
+
+.u-mb-sm {
+  margin-bottom: var(--spacing-sm) !important;
+}
+
+.u-mb-md {
+  margin-bottom: var(--spacing-md) !important;
+}
+
+.u-mb-lg {
+  margin-bottom: var(--spacing-lg) !important;
+}
+
+.u-p-0 {
+  padding: 0 !important;
+}
+
+.u-p-xs {
+  padding: var(--spacing-xs) !important;
+}
+
+.u-p-sm {
+  padding: var(--spacing-sm) !important;
+}
+
+.u-p-md {
+  padding: var(--spacing-md) !important;
+}
+
+.u-p-lg {
+  padding: var(--spacing-lg) !important;
+}
+
+/* Width utilities */
+.u-w-full {
+  width: 100% !important;
+}
+
+.u-w-auto {
+  width: auto !important;
+}
+
+/* Flex utilities */
+.u-flex-1 {
+  flex: 1 !important;
+}
+
+.u-flex-auto {
+  flex: 1 1 auto !important;
+}
+
+.u-flex-shrink-0 {
+  flex-shrink: 0 !important;
+}
+
+/* Border radius utilities */
+.u-rounded-sm {
+  border-radius: var(--radius-sm) !important;
+}
+
+.u-rounded-md {
+  border-radius: var(--radius-md) !important;
+}
+
+.u-rounded-lg {
+  border-radius: var(--radius-lg) !important;
+}
+
+.u-rounded-full {
+  border-radius: 9999px !important;
+}
+
+/* Shadow utilities */
+.u-shadow-sm {
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.u-shadow-md {
+  box-shadow: var(--shadow-md) !important;
+}
+
+.u-shadow-lg {
+  box-shadow: var(--shadow-lg) !important;
+}
+
+/* Cursor utilities */
+.u-cursor-pointer {
+  cursor: pointer !important;
+}
+
+.u-cursor-not-allowed {
+  cursor: not-allowed !important;
+}
+
+/* Overflow utilities */
+.u-overflow-hidden {
+  overflow: hidden !important;
+}
+
+.u-overflow-auto {
+  overflow: auto !important;
+}
+
+/* Position utilities */
+.u-relative {
+  position: relative !important;
+}
+
+.u-absolute {
+  position: absolute !important;
+}
+
+.u-fixed {
+  position: fixed !important;
+}
+
+.u-sticky {
+  position: sticky !important;
+}

@@ -9,7 +9,12 @@ const MAX_RECENT_SEARCHES = 5;
  * LocationSearchBar Component
  * Autocomplete search bar for location selection with search history
  */
-function LocationSearchBar({ onLocationSelect, currentLocation, onDetectLocation, detectingLocation }) {
+function LocationSearchBar({
+  onLocationSelect,
+  currentLocation: _currentLocation,
+  onDetectLocation,
+  detectingLocation,
+}) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [popularLocations, setPopularLocations] = useState([]);
@@ -27,11 +32,12 @@ function LocationSearchBar({ onLocationSelect, currentLocation, onDetectLocation
       if (saved) {
         const parsed = JSON.parse(saved);
         // Validate and filter recent searches - ensure they have coordinates
-        const validRecent = parsed.filter(location =>
-          location &&
-          location.address &&
-          typeof location.latitude === 'number' &&
-          typeof location.longitude === 'number'
+        const validRecent = parsed.filter(
+          (location) =>
+            location &&
+            location.address &&
+            typeof location.latitude === 'number' &&
+            typeof location.longitude === 'number'
         );
         setRecentSearches(validRecent);
         // Update localStorage with cleaned data
@@ -52,11 +58,12 @@ function LocationSearchBar({ onLocationSelect, currentLocation, onDetectLocation
       try {
         const popular = await getPopularLocations();
         // Validate popular locations have coordinates
-        const validPopular = popular.filter(location =>
-          location &&
-          location.address &&
-          typeof location.latitude === 'number' &&
-          typeof location.longitude === 'number'
+        const validPopular = popular.filter(
+          (location) =>
+            location &&
+            location.address &&
+            typeof location.latitude === 'number' &&
+            typeof location.longitude === 'number'
         );
         setPopularLocations(validPopular);
       } catch (error) {
@@ -71,7 +78,7 @@ function LocationSearchBar({ onLocationSelect, currentLocation, onDetectLocation
     try {
       // Remove duplicate if exists
       const filtered = recentSearches.filter(
-        item => !(item.latitude === location.latitude && item.longitude === location.longitude)
+        (item) => !(item.latitude === location.latitude && item.longitude === location.longitude)
       );
 
       // Add new search to front
@@ -112,17 +119,18 @@ function LocationSearchBar({ onLocationSelect, currentLocation, onDetectLocation
     if (!searchQuery) return recentSearches;
 
     const lowerQuery = searchQuery.toLowerCase();
-    const filtered = recentSearches.filter(location =>
+    const filtered = recentSearches.filter((location) =>
       location.address.toLowerCase().includes(lowerQuery)
     );
 
     // Remove duplicates: filter out recent searches that match search results by coordinates
     if (results.length > 0) {
-      return filtered.filter(recentLoc => {
+      return filtered.filter((recentLoc) => {
         // Check if this recent search matches any new result (within 0.01 degrees)
-        return !results.some(result =>
-          Math.abs(result.latitude - recentLoc.latitude) < 0.01 &&
-          Math.abs(result.longitude - recentLoc.longitude) < 0.01
+        return !results.some(
+          (result) =>
+            Math.abs(result.latitude - recentLoc.latitude) < 0.01 &&
+            Math.abs(result.longitude - recentLoc.longitude) < 0.01
         );
       });
     }
@@ -143,19 +151,29 @@ function LocationSearchBar({ onLocationSelect, currentLocation, onDetectLocation
     try {
       const searchResults = await geocodeLocation(searchQuery, 5);
       // Filter out any invalid results without coordinates
-      const validResults = searchResults.filter(location =>
-        location &&
-        location.address &&
-        typeof location.latitude === 'number' &&
-        typeof location.longitude === 'number'
+      const validResults = searchResults.filter(
+        (location) =>
+          location &&
+          location.address &&
+          typeof location.latitude === 'number' &&
+          typeof location.longitude === 'number'
       );
 
       // Debug logging to identify issues
       if (searchResults.length !== validResults.length) {
-        console.warn(`Filtered out ${searchResults.length - validResults.length} invalid location(s) from search results`);
-        console.debug('Invalid results:', searchResults.filter(loc =>
-          !loc || !loc.address || typeof loc.latitude !== 'number' || typeof loc.longitude !== 'number'
-        ));
+        console.warn(
+          `Filtered out ${searchResults.length - validResults.length} invalid location(s) from search results`
+        );
+        console.debug(
+          'Invalid results:',
+          searchResults.filter(
+            (loc) =>
+              !loc ||
+              !loc.address ||
+              typeof loc.latitude !== 'number' ||
+              typeof loc.longitude !== 'number'
+          )
+        );
       }
 
       setResults(validResults);
@@ -209,12 +227,10 @@ function LocationSearchBar({ onLocationSelect, currentLocation, onDetectLocation
 
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      setSelectedIndex(prev =>
-        prev < displayResults.length - 1 ? prev + 1 : prev
-      );
+      setSelectedIndex((prev) => (prev < displayResults.length - 1 ? prev + 1 : prev));
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
-      setSelectedIndex(prev => (prev > 0 ? prev - 1 : -1));
+      setSelectedIndex((prev) => (prev > 0 ? prev - 1 : -1));
     } else if (e.key === 'Enter') {
       e.preventDefault();
       // If a specific item is selected via arrow keys, use that
@@ -233,7 +249,9 @@ function LocationSearchBar({ onLocationSelect, currentLocation, onDetectLocation
   return (
     <div className="location-search-bar" ref={searchRef}>
       <div className="search-input-wrapper">
-        <span className="search-icon" aria-hidden="true">📍</span>
+        <span className="search-icon" aria-hidden="true">
+          📍
+        </span>
         <input
           type="text"
           className="search-input"
@@ -245,14 +263,12 @@ function LocationSearchBar({ onLocationSelect, currentLocation, onDetectLocation
           data-search-input
           aria-label="Search for a city or location"
           aria-autocomplete="list"
-          aria-controls={showDropdown ? "search-results" : undefined}
+          aria-controls={showDropdown ? 'search-results' : undefined}
           aria-expanded={showDropdown}
           role="combobox"
           aria-activedescendant={selectedIndex >= 0 ? `result-${selectedIndex}` : undefined}
         />
-        {isLoading && (
-          <span className="search-loading">⏳</span>
-        )}
+        {isLoading && <span className="search-loading">⏳</span>}
         {query && (
           <button
             className="search-clear"
@@ -341,9 +357,7 @@ function LocationSearchBar({ onLocationSelect, currentLocation, onDetectLocation
           {/* Popular Locations (shown when no query and no recent searches) */}
           {query.length < 2 && recentSearches.length === 0 && popularLocations.length > 0 && (
             <div className="dropdown-section">
-              <div className="dropdown-section-header">
-                🌟 Popular Locations
-              </div>
+              <div className="dropdown-section-header">🌟 Popular Locations</div>
               {popularLocations.map((location, index) => (
                 <div
                   key={index}
@@ -399,9 +413,7 @@ function LocationSearchBar({ onLocationSelect, currentLocation, onDetectLocation
           {/* Search Results */}
           {query.length >= 2 && results.length > 0 && (
             <div className="dropdown-section">
-              <div className="dropdown-section-header">
-                🔍 Search Results
-              </div>
+              <div className="dropdown-section-header">🔍 Search Results</div>
               {results.map((location, index) => {
                 const offsetIndex = getFilteredRecentSearches(query).length + index;
                 return (
@@ -426,13 +438,16 @@ function LocationSearchBar({ onLocationSelect, currentLocation, onDetectLocation
           )}
 
           {/* Empty State */}
-          {query.length >= 2 && !isLoading && results.length === 0 && getFilteredRecentSearches(query).length === 0 && (
-            <div className="dropdown-empty">
-              <span className="empty-icon">🔍</span>
-              <p>No locations found</p>
-              <p className="empty-hint">Try a different search term</p>
-            </div>
-          )}
+          {query.length >= 2 &&
+            !isLoading &&
+            results.length === 0 &&
+            getFilteredRecentSearches(query).length === 0 && (
+              <div className="dropdown-empty">
+                <span className="empty-icon">🔍</span>
+                <p>No locations found</p>
+                <p className="empty-hint">Try a different search term</p>
+              </div>
+            )}
 
           {/* Loading State */}
           {isLoading && query.length >= 2 && (

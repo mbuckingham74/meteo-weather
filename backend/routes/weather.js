@@ -51,7 +51,42 @@ router.get('/current/:location', async (req, res) => {
       });
     }
 
+    // 🚨 REGRESSION MONITORING: Check for "Your Location" from frontend
+    if (location === 'Your Location' || location === 'Old Location') {
+      console.error('🚨🚨🚨 CRITICAL REGRESSION DETECTED! 🚨🚨🚨');
+      console.error(`Frontend sent placeholder string: "${location}"`);
+      console.error('The "Old Location" bug has returned in the frontend!');
+      console.error('See: docs/troubleshooting/OLD_LOCATION_BUG_FIX.md');
+      console.error('Request headers:', req.headers);
+
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid location: Placeholder strings are not allowed. Please provide coordinates or city name.',
+        regression: true
+      });
+    }
+
     const result = await weatherService.getCurrentWeather(location);
+
+    // 🚨 REGRESSION MONITORING: Check if backend returned placeholder
+    if (result.success && result.location) {
+      const address = result.location.address;
+      if (address === 'Old Location' || address === 'Your Location') {
+        console.error('🚨🚨🚨 CRITICAL REGRESSION DETECTED IN BACKEND! 🚨🚨🚨');
+        console.error(`Backend returned placeholder: "${address}"`);
+        console.error('The sanitization logic failed!');
+        console.error('Request location:', location);
+        console.error('See: docs/troubleshooting/OLD_LOCATION_BUG_FIX.md');
+      }
+
+      // Also check if it's raw coordinates (should have been resolved by Nominatim)
+      const isCoordinateString = /^-?\d+\.\d+,\s*-?\d+\.\d+$/.test(address);
+      if (isCoordinateString && address.includes(result.location.latitude.toString())) {
+        console.warn('⚠️  Backend returned coordinates instead of city name');
+        console.warn(`Address: "${address}" for location: "${location}"`);
+        console.warn('This suggests Nominatim reverse geocoding may have failed');
+      }
+    }
 
     if (result.success) {
       res.json(result);
