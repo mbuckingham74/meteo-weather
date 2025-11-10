@@ -61,11 +61,11 @@ Quick code examples for the most common issues found.
   padding: 8px 16px;
   border: none;
   outline: none;           /* BAD - removes focus! */
-  background: #667eea;
+  background: #4c7ce5;
 }
 
 .button:hover {
-  background: #5568d3;
+  background: #3b68c9;
 }
 ```
 
@@ -74,17 +74,17 @@ Quick code examples for the most common issues found.
 .button {
   padding: 8px 16px;
   border: 2px solid transparent;
-  background: #667eea;
+  background: #4c7ce5;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .button:hover {
-  background: #5568d3;
+  background: #3b68c9;
 }
 
 .button:focus {
-  outline: 3px solid #667eea;
+  outline: 3px solid #4c7ce5;
   outline-offset: 2px;
 }
 
@@ -192,7 +192,7 @@ Or better - use a button:
 **BEFORE (Bad):**
 ```css
 .label {
-  color: #9ca3af;        /* Gray - borderline contrast */
+  color: #7b89a6;        /* Gray - borderline contrast */
   font-size: 12px;
 }
 ```
@@ -200,7 +200,7 @@ Or better - use a button:
 **AFTER (Good):**
 ```css
 .label {
-  color: #4b5563;        /* Darker gray - better contrast */
+  color: #465570;        /* Darker gray - better contrast */
   font-size: 13px;       /* Slightly larger */
   line-height: 1.5;      /* Better spacing */
 }
@@ -425,7 +425,7 @@ useEffect(() => {
   position: absolute;
   top: -100px;
   left: 0;
-  background: #667eea;
+  background: #4c7ce5;
   color: white;
   padding: 12px 24px;
   text-decoration: none;

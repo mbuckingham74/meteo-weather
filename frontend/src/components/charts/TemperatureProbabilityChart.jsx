@@ -47,7 +47,7 @@ function TemperatureProbabilityChart({ probabilityData, unit = 'C', height = 400
           padding: '12px',
           border: '1px solid var(--border-light)',
           borderRadius: '8px',
-          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+          boxShadow: 'var(--shadow-sm, 0 4px 6px rgba(0, 0, 0, 0.1))',
           minWidth: '160px',
         }}
       >

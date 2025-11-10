@@ -1,7 +1,7 @@
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: var(--overlay-strong);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -418,7 +418,7 @@
 .advancedSection {
   margin-top: var(--spacing-xl);
   padding-top: var(--spacing-xl);
-  border-top: 1px solid var(--border-color, #e0e0e0);
+  border-top: 1px solid var(--border-color);
 }
 
 .advancedText {
@@ -428,8 +428,12 @@
 }
 
 .advancedButton {
-  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
-  color: white;
+  background: linear-gradient(
+    135deg,
+    var(--success-text) 0%,
+    color-mix(in srgb, var(--success-text) 75%, transparent) 100%
+  );
+  color: var(--text-on-accent);
   font-weight: 600;
 }
 

@@ -32,7 +32,7 @@
 - **Example:** Page has h2 and h3 but no h1
 
 ### 3. Insufficient Color Contrast
-- **Location:** #9ca3af gray text throughout
+- **Location:** #7b89a6 tertiary text throughout
 - **Impact:** Low vision users cannot read text reliably
 - **Fix Time:** ~3 hours
 - **Example:** Gray placeholder text borderline passes AA

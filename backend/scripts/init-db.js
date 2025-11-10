@@ -16,9 +16,9 @@ async function main() {
   const connected = await testConnection();
 
   if (!connected) {
-    console.error('\n❌ Cannot proceed without database connection');
-    console.error('Please check your .env file and ensure MySQL is running\n');
-    process.exit(1);
+    throw new Error(
+      'Cannot proceed without database connection. Please check your .env file and ensure MySQL is running.'
+    );
   }
 
   // Initialize schema
@@ -26,8 +26,7 @@ async function main() {
   const schemaCreated = await initializeDatabase();
 
   if (!schemaCreated) {
-    console.error('\n❌ Schema creation failed\n');
-    process.exit(1);
+    throw new Error('Schema creation failed');
   }
 
   // Seed data
@@ -35,16 +34,14 @@ async function main() {
   const seeded = await seedDatabase();
 
   if (!seeded) {
-    console.error('\n❌ Seeding failed\n');
-    process.exit(1);
+    throw new Error('Seeding failed');
   }
 
   console.log('\n✅ Database initialized successfully!\n');
   console.log('You can now start the server with: npm start\n');
-  process.exit(0);
 }
 
-main().catch(error => {
+main().catch((error) => {
   console.error('\n❌ Unexpected error:', error);
-  process.exit(1);
+  process.exitCode = 1;
 });

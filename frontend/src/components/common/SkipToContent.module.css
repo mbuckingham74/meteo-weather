@@ -17,13 +17,13 @@
   top: -100px;
   left: 0;
   background: var(--accent-primary);
-  color: white;
+  color: var(--text-on-accent);
   padding: var(--spacing-md) 24px;
   text-decoration: none;
   font-weight: 600;
   font-size: 1rem;
   border-radius: 0 0 8px 0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-sm);
   transition: top 0.2s ease;
   white-space: nowrap;
 }
@@ -52,9 +52,4 @@
   }
 }
 
-/* Dark mode */
-@media (prefers-color-scheme: dark) {
-  .container {
-    background: var(--bg-elevated);
-  }
-}
+/* Dark mode handled by global tokens */

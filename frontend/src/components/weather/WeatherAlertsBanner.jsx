@@ -19,13 +19,13 @@ function WeatherAlertsBanner({ alerts }) {
     const eventLower = event?.toLowerCase() || '';
 
     if (eventLower.includes('warning') || eventLower.includes('severe')) {
-      return { severity: 'warning', icon: '⚠️', color: '#ef4444' };
+      return { severity: 'warning', icon: '⚠️', color: 'var(--alert-critical, #d64949)' };
     } else if (eventLower.includes('watch')) {
-      return { severity: 'watch', icon: '👁️', color: '#f59e0b' };
+      return { severity: 'watch', icon: '👁️', color: 'var(--alert-warning, #f0a202)' };
     } else if (eventLower.includes('advisory')) {
-      return { severity: 'advisory', icon: 'ℹ️', color: '#3b82f6' };
+      return { severity: 'advisory', icon: 'ℹ️', color: 'var(--alert-advisory, #4c8ef5)' };
     } else {
-      return { severity: 'info', icon: '📢', color: '#6b7280' };
+      return { severity: 'info', icon: '📢', color: 'var(--text-secondary, #465570)' };
     }
   };
 

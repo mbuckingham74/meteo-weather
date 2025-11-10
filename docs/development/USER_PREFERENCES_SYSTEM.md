@@ -258,14 +258,14 @@ All components support dark mode via CSS variables:
 
 ```css
 .preferences-container {
-  background-color: var(--bg-elevated, #ffffff);
-  color: var(--text-primary, #111827);
+  background-color: var(--bg-elevated, #f5f7fb);
+  color: var(--text-primary, #0f172a);
 }
 
 @media (prefers-color-scheme: dark) {
   .preferences-container {
-    background-color: var(--bg-elevated, #1e293b);
-    color: var(--text-primary, #f1f5f9);
+    background-color: var(--bg-elevated, #18233a);
+    color: var(--text-primary, #f5f7fb);
   }
 }
 ```

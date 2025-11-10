@@ -74,11 +74,11 @@ graph TB
     MySQL --> Weather
     MySQL --> Cache
 
-    style Browser fill:#667eea
-    style PWA fill:#667eea
-    style App fill:#764ba2
-    style MySQL fill:#00758f
-    style Claude fill:#d97706
+    style Browser fill:#4c7ce5
+    style PWA fill:#82a7ff
+    style App fill:#3b68c9
+    style MySQL fill:#5b8fff
+    style Claude fill:#7b94d6
 ```
 
 ---
@@ -115,10 +115,10 @@ graph LR
     UnitState --> LocalStorage
     UnitState --> CloudSync
 
-    style Auth fill:#10b981
-    style Theme fill:#f59e0b
-    style Location fill:#3b82f6
-    style TempUnit fill:#ef4444
+    style Auth fill:#4c7ce5
+    style Theme fill:#7b94d6
+    style Location fill:#5b8fff
+    style TempUnit fill:#3b68c9
 ```
 
 ### Component Structure
@@ -299,10 +299,10 @@ graph TD
     Server --> CORS
     Server --> BodyParser
 
-    style Server fill:#10b981
-    style WeatherService fill:#3b82f6
-    style AILocationService fill:#d97706
-    style AIWeatherService fill:#d97706
+    style Server fill:#4c7ce5
+    style WeatherService fill:#3b68c9
+    style AILocationService fill:#7b94d6
+    style AIWeatherService fill:#82a7ff
 ```
 
 ### Service Layer Architecture
@@ -681,11 +681,11 @@ graph LR
 
     RadarSvc -->|Precipitation Radar<br/>12-15 frames<br/>10-min intervals| RainViewer
 
-    style VisualCrossing fill:#3b82f6
-    style OpenWeather fill:#10b981
-    style OpenMeteo fill:#8b5cf6
-    style Claude fill:#d97706
-    style RainViewer fill:#06b6d4
+    style VisualCrossing fill:#3b68c9
+    style OpenWeather fill:#4c7ce5
+    style OpenMeteo fill:#7b94d6
+    style Claude fill:#82a7ff
+    style RainViewer fill:#c0d2ff
 ```
 
 ### API Cost Optimization Strategy

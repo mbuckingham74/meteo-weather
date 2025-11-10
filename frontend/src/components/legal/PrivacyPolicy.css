@@ -2,17 +2,17 @@
 
 .privacy-policy-page {
   min-height: 100vh;
-  background: var(--bg-primary, #ffffff);
+  background: var(--bg-primary);
   padding: 40px 20px;
-  color: var(--text-primary, #111827);
+  color: var(--text-primary);
 }
 
 .privacy-container {
   max-width: 900px;
   margin: 0 auto;
-  background: var(--bg-elevated, #ffffff);
+  background: var(--bg-elevated);
   border-radius: var(--radius-xl);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   overflow: hidden;
 }
 
@@ -21,14 +21,14 @@
   background: var(--gradient-primary);
   padding: 48px 40px;
   text-align: center;
-  color: white;
+  color: var(--text-on-accent);
 }
 
 .privacy-header h1 {
   margin: 0 0 8px 0;
   font-size: 36px;
   font-weight: 700;
-  color: white;
+  color: var(--text-on-accent);
 }
 
 .privacy-subtitle {
@@ -36,6 +36,7 @@
   font-size: 18px;
   opacity: 0.95;
   font-weight: 400;
+  color: var(--text-on-accent);
 }
 
 /* Content */
@@ -71,7 +72,7 @@
   font-size: var(--font-lg);
   line-height: 1.7;
   margin: var(--spacing-md) 0;
-  color: var(--text-secondary, #374151);
+  color: var(--text-secondary);
 }
 
 .privacy-highlight {
@@ -101,7 +102,7 @@
   padding-left: 12px;
   font-size: var(--font-lg);
   line-height: 1.7;
-  color: var(--text-secondary, #374151);
+  color: var(--text-secondary);
 }
 
 .privacy-list li::before {
@@ -126,7 +127,7 @@
 
 .privacy-list-green li::before {
   content: '✓';
-  color: var(--accent-primary);
+  color: var(--success-text);
   font-weight: bold;
 }
 
@@ -148,13 +149,13 @@
 .privacy-subsection {
   margin: var(--spacing-xl) 0;
   padding-left: 12px;
-  border-left: 2px solid var(--bg-tertiary, #e5e7eb);
+  border-left: 2px solid var(--border-light);
 }
 
 /* Meta information */
 .privacy-meta {
   font-size: var(--font-base);
-  color: var(--text-tertiary, #6b7280);
+  color: var(--text-tertiary);
   font-style: italic;
   margin-top: 16px;
 }
@@ -162,8 +163,8 @@
 /* Footer */
 .privacy-footer {
   padding: 32px 40px;
-  background: var(--bg-secondary, #f9fafb);
-  border-top: 1px solid var(--bg-tertiary, #e5e7eb);
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-light);
   text-align: center;
 }
 
@@ -173,7 +174,7 @@
   gap: var(--spacing-sm);
   padding: var(--spacing-md) 24px;
   background: var(--gradient-primary);
-  color: white;
+  color: var(--text-on-accent);
   text-decoration: none;
   border-radius: var(--radius-md);
   font-weight: 600;
@@ -234,43 +235,4 @@
   }
 }
 
-/* Dark Mode Support */
-@media (prefers-color-scheme: dark) {
-  .privacy-policy-page {
-    background: var(--bg-primary, #0f172a);
-  }
-
-  .privacy-container {
-    background: var(--bg-elevated, #1e293b);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  }
-
-  .privacy-section h2 {
-    color: var(--text-primary, #f1f5f9);
-  }
-
-  .privacy-section h3 {
-    color: var(--text-primary, #f1f5f9);
-  }
-
-  .privacy-section p {
-    color: var(--text-secondary, #cbd5e1);
-  }
-
-  .privacy-list li {
-    color: var(--text-secondary, #cbd5e1);
-  }
-
-  .privacy-list li strong {
-    color: var(--text-primary, #f1f5f9);
-  }
-
-  .privacy-list-green li {
-    color: var(--text-primary, #f1f5f9);
-  }
-
-  .privacy-footer {
-    background: var(--bg-secondary, #0f172a);
-    border-top-color: var(--bg-tertiary, #334155);
-  }
-}
+/* Dark theme inherits automatically from global tokens */

@@ -4,11 +4,10 @@
 const nock = require('nock');
 
 // Load database pool - environment variables are already set by jest.env.js
-// eslint-disable-next-line global-require
 const { pool } = require('../config/database');
 
 nock.disableNetConnect();
-nock.enableNetConnect(host => host.includes('127.0.0.1') || host.includes('localhost'));
+nock.enableNetConnect((host) => host.includes('127.0.0.1') || host.includes('localhost'));
 
 afterEach(() => {
   if (!nock.isDone()) {

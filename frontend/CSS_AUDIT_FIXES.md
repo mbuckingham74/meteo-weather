@@ -386,8 +386,8 @@ This document details the complete CSS audit and fixes implemented across three 
 
 ```css
 .ai-weather-hero {
-  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
-  box-shadow: 0 12px 36px rgba(102, 126, 234, 0.3);
+  background: linear-gradient(135deg, #4c7ce5 0%, #7b94d6 100%);
+  box-shadow: 0 12px 36px rgba(76, 124, 229, 0.3);
 }
 
 .ai-hero-input {
@@ -564,7 +564,7 @@ This document details the complete CSS audit and fixes implemented across three 
 /* 37 lines of duplicate [data-theme] overrides */
 [data-theme='dark'] .admin-panel {
   --text-primary: #f9fafb; /* Redefining global variable locally! */
-  --text-secondary: #9ca3af;
+  --text-secondary: #7b89a6;
   --card-bg: #1f2937;
   /* ... */
 }

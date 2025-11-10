@@ -868,11 +868,11 @@ const [visibleCharts, setVisibleCharts] = useState({
 ```css
 /* Charts use CSS variables for theming */
 #chart-yourchart .recharts-line {
-  stroke: var(--accent-primary, #667eea);
+  stroke: var(--accent-primary, #4c7ce5);
 }
 
 #chart-yourchart .recharts-text {
-  fill: var(--text-primary, #111827);
+  fill: var(--text-primary, #0f172a);
 }
 ```
 
@@ -1494,18 +1494,18 @@ export function aggregateWeatherData(data, timeRange) {
 ```css
 :root {
   /* Light theme (default) */
-  --text-primary: #111827;
-  --text-secondary: #6b7280;
+  --text-primary: #0f172a;
+  --text-secondary: #465570;
   --bg-elevated: #ffffff;
-  --accent-primary: #667eea;
+  --accent-primary: #4c7ce5;
 }
 
 [data-theme="dark"] {
   /* Dark theme */
-  --text-primary: #f9fafb;
-  --text-secondary: #d1d5db;
-  --bg-elevated: #1a1a2e;
-  --accent-primary: #818cf8;
+  --text-primary: #f5f7fb;
+  --text-secondary: #c0cae2;
+  --bg-elevated: #18233a;
+  --accent-primary: #82a7ff;
 }
 ```
 
@@ -1513,10 +1513,10 @@ export function aggregateWeatherData(data, timeRange) {
 
 ```javascript
 // ❌ BAD: Hardcoded color
-<Line stroke="#667eea" />
+<Line stroke="#4c7ce5" />
 
 // ✅ GOOD: CSS variable with fallback
-<Line stroke="var(--accent-primary, #667eea)" />
+<Line stroke="var(--accent-primary, #4c7ce5)" />
 ```
 
 **Why fallback?**
@@ -1527,7 +1527,7 @@ export function aggregateWeatherData(data, timeRange) {
 **Dynamic Text Color**:
 
 ```javascript
-<Text fill="var(--text-primary, #111827)" fontSize={13} />
+<Text fill="var(--text-primary, #0f172a)" fontSize={13} />
 ```
 
 **Centralized Chart Styles** (`frontend/src/components/charts/charts.css`):
@@ -1547,12 +1547,12 @@ export function aggregateWeatherData(data, timeRange) {
 }
 
 .recharts-text {
-  fill: var(--text-primary, #111827);
+  fill: var(--text-primary, #0f172a);
   font-size: 13px;
 }
 
 .recharts-cartesian-axis-tick {
-  fill: var(--text-secondary, #6b7280);
+  fill: var(--text-secondary, #465570);
 }
 ```
 

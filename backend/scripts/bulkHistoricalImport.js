@@ -507,14 +507,13 @@ async function main() {
   console.log('\n✅ Import complete!\n');
 
   await pool.end();
-  process.exit(0);
 }
 
 // Run if called directly
 if (require.main === module) {
   main().catch((error) => {
     console.error('\n💥 Fatal error:', error);
-    process.exit(1);
+    process.exitCode = 1;
   });
 }
 

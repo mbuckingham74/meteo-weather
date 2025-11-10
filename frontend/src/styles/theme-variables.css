@@ -80,6 +80,23 @@
   --alert-advisory: #4c8ef5;
   --alert-info: #7b94d6;
 
+  /* Severity Surfaces */
+  --error-surface-strong: color-mix(in srgb, var(--error-text) 85%, transparent);
+  --error-border-strong: color-mix(in srgb, var(--error-text) 45%, transparent);
+  --warning-surface-strong: color-mix(in srgb, var(--warning-text) 80%, transparent);
+  --warning-border-strong: color-mix(in srgb, var(--warning-text) 40%, transparent);
+  --info-surface-strong: color-mix(in srgb, var(--info-text) 80%, transparent);
+  --info-border-strong: color-mix(in srgb, var(--info-text) 35%, transparent);
+  --success-surface-strong: color-mix(in srgb, var(--success-text) 80%, transparent);
+  --success-border-strong: color-mix(in srgb, var(--success-text) 35%, transparent);
+
+  /* Overlay / Glassmorphism Tokens */
+  --overlay-strong: color-mix(in srgb, var(--text-primary) 60%, transparent);
+  --overlay-medium: color-mix(in srgb, var(--text-primary) 35%, transparent);
+  --overlay-soft: color-mix(in srgb, var(--text-primary) 18%, transparent);
+  --overlay-accent: color-mix(in srgb, var(--text-on-accent) 20%, transparent);
+  --overlay-accent-strong: color-mix(in srgb, var(--text-on-accent) 35%, transparent);
+
   /* Hover States */
   --hover-bg: #e0e6f5;
   --warning-bg-hover: #ffeac5;
@@ -92,6 +109,21 @@
 
   --gradient-primary: linear-gradient(135deg, #4c7ce5 0%, #7b94d6 100%);
   --gradient-warm: linear-gradient(135deg, #f0a202 0%, #f48c06 100%);
+  --gradient-success: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--success-text) 80%, transparent) 0%,
+    color-mix(in srgb, var(--success-text) 60%, transparent) 100%
+  );
+  --gradient-info: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--info-text) 75%, transparent) 0%,
+    color-mix(in srgb, var(--info-text) 55%, transparent) 100%
+  );
+  --gradient-warning: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--warning-text) 80%, transparent) 0%,
+    color-mix(in srgb, var(--warning-text) 60%, transparent) 100%
+  );
 
   --transition-fast: 0.15s ease;
   --transition-normal: 0.2s ease;
@@ -187,14 +219,14 @@
   --accent-text: #aecbff;
 
   /* Insight Card Colors */
-  --insight-warm-bg: #2f1a0e;
-  --insight-warm-border: #5a2d12;
-  --insight-cold-bg: #16233f;
-  --insight-cold-border: #27457a;
-  --insight-wet-bg: #072b20;
-  --insight-wet-border: #0f4733;
-  --insight-diff-bg: #2b1f0a;
-  --insight-diff-border: #4c3410;
+  --insight-warm-bg: #3a1a21;
+  --insight-warm-border: #6b1f29;
+  --insight-cold-bg: #14254c;
+  --insight-cold-border: #1f3b7a;
+  --insight-wet-bg: #0d2b2a;
+  --insight-wet-border: #1e5b34;
+  --insight-diff-bg: #2f1e05;
+  --insight-diff-border: #5a3709;
 
   /* Data Visualization Palette */
   --chart-line-primary: #82a7ff;
@@ -202,11 +234,11 @@
   --chart-line-tertiary: #5c6789;
   --chart-positive: #8bb7ff;
   --chart-cool: #8bb7ff;
-  --chart-cool-accent: #5ed0ff;
-  --chart-warning: #fcb25f;
+  --chart-cool-accent: #33b6de;
+  --chart-warning: #ffc857;
   --chart-hot: #ff8c8c;
   --chart-grid: rgba(138, 151, 185, 0.35);
-  --chart-surface: #1a243a;
+  --chart-surface: #1f2b45;
   --chart-text-strong: var(--text-primary);
   --chart-text-muted: #8a97b9;
   --chart-tooltip-bg: rgba(0, 0, 0, 0.8);
@@ -214,15 +246,15 @@
 
   /* Alert & Severity Colors */
   --alert-critical: #ff8c8c;
-  --alert-warning: #fcb25f;
-  --alert-watch: #ffd39f;
+  --alert-warning: #ffc857;
+  --alert-watch: #f8b14b;
   --alert-advisory: #82a7ff;
   --alert-info: #aecbff;
 
   /* Hover States */
   --hover-bg: #1f2b45;
   --warning-bg-hover: #5a3709;
-  --warning-border-hover: #fcb25f;
+  --warning-border-hover: #f8b14b;
 
   --shadow-sm: 0 10px 30px rgba(0, 0, 0, 0.45);
   --shadow-md: 0 20px 45px rgba(0, 0, 0, 0.5);

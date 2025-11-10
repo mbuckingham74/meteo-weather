@@ -411,14 +411,14 @@ Uses CSS variables for dynamic theming:
 ```css
 /* themes.css */
 :root {
-  --primary-color: #2563eb;
-  --background-color: #ffffff;
-  --text-color: #1f2937;
+  --primary-color: #4c7ce5;
+  --background-color: #f5f7fb;
+  --text-color: #0f172a;
 }
 
 [data-theme="dark"] {
-  --background-color: #1f2937;
-  --text-color: #f9fafb;
+  --background-color: #18233a;
+  --text-color: #f5f7fb;
 }
 ```
 

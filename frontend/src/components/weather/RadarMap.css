@@ -1,3 +1,18 @@
+:root {
+  --radar-divider-color: color-mix(in srgb, var(--text-primary) 12%, transparent);
+  --radar-overlay-weak: color-mix(in srgb, var(--text-on-accent) 20%, transparent);
+  --radar-overlay-strong: color-mix(in srgb, var(--text-on-accent) 32%, transparent);
+  --radar-overlay-contrast: color-mix(in srgb, var(--text-on-accent) 80%, transparent);
+  --radar-popup-divider: color-mix(in srgb, var(--text-primary) 14%, transparent);
+  --radar-shadow-soft: color-mix(in srgb, var(--text-primary) 18%, transparent);
+  --radar-gradient-blue-1: color-mix(in srgb, var(--chart-cool) 30%, transparent);
+  --radar-gradient-blue-2: color-mix(in srgb, var(--chart-cool) 60%, transparent);
+  --radar-gradient-blue-3: color-mix(in srgb, var(--chart-cool) 80%, transparent);
+  --radar-gradient-positive: color-mix(in srgb, var(--chart-positive) 80%, transparent);
+  --radar-gradient-warm: color-mix(in srgb, var(--chart-warning) 85%, transparent);
+  --radar-gradient-hot: color-mix(in srgb, var(--chart-hot) 90%, transparent);
+}
+
 .radar-map-container {
   position: relative;
   width: 100%;
@@ -43,7 +58,7 @@
 .radar-loading-text {
   margin-top: 16px;
   font-size: var(--font-base);
-  color: var(--text-secondary, #6b7280);
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
@@ -78,18 +93,18 @@
 /* Control positioning */
 .radar-map-container .leaflet-control-zoom {
   border: none;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 3px var(--radar-shadow-soft);
 }
 
 .radar-map-container .leaflet-control-zoom a {
-  background: var(--card-bg, #ffffff);
-  color: var(--text-primary, #1f2937);
-  border: 1px solid var(--border-light, #e5e7eb);
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
 }
 
 .radar-map-container .leaflet-control-zoom a:hover {
-  background: var(--hover-bg, #f3f4f6);
-  color: var(--text-primary, #1f2937);
+  background: var(--hover-bg);
+  color: var(--text-primary);
 }
 
 /* Radar controls */
@@ -151,7 +166,7 @@
 .radar-controls-divider {
   width: 2px;
   height: 30px;
-  background: rgba(0, 0, 0, 0.1);
+  background: var(--radar-divider-color);
   margin: 0 4px;
 }
 
@@ -259,15 +274,15 @@
   align-items: center;
   padding: 10px 12px;
   background: var(--gradient-primary);
-  color: white;
+  color: var(--text-on-accent);
   font-weight: 600;
   font-size: 12px;
 }
 
 .frame-selector-header button {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--radar-overlay-weak);
   border: none;
-  color: white;
+  color: var(--text-on-accent);
   font-size: var(--font-lg);
   cursor: pointer;
   padding: 2px 8px;
@@ -276,7 +291,7 @@
 }
 
 .frame-selector-header button:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: var(--radar-overlay-strong);
 }
 
 .frame-selector-list {
@@ -307,7 +322,7 @@
 
 .frame-selector-item.active {
   background: var(--gradient-primary);
-  color: white;
+  color: var(--text-on-accent);
 }
 
 .frame-time {
@@ -323,7 +338,7 @@
 }
 
 .frame-selector-item.active .frame-indicator {
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--radar-overlay-contrast);
 }
 
 /* Alert Popup Styles */
@@ -336,27 +351,27 @@
   margin: 0 0 8px 0;
   font-size: var(--font-base);
   font-weight: 700;
-  color: var(--text-primary, #1f2937);
+  color: var(--text-primary);
 }
 
 .alert-popup-headline {
   margin: 0 0 8px 0;
   font-size: 12px;
   font-weight: 600;
-  color: var(--text-secondary, #4b5563);
+  color: var(--text-secondary);
 }
 
 .alert-popup-time {
   margin: var(--spacing-xs) 0;
   font-size: var(--font-sm);
-  color: var(--text-tertiary, #6b7280);
+  color: var(--text-tertiary);
 }
 
 .alert-popup-description {
   margin: var(--spacing-sm) 0 0 0;
   font-size: var(--font-sm);
   line-height: 1.4;
-  color: var(--text-secondary, #4b5563);
+  color: var(--text-secondary);
 }
 
 /* Custom Alert Marker */
@@ -400,7 +415,7 @@
 .storm-tracking-title {
   font-size: 12px;
   font-weight: 700;
-  color: var(--text-primary, #1f2937);
+  color: var(--text-primary);
   margin-bottom: 10px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -421,25 +436,25 @@
 }
 
 .storm-info-label {
-  color: var(--text-secondary, #6b7280);
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
 .storm-info-value {
-  color: var(--text-primary, #1f2937);
+  color: var(--text-primary);
   font-weight: 700;
   padding: 2px 6px;
-  background: var(--bg-tertiary, #f3f4f6);
+  background: var(--bg-tertiary);
   border-radius: 4px;
 }
 
 .storm-tracking-note {
   font-size: var(--font-xs);
-  color: var(--text-tertiary, #6b7280);
+  color: var(--text-tertiary);
   text-align: center;
   margin-top: 8px;
   padding-top: 8px;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-top: 1px solid var(--radar-popup-divider);
 }
 
 /* Precipitation Intensity Legend */
@@ -460,7 +475,7 @@
 .precip-legend-title {
   font-size: var(--font-sm);
   font-weight: 700;
-  color: var(--text-primary, #1f2937);
+  color: var(--text-primary);
   margin-bottom: 6px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -470,23 +485,23 @@
   height: 12px;
   background: linear-gradient(
     to right,
-    rgba(135, 206, 250, 0.3) 0%,
-    rgba(135, 206, 250, 0.6) 20%,
-    rgba(30, 144, 255, 0.7) 40%,
-    rgba(0, 0, 255, 0.8) 60%,
-    rgba(255, 165, 0, 0.85) 80%,
-    rgba(255, 0, 0, 0.9) 100%
+    var(--radar-gradient-blue-1) 0%,
+    var(--radar-gradient-blue-2) 25%,
+    var(--radar-gradient-blue-3) 45%,
+    var(--radar-gradient-positive) 60%,
+    var(--radar-gradient-warm) 80%,
+    var(--radar-gradient-hot) 100%
   );
   border-radius: 3px;
   margin-bottom: 4px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--radar-divider-color);
 }
 
 .precip-legend-labels {
   display: flex;
   justify-content: space-between;
   font-size: var(--font-xs);
-  color: var(--text-secondary, #6b7280);
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
@@ -508,7 +523,7 @@
 .legend-label {
   display: inline-block;
   font-weight: 600;
-  color: var(--text-primary, #1f2937);
+  color: var(--text-primary);
   margin-right: 8px;
 }
 
@@ -523,8 +538,8 @@
   display: inline-block;
   font-size: var(--font-xs);
   font-weight: 700;
-  color: var(--text-tertiary, #6b7280);
-  background: var(--bg-tertiary, #f3f4f6);
+  color: var(--text-tertiary);
+  background: var(--bg-tertiary);
   padding: 2px 6px;
   border-radius: 4px;
   margin-left: 6px;
@@ -536,12 +551,12 @@
   height: 8px;
   background: linear-gradient(
     to right,
-    rgba(255, 255, 255, 0),
-    rgba(135, 206, 250, 0.6),
-    rgba(30, 144, 255, 0.8),
-    rgba(0, 0, 255, 0.9),
-    rgba(255, 165, 0, 0.9),
-    rgba(255, 0, 0, 0.9)
+    transparent,
+    var(--radar-gradient-blue-2),
+    var(--radar-gradient-blue-3),
+    var(--radar-gradient-positive),
+    var(--radar-gradient-warm),
+    var(--radar-gradient-hot)
   );
   border-radius: 2px;
   margin-bottom: 2px;
@@ -550,7 +565,7 @@
 .legend-labels {
   display: flex;
   justify-content: space-between;
-  color: var(--text-secondary, #6b7280);
+  color: var(--text-secondary);
   font-size: 10px;
 }
 

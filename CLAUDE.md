@@ -284,7 +284,7 @@ docker ps | grep meteo
     - Fixed keyboard navigation in WeatherAlertsBanner
     - Added aria-labels to all 11 icon-only buttons in RadarMap
     - Added aria-hidden to 28+ decorative icons across the app
-    - Improved color contrast: replaced #9ca3af with #6b7280 (11 CSS files)
+    - Improved color contrast: replaced #9ca3af with #465570 (11 CSS files)
     - Enhanced modal accessibility (AuthModal) with proper ARIA roles
     - Added proper tab navigation ARIA attributes to chart tabs
   - **WCAG Level A Standards Met:**

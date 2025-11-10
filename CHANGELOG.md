@@ -206,7 +206,7 @@ All notable changes to the Meteo Weather App project are documented in this file
     - Fixed keyboard navigation in WeatherAlertsBanner
     - Added aria-labels to all 11 icon-only buttons in RadarMap
     - Added aria-hidden to 28+ decorative icons across the app
-    - Improved color contrast: #9ca3af → #6b7280 (4.59:1 ratio)
+    - Improved color contrast: #9ca3af → #465570 (4.59:1 ratio)
     - Enhanced modal accessibility with proper ARIA roles
     - Added proper tab navigation ARIA attributes to chart tabs
   - **19 Files Modified:** 8 JSX components, 11 CSS files

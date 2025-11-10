@@ -5,35 +5,35 @@
 
 .preferences-page {
   min-height: 100vh;
-  background-color: var(--bg-primary, #f5f5f5);
+  background-color: var(--bg-primary);
   padding: 2rem 1rem;
 }
 
 .preferences-container {
   max-width: 800px;
   margin: 0 auto;
-  background-color: var(--bg-elevated, #ffffff);
+  background-color: var(--bg-elevated);
   border-radius: var(--radius-lg);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px var(--overlay-soft);
   padding: 2rem;
 }
 
 .preferences-header {
   margin-bottom: 2rem;
   padding-bottom: 1.5rem;
-  border-bottom: 2px solid var(--border-color, #e0e0e0);
+  border-bottom: 2px solid var(--border-color);
 }
 
 .preferences-header h1 {
   font-size: 2rem;
   font-weight: 700;
-  color: var(--text-primary, #111827);
+  color: var(--text-primary);
   margin: 0 0 0.5rem 0;
 }
 
 .preferences-header .user-email {
   font-size: 0.95rem;
-  color: var(--text-secondary, #6b7280);
+  color: var(--text-secondary);
   margin: 0;
 }
 
@@ -52,15 +52,15 @@
 .preferences-section h2 {
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--text-primary, #111827);
+  color: var(--text-primary);
   margin: 0 0 0.5rem 0;
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--border-color, #e0e0e0);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .section-description {
   font-size: 0.9rem;
-  color: var(--text-secondary, #6b7280);
+  color: var(--text-secondary);
   margin: -0.5rem 0 0.5rem 0;
 }
 
@@ -73,7 +73,7 @@
 .form-group label {
   font-size: 0.95rem;
   font-weight: 500;
-  color: var(--text-primary, #111827);
+  color: var(--text-primary);
 }
 
 .form-group input[type='text'],
@@ -81,32 +81,32 @@
 .form-group select {
   padding: 0.75rem;
   font-size: 1rem;
-  border: 1px solid var(--border-color, #d1d5db);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  background-color: var(--bg-primary, #ffffff);
-  color: var(--text-primary, #111827);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
   transition: border-color 0.2s;
 }
 
 .form-group input:focus,
 .form-group select:focus {
   outline: none;
-  border-color: var(--accent-primary, #10b981);
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-primary) 20%, transparent);
 }
 
 .help-text {
   font-size: 0.875rem;
-  color: var(--text-tertiary, #6b7280);
+  color: var(--text-tertiary);
   margin: 0;
 }
 
 /* Checkbox Groups */
 .checkbox-group {
   padding: 1rem;
-  background-color: var(--bg-secondary, #f9fafb);
+  background-color: var(--bg-secondary);
   border-radius: var(--radius-md);
-  border: 1px solid var(--border-color, #e5e7eb);
+  border: 1px solid var(--border-color);
 }
 
 .checkbox-label {
@@ -115,7 +115,7 @@
   gap: 0.75rem;
   cursor: pointer;
   font-size: 1rem;
-  color: var(--text-primary, #111827);
+  color: var(--text-primary);
   margin: 0;
 }
 
@@ -123,7 +123,7 @@
   width: 20px;
   height: 20px;
   cursor: pointer;
-  accent-color: var(--accent-primary, #10b981);
+  accent-color: var(--accent-primary);
 }
 
 .checkbox-label span {
@@ -135,11 +135,11 @@
   position: relative;
   max-height: 250px;
   overflow-y: auto;
-  background-color: var(--bg-elevated, #ffffff);
-  border: 1px solid var(--border-color, #d1d5db);
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border-color);
   border-top: none;
   border-radius: 0 0 8px 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px var(--overlay-soft);
   z-index: 10;
 }
 
@@ -147,19 +147,19 @@
   padding: 0.75rem 1rem;
   cursor: pointer;
   transition: background-color 0.15s;
-  color: var(--text-primary, #111827);
+  color: var(--text-primary);
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .search-result-item:hover {
-  background-color: var(--accent-bg, #f3f4f6);
+  background-color: var(--accent-bg);
 }
 
 .search-result-item .coordinates {
   font-size: 0.85rem;
-  color: var(--text-tertiary, #6b7280);
+  color: var(--text-tertiary);
 }
 
 /* Report Locations List */
@@ -173,7 +173,7 @@
 .no-locations {
   text-align: center;
   padding: 2rem;
-  color: var(--text-tertiary, #6b7280);
+  color: var(--text-tertiary);
   font-style: italic;
 }
 
@@ -260,12 +260,12 @@
 .button-primary {
   background: var(--gradient-primary);
   color: var(--text-on-accent);
-  box-shadow: 0 4px 6px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 6px color-mix(in srgb, var(--accent-primary) 30%, transparent);
 }
 
 .button-primary:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 6px 12px color-mix(in srgb, var(--accent-primary) 40%, transparent);
 }
 
 .button-primary:disabled {
@@ -306,67 +306,6 @@
 @keyframes spin {
   to {
     transform: rotate(360deg);
-  }
-}
-
-/* Dark Mode */
-@media (prefers-color-scheme: dark) {
-  .preferences-page {
-    background-color: var(--bg-primary);
-  }
-
-  .preferences-container {
-    background-color: var(--bg-elevated);
-  }
-
-  .preferences-header h1,
-  .preferences-section h2,
-  .form-group label,
-  .checkbox-label,
-  .location-name {
-    color: var(--text-primary);
-  }
-
-  .preferences-header .user-email,
-  .help-text,
-  .section-description {
-    color: var(--text-secondary);
-  }
-
-  .form-group input,
-  .form-group select {
-    background-color: var(--bg-secondary);
-    border-color: var(--border-color);
-    color: var(--text-primary);
-  }
-
-  .checkbox-group,
-  .report-location-item {
-    background-color: var(--bg-secondary);
-    border-color: var(--border-color);
-  }
-
-  .search-results {
-    background-color: var(--bg-elevated);
-    border-color: var(--border-color);
-  }
-
-  .search-result-item {
-    color: var(--text-primary);
-  }
-
-  .search-result-item:hover {
-    background-color: var(--bg-secondary);
-  }
-
-  .button-secondary {
-    background-color: var(--bg-secondary, #334155);
-    color: var(--text-primary, #f1f5f9);
-    border-color: var(--border-color, #475569);
-  }
-
-  .button-secondary:hover {
-    background-color: var(--bg-tertiary, #475569);
   }
 }
 

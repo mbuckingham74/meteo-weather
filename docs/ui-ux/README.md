@@ -144,7 +144,7 @@ UI design, UX optimization, and Material Design implementation documentation.
 ### Contrast Requirements
 - **WCAG AA:** 4.5:1 minimum
 - **Current:** 4.59:1 (gray text on white)
-- **Enhanced:** #6b7280 (replaced #9ca3af)
+- **Enhanced:** #465570 (replaced #7b89a6)
 
 ## Responsive Breakpoints
 
@@ -182,10 +182,10 @@ UI design, UX optimization, and Material Design implementation documentation.
 
 ### CSS Variables
 ```css
---primary-color: #6366f1;
---background-color: #ffffff;
---text-color: #1f2937;
---border-color: #e5e7eb;
+--primary-color: #4c7ce5;
+--background-color: #f5f7fb;
+--text-color: #0f172a;
+--border-color: #d5d9e4;
 --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
 ```
 
