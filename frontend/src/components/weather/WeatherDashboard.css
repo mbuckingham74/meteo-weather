@@ -1068,44 +1068,6 @@
   transform: translateX(4px);
 }
 
-/* No Charts Message */
-.no-charts-message {
-  text-align: center;
-  padding: 40px 20px;
-  background: var(--bg-elevated, #ffffff);
-  border: 1px solid var(--border-light, #e5e7eb);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-  margin-bottom: var(--spacing-lg);
-}
-
-.no-charts-message p:first-child {
-  font-size: var(--font-2xl);
-  margin: 0 0 8px 0;
-  color: var(--text-primary, #374151);
-}
-
-/* Charts Grid */
-.charts-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-lg);
-}
-
-.chart-card {
-  background: var(--bg-elevated, #ffffff);
-  padding: var(--spacing-md);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md, 0 2px 8px rgba(0, 0, 0, 0.1));
-  border: 1px solid var(--border-light, #e5e7eb);
-  overflow-x: hidden;
-}
-
-.chart-card-wide {
-  grid-column: 1 / -1;
-}
-
 /* API Info */
 .api-info {
   text-align: center;
@@ -1134,13 +1096,6 @@
 
 .dashboard-footer p {
   margin: var(--spacing-xs) 0;
-}
-
-/* Responsive Design */
-@media (min-width: 1024px) {
-  .charts-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
 }
 
 /* ============================================

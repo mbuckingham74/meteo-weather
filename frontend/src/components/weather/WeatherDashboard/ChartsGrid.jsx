@@ -1,4 +1,4 @@
-import React from 'react';
+import { Grid as LayoutGrid, Surface } from '@components/ui/primitives';
 import TemperatureBandChart from '../../charts/TemperatureBandChart';
 import PrecipitationChart from '../../charts/PrecipitationChart';
 import WindChart from '../../charts/WindChart';
@@ -14,6 +14,17 @@ import SunChart from '../../charts/SunChart';
 import FeelsLikeChart from '../../charts/FeelsLikeChart';
 import ThisDayInHistoryCard from '../../cards/ThisDayInHistoryCard';
 import AirQualityCard from '../../cards/AirQualityCard';
+import styles from './ChartsGrid.module.css';
+
+function ChartCard({ id, wide = false, children }) {
+  const className = wide ? `${styles.chartCard} ${styles.chartCardWide}` : styles.chartCard;
+
+  return (
+    <Surface as="section" id={id} padding="lg" radius="lg" elevation="md" className={className}>
+      {children}
+    </Surface>
+  );
+}
 
 /**
  * Charts Grid Component
@@ -35,131 +46,135 @@ function ChartsGrid({
 
   return (
     <>
-      <div id="weather-charts" className="charts-grid" tabIndex={-1}>
+      <LayoutGrid
+        id="weather-charts"
+        tabIndex={-1}
+        columns={{ base: 1, lg: 2 }}
+        gap="lg"
+        className={styles.grid}
+      >
         {/* FORECAST TAB */}
         {activeTab === 'forecast' && visibleCharts.hourly && (
-          <div id="chart-hourly" className="chart-card chart-card-wide">
+          <ChartCard id="chart-hourly" wide>
             <HourlyForecastChart
               hourlyData={hourlyData.data?.hourly || []}
               unit={unit}
               height={300}
             />
-          </div>
+          </ChartCard>
         )}
 
         {activeTab === 'forecast' && visibleCharts.temperature && (
-          <div id="chart-temperature" className="chart-card">
+          <ChartCard id="chart-temperature">
             <TemperatureBandChart data={data.forecast || []} unit={unit} height={300} days={days} />
-          </div>
+          </ChartCard>
         )}
 
         {activeTab === 'forecast' && visibleCharts.precipitation && (
-          <div id="chart-precipitation" className="chart-card">
+          <ChartCard id="chart-precipitation">
             <PrecipitationChart data={data.forecast || []} height={300} days={days} />
-          </div>
+          </ChartCard>
         )}
 
         {activeTab === 'forecast' && visibleCharts.wind && (
-          <div id="chart-wind" className="chart-card">
+          <ChartCard id="chart-wind">
             <WindChart data={data.forecast || []} height={300} days={days} />
-          </div>
+          </ChartCard>
         )}
 
         {/* DETAILS TAB */}
         {activeTab === 'details' && visibleCharts.cloudCover && (
-          <div id="chart-cloudCover" className="chart-card">
+          <ChartCard id="chart-cloudCover">
             <CloudCoverChart data={data.forecast || []} height={300} days={days} />
-          </div>
+          </ChartCard>
         )}
 
         {activeTab === 'details' && visibleCharts.uvIndex && (
-          <div id="chart-uvIndex" className="chart-card">
+          <ChartCard id="chart-uvIndex">
             <UVIndexChart data={data.forecast || []} height={300} days={days} />
-          </div>
+          </ChartCard>
         )}
 
         {activeTab === 'forecast' && visibleCharts.overview && (
-          <div id="chart-overview" className="chart-card chart-card-wide">
+          <ChartCard id="chart-overview" wide>
             <WeatherOverviewChart data={data.forecast || []} unit={unit} height={320} days={days} />
-          </div>
+          </ChartCard>
         )}
 
         {/* Enhanced Weather Charts */}
         {activeTab === 'details' && visibleCharts.humidityDew && (
-          <div id="chart-humidityDew" className="chart-card">
+          <ChartCard id="chart-humidityDew">
             <HumidityDewpointChart
               data={data.forecast || []}
               unit={unit}
               days={days}
               height={300}
             />
-          </div>
+          </ChartCard>
         )}
 
         {activeTab === 'details' && visibleCharts.sunriseSunset && (
-          <div id="chart-sunriseSunset" className="chart-card">
+          <ChartCard id="chart-sunriseSunset">
             <SunChart data={data.forecast || []} days={days} height={300} />
-          </div>
+          </ChartCard>
         )}
 
         {activeTab === 'details' && visibleCharts.feelsLike && (
-          <div id="chart-feelsLike" className="chart-card">
+          <ChartCard id="chart-feelsLike">
             <FeelsLikeChart data={data.forecast || []} unit={unit} days={days} height={300} />
-          </div>
+          </ChartCard>
         )}
 
         {activeTab === 'air-quality' && visibleCharts.airQuality && data.location && (
-          <div id="chart-airQuality" className="chart-card">
+          <ChartCard id="chart-airQuality">
             <AirQualityCard latitude={data.location.latitude} longitude={data.location.longitude} />
-          </div>
+          </ChartCard>
         )}
 
         {/* Historical/Climate Charts */}
         {activeTab === 'historical' && visibleCharts.thisDayHistory && (
-          <div id="chart-thisDayHistory" className="chart-card chart-card-wide">
+          <ChartCard id="chart-thisDayHistory" wide>
             <ThisDayInHistoryCard historyData={thisDayHistory.data} unit={unit} />
-          </div>
+          </ChartCard>
         )}
 
         {activeTab === 'historical' && visibleCharts.historicalComparison && (
-          <div id="chart-historicalComparison" className="chart-card chart-card-wide">
+          <ChartCard id="chart-historicalComparison" wide>
             <HistoricalComparisonChart
               forecastData={data.forecast || []}
               historicalData={forecastComparison.data || []}
               unit={unit}
               height={300}
             />
-          </div>
+          </ChartCard>
         )}
 
         {activeTab === 'historical' && visibleCharts.recordTemps && (
-          <div id="chart-recordTemps" className="chart-card chart-card-wide">
+          <ChartCard id="chart-recordTemps" wide>
             <RecordTemperaturesChart
               records={recordTemps.data?.records || []}
               unit={unit}
               height={300}
             />
-          </div>
+          </ChartCard>
         )}
 
         {activeTab === 'historical' && visibleCharts.tempProbability && (
-          <div id="chart-tempProbability" className="chart-card chart-card-wide">
+          <ChartCard id="chart-tempProbability" wide>
             <TemperatureProbabilityChart
               probabilityData={tempProbability.data}
               unit={unit}
               height={300}
             />
-          </div>
+          </ChartCard>
         )}
-      </div>
+      </LayoutGrid>
 
       {/* No charts selected message */}
       {visibleChartCount === 0 && (
-        <div className="no-charts-message">
-          <p>📊 No charts selected</p>
-          <p style={{ fontSize: '14px', color: '#6b7280' }}>
-            Use the toggles above to show weather charts
-          </p>
+        <div className={styles.emptyState}>
+          <p className={styles.emptyTitle}>📊 No charts selected</p>
+          <p className={styles.emptySubtitle}>Use the toggles above to show weather charts</p>
         </div>
       )}
     </>

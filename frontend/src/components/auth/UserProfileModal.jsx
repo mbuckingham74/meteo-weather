@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Grid as LayoutGrid, Stack, Surface } from '@components/ui/primitives';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLocation } from '../../contexts/LocationContext';
 import {
@@ -8,9 +9,9 @@ import {
   updateUserPreferences,
   updateUserProfile,
   getCloudFavorites,
-  removeCloudFavorite
+  removeCloudFavorite,
 } from '../../services/authApi';
-import './UserProfileModal.css';
+import styles from './UserProfileModal.module.css';
 
 /**
  * UserProfileModal Component
@@ -20,7 +21,7 @@ function UserProfileModal({ isOpen, onClose }) {
   const navigate = useNavigate();
   const { user, accessToken, logout, updateUser } = useAuth();
   const { selectLocation } = useLocation();
-  const [activeTab, setActiveTab] = useState('profile'); // 'profile', 'preferences', 'security', 'favorites'
+  const [activeTab, setActiveTab] = useState('profile');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -39,7 +40,7 @@ function UserProfileModal({ isOpen, onClose }) {
     temperature_unit: 'C',
     default_forecast_days: 7,
     default_location: '',
-    theme: 'light'
+    theme: 'light',
   });
 
   // Favorites state
@@ -57,8 +58,8 @@ function UserProfileModal({ isOpen, onClose }) {
     try {
       const prefs = await getUserPreferences(accessToken);
       setPreferences(prefs);
-    } catch (error) {
-      console.error('Failed to load preferences:', error);
+    } catch (err) {
+      console.error('Failed to load preferences:', err);
     }
   }, [accessToken]);
 
@@ -69,8 +70,8 @@ function UserProfileModal({ isOpen, onClose }) {
     try {
       const cloudFavs = await getCloudFavorites(accessToken);
       setFavorites(cloudFavs);
-    } catch (error) {
-      console.error('Failed to load favorites:', error);
+    } catch (err) {
+      console.error('Failed to load favorites:', err);
     } finally {
       setFavoritesLoading(false);
     }
@@ -181,76 +182,100 @@ function UserProfileModal({ isOpen, onClose }) {
     onClose();
   };
 
+  const tabClass = (value) =>
+    value === activeTab ? `${styles.tab} ${styles.tabActive}` : styles.tab;
+
   return (
-    <div className="profile-modal-overlay" onClick={handleClose}>
-      <div className="profile-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="profile-modal-header">
-          <button className="profile-modal-close" onClick={handleClose}>
+    <div className={styles.overlay} onClick={handleClose} role="presentation">
+      <Surface
+        as="section"
+        padding="none"
+        radius="xl"
+        elevation="lg"
+        className={styles.modal}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="profile-modal-title"
+        aria-describedby="profile-modal-subtitle"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <header className={styles.header}>
+          <button
+            className={styles.closeButton}
+            onClick={handleClose}
+            aria-label="Close profile dialog"
+          >
             ×
           </button>
-          <h2 className="profile-modal-title">Account Settings</h2>
-          <p className="profile-modal-subtitle">Manage your profile and preferences</p>
-        </div>
+          <h2 id="profile-modal-title" className={styles.title}>
+            Account Settings
+          </h2>
+          <p id="profile-modal-subtitle" className={styles.subtitle}>
+            Manage your profile and preferences
+          </p>
+        </header>
 
-        <div className="profile-modal-body">
-          {/* Tabs */}
-          <div className="profile-tabs">
+        <div className={styles.body}>
+          <div className={styles.tabs} role="tablist" aria-label="Account sections">
             <button
-              className={`profile-tab ${activeTab === 'profile' ? 'active' : ''}`}
+              type="button"
+              className={tabClass('profile')}
               onClick={() => setActiveTab('profile')}
             >
               Profile
             </button>
             <button
-              className={`profile-tab ${activeTab === 'favorites' ? 'active' : ''}`}
+              type="button"
+              className={tabClass('favorites')}
               onClick={() => setActiveTab('favorites')}
             >
               ⭐ Favorites
             </button>
             <button
-              className={`profile-tab ${activeTab === 'preferences' ? 'active' : ''}`}
+              type="button"
+              className={tabClass('preferences')}
               onClick={() => setActiveTab('preferences')}
             >
               Preferences
             </button>
             <button
-              className={`profile-tab ${activeTab === 'security' ? 'active' : ''}`}
+              type="button"
+              className={tabClass('security')}
               onClick={() => setActiveTab('security')}
             >
               Security
             </button>
           </div>
 
-          {error && <p className="form-error">{error}</p>}
-          {success && <p className="form-success">{success}</p>}
+          {error && <p className={styles.feedbackError}>{error}</p>}
+          {success && <p className={styles.feedbackSuccess}>{success}</p>}
 
-          {/* Profile Tab */}
           {activeTab === 'profile' && (
-            <div className="profile-section">
-              <div className="profile-info-card">
-                <div className="profile-info-row">
-                  <span className="profile-info-label">Member Since</span>
-                  <span className="profile-info-value">
+            <Stack as="section" gap="lg" className={styles.section}>
+              <Surface padding="lg" className={styles.infoCard}>
+                <div className={styles.infoRow}>
+                  <span className={styles.infoLabel}>Member Since</span>
+                  <span className={styles.infoValue}>
                     {user?.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}
                   </span>
                 </div>
-                <div className="profile-info-row">
-                  <span className="profile-info-label">Last Login</span>
-                  <span className="profile-info-value">
+                <div className={styles.infoRow}>
+                  <span className={styles.infoLabel}>Last Login</span>
+                  <span className={styles.infoValue}>
                     {user?.last_login ? new Date(user.last_login).toLocaleDateString() : 'N/A'}
                   </span>
                 </div>
-              </div>
+              </Surface>
 
-              <form onSubmit={handleUpdateProfile} className="auth-form">
-                <div className="form-group">
-                  <label htmlFor="profile-name" className="form-label">
+              <form onSubmit={handleUpdateProfile} className={styles.form}>
+                <div className={styles.formGroup}>
+                  <label htmlFor="profile-name" className={styles.formLabel}>
                     Full Name
                   </label>
                   <input
                     type="text"
                     id="profile-name"
-                    className="form-input"
+                    className={styles.formInput}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
@@ -258,14 +283,14 @@ function UserProfileModal({ isOpen, onClose }) {
                   />
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="profile-email" className="form-label">
+                <div className={styles.formGroup}>
+                  <label htmlFor="profile-email" className={styles.formLabel}>
                     Email Address
                   </label>
                   <input
                     type="email"
                     id="profile-email"
-                    className="form-input"
+                    className={styles.formInput}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -273,31 +298,26 @@ function UserProfileModal({ isOpen, onClose }) {
                   />
                 </div>
 
-                <button
-                  type="submit"
-                  className="profile-action-button"
-                  disabled={loading}
-                >
+                <button type="submit" className={styles.actionButton} disabled={loading}>
                   {loading ? 'Saving...' : 'Save Changes'}
                 </button>
               </form>
-            </div>
+            </Stack>
           )}
 
-          {/* Preferences Tab */}
           {activeTab === 'preferences' && (
-            <div className="profile-section">
-              <h3 className="profile-section-title">Weather Preferences</h3>
+            <Stack as="section" gap="lg" className={styles.section}>
+              <h3 className={styles.sectionTitle}>Weather Preferences</h3>
 
-              <div className="preferences-grid">
-                <div className="preference-item">
-                  <div className="preference-label">
-                    <span className="preference-label-text">Temperature Unit</span>
-                    <span className="preference-label-description">
+              <LayoutGrid columns={{ base: 1 }} gap="md" className={styles.preferenceGrid}>
+                <Surface padding="md" className={styles.preferenceItem}>
+                  <div className={styles.preferenceLabel}>
+                    <span className={styles.preferenceLabelText}>Temperature Unit</span>
+                    <span className={styles.preferenceDescription}>
                       Default temperature unit for weather display
                     </span>
                   </div>
-                  <div className="preference-control">
+                  <div className={styles.preferenceControl}>
                     <select
                       value={preferences.temperature_unit}
                       onChange={(e) =>
@@ -308,22 +328,22 @@ function UserProfileModal({ isOpen, onClose }) {
                       <option value="F">Fahrenheit (°F)</option>
                     </select>
                   </div>
-                </div>
+                </Surface>
 
-                <div className="preference-item">
-                  <div className="preference-label">
-                    <span className="preference-label-text">Default Forecast Days</span>
-                    <span className="preference-label-description">
+                <Surface padding="md" className={styles.preferenceItem}>
+                  <div className={styles.preferenceLabel}>
+                    <span className={styles.preferenceLabelText}>Default Forecast Days</span>
+                    <span className={styles.preferenceDescription}>
                       Number of days to show in forecast
                     </span>
                   </div>
-                  <div className="preference-control">
+                  <div className={styles.preferenceControl}>
                     <select
                       value={preferences.default_forecast_days}
                       onChange={(e) =>
                         setPreferences({
                           ...preferences,
-                          default_forecast_days: parseInt(e.target.value)
+                          default_forecast_days: Number.parseInt(e.target.value, 10),
                         })
                       }
                     >
@@ -332,49 +352,41 @@ function UserProfileModal({ isOpen, onClose }) {
                       <option value="14">14 days</option>
                     </select>
                   </div>
-                </div>
+                </Surface>
 
-                <div className="preference-item">
-                  <div className="preference-label">
-                    <span className="preference-label-text">Theme</span>
-                    <span className="preference-label-description">
-                      App color theme preference
-                    </span>
+                <Surface padding="md" className={styles.preferenceItem}>
+                  <div className={styles.preferenceLabel}>
+                    <span className={styles.preferenceLabelText}>Theme</span>
+                    <span className={styles.preferenceDescription}>App color theme preference</span>
                   </div>
-                  <div className="preference-control">
+                  <div className={styles.preferenceControl}>
                     <select
                       value={preferences.theme}
-                      onChange={(e) =>
-                        setPreferences({ ...preferences, theme: e.target.value })
-                      }
+                      onChange={(e) => setPreferences({ ...preferences, theme: e.target.value })}
                     >
                       <option value="light">Light</option>
                       <option value="dark">Dark</option>
                       <option value="auto">Auto</option>
                     </select>
                   </div>
-                </div>
-              </div>
+                </Surface>
+              </LayoutGrid>
 
               <button
-                className="profile-action-button"
+                className={styles.actionButton}
                 onClick={handleUpdatePreferences}
                 disabled={loading}
               >
                 {loading ? 'Saving...' : 'Save Preferences'}
               </button>
 
-              <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border-color, #e0e0e0)' }}>
-                <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
-                  Want more control? Configure email notifications, weather reports, and advanced settings.
+              <div className={styles.advancedSection}>
+                <p className={styles.advancedText}>
+                  Want more control? Configure email notifications, weather reports, and advanced
+                  settings.
                 </p>
                 <button
-                  className="profile-action-button"
-                  style={{
-                    background: 'linear-gradient(135deg, #10b981 0%, #34d399 100%)',
-                    color: 'white',
-                    fontWeight: '600'
-                  }}
+                  className={`${styles.actionButton} ${styles.advancedButton}`}
                   onClick={() => {
                     onClose();
                     navigate('/preferences');
@@ -383,64 +395,66 @@ function UserProfileModal({ isOpen, onClose }) {
                   ⚙️ Advanced Settings & Email Preferences
                 </button>
               </div>
-            </div>
+            </Stack>
           )}
 
-          {/* Favorites Tab */}
           {activeTab === 'favorites' && (
-            <div className="profile-section">
-              <h3 className="profile-section-title">
+            <Stack as="section" gap="lg" className={styles.section}>
+              <h3 className={styles.sectionTitle}>
                 Your Favorite Locations
                 {favorites.length > 0 && (
-                  <span className="favorite-count-badge">{favorites.length}</span>
+                  <span className={styles.favoritesBadge}>{favorites.length}</span>
                 )}
               </h3>
 
               {favoritesLoading && (
-                <div className="favorites-loading">
-                  <div className="spinner-small"></div>
+                <div className={styles.favoritesLoading}>
+                  <div className={styles.spinner} />
                   <p>Loading favorites...</p>
                 </div>
               )}
 
               {!favoritesLoading && favorites.length === 0 && (
-                <div className="favorites-empty-state">
-                  <span className="empty-icon">⭐</span>
+                <div className={styles.favoritesEmpty}>
+                  <span className={styles.emptyIcon}>⭐</span>
                   <h4>No favorite locations yet</h4>
                   <p>Add locations to your favorites from the main dashboard.</p>
-                  <p className="empty-hint">
+                  <p className={styles.emptyHint}>
                     Your favorites are securely stored and synced across all your devices.
                   </p>
                 </div>
               )}
 
               {!favoritesLoading && favorites.length > 0 && (
-                <div className="favorites-list-profile">
+                <div className={styles.favoritesList}>
                   {favorites.map((favorite) => (
-                    <div
-                      key={favorite.id}
-                      className="favorite-item-profile"
-                    >
+                    <div key={favorite.id} className={styles.favoriteItem}>
                       <div
-                        className="favorite-content"
+                        className={styles.favoriteContent}
                         onClick={() => handleSelectFavorite(favorite)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') handleSelectFavorite(favorite);
+                        }}
+                        role="button"
+                        tabIndex={0}
                       >
-                        <div className="favorite-icon">📍</div>
-                        <div className="favorite-details">
-                          <div className="favorite-name-profile">
+                        <div className={styles.favoriteIcon}>📍</div>
+                        <div className={styles.favoriteDetails}>
+                          <div className={styles.favoriteName}>
                             {favorite.address || favorite.location_name}
                           </div>
-                          <div className="favorite-coords-profile">
+                          <div className={styles.favoriteCoords}>
                             {favorite.latitude.toFixed(4)}, {favorite.longitude.toFixed(4)}
                             {favorite.timezone && ` • ${favorite.timezone}`}
                           </div>
                         </div>
                       </div>
                       <button
-                        className="remove-favorite-button"
+                        className={styles.removeFavorite}
                         onClick={() => handleRemoveFavorite(favorite.id)}
                         title="Remove from favorites"
                         disabled={favoritesLoading}
+                        type="button"
                       >
                         ✕
                       </button>
@@ -450,29 +464,29 @@ function UserProfileModal({ isOpen, onClose }) {
               )}
 
               {favorites.length > 0 && (
-                <div className="favorites-info">
-                  <p>
-                    💾 {favorites.length} location{favorites.length !== 1 ? 's' : ''} saved • Synced to cloud
+                <div className={styles.favoritesInfo}>
+                  <p className={styles.favoritesMeta}>
+                    💾 {favorites.length} location{favorites.length !== 1 ? 's' : ''} saved • Synced
+                    to cloud
                   </p>
                 </div>
               )}
-            </div>
+            </Stack>
           )}
 
-          {/* Security Tab */}
           {activeTab === 'security' && (
-            <div className="profile-section">
-              <h3 className="profile-section-title">Change Password</h3>
+            <Stack as="section" gap="lg" className={styles.section}>
+              <h3 className={styles.sectionTitle}>Change Password</h3>
 
-              <form onSubmit={handleChangePassword} className="password-change-form">
-                <div className="form-group">
-                  <label htmlFor="current-password" className="form-label">
+              <form onSubmit={handleChangePassword} className={styles.form}>
+                <div className={styles.formGroup}>
+                  <label htmlFor="current-password" className={styles.formLabel}>
                     Current Password
                   </label>
                   <input
                     type="password"
                     id="current-password"
-                    className="form-input"
+                    className={styles.formInput}
                     placeholder="••••••••"
                     value={currentPassword}
                     onChange={(e) => setCurrentPassword(e.target.value)}
@@ -481,14 +495,14 @@ function UserProfileModal({ isOpen, onClose }) {
                   />
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="new-password" className="form-label">
+                <div className={styles.formGroup}>
+                  <label htmlFor="new-password" className={styles.formLabel}>
                     New Password
                   </label>
                   <input
                     type="password"
                     id="new-password"
-                    className="form-input"
+                    className={styles.formInput}
                     placeholder="••••••••"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
@@ -497,14 +511,14 @@ function UserProfileModal({ isOpen, onClose }) {
                   />
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="confirm-new-password" className="form-label">
+                <div className={styles.formGroup}>
+                  <label htmlFor="confirm-new-password" className={styles.formLabel}>
                     Confirm New Password
                   </label>
                   <input
                     type="password"
                     id="confirm-new-password"
-                    className="form-input"
+                    className={styles.formInput}
                     placeholder="••••••••"
                     value={confirmNewPassword}
                     onChange={(e) => setConfirmNewPassword(e.target.value)}
@@ -513,27 +527,24 @@ function UserProfileModal({ isOpen, onClose }) {
                   />
                 </div>
 
-                <button
-                  type="submit"
-                  className="profile-action-button"
-                  disabled={loading}
-                >
+                <button type="submit" className={styles.actionButton} disabled={loading}>
                   {loading ? 'Changing...' : 'Change Password'}
                 </button>
               </form>
-            </div>
+            </Stack>
           )}
         </div>
 
-        <div className="profile-modal-footer">
+        <footer className={styles.footer}>
           <button
-            className="profile-action-button danger"
+            type="button"
+            className={`${styles.actionButton} ${styles.actionButtonDanger}`}
             onClick={handleLogout}
           >
             Sign Out
           </button>
-        </div>
-      </div>
+        </footer>
+      </Surface>
     </div>
   );
 }
