@@ -45,7 +45,7 @@
 }
 
 .dashboard-title-link:focus {
-  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline: 2px solid color-mix(in srgb, var(--text-on-accent) 50%, transparent);
   outline-offset: 4px;
   border-radius: 4px;
 }
@@ -349,7 +349,7 @@
 
 .location-button {
   padding: var(--spacing-sm) 24px;
-  background: var(--accent-primary, #10b981);
+  background: var(--accent-primary);
   color: white;
   border: none;
   border-radius: var(--radius-md);
@@ -360,7 +360,7 @@
 }
 
 .location-button:hover {
-  background: var(--accent-hover, #047857);
+  background: var(--accent-hover);
 }
 
 .control-group {
@@ -421,8 +421,8 @@
 .error-state {
   text-align: center;
   padding: 40px 20px;
-  background: var(--error-bg, #fef2f2);
-  border: 2px solid var(--error-border, #fecaca);
+  background: var(--error-bg);
+  border: 2px solid var(--error-border);
   border-radius: var(--radius-lg);
   margin: var(--spacing-lg) 0;
 }

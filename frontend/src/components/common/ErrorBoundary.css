@@ -4,16 +4,16 @@
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  background: var(--bg-primary, #f9fafb);
+  background: var(--bg-primary);
 }
 
 .error-boundary-content {
   max-width: 600px;
   width: 100%;
-  background: var(--bg-elevated, #ffffff);
+  background: var(--bg-elevated);
   border-radius: var(--radius-lg);
   padding: 3rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   text-align: center;
 }
 
@@ -39,21 +39,21 @@
 .error-boundary-title {
   font-size: 1.75rem;
   font-weight: 700;
-  color: var(--text-primary, #111827);
+  color: var(--text-primary);
   margin-bottom: 1rem;
 }
 
 .error-boundary-message {
   font-size: 1rem;
-  color: var(--text-secondary, #6b7280);
+  color: var(--text-secondary);
   margin-bottom: 2rem;
   line-height: 1.6;
 }
 
 .error-boundary-warning {
-  background: var(--warning-bg, #fef3c7);
-  border: 1px solid var(--warning-border, #fbbf24);
-  color: var(--warning-text, #92400e);
+  background: var(--warning-bg);
+  border: 1px solid var(--warning-border);
+  color: var(--warning-text);
   border-radius: var(--radius-md);
   padding: 1rem;
   margin-bottom: 2rem;
@@ -101,7 +101,7 @@
 
 .error-boundary-button.primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--accent-primary) 35%, transparent);
 }
 
 .error-boundary-button.secondary {
@@ -120,13 +120,13 @@
 }
 
 .error-boundary-button.tertiary:hover {
-  background: var(--accent-bg, rgba(102, 126, 234, 0.1));
+  background: color-mix(in srgb, var(--accent-primary) 15%, transparent);
 }
 
 .error-boundary-details {
   text-align: left;
   margin-bottom: 1.5rem;
-  background: var(--bg-secondary, #f3f4f6);
+  background: var(--bg-secondary);
   border-radius: var(--radius-md);
   padding: 1rem;
 }
@@ -134,13 +134,13 @@
 .error-boundary-details summary {
   cursor: pointer;
   font-weight: 600;
-  color: var(--text-primary, #111827);
+  color: var(--text-primary);
   padding: 0.5rem;
   user-select: none;
 }
 
 .error-boundary-details summary:hover {
-  color: var(--accent-primary, #10b981);
+  color: var(--accent-primary);
 }
 
 .error-boundary-details-content {
@@ -156,20 +156,20 @@
 .error-detail-section h3 {
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--text-secondary, #6b7280);
+  color: var(--text-secondary);
   margin-bottom: 0.5rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .error-detail-section pre {
-  background: var(--bg-primary, #ffffff);
-  border: 1px solid var(--bg-tertiary, #e5e7eb);
+  background: var(--bg-primary);
+  border: 1px solid var(--bg-tertiary);
   border-radius: var(--radius-sm);
   padding: 1rem;
   font-size: 0.75rem;
   font-family: 'Courier New', monospace;
-  color: var(--error-text, #dc2626);
+  color: var(--error-text);
   overflow-x: auto;
   white-space: pre-wrap;
   word-wrap: break-word;
@@ -179,8 +179,8 @@
 
 .error-boundary-help {
   text-align: left;
-  background: var(--info-bg, #dbeafe);
-  border-left: 4px solid var(--info-border, #3b82f6);
+  background: var(--info-bg);
+  border-left: 4px solid var(--info-border);
   padding: 1rem;
   border-radius: 4px;
 }
@@ -188,14 +188,14 @@
 .error-boundary-help p {
   margin: 0 0 0.75rem 0;
   font-weight: 600;
-  color: var(--info-text, #1e40af);
+  color: var(--info-text);
   font-size: 0.875rem;
 }
 
 .error-boundary-help ul {
   margin: 0;
   padding-left: 1.5rem;
-  color: var(--text-secondary, #6b7280);
+  color: var(--text-secondary);
   font-size: 0.875rem;
 }
 
@@ -210,38 +210,38 @@
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
   .error-boundary {
-    background: var(--bg-primary, #111827);
+    background: var(--bg-primary);
   }
 
   .error-boundary-content {
-    background: var(--bg-elevated, #1f2937);
+    background: var(--bg-elevated);
   }
 
   .error-boundary-title {
-    color: var(--text-primary, #f9fafb);
+    color: var(--text-primary);
   }
 
   .error-boundary-message {
-    color: var(--text-secondary, #d1d5db);
+    color: var(--text-secondary);
   }
 
   .error-boundary-button.secondary {
-    background: var(--bg-secondary, #374151);
-    color: var(--text-primary, #f9fafb);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
   }
 
   .error-boundary-button.secondary:hover {
-    background: var(--bg-tertiary, #4b5563);
+    background: var(--bg-tertiary);
   }
 
   .error-boundary-details {
-    background: var(--bg-secondary, #1f2937);
+    background: var(--bg-secondary);
   }
 
   .error-detail-section pre {
-    background: var(--bg-primary, #111827);
-    border-color: var(--bg-tertiary, #374151);
-    color: var(--error-text, #f87171);
+    background: var(--bg-primary);
+    border-color: var(--bg-tertiary);
+    color: var(--error-text);
   }
 }
 

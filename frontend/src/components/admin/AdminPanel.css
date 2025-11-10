@@ -13,13 +13,13 @@
   align-items: center;
   margin-bottom: 24px;
   padding-bottom: 16px;
-  border-bottom: 2px solid var(--border-color, #e5e7eb);
+  border-bottom: 2px solid var(--border-color);
 }
 
 .admin-header h1 {
   font-size: var(--font-3xl);
   font-weight: 700;
-  color: var(--text-primary, #1f2937);
+  color: var(--text-primary);
   margin: 0;
 }
 
@@ -58,11 +58,11 @@
 .admin-tabs button {
   padding: var(--spacing-md) 20px;
   background: var(--card-bg, white);
-  border: 2px solid var(--border-color, #e5e7eb);
+  border: 2px solid var(--border-color);
   border-radius: var(--radius-md);
   font-size: var(--font-base);
   font-weight: 600;
-  color: var(--text-secondary, #6b7280);
+  color: var(--text-secondary);
   cursor: pointer;
   transition:
     border-color 0.2s,
@@ -85,7 +85,7 @@
   background: var(--card-bg, white);
   border-radius: var(--radius-lg);
   padding: var(--spacing-xl);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px var(--overlay-soft);
 }
 
 /* Stats Grid */
@@ -152,7 +152,7 @@
 .section h2 {
   font-size: var(--font-xl);
   font-weight: 700;
-  color: var(--text-primary, #1f2937);
+  color: var(--text-primary);
   margin: 0 0 16px 0;
 }
 
@@ -163,11 +163,11 @@
   background: var(--card-bg, white);
   border-radius: var(--radius-md);
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 3px var(--overlay-soft);
 }
 
 .data-table thead {
-  background: var(--table-header-bg, #f9fafb);
+  background: var(--table-header-bg);
 }
 
 .data-table th {
@@ -176,19 +176,19 @@
   font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
-  color: var(--text-secondary, #6b7280);
-  border-bottom: 2px solid var(--border-color, #e5e7eb);
+  color: var(--text-secondary);
+  border-bottom: 2px solid var(--border-color);
 }
 
 .data-table td {
   padding: var(--spacing-md) 16px;
   font-size: var(--font-base);
-  color: var(--text-primary, #1f2937);
-  border-bottom: 1px solid var(--border-color, #e5e7eb);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .data-table tbody tr:hover {
-  background: var(--hover-bg, #f9fafb);
+  background: var(--hover-bg);
 }
 
 .data-table tbody tr:last-child td {
@@ -274,8 +274,8 @@
 
 /* Info Box */
 .info-box {
-  background: var(--info-bg, #f0f9ff);
-  border: 1px solid var(--info-border, #bae6fd);
+  background: var(--info-bg);
+  border: 1px solid var(--info-border);
   border-radius: var(--radius-md);
   padding: 16px;
 }
@@ -283,7 +283,7 @@
 .info-box p {
   margin: var(--spacing-sm) 0;
   font-size: var(--font-base);
-  color: var(--text-primary, #1f2937);
+  color: var(--text-primary);
 }
 
 .info-box strong {
@@ -315,7 +315,7 @@
 
 .admin-loading p {
   font-size: var(--font-lg);
-  color: var(--text-secondary, #6b7280);
+  color: var(--text-secondary);
 }
 
 /* Error State */
@@ -329,13 +329,13 @@
 .admin-error h2 {
   font-size: var(--font-2xl);
   font-weight: 700;
-  color: var(--text-primary, #1f2937);
+  color: var(--text-primary);
   margin: 0 0 12px 0;
 }
 
 .admin-error p {
   font-size: var(--font-lg);
-  color: var(--text-secondary, #6b7280);
+  color: var(--text-secondary);
   margin-bottom: 24px;
 }
 
@@ -429,7 +429,7 @@
   align-items: center;
   margin-bottom: 20px;
   padding-bottom: 12px;
-  border-bottom: 1px solid var(--border-color, #e5e7eb);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .export-btn {

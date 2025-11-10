@@ -42,7 +42,7 @@
     border-color 0.3s ease,
     box-shadow 0.3s ease,
     transform 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px var(--overlay-soft);
 }
 
 .universal-input-wrapper:focus-within {
@@ -151,7 +151,7 @@
 
 .universal-example-chip:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px var(--overlay-soft);
 }
 
 /* Color-coded chip types to demonstrate variety */

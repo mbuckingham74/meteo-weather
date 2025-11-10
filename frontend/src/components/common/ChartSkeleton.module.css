@@ -1,9 +1,9 @@
 .container {
   width: 100%;
   padding: var(--spacing-xl);
-  background: var(--bg-elevated, #ffffff);
+  background: var(--bg-elevated);
   border-radius: var(--radius-lg);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px var(--overlay-soft);
 }
 
 .header {
@@ -63,7 +63,7 @@
 .gridLine {
   width: 100%;
   height: 1px;
-  background: var(--bg-tertiary, #e5e7eb);
+  background: var(--bg-tertiary);
   opacity: 0.5;
 }
 
@@ -93,18 +93,6 @@
 
 .xAxis > * {
   text-align: center;
-}
-
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  .container {
-    background: var(--bg-elevated, #1f2937);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  }
-
-  .gridLine {
-    background: var(--bg-tertiary, #4b5563);
-  }
 }
 
 /* Mobile responsiveness */

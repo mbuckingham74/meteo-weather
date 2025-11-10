@@ -80,6 +80,23 @@
   --alert-advisory: #4c8ef5;
   --alert-info: #7b94d6;
 
+  /* Severity Surfaces */
+  --error-surface-strong: color-mix(in srgb, var(--error-text) 85%, transparent);
+  --error-border-strong: color-mix(in srgb, var(--error-text) 45%, transparent);
+  --warning-surface-strong: color-mix(in srgb, var(--warning-text) 80%, transparent);
+  --warning-border-strong: color-mix(in srgb, var(--warning-text) 40%, transparent);
+  --info-surface-strong: color-mix(in srgb, var(--info-text) 80%, transparent);
+  --info-border-strong: color-mix(in srgb, var(--info-text) 35%, transparent);
+  --success-surface-strong: color-mix(in srgb, var(--success-text) 80%, transparent);
+  --success-border-strong: color-mix(in srgb, var(--success-text) 35%, transparent);
+
+  /* Overlay / Glassmorphism Tokens */
+  --overlay-strong: color-mix(in srgb, var(--text-primary) 60%, transparent);
+  --overlay-medium: color-mix(in srgb, var(--text-primary) 35%, transparent);
+  --overlay-soft: color-mix(in srgb, var(--text-primary) 18%, transparent);
+  --overlay-accent: color-mix(in srgb, var(--text-on-accent) 20%, transparent);
+  --overlay-accent-strong: color-mix(in srgb, var(--text-on-accent) 35%, transparent);
+
   /* Hover States */
   --hover-bg: #e0e6f5;
   --warning-bg-hover: #ffeac5;
@@ -92,6 +109,21 @@
 
   --gradient-primary: linear-gradient(135deg, #4c7ce5 0%, #7b94d6 100%);
   --gradient-warm: linear-gradient(135deg, #f0a202 0%, #f48c06 100%);
+  --gradient-success: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--success-text) 80%, transparent) 0%,
+    color-mix(in srgb, var(--success-text) 60%, transparent) 100%
+  );
+  --gradient-info: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--info-text) 75%, transparent) 0%,
+    color-mix(in srgb, var(--info-text) 55%, transparent) 100%
+  );
+  --gradient-warning: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--warning-text) 80%, transparent) 0%,
+    color-mix(in srgb, var(--warning-text) 60%, transparent) 100%
+  );
 
   --transition-fast: 0.15s ease;
   --transition-normal: 0.2s ease;
