@@ -88,26 +88,16 @@
 /* Main Weather Display Container - TWO COLUMN LAYOUT */
 .hero-weather-display {
   padding: var(--spacing-lg);
-  display: grid;
-  grid-template-columns: 1fr minmax(320px, 600px);
-  gap: var(--spacing-lg);
-  align-items: start;
 }
 
 /* LEFT COLUMN: Weather Info */
 .hero-left-column {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
   margin-top: 0;
   padding-top: 0;
 }
 
 /* Location Header - Compact */
 .hero-location-header {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
   padding-bottom: 8px;
   margin-top: 0;
 }
@@ -159,13 +149,6 @@
   margin-top: 4px;
 }
 
-/* Quick Stats Bar - Compact 5 column grid (20% smaller) */
-.hero-quick-stats {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: var(--spacing-xs);
-}
-
 .hero-stat {
   display: flex;
   flex-direction: column;
@@ -208,9 +191,6 @@
 
 /* RIGHT COLUMN: Radar Map */
 .hero-right-column {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
   height: 100%;
   margin-top: 0;
   padding-top: 0;
@@ -245,13 +225,6 @@
   padding: var(--spacing-sm) 0 0 0;
   border-top: 1px solid var(--border-light);
   margin-top: 8px;
-}
-
-.hero-action-buttons {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--spacing-sm);
-  align-items: center;
 }
 
 .hero-action-btn {
@@ -1175,14 +1148,6 @@
    ============================================ */
 
 @media (max-width: 1024px) {
-  .hero-action-buttons {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .hero-quick-stats {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
   .highlights-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -1193,19 +1158,6 @@
 
   .hero-location-name {
     font-size: var(--font-xl);
-  }
-}
-
-@media (max-width: 900px) {
-  .hero-quick-stats {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 960px) {
-  /* Collapse two-column layout to single column */
-  .hero-weather-display {
-    grid-template-columns: 1fr;
   }
 }
 
@@ -1261,14 +1213,6 @@
     flex-direction: column;
     align-items: flex-start;
     gap: var(--spacing-md);
-  }
-
-  .hero-quick-stats {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .hero-action-buttons {
-    grid-template-columns: 1fr;
   }
 
   /* Hero section responsive */

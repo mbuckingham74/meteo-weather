@@ -24,6 +24,7 @@ import TemperatureUnitToggle from '../../units/TemperatureUnitToggle';
 import RadarMap from '../RadarMap';
 import TodaysHighlights from './TodaysHighlights';
 import ChartsGrid from './ChartsGrid';
+import { Grid, Stack, Surface } from '@components/ui/primitives';
 import '../WeatherDashboard.css';
 
 /**
@@ -299,18 +300,36 @@ function WeatherDashboard() {
       {!loading && !error && data && (
         <>
           {/* UNIFIED HERO CARD - Everything in one place */}
-          <div className="unified-hero-card">
+          <Surface
+            as="section"
+            padding="none"
+            radius="lg"
+            elevation="xl"
+            className="unified-hero-card"
+          >
             {/* Search Section */}
-            <div className="hero-search-section">
+            <Surface
+              as="div"
+              padding="md"
+              background="var(--bg-secondary)"
+              border="transparent"
+              className="hero-search-section"
+            >
               <UniversalSearchBar />
-            </div>
+            </Surface>
 
             {/* Main Weather Display - Two Column Layout */}
-            <div className="hero-weather-display">
+            <Grid
+              as="div"
+              columns={{ base: 1, lg: 2 }}
+              gap="lg"
+              align="start"
+              className="hero-weather-display"
+            >
               {/* LEFT COLUMN: Weather Info */}
-              <div className="hero-left-column">
+              <Stack as="div" gap="md" className="hero-left-column">
                 {/* Location Header */}
-                <div className="hero-location-header">
+                <Stack as="div" gap="xs" className="hero-location-header">
                   <h2 className="hero-location-name">{getFormattedLocationName()}</h2>
                   <p className="hero-location-coords">
                     {data.location?.latitude?.toFixed(4) || locationData?.latitude?.toFixed(4)},{' '}
@@ -318,7 +337,7 @@ function WeatherDashboard() {
                     {(data.location?.timezone || locationData?.timezone) &&
                       ` • ${data.location?.timezone || locationData?.timezone}`}
                   </p>
-                </div>
+                </Stack>
 
                 {/* Current Temperature & Conditions */}
                 {currentWeather?.data && !currentWeather.loading && (
@@ -333,7 +352,12 @@ function WeatherDashboard() {
                     </div>
 
                     {/* Quick Stats Bar - Compact 5 column with conditions */}
-                    <div className="hero-quick-stats">
+                    <Grid
+                      as="div"
+                      columns={{ base: 2, md: 3, xl: 5 }}
+                      gap="xs"
+                      className="hero-quick-stats"
+                    >
                       <div className="hero-stat">
                         <span className="hero-stat-icon" aria-hidden="true">
                           {currentWeather.data.current.conditions?.toLowerCase().includes('rain')
@@ -395,7 +419,7 @@ function WeatherDashboard() {
                         </span>
                         <span className="hero-stat-label">24h Precip</span>
                       </div>
-                    </div>
+                    </Grid>
                   </div>
                 )}
 
@@ -412,8 +436,14 @@ function WeatherDashboard() {
                 )}
 
                 {/* Quick Actions - Compact */}
-                <div className="hero-actions-section">
-                  <div className="hero-action-buttons">
+                <Stack as="div" gap="sm" className="hero-actions-section">
+                  <Grid
+                    as="div"
+                    columns={{ base: 2, md: 4 }}
+                    gap="sm"
+                    align="center"
+                    className="hero-action-buttons"
+                  >
                     <button
                       className="hero-action-btn"
                       onClick={handleDetectLocation}
@@ -438,13 +468,13 @@ function WeatherDashboard() {
                     <div className="hero-temp-toggle">
                       <TemperatureUnitToggle />
                     </div>
-                  </div>
+                  </Grid>
                   {locationError && <div className="hero-location-error">⚠️ {locationError}</div>}
-                </div>
-              </div>
+                </Stack>
+              </Stack>
 
               {/* RIGHT COLUMN: Radar Map */}
-              <div className="hero-right-column">
+              <Stack as="div" gap="md" className="hero-right-column">
                 {data.location && (
                   <div className="hero-radar-section">
                     <RadarMap
@@ -456,9 +486,9 @@ function WeatherDashboard() {
                     />
                   </div>
                 )}
-              </div>
-            </div>
-          </div>
+              </Stack>
+            </Grid>
+          </Surface>
 
           {/* Weather Alerts */}
           {data.alerts && data.alerts.length > 0 && <WeatherAlertsBanner alerts={data.alerts} />}

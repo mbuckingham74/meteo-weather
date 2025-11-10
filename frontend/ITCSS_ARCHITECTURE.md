@@ -222,6 +222,25 @@ import styles from './MyComponent.module.css';
 <div className={styles.container}>...</div>;
 ```
 
+### React Layout Primitives
+
+When working inside React components, prefer the shared layout primitives that wrap the ITCSS tokens instead of hand-writing bespoke flex/grid rules:
+
+- `Stack`, `Grid`, and `Surface` live in `src/components/ui/primitives/`.
+- They expose props for spacing, columns, alignment, elevation, etc., and internally map to the spacing, radius, and shadow tokens defined in Layer 1.
+- Responsive behavior is handled through CSS variables, so you can write `columns={{ base: 1, lg: 2 }}` and stay consistent with the breakpoint system.
+
+```jsx
+import { Grid, Stack, Surface } from '@components/ui/primitives';
+
+<Surface padding="lg" elevation="xl">
+  <Grid columns={{ base: 1, lg: 2 }} gap="lg">
+    <Stack gap="sm">Left content</Stack>
+    <Stack gap="sm">Right content</Stack>
+  </Grid>
+</Surface>;
+```
+
 ## Benefits
 
 ✅ **Clear hierarchy** - No more guessing which CSS wins
