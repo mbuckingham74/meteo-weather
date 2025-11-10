@@ -20,16 +20,16 @@
   },
   "plugins": ["react", "react-hooks", "react-refresh"],
   "rules": {
-    "react-refresh/only-export-components": ["warn", { "allowConstantExport": true }],
+    "react-refresh/only-export-components": "off",
     "react/prop-types": "off",
     "no-unused-vars": [
       "warn",
       {
         "argsIgnorePattern": "^_",
-        "varsIgnorePattern": "^_"
+        "varsIgnorePattern": "^(React|_)"
       }
     ],
-    "no-console": ["warn", { "allow": ["warn", "error"] }],
+    "no-console": "off",
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn"
   },

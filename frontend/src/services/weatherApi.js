@@ -18,7 +18,6 @@ const API_BASE_URL = API_CONFIG.BASE_URL;
 
 // Timeout configuration
 const TIMEOUT_WEATHER_DATA = 10000; // 10 seconds for weather data
-const TIMEOUT_AI = 30000; // 30 seconds for AI endpoints
 
 // Create axios instance with default timeout
 const weatherClient = axios.create({

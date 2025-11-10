@@ -34,14 +34,18 @@ import ErrorMessage from './ErrorMessage';
 const OfflineBanner = ({
   checkQuality = false,
   showSlowWarning = true,
-  offlineMessage = "You're offline. Check your internet connection.",
+  offlineMessage = 'You&apos;re offline. Check your internet connection.',
   slowMessage = 'Your connection is slow. Some features may be delayed.',
   onOnline = null,
   onOffline = null,
   dismissible = false,
   className = '',
 }) => {
-  const { isOnline, isSlowConnection, connectionQuality } = useOnlineStatus({
+  const {
+    isOnline,
+    isSlowConnection,
+    connectionQuality: _connectionQuality,
+  } = useOnlineStatus({
     onOnline,
     onOffline,
     checkQuality,

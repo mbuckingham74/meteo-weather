@@ -112,7 +112,7 @@ A comprehensive overhaul of developer tooling, workflows, and documentation to d
 #### New Documentation Files:
 
 **A. Developer Setup Guide**
-**File:** `docs/development/SETUP_GUIDE.md` (500+ lines)
+**File:** `docs/getting-started/SETUP_GUIDE.md` (500+ lines)
 
 **Contents:**
 - Prerequisites with download links
@@ -257,7 +257,7 @@ A comprehensive overhaul of developer tooling, workflows, and documentation to d
 
 ### After
 1. Clone repo
-2. Read [docs/development/SETUP_GUIDE.md](SETUP_GUIDE.md)
+2. Read [docs/getting-started/SETUP_GUIDE.md](SETUP_GUIDE.md)
 3. Run `npm run install:all`
 4. Run `npm run dev`
 5. Read [ARCHITECTURE_WALKTHROUGH.md](ARCHITECTURE_WALKTHROUGH.md) to understand system
@@ -424,7 +424,7 @@ Items marked for future work:
 ## 📝 Files Changed/Created
 
 ### Created (8 new files):
-1. `docs/development/SETUP_GUIDE.md` (500 lines)
+1. `docs/getting-started/SETUP_GUIDE.md` (500 lines)
 2. `docs/development/ARCHITECTURE_WALKTHROUGH.md` (600 lines)
 3. `docs/development/DEVELOPER_CHEATSHEET.md` (400 lines)
 4. `docs/development/README.md` (200 lines)

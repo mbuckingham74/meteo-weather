@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import TemperatureUnitToggle from '../../units/TemperatureUnitToggle';
+import { Button } from '@components/ui/primitives';
 
 /**
  * Quick Actions Panel Component
@@ -9,7 +10,6 @@ function QuickActionsPanel({
   detectingLocation,
   locationError,
   isAuthenticated,
-  visibleCharts,
   handleDetectLocation,
   setVisibleCharts,
   getCityName,
@@ -22,40 +22,35 @@ function QuickActionsPanel({
 
       <div id="location-search" className="location-search-section">
         <div className="location-actions">
-          <button
-            className="location-action-button detect-location"
+          <Button
+            variant="ghost"
             onClick={handleDetectLocation}
             disabled={detectingLocation}
             aria-label={
               detectingLocation ? 'Detecting your location...' : 'Use my current location'
             }
-            aria-busy={detectingLocation}
           >
-            <span aria-hidden="true">{detectingLocation ? '🔄' : '📍'}</span>{' '}
-            {detectingLocation ? 'Detecting...' : 'Use My Location'}
-          </button>
-          <a
+            {detectingLocation ? '🔄 Detecting…' : '📍 Use My Location'}
+          </Button>
+          <Button
+            as="a"
             href="/compare"
-            className="location-action-button compare-link"
+            variant="ghost"
             aria-label="Go to location comparison page"
           >
-            <span aria-hidden="true">📊</span> Compare Locations
-          </a>
-          <a
-            href="/ai-weather"
-            className="location-action-button ai-link"
-            aria-label="Ask AI about the weather"
-          >
-            <span aria-hidden="true">🤖</span> Ask AI
-          </a>
+            📊 Compare Locations
+          </Button>
+          <Button as="a" href="/ai-weather" variant="ghost" aria-label="Ask AI about the weather">
+            🤖 Ask AI
+          </Button>
           {isAuthenticated && (
-            <button
-              className="location-action-button settings-link"
+            <Button
+              variant="secondary"
               onClick={() => navigate('/preferences')}
               aria-label="Go to my preferences and settings"
             >
-              <span aria-hidden="true">⚙️</span> My Settings
-            </button>
+              ⚙️ My Settings
+            </Button>
           )}
         </div>
         {locationError && <div className="location-error">⚠️ {locationError}</div>}
@@ -67,28 +62,25 @@ function QuickActionsPanel({
       </div>
 
       {/* View Forecast Button */}
-      <button
-        className="view-forecast-button"
+      <Button
+        fullWidth
+        size="lg"
         onClick={() =>
           document
             .getElementById('forecast-section')
             ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
         }
       >
-        <span className="button-icon">📊</span>
-        <span className="button-text">
-          <strong>View {getCityName()} Forecast & Charts</strong>
-          <span className="button-subtitle">Interactive weather visualizations</span>
-        </span>
-      </button>
+        📊 View {getCityName()} Forecast & Charts
+      </Button>
 
       {/* Chart Navigation */}
       <div className="chart-controls-section">
         <div className="chart-controls-header">
           <h3>📊 Charts</h3>
           <div className="chart-toggle-buttons">
-            <button
-              className="toggle-all-button"
+            <Button
+              variant="secondary"
               onClick={() =>
                 setVisibleCharts({
                   hourly: true,
@@ -110,9 +102,9 @@ function QuickActionsPanel({
               }
             >
               Show All
-            </button>
-            <button
-              className="toggle-all-button"
+            </Button>
+            <Button
+              variant="outline"
               onClick={() =>
                 setVisibleCharts({
                   hourly: false,
@@ -134,12 +126,12 @@ function QuickActionsPanel({
               }
             >
               Hide All
-            </button>
+            </Button>
           </div>
         </div>
         <div className="chart-nav-list">
-          <button
-            className="chart-nav-button"
+          <Button
+            variant="outline"
             onClick={() =>
               document
                 .getElementById('chart-hourly')
@@ -147,9 +139,9 @@ function QuickActionsPanel({
             }
           >
             🕐 48-Hour Forecast
-          </button>
-          <button
-            className="chart-nav-button"
+          </Button>
+          <Button
+            variant="outline"
             onClick={() =>
               document
                 .getElementById('chart-temperature')
@@ -157,9 +149,9 @@ function QuickActionsPanel({
             }
           >
             🌡️ Temperature Bands
-          </button>
-          <button
-            className="chart-nav-button"
+          </Button>
+          <Button
+            variant="outline"
             onClick={() =>
               document
                 .getElementById('chart-precipitation')
@@ -167,9 +159,9 @@ function QuickActionsPanel({
             }
           >
             🌧️ Precipitation
-          </button>
-          <button
-            className="chart-nav-button"
+          </Button>
+          <Button
+            variant="outline"
             onClick={() =>
               document
                 .getElementById('chart-wind')
@@ -177,9 +169,9 @@ function QuickActionsPanel({
             }
           >
             💨 Wind
-          </button>
-          <button
-            className="chart-nav-button"
+          </Button>
+          <Button
+            variant="outline"
             onClick={() =>
               document
                 .getElementById('chart-cloudCover')
@@ -187,9 +179,9 @@ function QuickActionsPanel({
             }
           >
             ☁️ Cloud Cover
-          </button>
-          <button
-            className="chart-nav-button"
+          </Button>
+          <Button
+            variant="outline"
             onClick={() =>
               document
                 .getElementById('chart-uvIndex')
@@ -197,9 +189,9 @@ function QuickActionsPanel({
             }
           >
             ☀️ UV Index
-          </button>
-          <button
-            className="chart-nav-button"
+          </Button>
+          <Button
+            variant="outline"
             onClick={() =>
               document
                 .getElementById('chart-overview')
@@ -207,9 +199,9 @@ function QuickActionsPanel({
             }
           >
             📈 Multi-Metric Overview
-          </button>
-          <button
-            className="chart-nav-button"
+          </Button>
+          <Button
+            variant="outline"
             onClick={() =>
               document
                 .getElementById('chart-humidityDew')
@@ -217,9 +209,9 @@ function QuickActionsPanel({
             }
           >
             💧 Humidity & Dewpoint
-          </button>
-          <button
-            className="chart-nav-button"
+          </Button>
+          <Button
+            variant="outline"
             onClick={() =>
               document
                 .getElementById('chart-sunriseSunset')
@@ -227,9 +219,9 @@ function QuickActionsPanel({
             }
           >
             🌅 Sunrise & Sunset
-          </button>
-          <button
-            className="chart-nav-button"
+          </Button>
+          <Button
+            variant="outline"
             onClick={() =>
               document
                 .getElementById('chart-feelsLike')
@@ -237,9 +229,9 @@ function QuickActionsPanel({
             }
           >
             🌡️ Feels Like Temperature
-          </button>
-          <button
-            className="chart-nav-button"
+          </Button>
+          <Button
+            variant="outline"
             onClick={() =>
               document
                 .getElementById('chart-airQuality')
@@ -247,20 +239,12 @@ function QuickActionsPanel({
             }
           >
             💨 Air Quality Index
-          </button>
+          </Button>
 
           {/* Historical/Climate section */}
-          <div
-            style={{
-              width: '100%',
-              height: '1px',
-              background: 'var(--border-light)',
-              margin: '8px 0',
-            }}
-          />
-
-          <button
-            className="chart-nav-button"
+          <div className="chart-nav-divider" role="separator" aria-hidden="true" />
+          <Button
+            variant="outline"
             onClick={() =>
               document
                 .getElementById('chart-thisDayHistory')
@@ -268,9 +252,9 @@ function QuickActionsPanel({
             }
           >
             📅 This Day in History
-          </button>
-          <button
-            className="chart-nav-button"
+          </Button>
+          <Button
+            variant="outline"
             onClick={() =>
               document
                 .getElementById('chart-historicalComparison')
@@ -278,9 +262,9 @@ function QuickActionsPanel({
             }
           >
             📊 Historical Comparison
-          </button>
-          <button
-            className="chart-nav-button"
+          </Button>
+          <Button
+            variant="outline"
             onClick={() =>
               document
                 .getElementById('chart-recordTemps')
@@ -288,9 +272,9 @@ function QuickActionsPanel({
             }
           >
             🏆 Record Temperatures
-          </button>
-          <button
-            className="chart-nav-button"
+          </Button>
+          <Button
+            variant="outline"
             onClick={() =>
               document
                 .getElementById('chart-tempProbability')
@@ -298,7 +282,7 @@ function QuickActionsPanel({
             }
           >
             📉 Temperature Probability
-          </button>
+          </Button>
         </div>
       </div>
     </div>

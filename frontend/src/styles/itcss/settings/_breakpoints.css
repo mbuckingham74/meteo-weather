@@ -1,0 +1,178 @@
+/**
+ * ITCSS Layer 1: Settings - Breakpoints
+ *
+ * Responsive breakpoint system using CSS custom properties
+ * Mobile-first approach with standardized breakpoints
+ *
+ * Usage:
+ *   @media (min-width: var(--breakpoint-sm)) { ... }
+ *   @media (max-width: var(--breakpoint-md-max)) { ... }
+ */
+
+:root {
+  /* ============================================
+     BREAKPOINT VALUES
+     Based on common device widths and usage patterns
+     ============================================ */
+
+  /* Mobile devices (portrait phones) */
+  --breakpoint-xs: 480px; /* Small phones */
+  --breakpoint-sm: 640px; /* Large phones */
+
+  /* Tablet devices */
+  --breakpoint-md: 768px; /* Tablets (portrait) */
+  --breakpoint-lg: 1024px; /* Tablets (landscape), small laptops */
+
+  /* Desktop devices */
+  --breakpoint-xl: 1280px; /* Desktop */
+  --breakpoint-2xl: 1440px; /* Large desktop */
+
+  /* ============================================
+     MAX-WIDTH VARIANTS
+     For max-width queries (mobile-first fallback)
+     Subtract 0.02px to avoid overlap
+     ============================================ */
+
+  --breakpoint-xs-max: 479.98px;
+  --breakpoint-sm-max: 639.98px;
+  --breakpoint-md-max: 767.98px;
+  --breakpoint-lg-max: 1023.98px;
+  --breakpoint-xl-max: 1279.98px;
+  --breakpoint-2xl-max: 1439.98px;
+
+  /* ============================================
+     CONTAINER MAX-WIDTHS
+     Correspond to breakpoints for consistent layout
+     ============================================ */
+
+  --container-xs: 100%;
+  --container-sm: 640px;
+  --container-md: 768px;
+  --container-lg: 1024px;
+  --container-xl: 1280px;
+  --container-2xl: 1440px;
+
+  /* ============================================
+     COMMON RESPONSIVE PATTERNS
+     Pre-configured for typical use cases
+     ============================================ */
+
+  /* Mobile-only (up to tablets) */
+  --mobile-only-max: var(--breakpoint-md-max); /* < 768px */
+
+  /* Tablet-only (between mobile and desktop) */
+  --tablet-min: var(--breakpoint-md); /* >= 768px */
+  --tablet-max: var(--breakpoint-lg-max); /* < 1024px */
+
+  /* Desktop and up */
+  --desktop-min: var(--breakpoint-lg); /* >= 1024px */
+
+  /* ============================================
+     GRID COLUMNS
+     Responsive grid system
+     ============================================ */
+
+  --grid-cols-mobile: 4;
+  --grid-cols-tablet: 8;
+  --grid-cols-desktop: 12;
+}
+
+/* ============================================
+   USAGE EXAMPLES
+   ============================================ */
+
+/*
+  Example 1: Mobile-first (recommended)
+  --------------------------------------------
+  .component {
+    // Mobile styles (default)
+    padding: var(--spacing-sm);
+  }
+
+  @media (min-width: var(--breakpoint-md)) {
+    .component {
+      // Tablet and up
+      padding: var(--spacing-md);
+    }
+  }
+
+  @media (min-width: var(--breakpoint-lg)) {
+    .component {
+      // Desktop and up
+      padding: var(--spacing-lg);
+    }
+  }
+
+
+  Example 2: Desktop-first (legacy support)
+  --------------------------------------------
+  .component {
+    // Desktop styles (default)
+    padding: var(--spacing-lg);
+  }
+
+  @media (max-width: var(--breakpoint-lg-max)) {
+    .component {
+      // Tablet and below
+      padding: var(--spacing-md);
+    }
+  }
+
+  @media (max-width: var(--breakpoint-md-max)) {
+    .component {
+      // Mobile
+      padding: var(--spacing-sm);
+    }
+  }
+
+
+  Example 3: Tablet-only
+  --------------------------------------------
+  @media (min-width: var(--breakpoint-md)) and (max-width: var(--breakpoint-lg-max)) {
+    .component {
+      // Styles for tablets only (768px - 1023px)
+    }
+  }
+
+
+  Example 4: Responsive container
+  --------------------------------------------
+  .container {
+    width: 100%;
+    max-width: var(--container-xl);
+    margin: 0 auto;
+  }
+
+  @media (max-width: var(--breakpoint-lg-max)) {
+    .container {
+      max-width: var(--container-lg);
+    }
+  }
+
+  @media (max-width: var(--breakpoint-md-max)) {
+    .container {
+      max-width: var(--container-md);
+    }
+  }
+
+
+  Example 5: Responsive grid
+  --------------------------------------------
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-cols-mobile), 1fr);
+    gap: var(--spacing-md);
+  }
+
+  @media (min-width: var(--breakpoint-md)) {
+    .grid {
+      grid-template-columns: repeat(var(--grid-cols-tablet), 1fr);
+    }
+  }
+
+  @media (min-width: var(--breakpoint-lg)) {
+    .grid {
+      grid-template-columns: repeat(var(--grid-cols-desktop), 1fr);
+    }
+  }
+*/

@@ -411,14 +411,14 @@ Uses CSS variables for dynamic theming:
 ```css
 /* themes.css */
 :root {
-  --primary-color: #2563eb;
-  --background-color: #ffffff;
-  --text-color: #1f2937;
+  --primary-color: #4c7ce5;
+  --background-color: #f5f7fb;
+  --text-color: #0f172a;
 }
 
 [data-theme="dark"] {
-  --background-color: #1f2937;
-  --text-color: #f9fafb;
+  --background-color: #18233a;
+  --text-color: #f5f7fb;
 }
 ```
 
@@ -499,11 +499,11 @@ docker-compose up  # Start all containers
 
 ## 📚 Next Steps for New Developers
 
-1. **Read the Setup Guide** - [docs/development/SETUP_GUIDE.md](SETUP_GUIDE.md)
+1. **Read the Setup Guide** - [docs/getting-started/SETUP_GUIDE.md](SETUP_GUIDE.md)
 2. **Explore the Codebase** - Start with `frontend/src/App.jsx` and `backend/server.js`
 3. **Run the Tests** - `npm test` to see everything in action
 4. **Make a Small Change** - Try modifying a component's styling
-5. **Read Regression Prevention** - [docs/REGRESSION_PREVENTION.md](../REGRESSION_PREVENTION.md)
+5. **Read Regression Prevention** - [docs/troubleshooting/REGRESSION_PREVENTION.md](../REGRESSION_PREVENTION.md)
 
 ---
 

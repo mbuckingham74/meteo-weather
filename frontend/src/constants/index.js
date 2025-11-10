@@ -8,3 +8,4 @@
 
 export * from './weather';
 export * from './storage';
+export * from './themeColors';

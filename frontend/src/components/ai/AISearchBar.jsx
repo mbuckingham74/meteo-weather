@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from '../../contexts/LocationContext';
-import './AISearchBar.css';
+import styles from './AISearchBar.module.css';
 
 /**
  * AI Search Bar Component
@@ -36,61 +36,58 @@ function AISearchBar() {
   };
 
   return (
-    <div className={`ai-search-bar ${isExpanded ? 'expanded' : ''}`}>
+    <div className={`${styles.searchBar} ${isExpanded ? styles.expanded : ''}`}>
       {!isExpanded ? (
         // Collapsed state - attractive search bar
-        <button className="ai-search-prompt" onClick={handleExpand}>
-          <span className="ai-icon">🤖</span>
-          <span className="ai-prompt-text">
+        <button className={styles.prompt} onClick={handleExpand}>
+          <span className={styles.icon}>🤖</span>
+          <span className={styles.promptText}>
             Ask about weather in {location?.address || 'your location'}...
           </span>
-          <span className="ai-badge">AI</span>
+          <span className={styles.badge}>AI</span>
         </button>
       ) : (
         // Expanded state - full input with examples
-        <div className="ai-search-expanded">
-          <div className="ai-input-wrapper">
-            <span className="ai-icon">🤖</span>
+        <div className={styles.expandedView}>
+          <div className={styles.inputWrapper}>
+            <span className={styles.icon}>🤖</span>
             <input
               type="text"
-              className="ai-search-input"
+              className={styles.input}
               placeholder="Ask anything about weather..."
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
               onKeyPress={handleKeyPress}
               autoFocus
             />
-            <button className="ai-ask-button" onClick={handleAsk}>
+            <button className={styles.askButton} onClick={handleAsk}>
               Ask AI
             </button>
           </div>
 
-          <div className="ai-examples">
-            <span className="ai-examples-label">Try:</span>
+          <div className={styles.examples}>
+            <span className={styles.examplesLabel}>Try:</span>
             <button
-              className="ai-example-chip"
-              onClick={() => setQuestion("Will it rain this weekend?")}
+              className={styles.exampleChip}
+              onClick={() => setQuestion('Will it rain this weekend?')}
             >
               Will it rain this weekend?
             </button>
             <button
-              className="ai-example-chip"
+              className={styles.exampleChip}
               onClick={() => setQuestion("What's the warmest day this week?")}
             >
-              What's the warmest day?
+              What&apos;s the warmest day?
             </button>
             <button
-              className="ai-example-chip"
-              onClick={() => setQuestion("Should I bring an umbrella tomorrow?")}
+              className={styles.exampleChip}
+              onClick={() => setQuestion('Should I bring an umbrella tomorrow?')}
             >
               Need an umbrella tomorrow?
             </button>
           </div>
 
-          <button
-            className="ai-collapse-button"
-            onClick={() => setIsExpanded(false)}
-          >
+          <button className={styles.collapseButton} onClick={() => setIsExpanded(false)}>
             ✕
           </button>
         </div>

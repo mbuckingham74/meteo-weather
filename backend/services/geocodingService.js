@@ -18,17 +18,19 @@ function capitalizeAddress(address) {
   // Split by comma to handle each part separately
   return address
     .split(',')
-    .map(part => {
+    .map((part) => {
       // Trim whitespace
       part = part.trim();
 
       // Split by spaces and capitalize each word
       return part
         .split(' ')
-        .map(word => {
+        .map((word) => {
           // Handle special cases (abbreviations, etc.)
           const upper = word.toUpperCase();
-          if (['US', 'USA', 'UK', 'UAE', 'NSW', 'NY', 'CA', 'FL', 'TX', 'WA', 'DC'].includes(upper)) {
+          if (
+            ['US', 'USA', 'UK', 'UAE', 'NSW', 'NY', 'CA', 'FL', 'TX', 'WA', 'DC'].includes(upper)
+          ) {
             return upper;
           }
 
@@ -47,11 +49,11 @@ function capitalizeAddress(address) {
  * @param {number} limit - Maximum number of results (default: 5)
  * @returns {Promise<object>} Search results
  */
-async function searchLocations(query, limit = 5) {
+async function searchLocations(query, _limit = 5) {
   if (!query || query.trim().length < 2) {
     return {
       success: false,
-      error: 'Search query must be at least 2 characters'
+      error: 'Search query must be at least 2 characters',
     };
   }
 
@@ -64,9 +66,9 @@ async function searchLocations(query, limit = 5) {
         key: API_KEY,
         include: 'current',
         elements: 'temp', // Minimal data to reduce cost
-        contentType: 'json'
+        contentType: 'json',
       },
-      timeout: 5000
+      timeout: 5000,
     });
 
     if (response.data) {
@@ -77,19 +79,19 @@ async function searchLocations(query, limit = 5) {
         latitude: response.data.latitude,
         longitude: response.data.longitude,
         timezone: response.data.timezone,
-        tzOffset: response.data.tzoffset
+        tzOffset: response.data.tzoffset,
       };
 
       return {
         success: true,
         results: [result],
-        count: 1
+        count: 1,
       };
     }
 
     return {
       success: false,
-      error: 'No location found'
+      error: 'No location found',
     };
   } catch (error) {
     console.error('Geocoding error:', error.message);
@@ -98,13 +100,13 @@ async function searchLocations(query, limit = 5) {
       return {
         success: false,
         error: error.response.data?.message || 'Location not found',
-        statusCode: error.response.status
+        statusCode: error.response.status,
       };
     }
 
     return {
       success: false,
-      error: 'Failed to search location'
+      error: 'Failed to search location',
     };
   }
 }
@@ -123,12 +125,12 @@ async function reverseGeocodeNominatim(lat, lon) {
         lon,
         format: 'json',
         addressdetails: 1,
-        zoom: 10 // City level
+        zoom: 10, // City level
       },
       headers: {
-        'User-Agent': 'Meteo-Weather-App/1.0'
+        'User-Agent': 'Meteo-Weather-App/1.0',
       },
-      timeout: 5000
+      timeout: 5000,
     });
 
     if (response.data && response.data.address) {
@@ -148,7 +150,7 @@ async function reverseGeocodeNominatim(lat, lon) {
         console.log(`✅ Nominatim reverse geocoding successful: ${parts.join(', ')}`);
         return {
           address: parts.join(', '),
-          source: 'nominatim'
+          source: 'nominatim',
         };
       }
     }
@@ -171,7 +173,7 @@ async function reverseGeocode(lat, lon) {
   if (lat === undefined || lon === undefined) {
     return {
       success: false,
-      error: 'Latitude and longitude are required'
+      error: 'Latitude and longitude are required',
     };
   }
 
@@ -186,9 +188,9 @@ async function reverseGeocode(lat, lon) {
         key: API_KEY,
         include: 'current',
         elements: 'temp',
-        contentType: 'json'
+        contentType: 'json',
       },
-      timeout: 5000
+      timeout: 5000,
     });
 
     if (response.data) {
@@ -196,7 +198,9 @@ async function reverseGeocode(lat, lon) {
 
       // Check if the resolved address is a placeholder or generic name
       // These indicate the API doesn't have proper address data
-      const isPlaceholder = /^(old location|location|unknown|coordinates?|unnamed)$/i.test(resolvedAddress.trim());
+      const isPlaceholder = /^(old location|location|unknown|coordinates?|unnamed)$/i.test(
+        resolvedAddress.trim()
+      );
 
       // Prefer Nominatim result if Visual Crossing returned a placeholder
       let finalAddress;
@@ -209,7 +213,9 @@ async function reverseGeocode(lat, lon) {
       } else {
         // Visual Crossing returned a good address, but prefer Nominatim if available
         // as it's more reliable for city names
-        finalAddress = nominatimResult ? nominatimResult.address : capitalizeAddress(resolvedAddress);
+        finalAddress = nominatimResult
+          ? nominatimResult.address
+          : capitalizeAddress(resolvedAddress);
         if (nominatimResult) {
           console.log(`🌍 Using Nominatim address (more reliable)`);
         }
@@ -222,14 +228,14 @@ async function reverseGeocode(lat, lon) {
           latitude: response.data.latitude,
           longitude: response.data.longitude,
           timezone: response.data.timezone,
-          tzOffset: response.data.tzoffset
-        }
+          tzOffset: response.data.tzoffset,
+        },
       };
     }
 
     return {
       success: false,
-      error: 'No location found for coordinates'
+      error: 'No location found for coordinates',
     };
   } catch (error) {
     console.error('Reverse geocoding error:', error.message);
@@ -244,8 +250,8 @@ async function reverseGeocode(lat, lon) {
           latitude: parseFloat(lat),
           longitude: parseFloat(lon),
           timezone: 'UTC', // Default timezone when VC fails
-          tzOffset: 0
-        }
+          tzOffset: 0,
+        },
       };
     }
 
@@ -259,14 +265,14 @@ async function reverseGeocode(lat, lon) {
           latitude: parseFloat(lat),
           longitude: parseFloat(lon),
           timezone: 'UTC',
-          tzOffset: 0
-        }
+          tzOffset: 0,
+        },
       };
     }
 
     return {
       success: false,
-      error: 'Failed to reverse geocode coordinates'
+      error: 'Failed to reverse geocode coordinates',
     };
   }
 }
@@ -280,16 +286,16 @@ function getPopularLocations() {
     success: true,
     locations: [
       { address: 'London, England, United Kingdom', latitude: 51.5074, longitude: -0.1278 },
-      { address: 'New York, NY, United States', latitude: 40.7128, longitude: -74.0060 },
+      { address: 'New York, NY, United States', latitude: 40.7128, longitude: -74.006 },
       { address: 'Paris, Île-de-France, France', latitude: 48.8566, longitude: 2.3522 },
       { address: 'Tokyo, Japan', latitude: 35.6762, longitude: 139.6503 },
       { address: 'Sydney, NSW, Australia', latitude: -33.8688, longitude: 151.2093 },
       { address: 'Dubai, United Arab Emirates', latitude: 25.2048, longitude: 55.2708 },
       { address: 'Singapore', latitude: 1.3521, longitude: 103.8198 },
       { address: 'Los Angeles, CA, United States', latitude: 34.0522, longitude: -118.2437 },
-      { address: 'Berlin, Germany', latitude: 52.5200, longitude: 13.4050 },
-      { address: 'Mumbai, Maharashtra, India', latitude: 19.0760, longitude: 72.8777 }
-    ]
+      { address: 'Berlin, Germany', latitude: 52.52, longitude: 13.405 },
+      { address: 'Mumbai, Maharashtra, India', latitude: 19.076, longitude: 72.8777 },
+    ],
   };
 }
 
@@ -297,5 +303,5 @@ module.exports = {
   searchLocations,
   reverseGeocode,
   reverseGeocodeNominatim,
-  getPopularLocations
+  getPopularLocations,
 };

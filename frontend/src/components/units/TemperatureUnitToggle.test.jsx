@@ -58,7 +58,7 @@ describe('TemperatureUnitToggle Component', () => {
         toggleUnit: mockToggleUnit,
       });
 
-      const { container } = render(<TemperatureUnitToggle />);
+      const { container: _container } = render(<TemperatureUnitToggle />);
 
       const celsiusSpan = screen.getByText('°C');
       const fahrenheitSpan = screen.getByText('°F');

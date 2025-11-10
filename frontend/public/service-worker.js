@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-globals */
 /**
  * Meteo Weather - Service Worker
  * Provides offline support, caching strategies, and background sync
@@ -23,7 +22,7 @@ const STATIC_ASSETS = [
   '/favicon.ico',
   '/logo192.png',
   '/logo512.png',
-  '/offline.html'
+  '/offline.html',
 ];
 
 // Maximum cache sizes
@@ -42,11 +41,13 @@ self.addEventListener('install', (event) => {
   console.log('[SW] Installing service worker...', CACHE_VERSION);
 
   event.waitUntil(
-    caches.open(STATIC_CACHE)
+    caches
+      .open(STATIC_CACHE)
       .then((cache) => {
         console.log('[SW] Caching static assets');
         // Don't fail if some assets are missing
-        return cache.addAll(STATIC_ASSETS.filter(url => url !== '/offline.html'))
+        return cache
+          .addAll(STATIC_ASSETS.filter((url) => url !== '/offline.html'))
           .catch((error) => {
             console.warn('[SW] Failed to cache some static assets:', error);
           });
@@ -67,14 +68,19 @@ self.addEventListener('activate', (event) => {
   console.log('[SW] Activating service worker...', CACHE_VERSION);
 
   event.waitUntil(
-    caches.keys()
+    caches
+      .keys()
       .then((cacheNames) => {
         return Promise.all(
           cacheNames
             .filter((cacheName) => {
               // Delete old versions of our caches
-              return cacheName.startsWith('meteo-') && cacheName !== STATIC_CACHE &&
-                     cacheName !== DYNAMIC_CACHE && cacheName !== API_CACHE;
+              return (
+                cacheName.startsWith('meteo-') &&
+                cacheName !== STATIC_CACHE &&
+                cacheName !== DYNAMIC_CACHE &&
+                cacheName !== API_CACHE
+              );
             })
             .map((cacheName) => {
               console.log('[SW] Deleting old cache:', cacheName);
@@ -115,18 +121,22 @@ self.addEventListener('fetch', (event) => {
   }
 
   // Weather API requests (external): Stale-while-revalidate
-  if (url.hostname.includes('visualcrossing.com') ||
-      url.hostname.includes('openweathermap.org') ||
-      url.hostname.includes('api.openweathermap.org')) {
+  if (
+    url.hostname.includes('visualcrossing.com') ||
+    url.hostname.includes('openweathermap.org') ||
+    url.hostname.includes('api.openweathermap.org')
+  ) {
     event.respondWith(staleWhileRevalidateStrategy(request));
     return;
   }
 
   // Static assets: Cache-first
-  if (request.destination === 'style' ||
-      request.destination === 'script' ||
-      request.destination === 'image' ||
-      request.destination === 'font') {
+  if (
+    request.destination === 'style' ||
+    request.destination === 'script' ||
+    request.destination === 'image' ||
+    request.destination === 'font'
+  ) {
     event.respondWith(cacheFirstStrategy(request));
     return;
   }
@@ -196,7 +206,7 @@ async function networkFirstStrategy(request, isNavigation = false) {
       const cachedResponse = new Response(await responseToCache.blob(), {
         status: responseToCache.status,
         statusText: responseToCache.statusText,
-        headers: headers
+        headers: headers,
       });
 
       cache.put(request, cachedResponse);
@@ -218,7 +228,9 @@ async function networkFirstStrategy(request, isNavigation = false) {
       const cachedAt = cachedResponse.headers.get('sw-cached-at');
       if (cachedAt) {
         const age = Date.now() - parseInt(cachedAt, 10);
-        const maxAge = request.url.includes('/api/weather') ? WEATHER_CACHE_DURATION : API_CACHE_DURATION;
+        const maxAge = request.url.includes('/api/weather')
+          ? WEATHER_CACHE_DURATION
+          : API_CACHE_DURATION;
 
         if (age > maxAge) {
           console.warn('[SW] Cached response is stale:', request.url);
@@ -315,14 +327,15 @@ async function syncWeatherData() {
     const keys = await cache.keys();
 
     // Update weather data for favorite locations
-    const weatherRequests = keys.filter(request =>
-      request.url.includes('/api/weather/current') ||
-      request.url.includes('/api/weather/forecast')
+    const weatherRequests = keys.filter(
+      (request) =>
+        request.url.includes('/api/weather/current') ||
+        request.url.includes('/api/weather/forecast')
     );
 
     await Promise.all(
-      weatherRequests.map(request =>
-        fetch(request).then(response => {
+      weatherRequests.map((request) =>
+        fetch(request).then((response) => {
           if (response && response.status === 200) {
             cache.put(request, response.clone());
           }
@@ -348,9 +361,7 @@ self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'CLEAR_CACHE') {
     event.waitUntil(
       caches.keys().then((cacheNames) => {
-        return Promise.all(
-          cacheNames.map((cacheName) => caches.delete(cacheName))
-        );
+        return Promise.all(cacheNames.map((cacheName) => caches.delete(cacheName)));
       })
     );
   }

@@ -1,0 +1,875 @@
+openapi: 3.0.3
+info:
+  title: Meteo Weather App API
+  version: 1.0.0
+  description: |
+    Complete REST API for Meteo Weather App - A self-hostable weather dashboard with AI features.
+
+    **Features:**
+    - Weather forecasts and current conditions
+    - Historical climate data analysis (10+ years)
+    - Air quality monitoring
+    - AI-powered weather questions and location finder
+    - User authentication and preferences
+    - Cloud-synced favorites
+
+    **Base URLs:**
+    - Development: `http://localhost:5001/api`
+    - Production: `https://api.meteo-beta.tachyonfuture.com/api`
+
+    **Authentication:**
+    Most endpoints require JWT authentication. Include the access token in the Authorization header:
+    ```
+    Authorization: Bearer <your_access_token>
+    ```
+
+    **Rate Limiting:**
+    - General API: 100 requests per 15 minutes per IP
+    - Authentication: 5 requests per 15 minutes per IP
+    - AI endpoints: 10 requests per hour per user
+  contact:
+    name: Michael Buckingham
+    email: michael.buckingham74@gmail.com
+    url: https://github.com/mbuckingham74/meteo-weather
+  license:
+    name: MIT
+    url: https://github.com/mbuckingham74/meteo-weather/blob/main/LICENSE
+
+servers:
+  - url: http://localhost:5001/api
+    description: Development server
+  - url: https://api.meteo-beta.tachyonfuture.com/api
+    description: Production server
+
+tags:
+  - name: Authentication
+    description: User registration, login, and profile management
+  - name: Weather
+    description: Current weather, forecasts, and alerts
+  - name: Climate
+    description: Historical climate data and analysis
+  - name: Locations
+    description: Location search and geocoding
+  - name: Air Quality
+    description: Air quality index (AQI) and pollutants
+  - name: AI Features
+    description: AI-powered weather questions and location finder
+  - name: User Preferences
+    description: User settings and notifications
+  - name: Favorites
+    description: Saved locations management
+  - name: Cache
+    description: Cache management and statistics
+
+paths:
+  # ============================================================================
+  # AUTHENTICATION
+  # ============================================================================
+
+  /auth/register:
+    post:
+      tags: [Authentication]
+      summary: Register a new user
+      description: Create a new user account with email and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password, name]
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                password:
+                  type: string
+                  format: password
+                  minLength: 6
+                  example: password123
+                name:
+                  type: string
+                  minLength: 1
+                  example: John Doe
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /auth/login:
+    post:
+      tags: [Authentication]
+      summary: Login user
+      description: Authenticate user and receive JWT tokens
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                password:
+                  type: string
+                  format: password
+                  example: password123
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /auth/refresh:
+    post:
+      tags: [Authentication]
+      summary: Refresh access token
+      description: Get new access token using refresh token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [refreshToken]
+              properties:
+                refreshToken:
+                  type: string
+                  example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+      responses:
+        '200':
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                  refreshToken:
+                    type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/me:
+    get:
+      tags: [Authentication]
+      summary: Get current user
+      description: Get authenticated user's profile
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: User profile retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ============================================================================
+  # WEATHER
+  # ============================================================================
+
+  /weather/current/{location}:
+    get:
+      tags: [Weather]
+      summary: Get current weather
+      description: Get current weather conditions for a location
+      parameters:
+        - name: location
+          in: path
+          required: true
+          schema:
+            type: string
+          description: City name, coordinates, or address
+          example: Seattle,WA
+      responses:
+        '200':
+          description: Current weather retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentWeatherResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /weather/forecast/{location}:
+    get:
+      tags: [Weather]
+      summary: Get weather forecast
+      description: Get multi-day weather forecast
+      parameters:
+        - name: location
+          in: path
+          required: true
+          schema:
+            type: string
+          example: Seattle,WA
+        - name: days
+          in: query
+          schema:
+            type: integer
+            enum: [3, 7, 14]
+            default: 7
+          description: Number of forecast days
+      responses:
+        '200':
+          description: Forecast retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForecastResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /weather/hourly/{location}:
+    get:
+      tags: [Weather]
+      summary: Get hourly forecast
+      description: Get hourly weather forecast
+      parameters:
+        - name: location
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: hours
+          in: query
+          schema:
+            type: integer
+            default: 48
+            maximum: 240
+      responses:
+        '200':
+          description: Hourly forecast retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  location:
+                    $ref: '#/components/schemas/Location'
+                  hours:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HourlyWeather'
+
+  # ============================================================================
+  # LOCATIONS
+  # ============================================================================
+
+  /locations/geocode:
+    get:
+      tags: [Locations]
+      summary: Search locations
+      description: Search for locations by name (autocomplete)
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Search query
+          example: Seattle
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 5
+            maximum: 20
+      responses:
+        '200':
+          description: Locations found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Location'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /locations/reverse:
+    get:
+      tags: [Locations]
+      summary: Reverse geocode
+      description: Convert coordinates to location name
+      parameters:
+        - name: lat
+          in: query
+          required: true
+          schema:
+            type: number
+            format: double
+          example: 47.6062
+        - name: lon
+          in: query
+          required: true
+          schema:
+            type: number
+            format: double
+          example: -122.3321
+      responses:
+        '200':
+          description: Location found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  location:
+                    $ref: '#/components/schemas/Location'
+
+  # ============================================================================
+  # AIR QUALITY
+  # ============================================================================
+
+  /air-quality:
+    get:
+      tags: [Air Quality]
+      summary: Get air quality
+      description: Get air quality data for coordinates
+      parameters:
+        - name: lat
+          in: query
+          required: true
+          schema:
+            type: number
+            format: double
+        - name: lon
+          in: query
+          required: true
+          schema:
+            type: number
+            format: double
+        - name: days
+          in: query
+          schema:
+            type: integer
+            default: 5
+            maximum: 5
+      responses:
+        '200':
+          description: Air quality data retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AirQualityResponse'
+
+  # ============================================================================
+  # AI FEATURES
+  # ============================================================================
+
+  /ai-weather/validate:
+    post:
+      tags: [AI Features]
+      summary: Validate weather query
+      description: Quick validation to check if query is weather-related
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [query, location]
+              properties:
+                query:
+                  type: string
+                  example: Will it rain today?
+                location:
+                  type: string
+                  example: Seattle, WA
+      responses:
+        '200':
+          description: Validation complete
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isValid:
+                    type: boolean
+                  reason:
+                    type: string
+                  tokensUsed:
+                    type: integer
+
+  /ai-weather/analyze:
+    post:
+      tags: [AI Features]
+      summary: Analyze weather question
+      description: Full AI analysis of weather question (costs ~$0.005-0.01)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [query, location]
+              properties:
+                query:
+                  type: string
+                  example: Will it rain this weekend?
+                location:
+                  type: string
+                  example: Seattle, WA
+                days:
+                  type: integer
+                  default: 7
+      responses:
+        '200':
+          description: Analysis complete
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AIWeatherAnalysis'
+        '408':
+          description: Request timeout
+
+  # ============================================================================
+  # USER PREFERENCES
+  # ============================================================================
+
+  /user/preferences:
+    get:
+      tags: [User Preferences]
+      summary: Get user preferences
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Preferences retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  preferences:
+                    $ref: '#/components/schemas/UserPreferences'
+
+    put:
+      tags: [User Preferences]
+      summary: Update user preferences
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserPreferences'
+      responses:
+        '200':
+          description: Preferences updated
+
+  # ============================================================================
+  # FAVORITES
+  # ============================================================================
+
+  /user/favorites:
+    get:
+      tags: [Favorites]
+      summary: Get favorites
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Favorites retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  favorites:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Favorite'
+
+    post:
+      tags: [Favorites]
+      summary: Add favorite
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [location_name, latitude, longitude]
+              properties:
+                location_name:
+                  type: string
+                latitude:
+                  type: number
+                longitude:
+                  type: number
+                address:
+                  type: string
+                timezone:
+                  type: string
+      responses:
+        '201':
+          description: Favorite added
+
+  /user/favorites/{id}:
+    delete:
+      tags: [Favorites]
+      summary: Remove favorite
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Favorite removed
+
+# ============================================================================
+# COMPONENTS
+# ============================================================================
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT access token obtained from /auth/login or /auth/register
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    AuthResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        user:
+          $ref: '#/components/schemas/User'
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+
+    Location:
+      type: object
+      properties:
+        address:
+          type: string
+          example: Seattle, WA, United States
+        latitude:
+          type: number
+          format: double
+          example: 47.6062
+        longitude:
+          type: number
+          format: double
+          example: -122.3321
+        timezone:
+          type: string
+          example: America/Los_Angeles
+
+    CurrentWeatherResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        location:
+          $ref: '#/components/schemas/Location'
+        currentConditions:
+          $ref: '#/components/schemas/WeatherConditions'
+        cacheStatus:
+          type: string
+          enum: [hit, miss]
+        queryCost:
+          type: integer
+
+    WeatherConditions:
+      type: object
+      properties:
+        datetime:
+          type: string
+          format: date-time
+        temp:
+          type: number
+          format: float
+        feelslike:
+          type: number
+          format: float
+        humidity:
+          type: integer
+        precip:
+          type: number
+        precipprob:
+          type: integer
+        windspeed:
+          type: number
+        winddir:
+          type: integer
+        cloudcover:
+          type: integer
+        uvindex:
+          type: integer
+        conditions:
+          type: string
+        icon:
+          type: string
+
+    ForecastResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        location:
+          $ref: '#/components/schemas/Location'
+        days:
+          type: array
+          items:
+            $ref: '#/components/schemas/DailyForecast'
+
+    DailyForecast:
+      type: object
+      properties:
+        datetime:
+          type: string
+          format: date
+        tempmax:
+          type: number
+        tempmin:
+          type: number
+        temp:
+          type: number
+        humidity:
+          type: integer
+        precip:
+          type: number
+        precipprob:
+          type: integer
+        windspeed:
+          type: number
+        conditions:
+          type: string
+
+    HourlyWeather:
+      type: object
+      properties:
+        datetime:
+          type: string
+          format: date-time
+        temp:
+          type: number
+        precip:
+          type: number
+        precipprob:
+          type: integer
+        windspeed:
+          type: number
+        conditions:
+          type: string
+
+    AirQualityResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        location:
+          type: object
+          properties:
+            latitude:
+              type: number
+            longitude:
+              type: number
+        current:
+          type: object
+          properties:
+            us_aqi:
+              type: integer
+            european_aqi:
+              type: integer
+            pm2_5:
+              type: number
+            pm10:
+              type: number
+            aqi_level:
+              type: string
+              enum: [Good, Moderate, Unhealthy for Sensitive Groups, Unhealthy, Very Unhealthy, Hazardous]
+
+    AIWeatherAnalysis:
+      type: object
+      properties:
+        answer:
+          type: string
+        confidence:
+          type: string
+          enum: [high, medium, low]
+        tokensUsed:
+          type: integer
+        cost:
+          type: string
+        weatherData:
+          type: object
+
+    UserPreferences:
+      type: object
+      properties:
+        temperature_unit:
+          type: string
+          enum: [celsius, fahrenheit]
+        default_forecast_days:
+          type: integer
+          enum: [3, 7, 14]
+        theme:
+          type: string
+          enum: [light, dark, auto]
+        language:
+          type: string
+          default: en
+
+    Favorite:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: integer
+        location_name:
+          type: string
+        latitude:
+          type: number
+        longitude:
+          type: number
+        address:
+          type: string
+        timezone:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+        code:
+          type: string
+        details:
+          type: object
+
+  responses:
+    BadRequest:
+      description: Bad request - Invalid input
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            success: false
+            error: Invalid request parameters
+            code: INVALID_REQUEST
+
+    Unauthorized:
+      description: Unauthorized - Invalid or missing token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            success: false
+            error: Authentication required
+            code: UNAUTHORIZED
+
+    NotFound:
+      description: Not found - Resource does not exist
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            success: false
+            error: Resource not found
+            code: NOT_FOUND
+
+    Conflict:
+      description: Conflict - Resource already exists
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            success: false
+            error: Resource already exists
+            code: CONFLICT
+
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            success: false
+            error: Internal server error
+            code: INTERNAL_ERROR

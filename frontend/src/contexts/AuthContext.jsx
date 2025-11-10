@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import { createContext, useState, useContext, useEffect } from 'react';
 import {
   loginUser as apiLoginUser,
   registerUser as apiRegisterUser,
@@ -152,6 +152,7 @@ export function AuthProvider({ children }) {
 
   const value = {
     user,
+    token: accessToken, // Alias for accessToken (used by AdminPanel)
     accessToken,
     refreshToken,
     loading,

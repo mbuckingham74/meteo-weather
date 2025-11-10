@@ -7,7 +7,7 @@ const Anthropic = require('@anthropic-ai/sdk');
 
 // Initialize Anthropic client
 const anthropic = new Anthropic({
-  apiKey: process.env.METEO_ANTHROPIC_API_KEY
+  apiKey: process.env.METEO_ANTHROPIC_API_KEY,
 });
 
 const MODEL = 'claude-sonnet-4-5-20250929';
@@ -18,9 +18,8 @@ const MODEL = 'claude-sonnet-4-5-20250929';
  * @param {Object} weatherData - Current weather context
  * @returns {Array} Suggested visualization objects
  */
-function detectVisualizationIntent(query, weatherData) {
+function detectVisualizationIntent(query, _weatherData) {
   const suggestions = [];
-  const queryLower = query.toLowerCase();
 
   // Rain/Precipitation queries
   if (/\b(rain|rainy|raining|precipitation|drizzle|shower|storm|wet|umbrella)\b/i.test(query)) {
@@ -28,7 +27,7 @@ function detectVisualizationIntent(query, weatherData) {
       type: 'radar',
       priority: 1,
       reason: 'Shows current precipitation activity in your area',
-      component: 'RadarMap'
+      component: 'RadarMap',
     });
 
     // Check if asking about today/specific date
@@ -45,8 +44,8 @@ function detectVisualizationIntent(query, weatherData) {
         component: 'HistoricalRainTable',
         params: {
           date: `${month}-${day}`,
-          years: 25
-        }
+          years: 25,
+        },
       });
     }
   }
@@ -57,7 +56,7 @@ function detectVisualizationIntent(query, weatherData) {
       type: 'chart-temperature',
       priority: 1,
       reason: 'Temperature trends and forecast',
-      component: 'TemperatureBandChart'
+      component: 'TemperatureBandChart',
     });
   }
 
@@ -67,7 +66,7 @@ function detectVisualizationIntent(query, weatherData) {
       type: 'chart-wind',
       priority: 1,
       reason: 'Wind speed and direction patterns',
-      component: 'WindChart'
+      component: 'WindChart',
     });
   }
 
@@ -77,7 +76,7 @@ function detectVisualizationIntent(query, weatherData) {
       type: 'chart-hourly',
       priority: 1,
       reason: '48-hour detailed forecast',
-      component: 'HourlyForecastChart'
+      component: 'HourlyForecastChart',
     });
   }
 
@@ -92,48 +91,47 @@ function detectVisualizationIntent(query, weatherData) {
  * @param {Object} weatherData - Weather context
  * @returns {Array} Array of follow-up question strings
  */
-function generateFollowUpQuestions(query, visualizations, weatherData) {
+function generateFollowUpQuestions(query, _visualizations, _weatherData) {
   const followUps = [];
-  const queryLower = query.toLowerCase();
 
   // Rain/Precipitation follow-ups
   if (/\b(rain|rainy|precipitation|umbrella)\b/i.test(query)) {
     if (/\b(today|tonight)\b/i.test(query)) {
-      followUps.push("How does today compare to historical averages?");
+      followUps.push('How does today compare to historical averages?');
       followUps.push("What's the hourly rain forecast?");
-      followUps.push("Is this typical for this time of year?");
+      followUps.push('Is this typical for this time of year?');
     } else if (/\b(weekend|week)\b/i.test(query)) {
-      followUps.push("Will it rain today?");
+      followUps.push('Will it rain today?');
       followUps.push("What's the total rainfall expected this week?");
-      followUps.push("Which day will be the driest?");
+      followUps.push('Which day will be the driest?');
     }
   }
 
   // Temperature follow-ups
   if (/\b(temperature|temp|hot|cold|warm|cool)\b/i.test(query)) {
-    followUps.push("How windy will it be?");
+    followUps.push('How windy will it be?');
     followUps.push("What's the UV index forecast?");
-    followUps.push("Will it rain this week?");
+    followUps.push('Will it rain this week?');
   }
 
   // Wind follow-ups
   if (/\b(wind|windy|gust)\b/i.test(query)) {
     followUps.push("What's the temperature trend?");
-    followUps.push("Is it a good day for outdoor activities?");
-    followUps.push("How humid will it be?");
+    followUps.push('Is it a good day for outdoor activities?');
+    followUps.push('How humid will it be?');
   }
 
   // Forecast/Planning follow-ups
   if (/\b(forecast|outlook|week|weekend)\b/i.test(query)) {
     followUps.push("What's the best day for outdoor plans?");
-    followUps.push("Will temperatures stay consistent?");
-    followUps.push("Any chance of storms?");
+    followUps.push('Will temperatures stay consistent?');
+    followUps.push('Any chance of storms?');
   }
 
   // General follow-ups if nothing specific matched
   if (followUps.length === 0) {
     followUps.push("What's the 48-hour forecast?");
-    followUps.push("How does today compare historically?");
+    followUps.push('How does today compare historically?');
     followUps.push("What's the temperature trend this week?");
   }
 
@@ -171,10 +169,12 @@ Respond with ONLY a JSON object: { "isValid": true/false, "reason": "brief expla
       model: MODEL,
       max_tokens: 200,
       system: systemPrompt,
-      messages: [{
-        role: 'user',
-        content: `Query: "${query}"\n\nWeather context: ${weatherData.location.address}, Current: ${weatherData.current.conditions}, ${weatherData.current.temperature}°C`
-      }]
+      messages: [
+        {
+          role: 'user',
+          content: `Query: "${query}"\n\nWeather context: ${weatherData.location.address}, Current: ${weatherData.current.conditions}, ${weatherData.current.temperature}°C`,
+        },
+      ],
     });
 
     const responseText = message.content[0].text.trim();
@@ -192,7 +192,7 @@ Respond with ONLY a JSON object: { "isValid": true/false, "reason": "brief expla
     return {
       isValid: result.isValid === true,
       reason: result.reason || 'Unknown',
-      tokensUsed: message.usage.input_tokens + message.usage.output_tokens
+      tokensUsed: message.usage.input_tokens + message.usage.output_tokens,
     };
   } catch (error) {
     console.error('Error validating weather query:', error);
@@ -220,7 +220,7 @@ Guidelines:
 - If data is insufficient, say so clearly
 - Focus on actionable insights
 - Use the user's preferred temperature unit
-${suggestedVisualizations.length > 0 ? `\n- Note: Interactive visualizations will be displayed below your answer: ${suggestedVisualizations.map(v => v.component).join(', ')}. You can reference them naturally (e.g., "Check the radar map below for current precipitation...")` : ''}
+${suggestedVisualizations.length > 0 ? `\n- Note: Interactive visualizations will be displayed below your answer: ${suggestedVisualizations.map((v) => v.component).join(', ')}. You can reference them naturally (e.g., "Check the radar map below for current precipitation...")` : ''}
 
 Weather Data Available:
 ${JSON.stringify(weatherData, null, 2)}`;
@@ -230,16 +230,22 @@ ${JSON.stringify(weatherData, null, 2)}`;
       model: MODEL,
       max_tokens: 500,
       system: systemPrompt,
-      messages: [{
-        role: 'user',
-        content: query
-      }]
+      messages: [
+        {
+          role: 'user',
+          content: query,
+        },
+      ],
     });
 
     const answer = message.content[0].text.trim();
 
     // Generate contextual follow-up questions
-    const followUpQuestions = generateFollowUpQuestions(query, suggestedVisualizations, weatherData);
+    const followUpQuestions = generateFollowUpQuestions(
+      query,
+      suggestedVisualizations,
+      weatherData
+    );
 
     return {
       answer,
@@ -247,7 +253,7 @@ ${JSON.stringify(weatherData, null, 2)}`;
       tokensUsed: message.usage.input_tokens + message.usage.output_tokens,
       model: MODEL,
       suggestedVisualizations, // Return visualization suggestions
-      followUpQuestions // NEW: Return follow-up questions
+      followUpQuestions, // NEW: Return follow-up questions
     };
   } catch (error) {
     console.error('Error analyzing weather question:', error);
@@ -260,5 +266,5 @@ module.exports = {
   analyzeWeatherQuestion,
   // Exported for testing
   detectVisualizationIntent,
-  generateFollowUpQuestions
+  generateFollowUpQuestions,
 };

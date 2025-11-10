@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useLocation } from '../../contexts/LocationContext';
 import { useTemperatureUnit } from '../../contexts/TemperatureUnitContext';
 import { geocodeLocation } from '../../services/weatherApi';
@@ -7,7 +7,7 @@ import HistoricalRainTable from '../weather/HistoricalRainTable';
 import TemperatureBandChart from '../charts/TemperatureBandChart';
 import WindChart from '../charts/WindChart';
 import HourlyForecastChart from '../charts/HourlyForecastChart';
-import { ChartSkeleton, TableSkeleton, MapSkeleton } from '../common/Skeleton';
+import ChartSkeleton from '../common/ChartSkeleton';
 import { addToAIHistory } from '../../utils/aiHistoryStorage';
 import API_CONFIG from '../../config/api';
 import './UniversalSearchBar.css';
@@ -35,7 +35,7 @@ function UniversalSearchBar() {
     temperature: false,
     wind: false,
     radar: false,
-    historical: false
+    historical: false,
   });
 
   // Get current city for dynamic queries
@@ -51,14 +51,36 @@ function UniversalSearchBar() {
     if (text.includes('?')) return true;
 
     // Question words
-    const questionWords = ['what', 'where', 'when', 'why', 'how', 'should', 'will', 'can', 'is', 'are'];
-    if (questionWords.some(word => text.startsWith(word + ' ') || text.includes(' ' + word + ' '))) {
+    const questionWords = [
+      'what',
+      'where',
+      'when',
+      'why',
+      'how',
+      'should',
+      'will',
+      'can',
+      'is',
+      'are',
+    ];
+    if (
+      questionWords.some((word) => text.startsWith(word + ' ') || text.includes(' ' + word + ' '))
+    ) {
       return true;
     }
 
     // Comparative/analytical words
-    const analyticalWords = ['similar', 'like', 'warmer', 'cooler', 'better', 'compare', 'than', 'climate'];
-    if (analyticalWords.some(word => text.includes(word))) {
+    const analyticalWords = [
+      'similar',
+      'like',
+      'warmer',
+      'cooler',
+      'better',
+      'compare',
+      'than',
+      'climate',
+    ];
+    if (analyticalWords.some((word) => text.includes(word))) {
       return true;
     }
 
@@ -83,7 +105,7 @@ function UniversalSearchBar() {
         setQuery(''); // Clear input on success
       } else {
         // No results - could show error or fallback to AI
-        console.log('No location found, consider AI fallback');
+        console.warn('No location found, consider AI fallback');
       }
     } catch (error) {
       console.error('Location search error:', error);
@@ -110,14 +132,14 @@ function UniversalSearchBar() {
         temperature: false,
         wind: false,
         radar: false,
-        historical: false
+        historical: false,
       });
 
       // Step 1: Validate query
       const validateRes = await fetch(`${API_BASE_URL}/ai-weather/validate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: question, location })
+        body: JSON.stringify({ query: question, location }),
       });
 
       const validateData = await validateRes.json();
@@ -139,8 +161,8 @@ function UniversalSearchBar() {
         body: JSON.stringify({
           query: question,
           location,
-          days: 7
-        })
+          days: 7,
+        }),
       });
 
       const analyzeData = await analyzeRes.json();
@@ -158,7 +180,7 @@ function UniversalSearchBar() {
         model: analyzeData.model,
         weatherData: analyzeData.weatherData,
         visualizations: analyzeData.visualizations || [],
-        followUpQuestions: analyzeData.followUpQuestions || []
+        followUpQuestions: analyzeData.followUpQuestions || [],
       });
 
       // Save to history
@@ -169,7 +191,7 @@ function UniversalSearchBar() {
         confidence: analyzeData.confidence,
         tokensUsed: analyzeData.tokensUsed,
         visualizations: analyzeData.visualizations,
-        followUpQuestions: analyzeData.followUpQuestions
+        followUpQuestions: analyzeData.followUpQuestions,
       });
 
       setQuery(''); // Clear input on success
@@ -245,7 +267,9 @@ function UniversalSearchBar() {
         </button>
         <button
           className="universal-example-chip analysis"
-          onClick={() => setQuery(`What are the rainiest months in ${currentCity} based on historical data?`)}
+          onClick={() =>
+            setQuery(`What are the rainiest months in ${currentCity} based on historical data?`)
+          }
           title="Historical data analysis"
         >
           📊 Show me the rainiest months
@@ -312,7 +336,10 @@ function UniversalSearchBar() {
                 const loaded = visualizationsLoaded[viz.type];
 
                 return (
-                  <div key={index} className={`visualization-card ${loaded ? 'loaded' : 'loading'}`}>
+                  <div
+                    key={index}
+                    className={`visualization-card ${loaded ? 'loaded' : 'loading'}`}
+                  >
                     {viz.type === 'hourly_forecast' && (
                       <>
                         {!loaded && <ChartSkeleton height={400} />}
@@ -320,7 +347,9 @@ function UniversalSearchBar() {
                           <HourlyForecastChart
                             data={aiAnswer.weatherData?.hourly || []}
                             unit={unit}
-                            onLoad={() => setVisualizationsLoaded(prev => ({ ...prev, hourly: true }))}
+                            onLoad={() =>
+                              setVisualizationsLoaded((prev) => ({ ...prev, hourly: true }))
+                            }
                           />
                         </div>
                       </>
@@ -333,7 +362,9 @@ function UniversalSearchBar() {
                           <TemperatureBandChart
                             data={aiAnswer.weatherData?.forecast || []}
                             unit={unit}
-                            onLoad={() => setVisualizationsLoaded(prev => ({ ...prev, temperature: true }))}
+                            onLoad={() =>
+                              setVisualizationsLoaded((prev) => ({ ...prev, temperature: true }))
+                            }
                           />
                         </div>
                       </>
@@ -346,7 +377,9 @@ function UniversalSearchBar() {
                           <WindChart
                             data={aiAnswer.weatherData?.forecast || []}
                             unit={unit}
-                            onLoad={() => setVisualizationsLoaded(prev => ({ ...prev, wind: true }))}
+                            onLoad={() =>
+                              setVisualizationsLoaded((prev) => ({ ...prev, wind: true }))
+                            }
                           />
                         </div>
                       </>
@@ -354,11 +387,13 @@ function UniversalSearchBar() {
 
                     {viz.type === 'radar' && (
                       <>
-                        {!loaded && <MapSkeleton height={350} />}
+                        {!loaded && <ChartSkeleton height="350px" />}
                         <div style={{ display: loaded ? 'block' : 'none' }}>
                           <RadarMap
                             location={location}
-                            onLoad={() => setVisualizationsLoaded(prev => ({ ...prev, radar: true }))}
+                            onLoad={() =>
+                              setVisualizationsLoaded((prev) => ({ ...prev, radar: true }))
+                            }
                           />
                         </div>
                       </>
@@ -366,12 +401,14 @@ function UniversalSearchBar() {
 
                     {viz.type === 'historical' && (
                       <>
-                        {!loaded && <TableSkeleton rows={12} columns={4} height={500} />}
+                        {!loaded && <ChartSkeleton height="500px" />}
                         <div style={{ display: loaded ? 'block' : 'none' }}>
                           <HistoricalRainTable
                             location={location}
                             unit={unit}
-                            onLoad={() => setVisualizationsLoaded(prev => ({ ...prev, historical: true }))}
+                            onLoad={() =>
+                              setVisualizationsLoaded((prev) => ({ ...prev, historical: true }))
+                            }
                           />
                         </div>
                       </>

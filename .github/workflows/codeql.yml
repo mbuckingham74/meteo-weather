@@ -1,38 +1,54 @@
-name: "CodeQL Security Scan"
+name: CodeQL Security Analysis
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, develop ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, develop ]
   schedule:
+    # Run weekly on Mondays at midnight UTC
     - cron: '0 0 * * 1'
+  workflow_dispatch:
 
 jobs:
-    analyze:
-      name: Analyze
-      runs-on: ubuntu-latest
-      permissions:
-        actions: read
-        contents: read
-        security-events: write
+  analyze:
+    name: Analyze JavaScript/TypeScript
+    runs-on: ubuntu-latest
 
-      strategy:
-        fail-fast: false
-        matrix:
-          language: [ 'javascript' ]
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
 
-      steps:
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'javascript' ]
+
+    steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
+          queries: security-extended,security-and-quality
 
       - name: Autobuild
-        uses: github/codeql-action/autobuild@v2
+        uses: github/codeql-action/autobuild@v3
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{matrix.language}}"
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## 🔍 CodeQL Analysis Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Analyzed languages: JavaScript/TypeScript" >> $GITHUB_STEP_SUMMARY
+          echo "Queries: security-extended, security-and-quality" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Check the Security tab for detailed results" >> $GITHUB_STEP_SUMMARY

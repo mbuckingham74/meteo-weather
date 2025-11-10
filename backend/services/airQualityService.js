@@ -21,7 +21,7 @@ async function getAirQuality(latitude, longitude, days = 5) {
     return {
       success: false,
       error: 'Latitude and longitude are required',
-      statusCode: 400
+      statusCode: 400,
     };
   }
 
@@ -38,10 +38,12 @@ async function getAirQuality(latitude, longitude, days = 5) {
         const params = new URLSearchParams({
           latitude: latitude.toString(),
           longitude: longitude.toString(),
-          hourly: 'pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone,aerosol_optical_depth,dust,uv_index,uv_index_clear_sky',
-          current: 'european_aqi,us_aqi,pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone,dust',
+          hourly:
+            'pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone,aerosol_optical_depth,dust,uv_index,uv_index_clear_sky',
+          current:
+            'european_aqi,us_aqi,pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone,dust',
           forecast_days: Math.min(days, 5).toString(),
-          timezone: 'auto'
+          timezone: 'auto',
         });
 
         const url = `${AIR_QUALITY_API_URL}?${params.toString()}`;
@@ -50,22 +52,23 @@ async function getAirQuality(latitude, longitude, days = 5) {
         const response = await axios.get(url, {
           timeout: 10000,
           headers: {
-            'Accept': 'application/json'
-          }
+            Accept: 'application/json',
+          },
         });
 
         // Process and return data
         return {
           success: true,
-          data: processAirQualityData(response.data)
+          data: processAirQualityData(response.data),
         };
       } catch (error) {
         console.error('Open-Meteo Air Quality API Error:', error.message);
 
         return {
           success: false,
-          error: error.response?.data?.reason || error.message || 'Failed to fetch air quality data',
-          statusCode: error.response?.status || 500
+          error:
+            error.response?.data?.reason || error.message || 'Failed to fetch air quality data',
+          statusCode: error.response?.status || 500,
         };
       }
     },
@@ -84,11 +87,11 @@ function processAirQualityData(rawData) {
       latitude: rawData.latitude,
       longitude: rawData.longitude,
       timezone: rawData.timezone,
-      elevation: rawData.elevation
+      elevation: rawData.elevation,
     },
     current: null,
     hourly: [],
-    summary: null
+    summary: null,
   };
 
   // Process current conditions
@@ -106,7 +109,7 @@ function processAirQualityData(rawData) {
       ozone: current.ozone,
       dust: current.dust,
       aqiLevel: getAQILevel(current.us_aqi || current.european_aqi),
-      healthRecommendation: getHealthRecommendation(current.us_aqi || current.european_aqi)
+      healthRecommendation: getHealthRecommendation(current.us_aqi || current.european_aqi),
     };
   }
 
@@ -125,21 +128,21 @@ function processAirQualityData(rawData) {
         aerosol: hourly.aerosol_optical_depth?.[i],
         dust: hourly.dust?.[i],
         uvIndex: hourly.uv_index?.[i],
-        uvIndexClearSky: hourly.uv_index_clear_sky?.[i]
+        uvIndexClearSky: hourly.uv_index_clear_sky?.[i],
       });
     }
   }
 
   // Calculate summary statistics
   if (processed.hourly.length > 0) {
-    const pm25Values = processed.hourly.map(h => h.pm2_5).filter(v => v !== null);
-    const ozoneValues = processed.hourly.map(h => h.ozone).filter(v => v !== null);
+    const pm25Values = processed.hourly.map((h) => h.pm2_5).filter((v) => v !== null);
+    const ozoneValues = processed.hourly.map((h) => h.ozone).filter((v) => v !== null);
 
     processed.summary = {
       avgPM25: average(pm25Values),
       maxPM25: Math.max(...pm25Values),
       avgOzone: average(ozoneValues),
-      maxOzone: Math.max(...ozoneValues)
+      maxOzone: Math.max(...ozoneValues),
     };
   }
 
@@ -152,20 +155,50 @@ function processAirQualityData(rawData) {
  * @returns {object} AQI level information
  */
 function getAQILevel(aqi) {
-  if (!aqi) return { level: 'Unknown', color: '#9ca3af' };
+  if (!aqi) {
+    return {
+      level: 'Unknown',
+      color: 'var(--text-tertiary)',
+      description: 'Air quality data is unavailable',
+    };
+  }
 
   if (aqi <= 50) {
-    return { level: 'Good', color: '#10b981', description: 'Air quality is satisfactory' };
+    return {
+      level: 'Good',
+      color: 'var(--success-text)',
+      description: 'Air quality is satisfactory',
+    };
   } else if (aqi <= 100) {
-    return { level: 'Moderate', color: '#f59e0b', description: 'Acceptable for most people' };
+    return {
+      level: 'Moderate',
+      color: 'var(--warning-text)',
+      description: 'Acceptable for most people',
+    };
   } else if (aqi <= 150) {
-    return { level: 'Unhealthy for Sensitive Groups', color: '#f97316', description: 'Sensitive groups may experience effects' };
+    return {
+      level: 'Unhealthy for Sensitive Groups',
+      color: 'var(--alert-watch)',
+      description: 'Sensitive groups may experience effects',
+    };
   } else if (aqi <= 200) {
-    return { level: 'Unhealthy', color: '#ef4444', description: 'Everyone may begin to experience health effects' };
+    return {
+      level: 'Unhealthy',
+      color: 'var(--alert-warning)',
+      description: 'Everyone may begin to experience health effects',
+    };
   } else if (aqi <= 300) {
-    return { level: 'Very Unhealthy', color: '#a855f7', description: 'Health alert: everyone may experience serious effects' };
+    return {
+      level: 'Very Unhealthy',
+      color: 'var(--alert-critical)',
+      description: 'Health alert: everyone may experience serious effects',
+    };
   } else {
-    return { level: 'Hazardous', color: '#7c2d12', description: 'Health warnings of emergency conditions' };
+    return {
+      level: 'Hazardous',
+      color: 'var(--alert-critical)',
+      description: 'Health warnings of emergency conditions',
+    };
   }
 }
 
@@ -182,27 +215,27 @@ function getHealthRecommendation(aqi) {
   } else if (aqi <= 100) {
     return [
       'Air quality is acceptable for most people',
-      'Unusually sensitive people should consider reducing prolonged outdoor exertion'
+      'Unusually sensitive people should consider reducing prolonged outdoor exertion',
     ];
   } else if (aqi <= 150) {
     return [
       'Sensitive groups should reduce prolonged outdoor exertion',
-      'General public: No restrictions on outdoor activities'
+      'General public: No restrictions on outdoor activities',
     ];
   } else if (aqi <= 200) {
     return [
       'Everyone should reduce prolonged outdoor exertion',
-      'Sensitive groups should avoid prolonged outdoor exertion'
+      'Sensitive groups should avoid prolonged outdoor exertion',
     ];
   } else if (aqi <= 300) {
     return [
       'Everyone should avoid prolonged outdoor exertion',
-      'Sensitive groups should remain indoors and keep activity levels low'
+      'Sensitive groups should remain indoors and keep activity levels low',
     ];
   } else {
     return [
       'Everyone should avoid all outdoor exertion',
-      'Sensitive groups should remain indoors and avoid physical activities'
+      'Sensitive groups should remain indoors and avoid physical activities',
     ];
   }
 }
@@ -218,5 +251,5 @@ function average(values) {
 }
 
 module.exports = {
-  getAirQuality
+  getAirQuality,
 };

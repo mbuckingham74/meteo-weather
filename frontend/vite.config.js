@@ -6,6 +6,11 @@ import path from 'path';
 export default defineConfig({
   plugins: [react()],
 
+  // PostCSS configuration (includes PurgeCSS in production)
+  css: {
+    postcss: './postcss.config.cjs',
+  },
+
   // Path resolution
   resolve: {
     alias: {
@@ -33,6 +38,8 @@ export default defineConfig({
         secure: false,
       },
     },
+    // Enable SPA fallback for client-side routing
+    historyApiFallback: true,
   },
 
   // esbuild configuration for JSX in .js files
@@ -54,6 +61,9 @@ export default defineConfig({
   build: {
     outDir: 'build',
     sourcemap: true,
+    // Disable CSS code splitting to prevent FOUC (Flash of Unstyled Content)
+    // All CSS will be bundled into a single file that loads before JS
+    cssCodeSplit: false,
     rollupOptions: {
       output: {
         manualChunks: {
@@ -61,6 +71,13 @@ export default defineConfig({
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
           'chart-vendor': ['recharts'],
           'map-vendor': ['leaflet', 'react-leaflet'],
+        },
+        // Ensure CSS loads before JS to prevent FOUC
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name.endsWith('.css')) {
+            return 'assets/[name]-[hash][extname]';
+          }
+          return 'assets/[name]-[hash][extname]';
         },
       },
     },

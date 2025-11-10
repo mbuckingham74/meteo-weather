@@ -1,34 +1,38 @@
 name: Coverage Badge
 
 on:
-  push:
-    branches: [ main ]
+  workflow_run:
+    workflows: ["CI Pipeline"]
+    branches: [main]
+    types: [completed]
   workflow_dispatch:
 
 jobs:
   coverage-badge:
     name: Update Coverage Badge
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Use Node.js 20.x
-        uses: actions/setup-node@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: '20.x'
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
 
       - name: Install frontend dependencies
         run: |
           cd frontend
-          npm install
+          npm ci
 
       - name: Run tests with coverage
         run: |
           cd frontend
-          npm test -- --coverage --watchAll=false --collectCoverageFrom='src/**/*.{js,jsx}' --collectCoverageFrom='!src/**/*.test.{js,jsx}' --collectCoverageFrom='!src/index.js' --collectCoverageFrom='!src/reportWebVitals.js' --collectCoverageFrom='!src/setupTests.js'
+          npm run test:ci
         env:
           CI: true
 
@@ -41,7 +45,7 @@ jobs:
           echo "Coverage: $STATEMENTS%"
 
       - name: Create coverage badge
-        uses: schneegans/dynamic-badges-action@v1.6.0
+        uses: schneegans/dynamic-badges-action@v1.7.0
         with:
           auth: ${{ secrets.GIST_SECRET }}
           gistID: ${{ secrets.GIST_ID }}
@@ -49,5 +53,5 @@ jobs:
           label: coverage
           message: ${{ steps.coverage.outputs.statements }}%
           color: ${{ steps.coverage.outputs.statements >= 25 && 'green' || 'yellow' }}
-          namedLogo: jest
+          namedLogo: vitest
           logoColor: white

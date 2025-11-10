@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /**
  * Debug Logger Utility
  * Centralized logging for development with environment-aware behavior

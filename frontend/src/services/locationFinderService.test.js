@@ -83,9 +83,7 @@ describe('Location Finder Service', () => {
     });
 
     it('handles network errors', async () => {
-      global.fetch = jest.fn(() =>
-        Promise.reject(new Error('Network error'))
-      );
+      global.fetch = jest.fn(() => Promise.reject(new Error('Network error')));
 
       await expect(validateQuery('test query')).rejects.toThrow('Network error');
     });
@@ -94,7 +92,8 @@ describe('Location Finder Service', () => {
       global.fetch = jest.fn(() =>
         Promise.resolve({
           ok: true,
-          json: () => Promise.resolve({ success: true, isValid: true, reason: '', tokensUsed: 250 }),
+          json: () =>
+            Promise.resolve({ success: true, isValid: true, reason: '', tokensUsed: 250 }),
         })
       );
 
@@ -184,12 +183,13 @@ describe('Location Finder Service', () => {
       global.fetch = jest.fn(() =>
         Promise.resolve({
           ok: true,
-          json: () => Promise.resolve({
-            success: true,
-            criteria: {},
-            tokensUsed: 500,
-            cost: '$0.005',
-          }),
+          json: () =>
+            Promise.resolve({
+              success: true,
+              criteria: {},
+              tokensUsed: 500,
+              cost: '$0.005',
+            }),
         })
       );
 
@@ -212,19 +212,13 @@ describe('Location Finder Service', () => {
         })
       );
 
-      await expect(parseLocationQuery('test query')).rejects.toThrow(
-        'AI service unavailable'
-      );
+      await expect(parseLocationQuery('test query')).rejects.toThrow('AI service unavailable');
     });
 
     it('handles network errors', async () => {
-      global.fetch = jest.fn(() =>
-        Promise.reject(new Error('Connection timeout'))
-      );
+      global.fetch = jest.fn(() => Promise.reject(new Error('Connection timeout')));
 
-      await expect(parseLocationQuery('test query')).rejects.toThrow(
-        'Connection timeout'
-      );
+      await expect(parseLocationQuery('test query')).rejects.toThrow('Connection timeout');
     });
 
     it('extracts all climate criteria correctly', async () => {
@@ -271,16 +265,17 @@ describe('Location Finder Service', () => {
       global.fetch = jest.fn(() =>
         Promise.resolve({
           ok: true,
-          json: () => Promise.resolve({
-            success: true,
-            criteria: { current_location: null },
-            tokensUsed: 450,
-            cost: '$0.005',
-          }),
+          json: () =>
+            Promise.resolve({
+              success: true,
+              criteria: { current_location: null },
+              tokensUsed: 450,
+              cost: '$0.005',
+            }),
         })
       );
 
-      const result = await parseLocationQuery('I want somewhere cooler');
+      const _result = await parseLocationQuery('I want somewhere cooler');
 
       expect(global.fetch).toHaveBeenCalled();
       const callArgs = global.fetch.mock.calls[0][1];
@@ -294,12 +289,13 @@ describe('Location Finder Service', () => {
       global.fetch = jest.fn(() =>
         Promise.resolve({
           ok: true,
-          json: () => Promise.resolve({
-            success: true,
-            isValid: true,
-            reason: '',
-            tokensUsed: 250,
-          }),
+          json: () =>
+            Promise.resolve({
+              success: true,
+              isValid: true,
+              reason: '',
+              tokensUsed: 250,
+            }),
         })
       );
 
@@ -315,12 +311,13 @@ describe('Location Finder Service', () => {
       global.fetch = jest.fn(() =>
         Promise.resolve({
           ok: true,
-          json: () => Promise.resolve({
-            success: true,
-            criteria: {},
-            tokensUsed: 500,
-            cost: '$0.005',
-          }),
+          json: () =>
+            Promise.resolve({
+              success: true,
+              criteria: {},
+              tokensUsed: 500,
+              cost: '$0.005',
+            }),
         })
       );
 

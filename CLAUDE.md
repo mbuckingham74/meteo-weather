@@ -38,22 +38,170 @@
 
 ## 📚 Key Documentation (Read When Needed)
 
-### Architecture & Setup
-- **[README.md](README.md)** - Main overview, features, setup instructions
-- **[ARCHITECTURE.md](ARCHITECTURE.md)** - System architecture with Mermaid diagrams
-- **[docs/DEPLOYMENT_GUIDE_PRIVATE.md](docs/DEPLOYMENT_GUIDE_PRIVATE.md)** - Server-specific deployment info
+**📖 Documentation Hub:** [docs/README.md](docs/README.md) - Complete organized documentation with categories
+
+### Quick Links by Category
+
+**🚀 Getting Started:**
+- [README.md](README.md) - Main overview, features, setup instructions
+- [docs/getting-started/](docs/getting-started/) - Architecture, quickstart, developer onboarding
+
+**🚀 Deployment:**
+- [docs/deployment/](docs/deployment/) - Production deployment guides
+- [docs/deployment/DEPLOYMENT_GUIDE_PRIVATE.md](docs/deployment/DEPLOYMENT_GUIDE_PRIVATE.md) - Server-specific deployment info
+
+**🔐 Security:**
+- [docs/security/](docs/security/) - Security implementation & audits (Score: 9.4/10)
+- [docs/security/SECURITY_IMPLEMENTATION_SUMMARY.md](docs/security/SECURITY_IMPLEMENTATION_SUMMARY.md) - Latest security features
+- [docs/security/RATE_LIMITING_AND_SECURITY_AUDIT.md](docs/security/RATE_LIMITING_AND_SECURITY_AUDIT.md) - Full audit
+
+**♿ Accessibility:**
+- [docs/accessibility/](docs/accessibility/) - WCAG 2.1 Level AA compliance (Score: 8.5-9/10)
+- [docs/accessibility/AUDIT_SUMMARY.md](docs/accessibility/AUDIT_SUMMARY.md) - Quick reference (20 issues)
+- [docs/accessibility/PHASE1_COMPLETE.md](docs/accessibility/PHASE1_COMPLETE.md) - Level A implementation
+- [docs/accessibility/PHASE2_COMPLETE.md](docs/accessibility/PHASE2_COMPLETE.md) - Level AA implementation
+
+**⚙️ CI/CD:**
+- [docs/cicd/](docs/cicd/) - CI/CD pipeline docs (50-70% faster, 9 parallel jobs)
+- [docs/cicd/DEVELOPER_GUIDE.md](docs/cicd/DEVELOPER_GUIDE.md) - Complete pipeline guide
+- [docs/cicd/QUICK_REFERENCE.md](docs/cicd/QUICK_REFERENCE.md) - One-page cheat sheet
+
+**💾 Database:**
+- [docs/database/](docs/database/) - Database optimization (20-50x faster queries)
+- [docs/database/PERFORMANCE_FIX_NOV7.md](docs/database/PERFORMANCE_FIX_NOV7.md) - FULLTEXT index fix
+- [docs/database/OPTIMIZATION_COMPLETE.md](docs/database/OPTIMIZATION_COMPLETE.md) - All phases summary
+
+**🎨 UI/UX:**
+- [docs/ui-ux/](docs/ui-ux/) - Material Design 3 implementation (50-60% space reduction)
+- [docs/ui-ux/REDESIGN_SUMMARY.md](docs/ui-ux/REDESIGN_SUMMARY.md) - Unified Hero Card redesign
+- [docs/ui-ux/UI_OPTIMIZATION_SUMMARY.md](docs/ui-ux/UI_OPTIMIZATION_SUMMARY.md) - Material Design 3
+
+**🎨 CSS Architecture:**
+- [frontend/ITCSS_ARCHITECTURE.md](frontend/ITCSS_ARCHITECTURE.md) - ITCSS layer organization (Phases 2.1-2.3 complete)
+- [frontend/BEM_NAMING_CONVENTION.md](frontend/BEM_NAMING_CONVENTION.md) - BEM standard for new components (512 lines)
+- [frontend/BREAKPOINT_SYSTEM.md](frontend/BREAKPOINT_SYSTEM.md) - Responsive breakpoint system (600+ lines)
+- [frontend/DENSITY_SYSTEM.md](frontend/DENSITY_SYSTEM.md) - Density mode implementation
+- [frontend/CSS_PHASE1_COMPLETE.md](frontend/CSS_PHASE1_COMPLETE.md) - Phase 1 summary (CSS Modules, variables, scale)
+- [frontend/CSS_PHASE_2.2_COMPLETE.md](frontend/CSS_PHASE_2.2_COMPLETE.md) - BEM documentation phase
+- [frontend/CSS_PHASE_2.3_COMPLETE.md](frontend/CSS_PHASE_2.3_COMPLETE.md) - Breakpoint system phase
+- [frontend/CSS_PHASE_3.1_COMPLETE.md](frontend/CSS_PHASE_3.1_COMPLETE.md) - PurgeCSS integration phase (500+ lines)
+
+**⚠️ Troubleshooting:**
+- [docs/troubleshooting/](docs/troubleshooting/) - Common issues & solutions
+- [docs/troubleshooting/TROUBLESHOOTING.md](docs/troubleshooting/TROUBLESHOOTING.md) - Common issues and fixes
+- [docs/troubleshooting/REGRESSION_PREVENTION.md](docs/troubleshooting/REGRESSION_PREVENTION.md) - **CRITICAL:** "Old Location" bug prevention
+
+**💻 Development:**
+- [docs/development/](docs/development/) - Developer guides & tools
+- [docs/development/AGENTS.md](docs/development/AGENTS.md) - Repository guidelines
+- [docs/development/VITE_MIGRATION_GUIDE.md](docs/development/VITE_MIGRATION_GUIDE.md) - CRA to Vite migration
+- [docs/development/REFACTORING_SUMMARY.md](docs/development/REFACTORING_SUMMARY.md) - Code organization overhaul
+
+**🔧 Admin Panel:**
+- [docs/admin/](docs/admin/) - Admin panel documentation (system monitoring & management)
+- [docs/admin/README.md](docs/admin/README.md) - Documentation hub
+- [docs/admin/ADMIN_PANEL.md](docs/admin/ADMIN_PANEL.md) - Comprehensive guide (570 lines)
+- [docs/admin/QUICK_REFERENCE.md](docs/admin/QUICK_REFERENCE.md) - One-page cheat sheet (340 lines)
+- [docs/admin/IMPLEMENTATION_SUMMARY.md](docs/admin/IMPLEMENTATION_SUMMARY.md) - Technical details (890 lines)
 
 ### Recent Work (Nov 2025)
-- **[docs/REGRESSION_PREVENTION.md](docs/REGRESSION_PREVENTION.md)** - **CRITICAL:** Regression prevention for "Old Location" bug (Nov 6, 2025) - READ THIS BEFORE MODIFYING GEOLOCATION/WEATHER SERVICES
-- **[REDESIGN_SUMMARY.md](REDESIGN_SUMMARY.md)** - Unified Hero Card UI redesign (Nov 5, 2025)
-- **[REFACTORING_SUMMARY.md](REFACTORING_SUMMARY.md)** - Major code organization overhaul (Nov 5, 2025)
-- **[SECURITY_IMPLEMENTATION_SUMMARY.md](SECURITY_IMPLEMENTATION_SUMMARY.md)** - Latest security update (rate limiting, CORS, CSP)
-- **[docs/RATE_LIMITING_AND_SECURITY_AUDIT.md](docs/RATE_LIMITING_AND_SECURITY_AUDIT.md)** - Security audit & implementation
-- **[VITE_MIGRATION_GUIDE.md](VITE_MIGRATION_GUIDE.md)** - CRA to Vite migration (Nov 4, 2025)
 
-### Troubleshooting
-- **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Common issues and fixes
-- **[docs/BUILD_VALIDATION.md](docs/BUILD_VALIDATION.md)** - Build config validation
+- ✅ **JavaScript Bundle Optimization - Code Splitting** (Nov 8, 2025)
+  - **Implemented Route-Based Lazy Loading:** Added React.lazy() for all non-critical routes
+  - **Main Bundle Reduction:** 711.57 kB → 632.82 kB (-78.75 kB, -11% smaller)
+  - **Gzipped Reduction:** 196.35 kB → 176.93 kB (-19.42 kB, -10% smaller)
+  - **5 Lazy-Loaded Chunks:** AdminPanel (17.43 kB), AIWeatherPage (13.53 kB), UserPreferences (8.22 kB), AboutPage (6.50 kB), SharedAnswer (4.47 kB), LocationComparisonView
+  - **Suspense Boundaries:** Added loading fallback for smooth UX
+  - **Impact:** Faster initial page load, smaller downloads for 95% of users, better caching
+  - **Files Changed:** App.jsx (lazy imports + Suspense wrapper)
+  - **Status:** Deployed to production ✅
+
+- ✅ **Backend Documentation & Test Fixes** (Nov 8, 2025)
+  - **Created OLD_LOCATION_BUG_FIX.md:** Comprehensive 239-line documentation of Visual Crossing placeholder fix
+  - **Fixed Regression Test Path:** Updated test to correctly locate docs in project root (../../../docs vs ../../docs)
+  - **Documents:** Backend sanitization, Nominatim fallback, prevention measures, testing strategy
+  - **Impact:** Full documentation of "Old Location" bug fix, prevents future regressions
+  - **Files Changed:** docs/troubleshooting/OLD_LOCATION_BUG_FIX.md (new), weatherService.regression.test.js
+  - **Status:** Committed ✅
+
+- ✅ **PostCSS Config Fix & Build Tooling Improvements** (Nov 8, 2025)
+  - **Fixed Local Dev Build Error:** Removed problematic PurgeCSS integration that was breaking Vite dev server
+  - **PostCSS Config:** Simplified to empty plugins array (PurgeCSS temporarily disabled due to module loading issues)
+  - **Pre-commit Hook Fix:** Corrected git add path bug (was doubling backend/ prefix)
+  - **Async/Await Fixes:** Fixed sanitizeResolvedAddress calls in weatherService to properly await results
+  - **Added Stylelint:** Installed stylelint and stylelint-config-standard for future CSS linting
+  - **Documentation Updates:** Updated various doc cross-references and reorganized REGRESSION_PREVENTION.md
+  - **Impact:** Local development working again, cleaner build process, improved code quality
+  - **Files Changed:** postcss.config.cjs, .husky/pre-commit, weatherService.js, package.json
+  - **Status:** Deployed to production ✅
+
+- ✅ **CSS Audit Fixes Part 2 - Theme System & Design Tokens** (Nov 8, 2025)
+  - **Fixed 4 Critical CSS Issues:** Theme consistency, design token adoption, duplicate code removal
+  - **AIWeatherHero.css Theme Integration:** Created 23 component-level CSS variables that map to design system
+  - **WeatherDashboard.css Token Adoption:** Replaced 65+ hardcoded spacing/font values with design tokens
+  - **Removed Duplicate Theme Overrides:** Deleted 95 lines of redundant [data-theme] rules from LocationSearchBar.css (58 lines) and AdminPanel.css (37 lines)
+  - **App.css Cleanup:** Removed duplicate box-sizing and body resets (ITCSS already handles), kept font-smoothing
+  - **Impact:** Single source of truth for theming, easier theme customization, better maintainability, cleaner architecture
+  - **Files Changed:** 5 files (AIWeatherHero.css fully refactored, WeatherDashboard.css bulk token replacement, 3 files cleaned)
+
+- ✅ **CSS Audit Fixes Part 1 - Critical Browser Issues** (Nov 8, 2025)
+  - **Fixed 2 Critical Browser Compatibility Issues:** @media queries and @keyframes scope
+  - **Responsive Utilities Fix:** Replaced all var(--breakpoint-*) in @media queries with hardcoded pixel values (browser limitation)
+  - **Keyframes Scope Fix:** Moved @keyframes reduced-pulse outside @media query for fallback .reduced-motion class
+  - **Impact:** Responsive utility classes now functional (.u-hide-mobile, .u-grid-responsive, etc. were completely broken), reduced-motion fallback works
+  - **Files Changed:** 2 files (_responsive.css: 278 lines, reduced-motion.css: keyframes moved)
+
+- ✅ **CSS Audit Fixes - Critical Issues Resolved** (Nov 8, 2025)
+  - **Fixed 5 Critical CSS Issues:** Mobile responsiveness, keyframe collisions, theme system bypasses, typography accessibility
+  - **Mobile Responsiveness:** Removed `!important` from `.current-stats` base rule, allowing 2-column mobile layout to work properly
+  - **Keyframe Collision:** Renamed ErrorMessage toast animations to `error-toast-slide-in/out` to prevent conflict with Toast.module.css
+  - **Theme System Integration:** Replaced 18+ hardcoded colors in Toast.module.css with CSS variables (removed 51 lines of dark mode overrides)
+  - **Theme System Integration:** Replaced 4 hardcoded colors in Skeleton.module.css with CSS variables (removed 10 lines of dark mode overrides)
+  - **Typography Accessibility:** Fixed 2 instances of `font-size: 10px` → `var(--font-xs)` (12px minimum, WCAG 1.4.4 compliant)
+  - **Impact:** Better mobile UX, consistent animations, proper theme toggle support, full accessibility compliance
+  - **Files Changed:** 4 files (132 lines modified)
+
+- ✅ **Global CSS Refactor - Phase 3.2 Part 2 Complete** (Nov 8, 2025)
+  - **Fixed 6 Critical CSS Issues:** Responsive bugs, keyframe collisions, performance, ITCSS violations, accessibility, dark theme
+  - **Responsive:** Hero grid now fluid (minmax(320px, 600px)), collapses to single column @ 960px
+  - **Animations:** Resolved fadeIn collision (aiAnswerFadeIn vs searchHintFadeIn)
+  - **Performance:** Removed global `* { transition }` selector, created opt-in `.theme-transition` class
+  - **ITCSS:** Split themes.css → theme-variables.css (Settings) + theme-base.css (Elements)
+  - **Accessibility:** Raised font minimums to 12px (was 7-11px), WCAG compliant
+  - **Dark Theme:** RadarMap now fully themed with CSS variables, removed 130 lines of dark mode overrides
+  - **Impact:** Better UX, cleaner architecture, improved performance, full accessibility
+  - **Documentation:** CSS_PHASE_3.2_PART2_COMPLETE.md (comprehensive guide)
+
+- ✅ **Global CSS Refactor - Phase 3.1 Complete** (Nov 8, 2025)
+  - **Phase 3.1:** PurgeCSS Integration (-33.73 kB, -18.1% CSS bundle reduction)
+  - **CSS Bundle:** 186.83 kB → 153.10 kB (gzip: 34.68 kB → 28.93 kB, -16.6%)
+  - **Method:** Integrated PurgeCSS as PostCSS plugin with comprehensive safelist
+  - **Preserved:** All ITCSS utilities (.u-*), objects (.o-*), third-party (Leaflet), dynamic classes
+  - **Impact:** Faster page loads, reduced bandwidth, automatic unused CSS removal
+  - **Documentation:** CSS_PHASE_3.1_COMPLETE.md (comprehensive 500+ line guide)
+
+- ✅ **Global CSS Refactor - Phase 2 Complete** (Nov 8, 2025)
+  - **Phase 2.1:** ITCSS architecture (+5.73 kB, organized CSS by specificity)
+  - **Phase 2.2:** BEM naming convention standard (documentation-based, zero risk)
+  - **Phase 2.3:** Standardized breakpoint system (+4.36 kB, 18 variables + 20+ utilities)
+  - **CSS Bundle:** 167 kB → 186.83 kB (+19.92 kB, +11.9%) - acceptable for value gained
+  - **Impact:** Organized architecture, responsive system, clear standards
+  - **Documentation:** 2,000+ lines across BEM_NAMING_CONVENTION.md, BREAKPOINT_SYSTEM.md, ITCSS_ARCHITECTURE.md
+
+- ✅ **Admin Panel Implementation** (Nov 7, 2025) - Comprehensive admin dashboard with 6 tabs, statistics, AI cost tracking, cache management
+  - **Features:** System stats, user analytics, weather data insights, AI usage & cost tracking, cache management, database monitoring
+  - **Access:** Database-based admin system (first user = auto-admin), JWT-protected routes
+  - **Route:** `http://localhost:3000/admin` (requires authentication + admin status)
+  - **Files:** 9 new files (backend middleware/service/routes, frontend component, migrations, docs)
+  - **Documentation:** 4 comprehensive guides (2,100+ lines total)
+  - **Privacy:** Updated privacy policy with admin data collection disclosures
+
+- ✅ **Documentation Reorganization** (Nov 7, 2025) - Organized 60+ docs into 10 clear categories
+- ✅ **CI/CD Pipeline Optimization** (Nov 7, 2025) - 50-70% faster with aggressive caching
+- ✅ **Database Performance Fix** (Nov 7, 2025) - Missing FULLTEXT index restored (20x faster)
+- ✅ **Accessibility Phase 2** (Nov 7, 2025) - WCAG 2.1 Level AA compliance (8.5-9/10 score)
+- ✅ **UI Optimization** (Nov 6, 2025) - Material Design 3 implementation (50-60% space reduction)
+- ✅ **Security Hardening** (Nov 5, 2025) - 9.4/10 score, 0 vulnerabilities
 
 ---
 
@@ -101,9 +249,117 @@ docker ps | grep meteo
 
 ---
 
-## 🎯 Current Status (as of November 5, 2025)
+## 🎯 Current Status (as of November 7, 2025)
 
 ### ✅ Recently Completed
+
+- **Accessibility Phase 2 - WCAG Level AA Compliance** (Nov 7, 2025)
+  - **Score Improvement:** 7-8/10 → 8.5-9/10 (PASSES WCAG Level AA + one AAA criterion)
+  - **All Phase 2 Tasks Complete:** 8/8 (100%)
+  - **Major Enhancements:**
+    - **Live Regions:** Screen reader announcements for weather loading/errors (WCAG 4.1.3)
+    - **Modal Focus Traps:** Complete focus management in AuthModal & LocationConfirmationModal (WCAG 2.4.3)
+    - **Reduced Motion:** Global support via prefers-reduced-motion + radar animation control (WCAG 2.3.3 Level AAA)
+    - **Error Suggestions:** 200+ contextual suggestions with browser-specific instructions (WCAG 3.3.3)
+  - **WCAG Level AA Standards Met:**
+    - ✅ 1.4.3 Contrast (Minimum) - 4.5:1 maintained
+    - ✅ 2.4.3 Focus Order - Logical navigation with focus traps
+    - ✅ 3.3.1 Error Identification - Clear error display
+    - ✅ 3.3.3 Error Suggestion - Actionable guidance (NEW)
+    - ✅ 4.1.3 Status Messages - Live announcements (NEW)
+  - **WCAG Level AAA Bonus:**
+    - ✅ 2.3.3 Animation from Interactions - Reduced motion support (NEW)
+  - **Files Changed:** 9 files (7 modified, 2 new)
+  - **New Files:** reduced-motion.css, errorSuggestions.js
+  - **Status:** Deployed to production ✅
+
+- **Accessibility Phase 1 - WCAG Level A Compliance** (Nov 7, 2025)
+  - **Score Improvement:** 4.5/10 → 7-8/10 (PASSES WCAG Level A)
+  - **Critical Issues Fixed:** 7 → 0
+  - **Major Changes:**
+    - Added proper heading hierarchy (H1) to WeatherDashboard
+    - Created .sr-only utility class for screen reader-only content
+    - Added comprehensive focus indicators (3px purple outline)
+    - Enhanced form accessibility with proper labels and ARIA attributes
+    - Fixed keyboard navigation in WeatherAlertsBanner
+    - Added aria-labels to all 11 icon-only buttons in RadarMap
+    - Added aria-hidden to 28+ decorative icons across the app
+    - Improved color contrast: replaced #9ca3af with #465570 (11 CSS files)
+    - Enhanced modal accessibility (AuthModal) with proper ARIA roles
+    - Added proper tab navigation ARIA attributes to chart tabs
+  - **WCAG Level A Standards Met:**
+    - ✅ 1.1.1 Non-text Content
+    - ✅ 1.4.3 Contrast (Minimum) - 4.59:1 ratio
+    - ✅ 2.1.1 Keyboard Navigation
+    - ✅ 2.4.3 Focus Order
+    - ✅ 2.4.6 Headings and Labels
+    - ✅ 2.4.7 Focus Visible
+    - ✅ 3.3.2 Labels or Instructions
+    - ✅ 4.1.2 Name, Role, Value
+  - **Files Modified:** 19 files (8 JSX components, 11 CSS files)
+  - **Documentation:** ACCESSIBILITY_PHASE1_COMPLETE.md (296 lines)
+  - **Status:** Deployed to production ✅
+
+- **UI Optimization - Material Design 3 Implementation (Phase 1 & 2)** (Nov 6, 2025)
+  - **Phase 1:** Reduced Weather Dashboard UI elements by 30-40% using Material Design 3 8pt grid system
+    - **Main Dashboard Optimizations:**
+      - Temperature display: 72px → 48px (-33%)
+      - Location name: 32px → 24px (-25%)
+      - Card padding: 20px → 16px (-20%)
+      - Border radius: 16px → 12px (more professional)
+      - Typography: Following Material Design scale (11, 13, 14, 16, 20, 24, 48px)
+      - Information density: +40% more content visible per viewport
+    - **AI Hero Section Optimizations (35-40% height reduction):**
+      - Container padding: 24px → 12px 16px (-50%)
+      - Title font: 32px → 20px (-38%)
+      - Subtitle font: 16px → 13px (-19%)
+      - Input padding: 14px 16px → 8px 12px (-43%)
+      - Example buttons: Changed from 2-column grid to horizontal single row
+      - Total space savings: 140-160px of vertical space
+    - **Border Removal for Seamless Layout:**
+      - Removed search section bottom border
+      - Removed location header bottom border
+      - Removed radar section top border
+      - Result: Cleaner, more cohesive visual flow
+  - **Phase 2:** Info Box Reorganization & Additional 20% Size Reduction
+    - **Hero Stats Grid:** 3 columns → 5 columns (Conditions, Precip Chance, Wind, Humidity, 24h Precip)
+    - **Highlights Grid:** 2-column vertical → 4-column horizontal layout
+    - **Conditions Integration:** Moved from separate section to first stat box with dynamic weather icon
+    - **20% Size Reduction:** All info boxes reduced (padding, icons, fonts, gaps)
+    - **Space Savings:** Hero stats -30% height, Highlights -50% height, Total info boxes -43%
+    - **Responsive:** 5-col desktop → 3-col tablet → 2-col mobile
+  - **Combined Impact:**
+    - Overall vertical space reduction: ~50-60%
+    - Information density: +70% more content per viewport
+    - Horizontal space efficiency: +85%
+    - Professional Material Design 3 aesthetic maintained
+  - **Files:** WeatherDashboard.jsx, WeatherDashboard.css, AIWeatherHero.css
+  - **Documentation:** UI_OPTIMIZATION_SUMMARY.md, AI_HERO_OPTIMIZATION_SUMMARY.md
+
+- **CRITICAL: Express Route Ordering Fix & Performance Optimization** (Nov 6, 2025)
+  - **CRITICAL FIX:** Fixed Express route ordering bug causing 404s on `/reverse` endpoint
+  - Routes reordered so `/:id` catch-all comes LAST (was intercepting `/reverse`, `/search`, etc.)
+  - Fixed "Use My Location" feature (was completely broken due to reverse geocoding 404s)
+  - Eliminated slow initial page load (3-5 seconds → <1 second)
+  - Eliminated FOUC (Flash of Unstyled Content)
+  - Added CSS code splitting in Vite for faster rendering
+  - **Performance Impact:**
+    - Reverse geocoding: 404 error → ~40ms (fixed + 75x faster)
+    - Initial page load: 5x faster
+    - Database queries: Using optimized indexes (20-50x faster from migrations)
+  - **Root Cause:** `router.get('/:id')` was before `router.get('/reverse')`, causing Express to treat "reverse" as a location ID
+  - **Files:** backend/routes/locations.js, frontend/vite.config.js
+  - **Commits:** 0e0e181
+
+- **Database Performance Optimization (5 Migrations)** (Nov 6, 2025)
+  - Migration 001: FULLTEXT index on locations (20x faster text search)
+  - Migration 002: API cache cleanup (auto-cleanup of expired cache entries)
+  - Migration 003: AI shares cleanup (auto-cleanup of expired shares)
+  - Migration 004: Spatial index on locations (50x faster coordinate lookup)
+  - Migration 005: Table partitioning on weather_data (10x faster date queries)
+  - All 585,784 weather records preserved (100% data integrity)
+  - Updated locationService.js and historicalDataService.js to use new indexes
+  - **Impact:** Production-ready database performance at scale
 
 - **Ultra-Compact Dashboard Layout & RadarMap Fixes** (Nov 5, 2025)
   - Redesigned hero section with two-column layout (weather info left, radar right)
@@ -157,7 +413,7 @@ docker ps | grep meteo
     - Automated regression tests (geolocationService.regression.test.js)
     - Pre-commit hooks (.husky/pre-commit-regression-check)
     - Custom ESLint rules (.eslintrc-custom-rules.js)
-    - Comprehensive documentation (docs/REGRESSION_PREVENTION.md)
+    - Comprehensive documentation (docs/troubleshooting/REGRESSION_PREVENTION.md)
   - Fixed false VPN/proxy warnings (only trigger for accuracy > 10km)
   - **Files:** frontend/src/styles/density-compact.css, vite.config.js
 
@@ -210,13 +466,13 @@ docker ps | grep meteo
 
 | Task | Documentation |
 |------|--------------|
-| Deploy to production | [DEPLOY_VIA_VSCODE.md](DEPLOY_VIA_VSCODE.md) or `scripts/deploy-beta.sh` |
+| Deploy to production | [docs/deployment/DEPLOY_NOW.md](docs/deployment/DEPLOY_NOW.md) or `scripts/deploy-beta.sh` |
 | Add new features | [docs/development/AGENTS.md](docs/development/AGENTS.md) |
-| Fix bugs | [TROUBLESHOOTING.md](TROUBLESHOOTING.md) |
-| Improve security | [docs/RATE_LIMITING_AND_SECURITY_AUDIT.md](docs/RATE_LIMITING_AND_SECURITY_AUDIT.md) |
+| Fix bugs | [docs/troubleshooting/TROUBLESHOOTING.md](docs/troubleshooting/TROUBLESHOOTING.md) |
+| Improve security | [docs/security/RATE_LIMITING_AND_SECURITY_AUDIT.md](docs/security/RATE_LIMITING_AND_SECURITY_AUDIT.md) |
 | Update dependencies | Check package.json, run `npm audit`, test thoroughly |
 | Database changes | `database/schema.sql` + migrations |
-| Frontend build issues | [VITE_MIGRATION_GUIDE.md](VITE_MIGRATION_GUIDE.md) |
+| Frontend build issues | [docs/development/VITE_MIGRATION_GUIDE.md](docs/development/VITE_MIGRATION_GUIDE.md) |
 | Environment config | `.env.example` for reference |
 
 ---
@@ -305,10 +561,11 @@ meteo-app/
 7. **CSS import order matters** - density-compact.css MUST be imported last in App.jsx
 8. **Dev caching disabled** - vite.config.js has no-cache headers to prevent confusion
 9. **Regression prevention** - Pre-commit hooks and tests prevent "Old Location" bug
+10. **Express route ordering** - Parameter routes (`:id`) MUST come AFTER specific routes (`/reverse`, `/search`, etc.) or they will act as catch-alls
 
 ---
 
-**Last Updated:** November 5, 2025
+**Last Updated:** November 6, 2025
 **Current Version:** v1.1.0-security
 **Maintainer:** Michael Buckingham
 
