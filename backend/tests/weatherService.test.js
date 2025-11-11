@@ -1,5 +1,6 @@
 const nock = require('nock');
 const weatherService = require('../services/weatherService');
+const cacheService = require('../services/cacheService');
 
 // Mock the historical data service to prevent database calls
 jest.mock('../services/historicalDataService', () => ({
@@ -13,6 +14,13 @@ describe('Weather Service', () => {
   beforeEach(() => {
     // Clear cache before each test
     jest.clearAllMocks();
+    nock.cleanAll();
+    // Clear the in-memory cache
+    cacheService.cache.clear();
+  });
+
+  afterEach(() => {
+    nock.cleanAll();
   });
 
   describe('getCurrentWeather', () => {
@@ -33,7 +41,7 @@ describe('Weather Service', () => {
           conditions: 'Partially cloudy',
           icon: 'partly-cloudy-day',
         },
-        address: 'Seattle, WA, United States',
+        resolvedAddress: 'Seattle, WA, United States',
         timezone: 'America/Los_Angeles',
         latitude: 47.6062,
         longitude: -122.3321,
@@ -48,11 +56,17 @@ describe('Weather Service', () => {
 
       expect(result).toEqual(
         expect.objectContaining({
-          currentConditions: expect.objectContaining({
-            temp: 22.5,
+          success: true,
+          location: expect.objectContaining({
+            address: 'Seattle, WA, United States',
+            latitude: 47.6062,
+            longitude: -122.3321,
+            timezone: 'America/Los_Angeles',
+          }),
+          current: expect.objectContaining({
+            temperature: 22.5,
             conditions: 'Partially cloudy',
           }),
-          address: 'Seattle, WA, United States',
         })
       );
     });
@@ -60,7 +74,10 @@ describe('Weather Service', () => {
     it('caches current weather for 30 minutes', async () => {
       const mockData = {
         currentConditions: { temp: 20, conditions: 'Clear' },
-        address: 'New York, NY',
+        resolvedAddress: 'New York, NY',
+        latitude: 40.7128,
+        longitude: -74.0060,
+        timezone: 'America/New_York',
       };
 
       nock(API_BASE_URL)
@@ -75,7 +92,9 @@ describe('Weather Service', () => {
       const result2 = await weatherService.getCurrentWeather('New York');
 
       expect(result1).toEqual(result2);
-      expect(result1.currentConditions.temp).toBe(20);
+      expect(result1.current.temperature).toBe(20);
+      expect(result1.fromCache).toBe(false); // First call not from cache
+      expect(result2.fromCache).toBe(true);  // Second call from cache
     });
 
     it('handles API errors gracefully', async () => {
@@ -84,13 +103,19 @@ describe('Weather Service', () => {
         .query(true)
         .reply(500, { error: 'Internal Server Error' });
 
-      await expect(weatherService.getCurrentWeather('InvalidCity')).rejects.toThrow();
+      const result = await weatherService.getCurrentWeather('InvalidCity');
+
+      expect(result.success).toBe(false);
+      expect(result.statusCode).toBe(500);
     });
 
     it('handles rate limit errors with retry', async () => {
       const mockData = {
         currentConditions: { temp: 18, conditions: 'Rainy' },
-        address: 'Portland, OR',
+        resolvedAddress: 'Portland, OR',
+        latitude: 45.5152,
+        longitude: -122.6784,
+        timezone: 'America/Los_Angeles',
       };
 
       // First attempt fails with 429
@@ -107,7 +132,8 @@ describe('Weather Service', () => {
 
       const result = await weatherService.getCurrentWeather('Portland, OR');
 
-      expect(result.currentConditions.temp).toBe(18);
+      expect(result.success).toBe(true);
+      expect(result.current.temperature).toBe(18);
     });
 
     it('handles network timeout', async () => {
@@ -117,7 +143,10 @@ describe('Weather Service', () => {
         .delayConnection(15000) // Delay longer than 10s timeout
         .reply(200, {});
 
-      await expect(weatherService.getCurrentWeather('Seattle')).rejects.toThrow();
+      const result = await weatherService.getCurrentWeather('Seattle');
+
+      expect(result.success).toBe(false);
+      expect(result.error).toContain('timeout');
     }, 20000); // Increase test timeout
   });
 
@@ -208,7 +237,10 @@ describe('Weather Service', () => {
     it('limits concurrent requests', async () => {
       const mockData = {
         currentConditions: { temp: 20 },
-        address: 'Test City',
+        resolvedAddress: 'Test City',
+        latitude: 0,
+        longitude: 0,
+        timezone: 'UTC',
       };
 
       // Mock 5 different API calls
@@ -230,12 +262,16 @@ describe('Weather Service', () => {
         weatherService.getCurrentWeather('City5'),
       ];
 
-      await Promise.all(promises);
+      const results = await Promise.all(promises);
 
       const duration = Date.now() - startTime;
 
       // Should take at least some time due to throttling (not instant)
       expect(duration).toBeGreaterThan(100);
+      // All requests should succeed
+      results.forEach(result => {
+        expect(result.success).toBe(true);
+      });
     }, 10000);
   });
 });
