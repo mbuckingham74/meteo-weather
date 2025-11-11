@@ -364,7 +364,7 @@ jobs:
   pr-comment:
     name: Post PR Comment
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && always()
+    if: github.event_name == 'pull_request' && needs.frontend-test.result == 'success'
     needs: [frontend-test, backend-test]
 
     steps:
