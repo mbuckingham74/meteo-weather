@@ -1,0 +1,32 @@
+name: Workflow Cleanup
+
+on:
+  schedule:
+    # Run weekly on Sundays at 3 AM UTC (7 PM PST Saturday)
+    - cron: '0 3 * * 0'
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  cleanup-old-runs:
+    name: Delete Old Workflow Runs
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Delete workflow runs older than 90 days
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          retain_days: 90
+          keep_minimum_runs: 10
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## 🧹 Workflow Cleanup Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Retention Policy:**" >> $GITHUB_STEP_SUMMARY
+          echo "- Deleted runs older than 90 days" >> $GITHUB_STEP_SUMMARY
+          echo "- Kept minimum of 10 runs per workflow" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "This keeps the Actions history manageable while preserving recent data." >> $GITHUB_STEP_SUMMARY
