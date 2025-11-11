@@ -4,7 +4,7 @@
  * Responsive utility classes for showing/hiding content at different breakpoints
  * Uses .u- prefix (utility class convention)
  *
- * NOTE: CSS variables cannot be used in @media queries (browser limitation)
+ * NOTE: Custom media tokens (e.g., --bp-md) compile to px values via postcss-custom-media
  * Using hardcoded breakpoint values from _breakpoints.css:
  *   --breakpoint-xs: 480px
  *   --breakpoint-sm: 640px
@@ -20,21 +20,21 @@
    ============================================ */
 
 /* Hide on mobile (< 768px) */
-@media (max-width: 767.98px) {
+@media (--bp-md-max) {
   .u-hide-mobile {
     display: none !important;
   }
 }
 
 /* Hide on tablet (768px - 1023px) */
-@media (min-width: 768px) and (max-width: 1023.98px) {
+@media (--bp-tablet-only) {
   .u-hide-tablet {
     display: none !important;
   }
 }
 
 /* Hide on desktop (>= 1024px) */
-@media (min-width: 1024px) {
+@media (--bp-lg) {
   .u-hide-desktop {
     display: none !important;
   }
@@ -45,7 +45,7 @@
   display: none !important;
 }
 
-@media (max-width: 767.98px) {
+@media (--bp-md-max) {
   .u-show-mobile {
     display: block !important;
   }
@@ -56,7 +56,7 @@
   display: none !important;
 }
 
-@media (min-width: 768px) and (max-width: 1023.98px) {
+@media (--bp-tablet-only) {
   .u-show-tablet {
     display: block !important;
   }
@@ -67,7 +67,7 @@
   display: none !important;
 }
 
-@media (min-width: 1024px) {
+@media (--bp-lg) {
   .u-show-desktop {
     display: block !important;
   }
@@ -83,7 +83,7 @@
   flex-direction: column !important;
 }
 
-@media (min-width: 768px) {
+@media (--bp-md) {
   .u-flex-stack-mobile {
     flex-direction: row !important;
   }
@@ -94,7 +94,7 @@
   flex-direction: column !important;
 }
 
-@media (min-width: 1024px) {
+@media (--bp-lg) {
   .u-flex-stack-tablet {
     flex-direction: row !important;
   }
@@ -110,7 +110,7 @@
   text-align: center !important;
 }
 
-@media (min-width: 768px) {
+@media (--bp-md) {
   .u-text-center-mobile {
     text-align: left !important;
   }
@@ -126,13 +126,13 @@
   padding: var(--spacing-sm) !important;
 }
 
-@media (min-width: 768px) {
+@media (--bp-md) {
   .u-p-responsive {
     padding: var(--spacing-md) !important;
   }
 }
 
-@media (min-width: 1024px) {
+@media (--bp-lg) {
   .u-p-responsive {
     padding: var(--spacing-lg) !important;
   }
@@ -143,13 +143,13 @@
   margin-bottom: var(--spacing-sm) !important;
 }
 
-@media (min-width: 768px) {
+@media (--bp-md) {
   .u-mb-responsive {
     margin-bottom: var(--spacing-md) !important;
   }
 }
 
-@media (min-width: 1024px) {
+@media (--bp-lg) {
   .u-mb-responsive {
     margin-bottom: var(--spacing-lg) !important;
   }
@@ -168,25 +168,25 @@
   padding-right: var(--spacing-md) !important;
 }
 
-@media (min-width: 640px) {
+@media (--bp-sm) {
   .u-container-responsive {
     max-width: var(--container-sm) !important;
   }
 }
 
-@media (min-width: 768px) {
+@media (--bp-md) {
   .u-container-responsive {
     max-width: var(--container-md) !important;
   }
 }
 
-@media (min-width: 1024px) {
+@media (--bp-lg) {
   .u-container-responsive {
     max-width: var(--container-lg) !important;
   }
 }
 
-@media (min-width: 1280px) {
+@media (--bp-xl) {
   .u-container-responsive {
     max-width: var(--container-xl) !important;
   }
@@ -204,13 +204,13 @@
   grid-template-columns: repeat(1, 1fr) !important;
 }
 
-@media (min-width: 768px) {
+@media (--bp-md) {
   .u-grid-responsive {
     grid-template-columns: repeat(2, 1fr) !important;
   }
 }
 
-@media (min-width: 1024px) {
+@media (--bp-lg) {
   .u-grid-responsive {
     grid-template-columns: repeat(3, 1fr) !important;
   }
@@ -223,7 +223,7 @@
   grid-template-columns: repeat(1, 1fr) !important;
 }
 
-@media (min-width: 768px) {
+@media (--bp-md) {
   .u-grid-responsive-2col {
     grid-template-columns: repeat(2, 1fr) !important;
   }
@@ -236,13 +236,13 @@
   grid-template-columns: repeat(2, 1fr) !important;
 }
 
-@media (min-width: 768px) {
+@media (--bp-md) {
   .u-grid-responsive-multi {
     grid-template-columns: repeat(4, 1fr) !important;
   }
 }
 
-@media (min-width: 1024px) {
+@media (--bp-lg) {
   .u-grid-responsive-multi {
     grid-template-columns: repeat(6, 1fr) !important;
   }
@@ -257,13 +257,13 @@
   font-size: var(--font-lg) !important;
 }
 
-@media (min-width: 768px) {
+@media (--bp-md) {
   .u-text-responsive-lg {
     font-size: var(--font-xl) !important;
   }
 }
 
-@media (min-width: 1024px) {
+@media (--bp-lg) {
   .u-text-responsive-lg {
     font-size: var(--font-2xl) !important;
   }
@@ -273,13 +273,13 @@
   font-size: var(--font-xl) !important;
 }
 
-@media (min-width: 768px) {
+@media (--bp-md) {
   .u-text-responsive-xl {
     font-size: var(--font-2xl) !important;
   }
 }
 
-@media (min-width: 1024px) {
+@media (--bp-lg) {
   .u-text-responsive-xl {
     font-size: var(--font-3xl) !important;
   }

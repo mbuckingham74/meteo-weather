@@ -4,9 +4,9 @@
  * Responsive breakpoint system using CSS custom properties
  * Mobile-first approach with standardized breakpoints
  *
- * Usage:
- *   @media (min-width: var(--breakpoint-sm)) { ... }
- *   @media (max-width: var(--breakpoint-md-max)) { ... }
+ * Usage (compiled via postcss-custom-media):
+ *   @media (--bp-sm) { ... }
+ *   @media (--bp-md-max) { ... }
  */
 
 :root {
@@ -89,14 +89,14 @@
     padding: var(--spacing-sm);
   }
 
-  @media (min-width: var(--breakpoint-md)) {
+  @media (--bp-md) {
     .component {
       // Tablet and up
       padding: var(--spacing-md);
     }
   }
 
-  @media (min-width: var(--breakpoint-lg)) {
+  @media (--bp-lg) {
     .component {
       // Desktop and up
       padding: var(--spacing-lg);
@@ -111,14 +111,14 @@
     padding: var(--spacing-lg);
   }
 
-  @media (max-width: var(--breakpoint-lg-max)) {
+  @media (--bp-lg-max) {
     .component {
       // Tablet and below
       padding: var(--spacing-md);
     }
   }
 
-  @media (max-width: var(--breakpoint-md-max)) {
+  @media (--bp-md-max) {
     .component {
       // Mobile
       padding: var(--spacing-sm);
@@ -128,7 +128,7 @@
 
   Example 3: Tablet-only
   --------------------------------------------
-  @media (min-width: var(--breakpoint-md)) and (max-width: var(--breakpoint-lg-max)) {
+  @media (--bp-tablet-only) {
     .component {
       // Styles for tablets only (768px - 1023px)
     }
@@ -143,13 +143,13 @@
     margin: 0 auto;
   }
 
-  @media (max-width: var(--breakpoint-lg-max)) {
+  @media (--bp-lg-max) {
     .container {
       max-width: var(--container-lg);
     }
   }
 
-  @media (max-width: var(--breakpoint-md-max)) {
+  @media (--bp-md-max) {
     .container {
       max-width: var(--container-md);
     }
@@ -164,13 +164,13 @@
     gap: var(--spacing-md);
   }
 
-  @media (min-width: var(--breakpoint-md)) {
+  @media (--bp-md) {
     .grid {
       grid-template-columns: repeat(var(--grid-cols-tablet), 1fr);
     }
   }
 
-  @media (min-width: var(--breakpoint-lg)) {
+  @media (--bp-lg) {
     .grid {
       grid-template-columns: repeat(var(--grid-cols-desktop), 1fr);
     }

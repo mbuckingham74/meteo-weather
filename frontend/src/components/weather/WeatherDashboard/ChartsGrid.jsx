@@ -15,12 +15,20 @@ import FeelsLikeChart from '../../charts/FeelsLikeChart';
 import ThisDayInHistoryCard from '../../cards/ThisDayInHistoryCard';
 import AirQualityCard from '../../cards/AirQualityCard';
 import styles from './ChartsGrid.module.css';
+import useBreakpoint from '../../../hooks/useBreakpoint';
 
-function ChartCard({ id, wide = false, children }) {
+function ChartCard({ id, wide = false, padding = 'lg', children }) {
   const className = wide ? `${styles.chartCard} ${styles.chartCardWide}` : styles.chartCard;
 
   return (
-    <Surface as="section" id={id} padding="lg" radius="lg" elevation="md" className={className}>
+    <Surface
+      as="section"
+      id={id}
+      padding={padding}
+      radius="lg"
+      elevation="md"
+      className={className}
+    >
       {children}
     </Surface>
   );
@@ -43,6 +51,10 @@ function ChartsGrid({
   days,
 }) {
   const visibleChartCount = Object.values(visibleCharts).filter(Boolean).length;
+  const breakpoint = useBreakpoint();
+  const isCompactViewport = breakpoint === 'base' || breakpoint === 'xs' || breakpoint === 'sm';
+  const gridGap = isCompactViewport ? 'md' : 'lg';
+  const cardPadding = isCompactViewport ? 'md' : 'lg';
 
   return (
     <>
@@ -50,12 +62,12 @@ function ChartsGrid({
         id="weather-charts"
         tabIndex={-1}
         columns={{ base: 1, lg: 2 }}
-        gap="lg"
+        gap={gridGap}
         className={styles.grid}
       >
         {/* FORECAST TAB */}
         {activeTab === 'forecast' && visibleCharts.hourly && (
-          <ChartCard id="chart-hourly" wide>
+          <ChartCard id="chart-hourly" wide padding={cardPadding}>
             <HourlyForecastChart
               hourlyData={hourlyData.data?.hourly || []}
               unit={unit}
@@ -65,45 +77,45 @@ function ChartsGrid({
         )}
 
         {activeTab === 'forecast' && visibleCharts.temperature && (
-          <ChartCard id="chart-temperature">
+          <ChartCard id="chart-temperature" padding={cardPadding}>
             <TemperatureBandChart data={data.forecast || []} unit={unit} height={300} days={days} />
           </ChartCard>
         )}
 
         {activeTab === 'forecast' && visibleCharts.precipitation && (
-          <ChartCard id="chart-precipitation">
+          <ChartCard id="chart-precipitation" padding={cardPadding}>
             <PrecipitationChart data={data.forecast || []} height={300} days={days} />
           </ChartCard>
         )}
 
         {activeTab === 'forecast' && visibleCharts.wind && (
-          <ChartCard id="chart-wind">
+          <ChartCard id="chart-wind" padding={cardPadding}>
             <WindChart data={data.forecast || []} height={300} days={days} />
           </ChartCard>
         )}
 
         {/* DETAILS TAB */}
         {activeTab === 'details' && visibleCharts.cloudCover && (
-          <ChartCard id="chart-cloudCover">
+          <ChartCard id="chart-cloudCover" padding={cardPadding}>
             <CloudCoverChart data={data.forecast || []} height={300} days={days} />
           </ChartCard>
         )}
 
         {activeTab === 'details' && visibleCharts.uvIndex && (
-          <ChartCard id="chart-uvIndex">
+          <ChartCard id="chart-uvIndex" padding={cardPadding}>
             <UVIndexChart data={data.forecast || []} height={300} days={days} />
           </ChartCard>
         )}
 
         {activeTab === 'forecast' && visibleCharts.overview && (
-          <ChartCard id="chart-overview" wide>
+          <ChartCard id="chart-overview" wide padding={cardPadding}>
             <WeatherOverviewChart data={data.forecast || []} unit={unit} height={320} days={days} />
           </ChartCard>
         )}
 
         {/* Enhanced Weather Charts */}
         {activeTab === 'details' && visibleCharts.humidityDew && (
-          <ChartCard id="chart-humidityDew">
+          <ChartCard id="chart-humidityDew" padding={cardPadding}>
             <HumidityDewpointChart
               data={data.forecast || []}
               unit={unit}
@@ -114,32 +126,32 @@ function ChartsGrid({
         )}
 
         {activeTab === 'details' && visibleCharts.sunriseSunset && (
-          <ChartCard id="chart-sunriseSunset">
+          <ChartCard id="chart-sunriseSunset" padding={cardPadding}>
             <SunChart data={data.forecast || []} days={days} height={300} />
           </ChartCard>
         )}
 
         {activeTab === 'details' && visibleCharts.feelsLike && (
-          <ChartCard id="chart-feelsLike">
+          <ChartCard id="chart-feelsLike" padding={cardPadding}>
             <FeelsLikeChart data={data.forecast || []} unit={unit} days={days} height={300} />
           </ChartCard>
         )}
 
         {activeTab === 'air-quality' && visibleCharts.airQuality && data.location && (
-          <ChartCard id="chart-airQuality">
+          <ChartCard id="chart-airQuality" padding={cardPadding}>
             <AirQualityCard latitude={data.location.latitude} longitude={data.location.longitude} />
           </ChartCard>
         )}
 
         {/* Historical/Climate Charts */}
         {activeTab === 'historical' && visibleCharts.thisDayHistory && (
-          <ChartCard id="chart-thisDayHistory" wide>
+          <ChartCard id="chart-thisDayHistory" wide padding={cardPadding}>
             <ThisDayInHistoryCard historyData={thisDayHistory.data} unit={unit} />
           </ChartCard>
         )}
 
         {activeTab === 'historical' && visibleCharts.historicalComparison && (
-          <ChartCard id="chart-historicalComparison" wide>
+          <ChartCard id="chart-historicalComparison" wide padding={cardPadding}>
             <HistoricalComparisonChart
               forecastData={data.forecast || []}
               historicalData={forecastComparison.data || []}
@@ -150,7 +162,7 @@ function ChartsGrid({
         )}
 
         {activeTab === 'historical' && visibleCharts.recordTemps && (
-          <ChartCard id="chart-recordTemps" wide>
+          <ChartCard id="chart-recordTemps" wide padding={cardPadding}>
             <RecordTemperaturesChart
               records={recordTemps.data?.records || []}
               unit={unit}
@@ -160,7 +172,7 @@ function ChartsGrid({
         )}
 
         {activeTab === 'historical' && visibleCharts.tempProbability && (
-          <ChartCard id="chart-tempProbability" wide>
+          <ChartCard id="chart-tempProbability" wide padding={cardPadding}>
             <TemperatureProbabilityChart
               probabilityData={tempProbability.data}
               unit={unit}

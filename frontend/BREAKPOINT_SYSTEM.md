@@ -34,40 +34,40 @@ Our responsive breakpoint system provides:
 
 For `max-width` queries (mobile-first fallback):
 
-| Name                   | Value     | Usage                                           |
-| ---------------------- | --------- | ----------------------------------------------- |
-| `--breakpoint-xs-max`  | 479.98px  | `@media (max-width: var(--breakpoint-xs-max))`  |
-| `--breakpoint-sm-max`  | 639.98px  | `@media (max-width: var(--breakpoint-sm-max))`  |
-| `--breakpoint-md-max`  | 767.98px  | `@media (max-width: var(--breakpoint-md-max))`  |
-| `--breakpoint-lg-max`  | 1023.98px | `@media (max-width: var(--breakpoint-lg-max))`  |
-| `--breakpoint-xl-max`  | 1279.98px | `@media (max-width: var(--breakpoint-xl-max))`  |
-| `--breakpoint-2xl-max` | 1439.98px | `@media (max-width: var(--breakpoint-2xl-max))` |
+| Name                   | Value     | Usage                   |
+| ---------------------- | --------- | ----------------------- |
+| `--breakpoint-xs-max`  | 479.98px  | `@media (--bp-xs-max)`  |
+| `--breakpoint-sm-max`  | 639.98px  | `@media (--bp-sm-max)`  |
+| `--breakpoint-md-max`  | 767.98px  | `@media (--bp-md-max)`  |
+| `--breakpoint-lg-max`  | 1023.98px | `@media (--bp-lg-max)`  |
+| `--breakpoint-xl-max`  | 1279.98px | `@media (--bp-xl-max)`  |
+| `--breakpoint-2xl-max` | 1439.98px | `@media (--bp-2xl-max)` |
 
 **Note:** We subtract 0.02px to avoid overlap between breakpoints.
 
 ---
 
-## ⚠️ Important: CSS Variables in Media Queries
+## ⚠️ Important: Custom Media Workflow
 
-**CSS variables CANNOT be used in `@media` queries due to browser limitations.**
+Browsers still require static values inside `@media` queries, but we now generate those values automatically.
+
+1. **Single source of truth:** `frontend/config/breakpoints.json` stores every min/max breakpoint.
+2. **Build-time compilation:** `postcss-custom-media` reads that config and transforms semantic tokens like `@media (--bp-md)` into `@media (min-width: 768px)` in the final CSS.
+3. **Universal availability:** Because the plugin injects the custom media map globally, every CSS file (global or module) can use the `--bp-*` tokens without importing anything.
+
+Example:
 
 ```css
-/* ❌ DOES NOT WORK - Browser cannot evaluate variables in media queries */
-@media (min-width: var(--breakpoint-md)) {
-  .component { ... }
-}
-
-/* ✅ CORRECT - Use hardcoded pixel values */
-@media (min-width: 768px) {
-  .component { ... }
+@media (--bp-md) {
+  .component {
+    padding: var(--spacing-md);
+  }
 }
 ```
 
-**Why?** Media queries are evaluated before CSS custom properties are resolved. The browser needs static values to determine which styles to apply.
+The snippet above ships to the browser as `@media (min-width: 768px)` automatically.
 
-**Solution:** Our responsive utilities (`_responsive.css`) use hardcoded pixel values. Component styles should also use hardcoded values in media queries while using variables for properties.
-
-**Reference:** [MDN: Using CSS custom properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties#invalid_custom_properties)
+> Keep using the `--breakpoint-*` custom properties for layout values (containers, spacing, etc.). Only media queries switch to the semantic `--bp-*` tokens.
 
 ---
 
@@ -83,8 +83,7 @@ For `max-width` queries (mobile-first fallback):
   grid-template-columns: 1fr;
 }
 
-/* Use hardcoded pixel values in media queries (browser limitation) */
-@media (min-width: 768px) {
+@media (--bp-md) {
   .component {
     /* Tablet and up (>= 768px) */
     padding: var(--spacing-md);
@@ -93,7 +92,7 @@ For `max-width` queries (mobile-first fallback):
   }
 }
 
-@media (min-width: 1024px) {
+@media (--bp-lg) {
   .component {
     /* Desktop and up (>= 1024px) */
     padding: var(--spacing-lg);
@@ -119,8 +118,7 @@ For `max-width` queries (mobile-first fallback):
   grid-template-columns: repeat(3, 1fr);
 }
 
-/* Use hardcoded pixel values in media queries (browser limitation) */
-@media (max-width: 1023.98px) {
+@media (--bp-lg-max) {
   .component {
     /* Tablet and below (< 1024px) */
     padding: var(--spacing-md);
@@ -128,7 +126,7 @@ For `max-width` queries (mobile-first fallback):
   }
 }
 
-@media (max-width: 767.98px) {
+@media (--bp-md-max) {
   .component {
     /* Mobile (< 768px) */
     padding: var(--spacing-sm);
@@ -146,7 +144,7 @@ For `max-width` queries (mobile-first fallback):
 ### Pattern 3: Tablet-Only
 
 ```css
-@media (min-width: var(--breakpoint-md)) and (max-width: var(--breakpoint-lg-max)) {
+@media (--bp-tablet-only) {
   .component {
     /* Styles ONLY for tablets (768px - 1023px) */
     display: grid;
@@ -165,13 +163,13 @@ For `max-width` queries (mobile-first fallback):
   padding: 0 var(--spacing-md);
 }
 
-@media (max-width: var(--breakpoint-lg-max)) {
+@media (--bp-lg-max) {
   .container {
     max-width: var(--container-lg); /* 1024px */
   }
 }
 
-@media (max-width: var(--breakpoint-md-max)) {
+@media (--bp-md-max) {
   .container {
     max-width: var(--container-md); /* 768px */
     padding: 0 var(--spacing-sm);
@@ -190,14 +188,14 @@ For `max-width` queries (mobile-first fallback):
   grid-template-columns: repeat(var(--grid-cols-mobile), 1fr);
 }
 
-@media (min-width: var(--breakpoint-md)) {
+@media (--bp-md) {
   .grid {
     /* Tablet: 2 columns */
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (min-width: var(--breakpoint-lg)) {
+@media (--bp-lg) {
   .grid {
     /* Desktop: 4 columns */
     grid-template-columns: repeat(4, 1fr);
@@ -420,7 +418,7 @@ Responsive grid column counts:
   gap: var(--spacing-md);
 }
 
-@media (min-width: var(--breakpoint-lg)) {
+@media (--bp-lg) {
   .weather-dashboard__hero {
     /* Desktop: Two-column layout */
     flex-direction: row;
@@ -441,7 +439,7 @@ Responsive grid column counts:
   grid-template-columns: repeat(2, 1fr);
 }
 
-@media (min-width: var(--breakpoint-md)) {
+@media (--bp-md) {
   .stats-grid {
     /* Tablet: 3 columns */
     grid-template-columns: repeat(3, 1fr);
@@ -449,7 +447,7 @@ Responsive grid column counts:
   }
 }
 
-@media (min-width: var(--breakpoint-lg)) {
+@media (--bp-lg) {
   .stats-grid {
     /* Desktop: 5 columns */
     grid-template-columns: repeat(5, 1fr);
@@ -467,7 +465,7 @@ Responsive grid column counts:
   margin-bottom: var(--spacing-sm);
 }
 
-@media (min-width: var(--breakpoint-md)) {
+@media (--bp-md) {
   .hero-title {
     /* Tablet: Medium font */
     font-size: var(--font-3xl);
@@ -475,7 +473,7 @@ Responsive grid column counts:
   }
 }
 
-@media (min-width: var(--breakpoint-lg)) {
+@media (--bp-lg) {
   .hero-title {
     /* Desktop: Large font */
     font-size: var(--font-4xl);
@@ -538,17 +536,17 @@ Responsive grid column counts:
 
 ```css
 /* Consistent, semantic breakpoint variables */
-@media (max-width: var(--breakpoint-md-max)) {
+@media (--bp-md-max) {
 } /* 767.98px */
-@media (max-width: var(--breakpoint-sm-max)) {
+@media (--bp-sm-max) {
 } /* 639.98px */
-@media (max-width: var(--breakpoint-xs-max)) {
+@media (--bp-xs-max) {
 } /* 479.98px */
 
 /* Or mobile-first (preferred) */
-@media (min-width: var(--breakpoint-md)) {
+@media (--bp-md) {
 } /* 768px */
-@media (min-width: var(--breakpoint-lg)) {
+@media (--bp-lg) {
 } /* 1024px */
 ```
 
@@ -576,7 +574,7 @@ grep -r "@media (max-width: 768px)" . --include="*.css"
 }
 
 /* After */
-@media (max-width: var(--breakpoint-md-max)) {
+@media (--bp-md-max) {
   .component { ... }
 }
 ```
@@ -589,7 +587,7 @@ grep -r "@media (max-width: 768px)" . --include="*.css"
   /* Mobile styles here (default) */
 }
 
-@media (min-width: var(--breakpoint-md)) {
+@media (--bp-md) {
   .component {
     /* Tablet and up styles */
   }
@@ -609,14 +607,12 @@ grep -r "@media (max-width: 768px)" . --include="*.css"
         │                               │
     Mobile-only?                    Desktop-only?
         │                               │
-        ├─ var(--breakpoint-md-max)     ├─ var(--breakpoint-lg)
+        ├─ --bp-md-max                  ├─ --bp-lg
         │  (< 768px)                    │  (>= 1024px)
         │                               │
     Tablet-only?
         │
-        ├─ (min: var(--breakpoint-md))
-        │  AND
-        │  (max: var(--breakpoint-lg-max))
+        ├─ --bp-tablet-only
         │  (768px - 1023px)
 
 
@@ -628,8 +624,8 @@ grep -r "@media (max-width: 768px)" . --include="*.css"
         │                               │
     Tablet breakpoint              Desktop breakpoint
         │                               │
-   min-width:                      min-width:
-   var(--breakpoint-md)           var(--breakpoint-lg)
+   use:                            use:
+   @media (--bp-md)               @media (--bp-lg)
    (>= 768px)                     (>= 1024px)
 ```
 
@@ -641,20 +637,20 @@ grep -r "@media (max-width: 768px)" . --include="*.css"
 
 ```css
 /* Use semantic breakpoint variables */
-@media (min-width: var(--breakpoint-md)) { }
+@media (--bp-md) { }
 
 /* Mobile-first approach */
 .component {
   /* Mobile default */
 }
-@media (min-width: var(--breakpoint-md)) {
+@media (--bp-md) {
   .component {
     /* Tablet and up */
   }
 }
 
 /* Combine with spacing variables */
-@media (min-width: var(--breakpoint-lg)) {
+@media (--bp-lg) {
   .container {
     padding: var(--spacing-lg);
   }
@@ -669,7 +665,7 @@ grep -r "@media (max-width: 768px)" . --include="*.css"
 ```css
 /* Don't use hardcoded pixel values */
 @media (max-width: 768px) {
-} /* Use var(--breakpoint-md-max) */
+} /* Use --bp-md-max */
 
 /* Don't use non-standard breakpoints */
 @media (max-width: 900px) {
@@ -683,11 +679,11 @@ grep -r "@media (max-width: 768px)" . --include="*.css"
 /* Pick one approach and stick with it */
 
 /* Don't forget max-width overlap */
-@media (max-width: 768px) {
+@media (--bp-md-max) {
 }
-@media (min-width: 768px) {
+@media (--bp-md) {
 }
-/* 768px matches both! Use 767.98px or variables */
+/* 768px matches both! Use the semantic tokens to avoid overlap */
 ```
 
 ---
@@ -722,10 +718,13 @@ Set custom device sizes in Chrome DevTools to match our breakpoints:
 
 ## Files Created
 
-1. ✅ [src/styles/itcss/settings/\_breakpoints.css](src/styles/itcss/settings/_breakpoints.css) - Breakpoint variables
+1. ✅ [src/styles/itcss/settings/\_breakpoints.css](src/styles/itcss/settings/_breakpoints.css) - Breakpoint variables + docs
 2. ✅ [src/styles/itcss/utilities/\_responsive.css](src/styles/itcss/utilities/_responsive.css) - Responsive utility classes
 3. ✅ [src/styles/main.css](src/styles/main.css) - Updated to import breakpoints + responsive utilities
-4. ✅ [BREAKPOINT_SYSTEM.md](BREAKPOINT_SYSTEM.md) - This comprehensive guide
+4. ✅ [config/breakpoints.json](../config/breakpoints.json) - Source of truth for min/max values
+5. ✅ [src/constants/breakpoints.js](src/constants/breakpoints.js) - Shared JS exports + media query helpers
+6. ✅ [src/hooks/useBreakpoint.js](src/hooks/useBreakpoint.js) - Runtime hook for responsive logic
+7. ✅ [BREAKPOINT_SYSTEM.md](BREAKPOINT_SYSTEM.md) - This comprehensive guide
 
 ---
 
@@ -737,6 +736,7 @@ Set custom device sizes in Chrome DevTools to match our breakpoints:
 - **Consistency:** 100% standardized breakpoints
 - **Developer Experience:** Significantly improved
 - **Maintainability:** Much easier to manage responsive design
+- **JS Helpers:** Shared media query helpers keep runtime logic in sync
 
 ---
 

@@ -24,13 +24,13 @@
   grid-template-columns: repeat(var(--grid-cols-base, 1), minmax(0, 1fr));
 }
 
-@media (min-width: var(--breakpoint-sm)) {
+@media (--bp-sm) {
   .grid:not([data-auto-fit='true']) {
     grid-template-columns: repeat(var(--grid-cols-sm, var(--grid-cols-base, 1)), minmax(0, 1fr));
   }
 }
 
-@media (min-width: var(--breakpoint-md)) {
+@media (--bp-md) {
   .grid:not([data-auto-fit='true']) {
     grid-template-columns: repeat(
       var(--grid-cols-md, var(--grid-cols-sm, var(--grid-cols-base, 1))),
@@ -39,7 +39,7 @@
   }
 }
 
-@media (min-width: var(--breakpoint-lg)) {
+@media (--bp-lg) {
   .grid:not([data-auto-fit='true']) {
     grid-template-columns: repeat(
       var(--grid-cols-lg, var(--grid-cols-md, var(--grid-cols-base, 1))),
@@ -48,7 +48,7 @@
   }
 }
 
-@media (min-width: var(--breakpoint-xl)) {
+@media (--bp-xl) {
   .grid:not([data-auto-fit='true']) {
     grid-template-columns: repeat(
       var(--grid-cols-xl, var(--grid-cols-lg, var(--grid-cols-base, 1))),

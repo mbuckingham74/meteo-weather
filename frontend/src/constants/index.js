@@ -9,3 +9,4 @@
 export * from './weather';
 export * from './storage';
 export * from './themeColors';
+export * from './breakpoints';

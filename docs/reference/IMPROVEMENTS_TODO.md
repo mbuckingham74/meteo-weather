@@ -5,6 +5,19 @@
 
 ---
 
+## 🗓️ Today's Front-End To-Do
+
+- [x] **Phase 3.3 Stylelint Gate**
+  - Stylelint now runs via root lint scripts, husky pre-commit, and CI (`frontend-lint` job). See completion write-up: docs/development/CSS_PHASE_3.3_COMPLETE.md.
+- [x] **Unified Breakpoint Source**
+  - Breakpoint values now live in `frontend/config/breakpoints.json`, PostCSS compiles the `--bp-*` tokens globally, ITCSS utilities use them, and JS can import `src/constants/breakpoints.js` / `useBreakpoint`. See: frontend/BREAKPOINT_SYSTEM.md.
+- [ ] **Component Token Catalog & Theme Presets**
+  - Document component-level CSS variables, ship at least two preset themes, and add automated token-usage tests to satisfy the remaining CSS audit recommendations. _(Ref: frontend/CSS_AUDIT_FIXES.md)_
+- [ ] **Shared Retry/Cache Config**
+  - Centralize retry/throttle helpers plus environment-aware cache TTLs so frontend services, hooks, and tests all consume the same constants with inline documentation. _(Ref: docs/development/CODE_QUALITY_AUDIT.md)_
+
+---
+
 ## ✅ Completed (November 4-5, 2025)
 
 ### Priority 1 Fixes

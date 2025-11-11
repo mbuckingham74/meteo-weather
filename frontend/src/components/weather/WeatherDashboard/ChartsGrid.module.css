@@ -12,7 +12,7 @@
   grid-column: 1 / -1;
 }
 
-@media (max-width: var(--breakpoint-md-max)) {
+@media (--bp-md-max) {
   .chartCardWide {
     grid-column: auto;
   }
