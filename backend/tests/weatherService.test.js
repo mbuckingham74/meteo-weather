@@ -1,6 +1,5 @@
 const nock = require('nock');
 const weatherService = require('../services/weatherService');
-const cacheService = require('../services/cacheService');
 
 // Mock the historical data service to prevent database calls
 jest.mock('../services/historicalDataService', () => ({
