@@ -15,7 +15,6 @@ jest.mock('../services/geocodingService', () => ({
 // Mock the cache service to control caching behavior
 jest.mock('../services/cacheService', () => {
   const actualCacheService = jest.requireActual('../services/cacheService');
-  let mockCache = {};
 
   return {
     ...actualCacheService,
