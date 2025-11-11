@@ -103,6 +103,8 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov', 'json-summary'],
+      // Only report coverage for files that are actually tested
+      all: false,
       exclude: [
         'node_modules/',
         'src/setupTests.jsx',
