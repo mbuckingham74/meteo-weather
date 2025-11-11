@@ -27,6 +27,7 @@ jobs:
   frontend-regression:
     name: Frontend "Old Location" Regression Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 5  # Frontend regression tests complete in ~20s
 
     steps:
       - name: Checkout code
@@ -71,6 +72,7 @@ jobs:
   backend-regression:
     name: Backend "Old Location" Regression Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 10  # Prevent infinite hangs, backend tests should complete quickly
 
     services:
       mysql:
