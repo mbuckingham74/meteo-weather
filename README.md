@@ -46,7 +46,7 @@ A comprehensive weather dashboard inspired by Weather Spark, providing detailed 
 | **Documentation** | 82+ docs | Organized in 11 categories with OpenAPI spec |
 
 **Key Achievements:**
-- 🚀 Production-ready with [live demo](https://meteo-beta.tachyonfuture.com)
+- 🚀 [live demo](https://meteo-beta.tachyonfuture.com)
 - 📚 Complete API documentation in 3 formats (OpenAPI, Postman, Markdown)
 - 🗄️ 585K+ pre-populated weather records across 148 cities
 - 🔐 Automated secret scanning with Gitleaks + Dependabot
