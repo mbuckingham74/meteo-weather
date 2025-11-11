@@ -3,7 +3,7 @@
  * Testing temperature unit preference management
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, act, fireEvent } from '@testing-library/react';
 import { TemperatureUnitProvider, useTemperatureUnit } from './TemperatureUnitContext';
 import { AuthProvider } from './AuthContext';

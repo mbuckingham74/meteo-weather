@@ -283,7 +283,7 @@ describe('AuthHeader Component', () => {
         isAuthenticated: true,
       });
 
-      const { container } = render(<AuthHeader />);
+      render(<AuthHeader />);
 
       const userName = screen.getByText('John Doe');
       expect(userName).toBeInTheDocument();
