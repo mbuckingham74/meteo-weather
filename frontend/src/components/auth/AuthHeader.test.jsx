@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
@@ -5,17 +6,17 @@ import AuthHeader from './AuthHeader';
 import { useAuth } from '../../contexts/AuthContext';
 
 // Mock dependencies
-jest.mock('../../contexts/AuthContext', () => ({
-  useAuth: jest.fn(),
+vi.mock('../../contexts/AuthContext', () => ({
+  useAuth: vi.fn(),
 }));
 
-jest.mock('../theme/ThemeToggle', () => {
+vi.mock('../theme/ThemeToggle', () => {
   return function MockThemeToggle() {
     return <div data-testid="theme-toggle">ThemeToggle</div>;
   };
 });
 
-jest.mock('./AuthModal', () => {
+vi.mock('./AuthModal', () => {
   return function MockAuthModal({ isOpen, onClose, initialMode }) {
     return isOpen ? (
       <div data-testid="auth-modal">
@@ -26,7 +27,7 @@ jest.mock('./AuthModal', () => {
   };
 });
 
-jest.mock('./UserProfileModal', () => {
+vi.mock('./UserProfileModal', () => {
   return function MockUserProfileModal({ isOpen, onClose }) {
     return isOpen ? (
       <div data-testid="profile-modal">
@@ -39,7 +40,7 @@ jest.mock('./UserProfileModal', () => {
 
 describe('AuthHeader Component', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('Unauthenticated State', () => {

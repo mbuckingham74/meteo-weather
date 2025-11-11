@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import React from 'react';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
@@ -5,9 +6,9 @@ import LocationSearchBar from './LocationSearchBar';
 import { geocodeLocation, getPopularLocations } from '../../services/weatherApi';
 
 // Mock weatherApi
-jest.mock('../../services/weatherApi', () => ({
-  geocodeLocation: jest.fn(),
-  getPopularLocations: jest.fn(),
+vi.mock('../../services/weatherApi', () => ({
+  geocodeLocation: vi.fn(),
+  getPopularLocations: vi.fn(),
 }));
 
 describe('LocationSearchBar Component', () => {
@@ -20,7 +21,7 @@ describe('LocationSearchBar Component', () => {
 
   beforeEach(() => {
     // Mock functions
-    mockOnLocationSelect = jest.fn();
+    mockOnLocationSelect = vi.fn();
 
     mockLocation = {
       address: 'Seattle, WA, USA',
@@ -48,13 +49,13 @@ describe('LocationSearchBar Component', () => {
       {
         address: 'New York, NY, USA',
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
       },
     ];
 
     // Mock localStorage
-    getItemSpy = jest.spyOn(Storage.prototype, 'getItem');
-    setItemSpy = jest.spyOn(Storage.prototype, 'setItem');
+    getItemSpy = vi.spyOn(Storage.prototype, 'getItem');
+    setItemSpy = vi.spyOn(Storage.prototype, 'setItem');
     getItemSpy.mockReturnValue(null);
 
     // Mock API calls
@@ -62,13 +63,13 @@ describe('LocationSearchBar Component', () => {
     getPopularLocations.mockResolvedValue(mockPopularLocations);
 
     // Clear all mocks
-    jest.clearAllMocks();
-    jest.useFakeTimers();
+    vi.clearAllMocks();
+    vi.useFakeTimers();
   });
 
   afterEach(() => {
-    jest.useRealTimers();
-    jest.restoreAllMocks();
+    vi.useRealTimers();
+    vi.restoreAllMocks();
   });
 
   describe('Rendering', () => {
@@ -142,7 +143,7 @@ describe('LocationSearchBar Component', () => {
 
       // Fast-forward debounce timer
       act(() => {
-        jest.advanceTimersByTime(300);
+        vi.advanceTimersByTime(300);
       });
 
       await waitFor(() => {
@@ -157,7 +158,7 @@ describe('LocationSearchBar Component', () => {
       fireEvent.change(input, { target: { value: 'S' } });
 
       act(() => {
-        jest.advanceTimersByTime(300);
+        vi.advanceTimersByTime(300);
       });
 
       expect(geocodeLocation).not.toHaveBeenCalled();
@@ -170,17 +171,17 @@ describe('LocationSearchBar Component', () => {
 
       fireEvent.change(input, { target: { value: 'Sea' } });
       act(() => {
-        jest.advanceTimersByTime(100);
+        vi.advanceTimersByTime(100);
       });
 
       fireEvent.change(input, { target: { value: 'Seat' } });
       act(() => {
-        jest.advanceTimersByTime(100);
+        vi.advanceTimersByTime(100);
       });
 
       fireEvent.change(input, { target: { value: 'Seatt' } });
       act(() => {
-        jest.advanceTimersByTime(300);
+        vi.advanceTimersByTime(300);
       });
 
       await waitFor(() => {
@@ -190,7 +191,9 @@ describe('LocationSearchBar Component', () => {
     });
 
     it('shows loading indicator while searching', async () => {
-      geocodeLocation.mockImplementation(() => new Promise(resolve => setTimeout(() => resolve(mockSearchResults), 1000)));
+      geocodeLocation.mockImplementation(
+        () => new Promise((resolve) => setTimeout(() => resolve(mockSearchResults), 1000))
+      );
 
       render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
 
@@ -198,7 +201,7 @@ describe('LocationSearchBar Component', () => {
       fireEvent.change(input, { target: { value: 'Seattle' } });
 
       act(() => {
-        jest.advanceTimersByTime(300);
+        vi.advanceTimersByTime(300);
       });
 
       await waitFor(() => {
@@ -213,7 +216,7 @@ describe('LocationSearchBar Component', () => {
       fireEvent.change(input, { target: { value: 'Seattle' } });
 
       act(() => {
-        jest.advanceTimersByTime(300);
+        vi.advanceTimersByTime(300);
       });
 
       await waitFor(() => {
@@ -230,7 +233,7 @@ describe('LocationSearchBar Component', () => {
       fireEvent.change(input, { target: { value: 'Seattle' } });
 
       act(() => {
-        jest.advanceTimersByTime(300);
+        vi.advanceTimersByTime(300);
       });
 
       await waitFor(() => {
@@ -249,7 +252,7 @@ describe('LocationSearchBar Component', () => {
       fireEvent.change(input, { target: { value: 'Seattle' } });
 
       act(() => {
-        jest.advanceTimersByTime(300);
+        vi.advanceTimersByTime(300);
       });
 
       await waitFor(() => {
@@ -268,7 +271,7 @@ describe('LocationSearchBar Component', () => {
       fireEvent.change(input, { target: { value: 'Seattle' } });
 
       act(() => {
-        jest.advanceTimersByTime(300);
+        vi.advanceTimersByTime(300);
       });
 
       await waitFor(() => {
@@ -298,12 +301,15 @@ describe('LocationSearchBar Component', () => {
     });
 
     it('handles localStorage parse errors gracefully', () => {
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
       getItemSpy.mockReturnValue('invalid json');
 
       render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith('Error loading recent searches:', expect.any(Error));
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        'Error loading recent searches:',
+        expect.any(Error)
+      );
       consoleErrorSpy.mockRestore();
     });
   });
@@ -341,7 +347,7 @@ describe('LocationSearchBar Component', () => {
       fireEvent.change(input, { target: { value: 'Seattle' } });
 
       act(() => {
-        jest.advanceTimersByTime(300);
+        vi.advanceTimersByTime(300);
       });
 
       await waitFor(() => {
@@ -379,7 +385,7 @@ describe('LocationSearchBar Component', () => {
       fireEvent.change(input, { target: { value: 'XYZ' } });
 
       act(() => {
-        jest.advanceTimersByTime(300);
+        vi.advanceTimersByTime(300);
       });
 
       await waitFor(() => {

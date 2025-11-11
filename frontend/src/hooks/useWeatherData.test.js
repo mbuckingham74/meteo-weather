@@ -1,24 +1,25 @@
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import {
   useWeatherData,
   useCurrentWeather,
   useForecast,
   useHistoricalWeather,
-  useHourlyForecast
+  useHourlyForecast,
 } from './useWeatherData';
 import * as weatherApi from '../services/weatherApi';
 
 // Mock the weather API
-jest.mock('../services/weatherApi');
+vi.mock('../services/weatherApi');
 
 describe('useWeatherData hooks', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest.spyOn(console, 'error').mockImplementation(() => {});
+    vi.clearAllMocks();
+    vi.spyOn(console, 'error').mockImplementation(() => {});
   });
 
   afterEach(() => {
@@ -36,7 +37,7 @@ describe('useWeatherData hooks', () => {
 
     it('fetches current weather successfully', async () => {
       const mockData = {
-        currentConditions: { temp: 68, conditions: 'Clear' }
+        currentConditions: { temp: 68, conditions: 'Clear' },
       };
       weatherApi.getCurrentWeather.mockResolvedValue(mockData);
 
@@ -53,15 +54,11 @@ describe('useWeatherData hooks', () => {
 
     it('fetches forecast weather successfully', async () => {
       const mockData = {
-        days: [
-          { datetime: '2025-11-05', tempmax: 70, tempmin: 55 }
-        ]
+        days: [{ datetime: '2025-11-05', tempmax: 70, tempmin: 55 }],
       };
       weatherApi.getWeatherForecast.mockResolvedValue(mockData);
 
-      const { result } = renderHook(() =>
-        useWeatherData('Seattle, WA', 'forecast', { days: 7 })
-      );
+      const { result } = renderHook(() => useWeatherData('Seattle, WA', 'forecast', { days: 7 }));
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -73,15 +70,11 @@ describe('useWeatherData hooks', () => {
 
     it('fetches hourly forecast successfully', async () => {
       const mockData = {
-        hours: [
-          { datetime: '00:00:00', temp: 65 }
-        ]
+        hours: [{ datetime: '00:00:00', temp: 65 }],
       };
       weatherApi.getHourlyForecast.mockResolvedValue(mockData);
 
-      const { result } = renderHook(() =>
-        useWeatherData('Seattle, WA', 'hourly', { hours: 48 })
-      );
+      const { result } = renderHook(() => useWeatherData('Seattle, WA', 'hourly', { hours: 48 }));
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -93,16 +86,14 @@ describe('useWeatherData hooks', () => {
 
     it('fetches historical weather successfully', async () => {
       const mockData = {
-        days: [
-          { datetime: '2024-01-01', temp: 50 }
-        ]
+        days: [{ datetime: '2024-01-01', temp: 50 }],
       };
       weatherApi.getHistoricalWeather.mockResolvedValue(mockData);
 
       const { result } = renderHook(() =>
         useWeatherData('Seattle, WA', 'historical', {
           startDate: '2024-01-01',
-          endDate: '2024-01-31'
+          endDate: '2024-01-31',
         })
       );
 
@@ -137,9 +128,9 @@ describe('useWeatherData hooks', () => {
       const apiError = {
         response: {
           data: {
-            error: 'Invalid location'
-          }
-        }
+            error: 'Invalid location',
+          },
+        },
       };
       weatherApi.getCurrentWeather.mockRejectedValue(apiError);
 
@@ -164,9 +155,7 @@ describe('useWeatherData hooks', () => {
     });
 
     it('throws error for historical data without date range', async () => {
-      const { result } = renderHook(() =>
-        useWeatherData('Seattle, WA', 'historical', {})
-      );
+      const { result } = renderHook(() => useWeatherData('Seattle, WA', 'historical', {}));
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -177,9 +166,7 @@ describe('useWeatherData hooks', () => {
     });
 
     it('throws error for unknown data type', async () => {
-      const { result } = renderHook(() =>
-        useWeatherData('Seattle, WA', 'unknown', {})
-      );
+      const { result } = renderHook(() => useWeatherData('Seattle, WA', 'unknown', {}));
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -251,10 +238,9 @@ describe('useWeatherData hooks', () => {
       weatherApi.getCurrentWeather.mockResolvedValue(currentData);
       weatherApi.getWeatherForecast.mockResolvedValue(forecastData);
 
-      const { result, rerender } = renderHook(
-        ({ type }) => useWeatherData('Seattle, WA', type),
-        { initialProps: { type: 'current' } }
-      );
+      const { result, rerender } = renderHook(({ type }) => useWeatherData('Seattle, WA', type), {
+        initialProps: { type: 'current' },
+      });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -327,9 +313,7 @@ describe('useWeatherData hooks', () => {
       const mockData = { days: [] };
       weatherApi.getHistoricalWeather.mockResolvedValue(mockData);
 
-      renderHook(() =>
-        useHistoricalWeather('Seattle, WA', '2024-01-01', '2024-01-31')
-      );
+      renderHook(() => useHistoricalWeather('Seattle, WA', '2024-01-01', '2024-01-31'));
 
       await waitFor(() => {
         expect(weatherApi.getHistoricalWeather).toHaveBeenCalledWith(

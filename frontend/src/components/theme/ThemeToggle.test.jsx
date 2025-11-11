@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
@@ -5,16 +6,16 @@ import ThemeToggle from './ThemeToggle';
 import { useTheme } from '../../contexts/ThemeContext';
 
 // Mock ThemeContext
-jest.mock('../../contexts/ThemeContext', () => ({
-  useTheme: jest.fn(),
+vi.mock('../../contexts/ThemeContext', () => ({
+  useTheme: vi.fn(),
 }));
 
 describe('ThemeToggle Component', () => {
   let mockSetTheme;
 
   beforeEach(() => {
-    mockSetTheme = jest.fn();
-    jest.clearAllMocks();
+    mockSetTheme = vi.fn();
+    vi.clearAllMocks();
   });
 
   describe('Rendering', () => {

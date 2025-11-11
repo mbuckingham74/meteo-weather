@@ -3,6 +3,7 @@
  * Testing AI-powered location finder API integration
  */
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { validateQuery, parseLocationQuery } from './locationFinderService';
 
 describe('Location Finder Service', () => {
@@ -12,7 +13,7 @@ describe('Location Finder Service', () => {
     // Save original fetch
     originalFetch = global.fetch;
     // Reset mocks
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
@@ -29,7 +30,7 @@ describe('Location Finder Service', () => {
         tokensUsed: 250,
       };
 
-      global.fetch = jest.fn(() =>
+      global.fetch = vi.fn(() =>
         Promise.resolve({
           ok: true,
           json: () => Promise.resolve(mockResponse),
@@ -57,7 +58,7 @@ describe('Location Finder Service', () => {
         tokensUsed: 200,
       };
 
-      global.fetch = jest.fn(() =>
+      global.fetch = vi.fn(() =>
         Promise.resolve({
           ok: true,
           json: () => Promise.resolve(mockResponse),
@@ -71,7 +72,7 @@ describe('Location Finder Service', () => {
     });
 
     it('handles API error responses', async () => {
-      global.fetch = jest.fn(() =>
+      global.fetch = vi.fn(() =>
         Promise.resolve({
           ok: false,
           status: 400,
@@ -83,13 +84,13 @@ describe('Location Finder Service', () => {
     });
 
     it('handles network errors', async () => {
-      global.fetch = jest.fn(() => Promise.reject(new Error('Network error')));
+      global.fetch = vi.fn(() => Promise.reject(new Error('Network error')));
 
       await expect(validateQuery('test query')).rejects.toThrow('Network error');
     });
 
     it('sends correct API endpoint', async () => {
-      global.fetch = jest.fn(() =>
+      global.fetch = vi.fn(() =>
         Promise.resolve({
           ok: true,
           json: () =>
@@ -130,7 +131,7 @@ describe('Location Finder Service', () => {
         cost: '$0.005',
       };
 
-      global.fetch = jest.fn(() =>
+      global.fetch = vi.fn(() =>
         Promise.resolve({
           ok: true,
           json: () => Promise.resolve(mockResponse),
@@ -163,7 +164,7 @@ describe('Location Finder Service', () => {
         cost: '$0.007',
       };
 
-      global.fetch = jest.fn(() =>
+      global.fetch = vi.fn(() =>
         Promise.resolve({
           ok: true,
           json: () => Promise.resolve(mockResponse),
@@ -180,7 +181,7 @@ describe('Location Finder Service', () => {
     });
 
     it('sends current location to API', async () => {
-      global.fetch = jest.fn(() =>
+      global.fetch = vi.fn(() =>
         Promise.resolve({
           ok: true,
           json: () =>
@@ -204,7 +205,7 @@ describe('Location Finder Service', () => {
     });
 
     it('handles API error responses', async () => {
-      global.fetch = jest.fn(() =>
+      global.fetch = vi.fn(() =>
         Promise.resolve({
           ok: false,
           status: 500,
@@ -216,7 +217,7 @@ describe('Location Finder Service', () => {
     });
 
     it('handles network errors', async () => {
-      global.fetch = jest.fn(() => Promise.reject(new Error('Connection timeout')));
+      global.fetch = vi.fn(() => Promise.reject(new Error('Connection timeout')));
 
       await expect(parseLocationQuery('test query')).rejects.toThrow('Connection timeout');
     });
@@ -239,7 +240,7 @@ describe('Location Finder Service', () => {
         cost: '$0.010',
       };
 
-      global.fetch = jest.fn(() =>
+      global.fetch = vi.fn(() =>
         Promise.resolve({
           ok: true,
           json: () => Promise.resolve(mockResponse),
@@ -262,7 +263,7 @@ describe('Location Finder Service', () => {
     });
 
     it('handles missing optional current location', async () => {
-      global.fetch = jest.fn(() =>
+      global.fetch = vi.fn(() =>
         Promise.resolve({
           ok: true,
           json: () =>
@@ -286,7 +287,7 @@ describe('Location Finder Service', () => {
 
   describe('API URL Configuration', () => {
     it('uses correct API endpoint for validation', async () => {
-      global.fetch = jest.fn(() =>
+      global.fetch = vi.fn(() =>
         Promise.resolve({
           ok: true,
           json: () =>
@@ -308,7 +309,7 @@ describe('Location Finder Service', () => {
     });
 
     it('uses correct API endpoint for parsing', async () => {
-      global.fetch = jest.fn(() =>
+      global.fetch = vi.fn(() =>
         Promise.resolve({
           ok: true,
           json: () =>

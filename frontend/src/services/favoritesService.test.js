@@ -3,6 +3,7 @@
  * Testing localStorage-based favorites management
  */
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
   getFavorites,
   addFavorite,
@@ -42,14 +43,12 @@ describe('Favorites Service', () => {
 
   beforeEach(() => {
     // Create fresh spies for each test
-    getItemSpy = jest.spyOn(Storage.prototype, 'getItem').mockReturnValue(null);
-    setItemSpy = jest.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {});
-    removeItemSpy = jest
-      .spyOn(Storage.prototype, 'removeItem')
-      .mockImplementation(() => {});
+    getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockReturnValue(null);
+    setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {});
+    removeItemSpy = vi.spyOn(Storage.prototype, 'removeItem').mockImplementation(() => {});
 
     // Mock console.error to avoid cluttering test output
-    jest.spyOn(console, 'error').mockImplementation(() => {});
+    vi.spyOn(console, 'error').mockImplementation(() => {});
   });
 
   afterEach(() => {
@@ -86,10 +85,7 @@ describe('Favorites Service', () => {
 
       const result = getFavorites();
 
-      expect(console.error).toHaveBeenCalledWith(
-        'Error loading favorites:',
-        expect.any(Error)
-      );
+      expect(console.error).toHaveBeenCalledWith('Error loading favorites:', expect.any(Error));
       expect(result).toEqual([]);
     });
 
@@ -98,10 +94,7 @@ describe('Favorites Service', () => {
 
       const result = getFavorites();
 
-      expect(console.error).toHaveBeenCalledWith(
-        'Error loading favorites:',
-        expect.any(Error)
-      );
+      expect(console.error).toHaveBeenCalledWith('Error loading favorites:', expect.any(Error));
       expect(result).toEqual([]);
     });
   });
@@ -160,10 +153,7 @@ describe('Favorites Service', () => {
       const result = addFavorite(mockLocation1);
 
       expect(result).toBe(false);
-      expect(console.error).toHaveBeenCalledWith(
-        'Error adding favorite:',
-        expect.any(Error)
-      );
+      expect(console.error).toHaveBeenCalledWith('Error adding favorite:', expect.any(Error));
     });
 
     it('generates correct ID format', () => {
@@ -187,9 +177,7 @@ describe('Favorites Service', () => {
       // Verify timestamp is in ISO format and within test duration
       expect(savedData[0].addedAt).toBeTruthy();
       expect(new Date(savedData[0].addedAt).toISOString()).toBe(savedData[0].addedAt);
-      expect(savedData[0].addedAt >= beforeAdd && savedData[0].addedAt <= afterAdd).toBe(
-        true
-      );
+      expect(savedData[0].addedAt >= beforeAdd && savedData[0].addedAt <= afterAdd).toBe(true);
     });
   });
 
@@ -238,10 +226,7 @@ describe('Favorites Service', () => {
       const result = removeFavorite('51.5074,-0.1278');
 
       expect(result).toBe(false);
-      expect(console.error).toHaveBeenCalledWith(
-        'Error removing favorite:',
-        expect.any(Error)
-      );
+      expect(console.error).toHaveBeenCalledWith('Error removing favorite:', expect.any(Error));
     });
   });
 
@@ -298,10 +283,7 @@ describe('Favorites Service', () => {
       const result = clearFavorites();
 
       expect(result).toBe(false);
-      expect(console.error).toHaveBeenCalledWith(
-        'Error clearing favorites:',
-        expect.any(Error)
-      );
+      expect(console.error).toHaveBeenCalledWith('Error clearing favorites:', expect.any(Error));
     });
 
     it('works even when no favorites exist', () => {
@@ -321,10 +303,7 @@ describe('Favorites Service', () => {
       const result = reorderFavorites(reordered);
 
       expect(result).toBe(true);
-      expect(setItemSpy).toHaveBeenCalledWith(
-        'meteo_favorites',
-        JSON.stringify(reordered)
-      );
+      expect(setItemSpy).toHaveBeenCalledWith('meteo_favorites', JSON.stringify(reordered));
     });
 
     it('handles empty array', () => {
@@ -342,10 +321,7 @@ describe('Favorites Service', () => {
       const result = reorderFavorites(mockFavorites);
 
       expect(result).toBe(false);
-      expect(console.error).toHaveBeenCalledWith(
-        'Error reordering favorites:',
-        expect.any(Error)
-      );
+      expect(console.error).toHaveBeenCalledWith('Error reordering favorites:', expect.any(Error));
     });
 
     it('overwrites existing favorites with new order', () => {
@@ -375,9 +351,7 @@ describe('Favorites Service', () => {
       expect(added).toBe(true);
 
       // Mock localStorage to return the added favorite
-      getItemSpy.mockReturnValue(
-        setItemSpy.mock.calls[setItemSpy.mock.calls.length - 1][1]
-      );
+      getItemSpy.mockReturnValue(setItemSpy.mock.calls[setItemSpy.mock.calls.length - 1][1]);
 
       // Check if favorite
       expect(isFavorite(51.5074, -0.1278)).toBe(true);
@@ -387,9 +361,7 @@ describe('Favorites Service', () => {
       expect(removed).toBe(true);
 
       // Update mock to reflect removal
-      getItemSpy.mockReturnValue(
-        setItemSpy.mock.calls[setItemSpy.mock.calls.length - 1][1]
-      );
+      getItemSpy.mockReturnValue(setItemSpy.mock.calls[setItemSpy.mock.calls.length - 1][1]);
 
       // Verify removal
       expect(isFavorite(51.5074, -0.1278)).toBe(false);
@@ -400,15 +372,11 @@ describe('Favorites Service', () => {
 
       // Add first location
       addFavorite(mockLocation1);
-      getItemSpy.mockReturnValue(
-        setItemSpy.mock.calls[setItemSpy.mock.calls.length - 1][1]
-      );
+      getItemSpy.mockReturnValue(setItemSpy.mock.calls[setItemSpy.mock.calls.length - 1][1]);
 
       // Add second location
       addFavorite(mockLocation2);
-      getItemSpy.mockReturnValue(
-        setItemSpy.mock.calls[setItemSpy.mock.calls.length - 1][1]
-      );
+      getItemSpy.mockReturnValue(setItemSpy.mock.calls[setItemSpy.mock.calls.length - 1][1]);
 
       // Verify both exist
       expect(isFavorite(51.5074, -0.1278)).toBe(true);
@@ -416,9 +384,7 @@ describe('Favorites Service', () => {
 
       // Remove first
       removeFavorite('51.5074,-0.1278');
-      getItemSpy.mockReturnValue(
-        setItemSpy.mock.calls[setItemSpy.mock.calls.length - 1][1]
-      );
+      getItemSpy.mockReturnValue(setItemSpy.mock.calls[setItemSpy.mock.calls.length - 1][1]);
 
       // Verify first removed, second remains
       expect(isFavorite(51.5074, -0.1278)).toBe(false);

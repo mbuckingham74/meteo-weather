@@ -3,12 +3,13 @@
  * Testing authentication state management and persistence
  */
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { render, screen, waitFor, act } from '@testing-library/react';
 import { AuthProvider, useAuth } from './AuthContext';
 import * as authApi from '../services/authApi';
 
 // Mock authApi
-jest.mock('../services/authApi');
+vi.mock('../services/authApi');
 
 // Test component
 function TestComponent() {
@@ -33,9 +34,7 @@ function TestComponent() {
       <div data-testid="loading">{loading ? 'loading' : 'ready'}</div>
       <div data-testid="error">{error || 'no-error'}</div>
       <div data-testid="is-authenticated">{isAuthenticated ? 'yes' : 'no'}</div>
-      <button
-        onClick={() => register('test@example.com', 'password123', 'Test User')}
-      >
+      <button onClick={() => register('test@example.com', 'password123', 'Test User')}>
         Register
       </button>
       <button onClick={() => login('test@example.com', 'password123')}>Login</button>
@@ -52,23 +51,21 @@ describe('AuthContext', () => {
 
   beforeEach(() => {
     // Mock localStorage
-    getItemSpy = jest.spyOn(Storage.prototype, 'getItem').mockReturnValue(null);
-    setItemSpy = jest.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {});
-    removeItemSpy = jest
-      .spyOn(Storage.prototype, 'removeItem')
-      .mockImplementation(() => {});
+    getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockReturnValue(null);
+    setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {});
+    removeItemSpy = vi.spyOn(Storage.prototype, 'removeItem').mockImplementation(() => {});
 
     // Mock console.error
-    jest.spyOn(console, 'error').mockImplementation(() => {});
+    vi.spyOn(console, 'error').mockImplementation(() => {});
 
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
     getItemSpy.mockRestore();
     setItemSpy.mockRestore();
     removeItemSpy.mockRestore();
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe('Provider', () => {
@@ -215,7 +212,6 @@ describe('AuthContext', () => {
       expect(setItemSpy).toHaveBeenCalledWith('refreshToken', 'new-refresh-token');
       expect(screen.getByTestId('user')).toHaveTextContent(JSON.stringify(mockUser));
     });
-
   });
 
   describe('login', () => {
@@ -251,7 +247,6 @@ describe('AuthContext', () => {
       expect(setItemSpy).toHaveBeenCalledWith('accessToken', 'new-access-token');
       expect(screen.getByTestId('user')).toHaveTextContent(JSON.stringify(mockUser));
     });
-
   });
 
   describe('logout', () => {
@@ -369,7 +364,7 @@ describe('AuthContext', () => {
         }
       };
 
-      const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
       render(<TestWithoutProvider />);
 
@@ -395,10 +390,7 @@ describe('AuthContext', () => {
         expect(screen.getByTestId('loading')).toHaveTextContent('ready');
       });
 
-      expect(console.error).toHaveBeenCalledWith(
-        'Auth initialization error:',
-        expect.any(Error)
-      );
+      expect(console.error).toHaveBeenCalledWith('Auth initialization error:', expect.any(Error));
     });
   });
 });

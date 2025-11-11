@@ -3,14 +3,15 @@
  * Testing temperature unit preference management
  */
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { render, screen, act, fireEvent } from '@testing-library/react';
 import { TemperatureUnitProvider, useTemperatureUnit } from './TemperatureUnitContext';
 import { AuthProvider } from './AuthContext';
 
 // Mock authApi to prevent actual API calls
-jest.mock('../services/authApi', () => ({
-  getUserPreferences: jest.fn(),
-  updateUserPreferences: jest.fn(),
+vi.mock('../services/authApi', () => ({
+  getUserPreferences: vi.fn(),
+  updateUserPreferences: vi.fn(),
 }));
 
 // Test component that uses the context
@@ -28,11 +29,7 @@ function TestComponent() {
 
 // Helper to render with required providers
 function renderWithProviders(component) {
-  return render(
-    <AuthProvider>
-      {component}
-    </AuthProvider>
-  );
+  return render(<AuthProvider>{component}</AuthProvider>);
 }
 
 describe('TemperatureUnitContext', () => {
@@ -40,9 +37,9 @@ describe('TemperatureUnitContext', () => {
 
   beforeEach(() => {
     // Create fresh spies for each test
-    getItemSpy = jest.spyOn(Storage.prototype, 'getItem').mockReturnValue(null);
-    setItemSpy = jest.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {});
-    removeItemSpy = jest.spyOn(Storage.prototype, 'removeItem').mockImplementation(() => {});
+    getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockReturnValue(null);
+    setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {});
+    removeItemSpy = vi.spyOn(Storage.prototype, 'removeItem').mockImplementation(() => {});
   });
 
   afterEach(() => {

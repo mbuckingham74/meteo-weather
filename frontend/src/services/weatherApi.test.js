@@ -3,20 +3,22 @@
  * Testing weather API client functions
  */
 
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+
 // Mock axios before any imports
-jest.mock('axios', () => ({
+vi.mock('axios', () => ({
   default: {
-    get: jest.fn(),
+    get: vi.fn(),
     interceptors: {
       response: {
-        use: jest.fn(),
+        use: vi.fn(),
       },
     },
   },
-  get: jest.fn(),
+  get: vi.fn(),
   interceptors: {
     response: {
-      use: jest.fn(),
+      use: vi.fn(),
     },
   },
 }));
@@ -39,7 +41,7 @@ describe('Weather API Service', () => {
   const API_BASE_URL = 'http://localhost:5001/api';
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('getCurrentWeather', () => {
@@ -54,9 +56,7 @@ describe('Weather API Service', () => {
 
       const result = await getCurrentWeather('London,UK');
 
-      expect(axios.get).toHaveBeenCalledWith(
-        `${API_BASE_URL}/weather/current/London%2CUK`
-      );
+      expect(axios.get).toHaveBeenCalledWith(`${API_BASE_URL}/weather/current/London%2CUK`);
       expect(result).toEqual(mockData);
     });
 
@@ -78,15 +78,12 @@ describe('Weather API Service', () => {
     });
 
     it('logs errors to console', async () => {
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
       axios.get.mockRejectedValue(new Error('API Error'));
 
       await expect(getCurrentWeather('London')).rejects.toThrow();
 
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'Error fetching current weather:',
-        expect.any(Error)
-      );
+      expect(consoleSpy).toHaveBeenCalledWith('Error fetching current weather:', expect.any(Error));
 
       consoleSpy.mockRestore();
     });
@@ -99,9 +96,7 @@ describe('Weather API Service', () => {
 
       const result = await getWeatherForecast('Seattle');
 
-      expect(axios.get).toHaveBeenCalledWith(
-        `${API_BASE_URL}/weather/forecast/Seattle?days=7`
-      );
+      expect(axios.get).toHaveBeenCalledWith(`${API_BASE_URL}/weather/forecast/Seattle?days=7`);
       expect(result).toEqual(mockData);
     });
 
@@ -111,9 +106,7 @@ describe('Weather API Service', () => {
 
       await getWeatherForecast('Seattle', 14);
 
-      expect(axios.get).toHaveBeenCalledWith(
-        `${API_BASE_URL}/weather/forecast/Seattle?days=14`
-      );
+      expect(axios.get).toHaveBeenCalledWith(`${API_BASE_URL}/weather/forecast/Seattle?days=14`);
     });
 
     it('encodes location in URL', async () => {
@@ -121,9 +114,7 @@ describe('Weather API Service', () => {
 
       await getWeatherForecast('New York, NY');
 
-      expect(axios.get).toHaveBeenCalledWith(
-        expect.stringContaining('New%20York%2C%20NY')
-      );
+      expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('New%20York%2C%20NY'));
     });
 
     it('handles errors', async () => {
@@ -140,9 +131,7 @@ describe('Weather API Service', () => {
 
       const result = await getHourlyForecast('Boston');
 
-      expect(axios.get).toHaveBeenCalledWith(
-        `${API_BASE_URL}/weather/hourly/Boston?hours=48`
-      );
+      expect(axios.get).toHaveBeenCalledWith(`${API_BASE_URL}/weather/hourly/Boston?hours=48`);
       expect(result).toEqual(mockData);
     });
 
@@ -152,9 +141,7 @@ describe('Weather API Service', () => {
 
       await getHourlyForecast('Boston', 72);
 
-      expect(axios.get).toHaveBeenCalledWith(
-        `${API_BASE_URL}/weather/hourly/Boston?hours=72`
-      );
+      expect(axios.get).toHaveBeenCalledWith(`${API_BASE_URL}/weather/hourly/Boston?hours=72`);
     });
 
     it('handles errors', async () => {
@@ -169,18 +156,11 @@ describe('Weather API Service', () => {
       const mockData = { historical: [] };
       axios.get.mockResolvedValue({ data: mockData });
 
-      const result = await getHistoricalWeather(
-        'Chicago',
-        '2025-01-01',
-        '2025-01-31'
-      );
+      const result = await getHistoricalWeather('Chicago', '2025-01-01', '2025-01-31');
 
-      expect(axios.get).toHaveBeenCalledWith(
-        `${API_BASE_URL}/weather/historical/Chicago`,
-        {
-          params: { start: '2025-01-01', end: '2025-01-31' },
-        }
-      );
+      expect(axios.get).toHaveBeenCalledWith(`${API_BASE_URL}/weather/historical/Chicago`, {
+        params: { start: '2025-01-01', end: '2025-01-31' },
+      });
       expect(result).toEqual(mockData);
     });
 
@@ -198,9 +178,9 @@ describe('Weather API Service', () => {
     it('handles errors', async () => {
       axios.get.mockRejectedValue(new Error('Historical error'));
 
-      await expect(
-        getHistoricalWeather('Chicago', '2025-01-01', '2025-01-31')
-      ).rejects.toThrow('Historical error');
+      await expect(getHistoricalWeather('Chicago', '2025-01-01', '2025-01-31')).rejects.toThrow(
+        'Historical error'
+      );
     });
   });
 

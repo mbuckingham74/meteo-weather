@@ -3,6 +3,7 @@
  * Testing multi-tier geolocation fallback system
  */
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
   getCurrentLocation,
   isGeolocationSupported,
@@ -10,8 +11,8 @@ import {
 } from './geolocationService';
 
 // Mock the weatherApi reverseGeocode function
-jest.mock('./weatherApi', () => ({
-  reverseGeocode: jest.fn(),
+vi.mock('./weatherApi', () => ({
+  reverseGeocode: vi.fn(),
 }));
 
 const { reverseGeocode } = require('./weatherApi');
@@ -22,7 +23,7 @@ describe('Geolocation Service', () => {
 
   beforeEach(() => {
     // Reset all mocks
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     reverseGeocode.mockClear();
 
     // Mock successful reverse geocoding
@@ -30,12 +31,12 @@ describe('Geolocation Service', () => {
       address: 'Seattle, WA',
       latitude: 47.6062,
       longitude: -122.3321,
-      timezone: 'America/Los_Angeles'
+      timezone: 'America/Los_Angeles',
     });
 
     // Create mock geolocation object
     mockGeolocation = {
-      getCurrentPosition: jest.fn(),
+      getCurrentPosition: vi.fn(),
     };
 
     // Setup navigator.geolocation mock
@@ -46,12 +47,12 @@ describe('Geolocation Service', () => {
     });
 
     // Mock fetch for IP geolocation
-    mockFetch = jest.fn();
+    mockFetch = vi.fn();
     global.fetch = mockFetch;
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe('isGeolocationSupported', () => {
@@ -74,7 +75,7 @@ describe('Geolocation Service', () => {
 
     it('returns true when permission is granted', async () => {
       global.navigator.permissions = {
-        query: jest.fn().mockResolvedValue({ state: 'granted' }),
+        query: vi.fn().mockResolvedValue({ state: 'granted' }),
       };
       const result = await canRequestLocation();
       expect(result).toBe(true);
@@ -82,7 +83,7 @@ describe('Geolocation Service', () => {
 
     it('returns true when permission is prompt', async () => {
       global.navigator.permissions = {
-        query: jest.fn().mockResolvedValue({ state: 'prompt' }),
+        query: vi.fn().mockResolvedValue({ state: 'prompt' }),
       };
       const result = await canRequestLocation();
       expect(result).toBe(true);
@@ -90,7 +91,7 @@ describe('Geolocation Service', () => {
 
     it('returns false when permission is denied', async () => {
       global.navigator.permissions = {
-        query: jest.fn().mockResolvedValue({ state: 'denied' }),
+        query: vi.fn().mockResolvedValue({ state: 'denied' }),
       };
       const result = await canRequestLocation();
       expect(result).toBe(false);
@@ -98,7 +99,7 @@ describe('Geolocation Service', () => {
 
     it('falls back to geolocation support check on error', async () => {
       global.navigator.permissions = {
-        query: jest.fn().mockRejectedValue(new Error('Permission query failed')),
+        query: vi.fn().mockRejectedValue(new Error('Permission query failed')),
       };
       const result = await canRequestLocation();
       expect(result).toBe(true); // Falls back to isGeolocationSupported
@@ -196,14 +197,15 @@ describe('Geolocation Service', () => {
       // Mock IP geolocation success
       mockFetch.mockResolvedValue({
         ok: true,
-        json: () => Promise.resolve({
-          city: 'Detroit',
-          region_code: 'MI',
-          country_name: 'United States',
-          latitude: 42.3314,
-          longitude: -83.0458,
-          timezone: 'America/Detroit',
-        }),
+        json: () =>
+          Promise.resolve({
+            city: 'Detroit',
+            region_code: 'MI',
+            country_name: 'United States',
+            latitude: 42.3314,
+            longitude: -83.0458,
+            timezone: 'America/Detroit',
+          }),
       });
 
       const result = await getCurrentLocation();
@@ -230,14 +232,15 @@ describe('Geolocation Service', () => {
 
       mockFetch.mockResolvedValue({
         ok: true,
-        json: () => Promise.resolve({
-          city: 'Unknown',
-          region_code: 'MI',
-          country_name: 'United States',
-          latitude: 42.3314,
-          longitude: -83.0458,
-          timezone: 'America/Detroit',
-        }),
+        json: () =>
+          Promise.resolve({
+            city: 'Unknown',
+            region_code: 'MI',
+            country_name: 'United States',
+            latitude: 42.3314,
+            longitude: -83.0458,
+            timezone: 'America/Detroit',
+          }),
       });
 
       const result = await getCurrentLocation();
@@ -262,14 +265,15 @@ describe('Geolocation Service', () => {
       // Second service succeeds
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({
-          city: 'New York',
-          region: 'NY',
-          country: 'United States',
-          latitude: 40.7128,
-          longitude: -74.0060,
-          timezone: 'America/New_York',
-        }),
+        json: () =>
+          Promise.resolve({
+            city: 'New York',
+            region: 'NY',
+            country: 'United States',
+            latitude: 40.7128,
+            longitude: -74.006,
+            timezone: 'America/New_York',
+          }),
       });
 
       const result = await getCurrentLocation();
@@ -289,9 +293,7 @@ describe('Geolocation Service', () => {
       // All services fail
       mockFetch.mockRejectedValue(new Error('Network error'));
 
-      await expect(getCurrentLocation()).rejects.toThrow(
-        'Location permission denied'
-      );
+      await expect(getCurrentLocation()).rejects.toThrow('Location permission denied');
     });
   });
 

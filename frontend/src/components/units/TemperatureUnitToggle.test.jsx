@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
@@ -5,16 +6,16 @@ import TemperatureUnitToggle from './TemperatureUnitToggle';
 import { useTemperatureUnit } from '../../contexts/TemperatureUnitContext';
 
 // Mock TemperatureUnitContext
-jest.mock('../../contexts/TemperatureUnitContext', () => ({
-  useTemperatureUnit: jest.fn(),
+vi.mock('../../contexts/TemperatureUnitContext', () => ({
+  useTemperatureUnit: vi.fn(),
 }));
 
 describe('TemperatureUnitToggle Component', () => {
   let mockToggleUnit;
 
   beforeEach(() => {
-    mockToggleUnit = jest.fn();
-    jest.clearAllMocks();
+    mockToggleUnit = vi.fn();
+    vi.clearAllMocks();
   });
 
   describe('Rendering', () => {

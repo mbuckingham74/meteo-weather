@@ -3,16 +3,17 @@
  * Testing theme management with light/dark/auto modes
  */
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { render, screen, waitFor, act } from '@testing-library/react';
 import { ThemeProvider, useTheme } from './ThemeContext';
 import * as authApi from '../services/authApi';
 
 // Mock authApi
-jest.mock('../services/authApi');
+vi.mock('../services/authApi');
 
 // Mock AuthContext
-jest.mock('./AuthContext', () => ({
-  useAuth: jest.fn(() => ({
+vi.mock('./AuthContext', () => ({
+  useAuth: vi.fn(() => ({
     isAuthenticated: false,
     accessToken: null,
     refreshToken: null,
@@ -20,7 +21,7 @@ jest.mock('./AuthContext', () => ({
   })),
 }));
 
-const mockUseAuth = require('./AuthContext').useAuth;
+import { useAuth as mockUseAuth } from './AuthContext';
 
 // Test component
 function TestComponent() {
@@ -53,31 +54,31 @@ describe('ThemeContext', () => {
     });
 
     // Mock localStorage
-    getItemSpy = jest.spyOn(Storage.prototype, 'getItem').mockReturnValue(null);
-    setItemSpy = jest.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {});
+    getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockReturnValue(null);
+    setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {});
 
     // Mock document.documentElement.setAttribute
-    setAttributeSpy = jest.spyOn(document.documentElement, 'setAttribute');
+    setAttributeSpy = vi.spyOn(document.documentElement, 'setAttribute');
 
     // Mock window.matchMedia
     matchMediaMock = {
       matches: false,
-      addEventListener: jest.fn(),
-      removeEventListener: jest.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
     };
-    window.matchMedia = jest.fn(() => matchMediaMock);
+    window.matchMedia = vi.fn(() => matchMediaMock);
 
     // Mock console.error
-    jest.spyOn(console, 'error').mockImplementation(() => {});
+    vi.spyOn(console, 'error').mockImplementation(() => {});
 
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
     getItemSpy.mockRestore();
     setItemSpy.mockRestore();
     setAttributeSpy.mockRestore();
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe('Provider - Guest Mode', () => {
@@ -332,10 +333,7 @@ describe('ThemeContext', () => {
       });
 
       expect(window.matchMedia).toHaveBeenCalledWith('(prefers-color-scheme: dark)');
-      expect(matchMediaMock.addEventListener).toHaveBeenCalledWith(
-        'change',
-        expect.any(Function)
-      );
+      expect(matchMediaMock.addEventListener).toHaveBeenCalledWith('change', expect.any(Function));
     });
 
     it('updates theme when system preference changes', async () => {

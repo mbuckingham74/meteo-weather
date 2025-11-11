@@ -3,6 +3,7 @@
  * Testing authentication and user management API functions
  */
 
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import {
   registerUser,
   loginUser,
@@ -20,7 +21,7 @@ import {
 } from './authApi';
 
 // Mock fetch
-global.fetch = jest.fn();
+global.fetch = vi.fn();
 
 describe('Auth API Service', () => {
   const API_BASE_URL = 'http://localhost:5001/api';
@@ -28,7 +29,7 @@ describe('Auth API Service', () => {
   const mockRefreshToken = 'mock-refresh-token-67890';
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     global.fetch.mockClear();
   });
 
@@ -66,9 +67,9 @@ describe('Auth API Service', () => {
         json: async () => ({ error: 'Email already exists' }),
       });
 
-      await expect(
-        registerUser('test@example.com', 'password123', 'Test User')
-      ).rejects.toThrow('Email already exists');
+      await expect(registerUser('test@example.com', 'password123', 'Test User')).rejects.toThrow(
+        'Email already exists'
+      );
     });
 
     it('handles registration errors without error message', async () => {
@@ -77,9 +78,9 @@ describe('Auth API Service', () => {
         json: async () => ({}),
       });
 
-      await expect(
-        registerUser('test@example.com', 'password123', 'Test User')
-      ).rejects.toThrow('Registration failed');
+      await expect(registerUser('test@example.com', 'password123', 'Test User')).rejects.toThrow(
+        'Registration failed'
+      );
     });
   });
 
@@ -117,9 +118,7 @@ describe('Auth API Service', () => {
         json: async () => ({ error: 'Invalid credentials' }),
       });
 
-      await expect(loginUser('test@example.com', 'wrong')).rejects.toThrow(
-        'Invalid credentials'
-      );
+      await expect(loginUser('test@example.com', 'wrong')).rejects.toThrow('Invalid credentials');
     });
 
     it('handles login errors without error message', async () => {
@@ -170,9 +169,7 @@ describe('Auth API Service', () => {
         json: async () => ({}),
       });
 
-      await expect(getCurrentUser(mockAccessToken)).rejects.toThrow(
-        'Failed to fetch user profile'
-      );
+      await expect(getCurrentUser(mockAccessToken)).rejects.toThrow('Failed to fetch user profile');
     });
   });
 
@@ -209,9 +206,7 @@ describe('Auth API Service', () => {
         json: async () => ({ error: 'Validation failed' }),
       });
 
-      await expect(updateUserProfile(mockAccessToken, {})).rejects.toThrow(
-        'Validation failed'
-      );
+      await expect(updateUserProfile(mockAccessToken, {})).rejects.toThrow('Validation failed');
     });
 
     it('handles update errors without error message', async () => {
@@ -257,9 +252,9 @@ describe('Auth API Service', () => {
         json: async () => ({ error: 'Current password incorrect' }),
       });
 
-      await expect(
-        changePassword(mockAccessToken, 'wrong', 'newPass456')
-      ).rejects.toThrow('Current password incorrect');
+      await expect(changePassword(mockAccessToken, 'wrong', 'newPass456')).rejects.toThrow(
+        'Current password incorrect'
+      );
     });
 
     it('handles password change errors without error message', async () => {
@@ -268,9 +263,9 @@ describe('Auth API Service', () => {
         json: async () => ({}),
       });
 
-      await expect(
-        changePassword(mockAccessToken, 'oldPass', 'newPass')
-      ).rejects.toThrow('Failed to change password');
+      await expect(changePassword(mockAccessToken, 'oldPass', 'newPass')).rejects.toThrow(
+        'Failed to change password'
+      );
     });
   });
 
@@ -304,9 +299,7 @@ describe('Auth API Service', () => {
         json: async () => ({ error: 'Invalid refresh token' }),
       });
 
-      await expect(refreshAccessToken(mockRefreshToken)).rejects.toThrow(
-        'Invalid refresh token'
-      );
+      await expect(refreshAccessToken(mockRefreshToken)).rejects.toThrow('Invalid refresh token');
     });
 
     it('handles refresh token errors without error message', async () => {
@@ -315,9 +308,7 @@ describe('Auth API Service', () => {
         json: async () => ({}),
       });
 
-      await expect(refreshAccessToken(mockRefreshToken)).rejects.toThrow(
-        'Failed to refresh token'
-      );
+      await expect(refreshAccessToken(mockRefreshToken)).rejects.toThrow('Failed to refresh token');
     });
   });
 
@@ -491,9 +482,7 @@ describe('Auth API Service', () => {
         json: async () => ({}),
       });
 
-      await expect(getCloudFavorites(mockAccessToken)).rejects.toThrow(
-        'Failed to fetch favorites'
-      );
+      await expect(getCloudFavorites(mockAccessToken)).rejects.toThrow('Failed to fetch favorites');
     });
   });
 
@@ -526,9 +515,7 @@ describe('Auth API Service', () => {
         json: async () => ({ error: 'Duplicate favorite' }),
       });
 
-      await expect(addCloudFavorite(mockAccessToken, {})).rejects.toThrow(
-        'Duplicate favorite'
-      );
+      await expect(addCloudFavorite(mockAccessToken, {})).rejects.toThrow('Duplicate favorite');
     });
 
     it('handles add favorite errors without error message', async () => {
@@ -537,9 +524,7 @@ describe('Auth API Service', () => {
         json: async () => ({}),
       });
 
-      await expect(addCloudFavorite(mockAccessToken, {})).rejects.toThrow(
-        'Failed to add favorite'
-      );
+      await expect(addCloudFavorite(mockAccessToken, {})).rejects.toThrow('Failed to add favorite');
     });
   });
 
@@ -555,15 +540,12 @@ describe('Auth API Service', () => {
 
       const result = await removeCloudFavorite(mockAccessToken, favoriteId);
 
-      expect(global.fetch).toHaveBeenCalledWith(
-        `${API_BASE_URL}/user/favorites/${favoriteId}`,
-        {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${mockAccessToken}`,
-          },
-        }
-      );
+      expect(global.fetch).toHaveBeenCalledWith(`${API_BASE_URL}/user/favorites/${favoriteId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${mockAccessToken}`,
+        },
+      });
       expect(result).toEqual(mockResponse);
     });
 
@@ -573,9 +555,7 @@ describe('Auth API Service', () => {
         json: async () => ({ error: 'Favorite not found' }),
       });
 
-      await expect(removeCloudFavorite(mockAccessToken, 999)).rejects.toThrow(
-        'Favorite not found'
-      );
+      await expect(removeCloudFavorite(mockAccessToken, 999)).rejects.toThrow('Favorite not found');
     });
 
     it('handles remove favorite errors without error message', async () => {
@@ -647,9 +627,9 @@ describe('Auth API Service', () => {
     it('handles network errors in registerUser', async () => {
       global.fetch.mockRejectedValue(new Error('Network error'));
 
-      await expect(
-        registerUser('test@example.com', 'password123', 'Test User')
-      ).rejects.toThrow('Network error');
+      await expect(registerUser('test@example.com', 'password123', 'Test User')).rejects.toThrow(
+        'Network error'
+      );
     });
 
     it('handles network errors in loginUser', async () => {

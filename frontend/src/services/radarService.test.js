@@ -3,6 +3,7 @@
  * Testing RainViewer radar API integration
  */
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
   getRadarMapData,
   buildRadarTileUrl,
@@ -15,7 +16,7 @@ import {
 } from './radarService';
 
 // Mock fetch
-global.fetch = jest.fn();
+global.fetch = vi.fn();
 
 describe('Radar Service', () => {
   const mockRadarData = {
@@ -33,7 +34,7 @@ describe('Radar Service', () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     clearRadarCache(); // Clear cache before each test
     global.fetch.mockClear();
   });
@@ -69,7 +70,7 @@ describe('Radar Service', () => {
     });
 
     it('refetches data after cache expires', async () => {
-      jest.useFakeTimers();
+      vi.useFakeTimers();
 
       global.fetch.mockResolvedValue({
         ok: true,
@@ -81,13 +82,13 @@ describe('Radar Service', () => {
       expect(global.fetch).toHaveBeenCalledTimes(1);
 
       // Advance time by 6 minutes (cache expires after 5 min)
-      jest.advanceTimersByTime(6 * 60 * 1000);
+      vi.advanceTimersByTime(6 * 60 * 1000);
 
       // Second call - should fetch again
       await getRadarMapData();
       expect(global.fetch).toHaveBeenCalledTimes(2);
 
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
 
     it('handles API errors and throws if no cache', async () => {
@@ -123,7 +124,7 @@ describe('Radar Service', () => {
     });
 
     it('logs console messages for cache hits', async () => {
-      const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
       global.fetch.mockResolvedValue({
         ok: true,
@@ -143,10 +144,7 @@ describe('Radar Service', () => {
 
   describe('buildRadarTileUrl', () => {
     it('builds URL with default parameters', () => {
-      const url = buildRadarTileUrl(
-        'https://tilecache.rainviewer.com',
-        '/v2/radar/1730000000/256'
-      );
+      const url = buildRadarTileUrl('https://tilecache.rainviewer.com', '/v2/radar/1730000000/256');
 
       expect(url).toBe(
         'https://tilecache.rainviewer.com/v2/radar/1730000000/256/256/{z}/{x}/{y}/2/1_0.png'
@@ -200,10 +198,7 @@ describe('Radar Service', () => {
     });
 
     it('includes Leaflet placeholders {z}/{x}/{y}', () => {
-      const url = buildRadarTileUrl(
-        'https://tilecache.rainviewer.com',
-        '/v2/radar/1730000000/256'
-      );
+      const url = buildRadarTileUrl('https://tilecache.rainviewer.com', '/v2/radar/1730000000/256');
 
       expect(url).toMatch(/\{z\}\/\{x\}\/\{y\}/);
     });
@@ -239,7 +234,7 @@ describe('Radar Service', () => {
     it('builds correct URLs for each frame', () => {
       const frames = getPastFrames(mockRadarData);
 
-      frames.forEach(frame => {
+      frames.forEach((frame) => {
         expect(frame.url).toMatch(/https:\/\/.*\{z\}\/\{x\}\/\{y\}/);
       });
     });
@@ -332,7 +327,7 @@ describe('Radar Service', () => {
         new Date('2025-10-28T15:30:00Z').getTime() / 1000,
       ];
 
-      timestamps.forEach(timestamp => {
+      timestamps.forEach((timestamp) => {
         const formatted = formatRadarTime(timestamp);
         // Should have proper time format with AM/PM
         expect(formatted).toMatch(/\d{1,2}:\d{2}/);
@@ -343,12 +338,12 @@ describe('Radar Service', () => {
 
   describe('getRelativeTime', () => {
     beforeEach(() => {
-      jest.useFakeTimers();
-      jest.setSystemTime(new Date('2025-10-28T12:00:00Z'));
+      vi.useFakeTimers();
+      vi.setSystemTime(new Date('2025-10-28T12:00:00Z'));
     });
 
     afterEach(() => {
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
 
     it('returns "Just now" for very recent times', () => {
@@ -411,7 +406,7 @@ describe('Radar Service', () => {
     });
 
     it('logs cache clear message', () => {
-      const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
       clearRadarCache();
 
