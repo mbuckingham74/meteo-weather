@@ -40,6 +40,10 @@ All tokens live in `frontend/src/styles/theme-variables.css` and inherit automat
 
 - Remove `opacity` from containers; translucency should come from the color token, not from inherited alpha that also fades text/icons.
 
+### 4. Accent Content Blocks
+- Components such as the AI hero badge/chips and About page hero stats use `color-mix` to blend `--surface-glass(-strong)` with `--overlay-accent(-strong)` so they stay legible over gradients while still echoing accent hues.
+- Location comparison panels reuse `--surface-glass` directly; never recreate bespoke rgba mixes for those cards.
+
 ## Guardrails
 
 - `npm run lint:colors` blocks raw hex usage in JS/TS **and CSS**, so any new overlay color must be defined in `theme-variables.css`.

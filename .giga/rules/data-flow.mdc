@@ -1,70 +1,65 @@
 ---
-description: Used to analyze data flow patterns, weather data aggregation, state management, and data processing pipelines.
+description: Use when analyzing data flow patterns, state management, and data transformation logic in weather application components
 ---
 
 
 # data-flow
 
-Primary Data Flow Architecture:
+## Core Data Flow Architecture
 
-1. Weather Data Pipeline
-- `backend/services/weatherService.js` orchestrates multi-source weather data aggregation
-- Data flows from external APIs through caching layer (`backend/services/cacheService.js`)
-- Intelligent TTL management based on data type:
-  - Current conditions: 30 minutes
-  - Forecasts: 6 hours 
-  - Historical data: 7 days
-  - Climate statistics: 30 days
+### Weather Data Aggregation Pipeline
+Path: backend/services/weatherService.js
+- Weather data flows through multi-stage aggregation:
+  1. Raw API data ingestion from multiple providers
+  2. Data normalization and standardization layer
+  3. Historical data merging with current conditions
+  4. Cache integration layer for optimized delivery
+- Intelligent fallback system between data sources
+- Custom caching strategies based on data type age
 
-2. Historical Data Processing Pipeline
-- `backend/scripts/bulkHistoricalImport.js` manages data pre-population
-- Climate statistics computed via `backend/services/climateService.js`
-- Results cached in database with computed temperature distributions
-- Frontend receives normalized data through `frontend/src/hooks/useClimateData.js`
+### Location-Based Data Flow
+Path: frontend/src/components/location/LocationComparisonView/locationData.js
+- Bi-directional location data synchronization:
+  1. User location → Climate preferences
+  2. Climate preferences → Location suggestions
+  3. Location suggestions → Weather comparisons
+- Stateful location context management
+- Smart caching of location-specific weather data
 
-3. Location-Based Data Flow
-- `frontend/src/services/geolocationService.js` handles location resolution
-- Multi-tier cascading data sources:
-  1. GPS coordinates
-  2. Browser geolocation
-  3. IP-based fallback
-- Location context propagates through `LocationContext.js`
+### Climate Data Processing Pipeline
+Path: backend/services/climateService.js
+- Multi-stage climate data transformation:
+  1. Raw historical data ingestion
+  2. Statistical aggregation by time period
+  3. Climate normal calculations
+  4. Pattern detection and analysis
+- Cached climate statistics with invalidation rules
 
-4. AI Weather Analysis Pipeline
-- Natural language queries flow through `backend/services/aiWeatherAnalysisService.js`
-- Query classification determines data source selection
-- Results merge multiple weather data streams:
-  - Current conditions
-  - Historical records
-  - Climate normals
-  - Statistical analysis
+### AI Query Processing Flow
+Path: frontend/src/components/ai/AIWeatherPage.jsx
+- Natural language query processing pipeline:
+  1. Query intent classification
+  2. Weather criteria extraction
+  3. Data source selection
+  4. Response generation and caching
+- Contextual data retention for follow-up queries
 
-5. Radar Data Management
-- Live radar frames flow through `frontend/src/services/radarService.js`
-- 5-minute cached frame management
-- Synchronized timestamp handling across sources
-- Frame interpolation for smooth transitions
+### Weather State Management
+Path: frontend/src/hooks/useClimateData.js
+- Centralized weather state management:
+  1. Current conditions
+  2. Historical comparisons
+  3. User preferences
+  4. Location favorites
+- Intelligent cache invalidation based on data freshness
+- State synchronization across components
 
-6. State Management Hierarchy
-- Global weather state via custom hooks
-- Location-based data segmentation
-- Temperature unit conversions
-- Theme preferences
-- User favorites synchronization
-
-7. Cache Invalidation Flow
-- Weather-specific invalidation rules
-- Cascading updates based on data dependencies
-- Automatic refresh triggers on:
-  - Location changes
-  - Time-based expiration
-  - User-initiated refresh
-
-Core data transformation nodes:
-- `backend/services/climateService.js`: Climate data normalization
-- `backend/services/historicalDataService.js`: Historical record processing
-- `frontend/src/hooks/useWeatherData.js`: Frontend data aggregation
-- `backend/services/airQualityService.js`: AQI calculations
+Importance Score: 90/100
+- Critical data transformation pipelines
+- Complex state management patterns
+- Multi-source data aggregation
+- Domain-specific caching strategies
+- Intelligent data flow orchestration
 
 $END$
 

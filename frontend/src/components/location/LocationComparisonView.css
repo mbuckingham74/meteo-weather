@@ -5,9 +5,9 @@
   margin: 0 auto;
   padding: var(--spacing-lg);
   position: relative;
-  --comparison-glass-strong: color-mix(in srgb, var(--bg-elevated) 85%, transparent);
-  --comparison-glass-medium: color-mix(in srgb, var(--bg-elevated) 70%, transparent);
-  --comparison-glass-soft: color-mix(in srgb, var(--bg-elevated) 60%, transparent);
+  --comparison-glass-strong: var(--surface-glass-strong);
+  --comparison-glass-medium: var(--surface-glass);
+  --comparison-glass-soft: color-mix(in srgb, var(--surface-glass) 70%, transparent);
   --comparison-success-border: color-mix(in srgb, var(--success-text) 40%, transparent);
   --comparison-info-border: color-mix(in srgb, var(--info-text) 35%, transparent);
   --comparison-warning-border: color-mix(in srgb, var(--warning-text) 40%, transparent);
@@ -30,12 +30,14 @@
 }
 
 .loading-content-comparison {
-  background: var(--bg-elevated, white);
+  background: var(--surface-glass-strong);
   padding: 40px 60px;
   border-radius: var(--radius-xl);
-  box-shadow: 0 20px 60px var(--overlay-strong);
+  border: 1px solid var(--surface-glass-border);
+  box-shadow: var(--shadow-xl);
   text-align: center;
   max-width: 400px;
+  backdrop-filter: blur(6px);
 }
 
 .spinner-large {
@@ -272,8 +274,8 @@
 }
 
 .example-button:hover {
-  background: var(--bg-elevated);
-  border-color: var(--comparison-success-border);
+  background: color-mix(in srgb, var(--surface-glass-strong) 75%, var(--overlay-accent));
+  border-color: var(--surface-glass-border);
   transform: translateX(4px);
   box-shadow: 0 2px 8px color-mix(in srgb, var(--success-text) 25%, transparent);
 }

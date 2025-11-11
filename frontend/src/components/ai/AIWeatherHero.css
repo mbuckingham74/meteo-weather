@@ -9,11 +9,15 @@
   /* AI Hero Component Variables - Light Theme */
   --ai-hero-bg-gradient: var(--gradient-primary);
   --ai-hero-shadow: 0 12px 36px color-mix(in srgb, var(--accent-primary) 35%, transparent);
-  --ai-hero-badge-bg: color-mix(in srgb, var(--text-on-accent) 25%, transparent);
+  --ai-hero-badge-bg: color-mix(
+    in srgb,
+    var(--surface-glass-strong) 70%,
+    var(--overlay-accent-strong)
+  );
   --ai-hero-badge-text: var(--text-on-accent);
   --ai-hero-title-color: var(--text-on-accent);
   --ai-hero-subtitle-color: color-mix(in srgb, var(--text-on-accent) 85%, transparent);
-  --ai-hero-input-bg: var(--bg-elevated);
+  --ai-hero-input-bg: var(--surface-glass);
   --ai-hero-input-text: var(--text-primary);
   --ai-hero-input-placeholder: var(--text-tertiary);
   --ai-hero-input-shadow: var(--shadow-md);
@@ -23,13 +27,17 @@
   --ai-hero-button-shadow: 0 4px 12px color-mix(in srgb, var(--text-on-accent) 35%, transparent);
   --ai-hero-button-shadow-hover: 0 8px 24px
     color-mix(in srgb, var(--text-on-accent) 45%, transparent);
-  --ai-hero-warning-bg: color-mix(in srgb, var(--text-on-accent) 20%, transparent);
-  --ai-hero-chip-bg: color-mix(in srgb, var(--text-on-accent) 15%, transparent);
-  --ai-hero-chip-bg-hover: color-mix(in srgb, var(--text-on-accent) 25%, transparent);
-  --ai-hero-chip-border: color-mix(in srgb, var(--text-on-accent) 25%, transparent);
+  --ai-hero-warning-bg: color-mix(in srgb, var(--surface-glass-strong) 70%, var(--warning-bg));
+  --ai-hero-chip-bg: var(--surface-glass);
+  --ai-hero-chip-bg-hover: color-mix(
+    in srgb,
+    var(--surface-glass-strong) 70%,
+    var(--overlay-accent)
+  );
+  --ai-hero-chip-border: var(--surface-glass-border);
   --ai-hero-chip-shadow: 0 4px 12px var(--overlay-medium);
-  --ai-hero-feature-bg: color-mix(in srgb, var(--text-on-accent) 12%, transparent);
-  --ai-hero-feature-border: color-mix(in srgb, var(--text-on-accent) 20%, transparent);
+  --ai-hero-feature-bg: color-mix(in srgb, var(--surface-glass) 75%, var(--overlay-accent));
+  --ai-hero-feature-border: var(--surface-glass-border);
   --ai-hero-feature-text: color-mix(in srgb, var(--text-on-accent) 85%, transparent);
 }
 
