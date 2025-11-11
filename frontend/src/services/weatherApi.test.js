@@ -43,8 +43,6 @@ import {
 } from './weatherApi';
 
 describe('Weather API Service', () => {
-  const API_BASE_URL = 'http://localhost:5001/api';
-
   beforeEach(() => {
     vi.clearAllMocks();
   });
