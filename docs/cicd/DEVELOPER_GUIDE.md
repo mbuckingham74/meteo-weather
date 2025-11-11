@@ -2,7 +2,7 @@
 
 **Complete guide to the Meteo Weather App continuous integration and deployment pipeline.**
 
-Last Updated: November 7, 2025
+Last Updated: November 10, 2025
 
 ---
 
@@ -245,6 +245,58 @@ Updates the coverage badge in README.md
 **Badge URL:**
 ```markdown
 ![Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/USER/GIST_ID/raw/meteo-coverage-badge.json)
+```
+
+---
+
+### 7. Workflow Cleanup (`.github/workflows/cleanup.yml`)
+
+**Triggers:**
+- Weekly schedule (Sundays at 3 AM UTC / 7 PM PST Saturday)
+- Manual workflow dispatch
+
+**Purpose:**
+Automatically deletes old workflow runs to keep Actions history manageable
+
+**Retention Policy:**
+- Deletes runs older than 90 days
+- Keeps minimum of 10 runs per workflow
+- Runs automatically every Sunday
+
+**Manual Trigger:**
+```bash
+gh workflow run cleanup.yml
+```
+
+---
+
+### 8. Dependabot Auto-Merge (`.github/workflows/dependabot-auto-merge.yml`)
+
+**Triggers:**
+- Pull requests from `dependabot[bot]` to `main` branch
+
+**Purpose:**
+Automatically merges Dependabot PRs after CI passes (with safeguards)
+
+**Auto-Merge Policy:**
+
+| Update Type | Auto-Merge? | Requirements |
+|-------------|-------------|--------------|
+| Patch (1.0.x → 1.0.y) | ✅ Yes | CI must pass |
+| Minor (1.x.0 → 1.y.0) | ✅ Yes | CI must pass |
+| Major (x.0.0 → y.0.0) | ❌ No | Manual review required |
+
+**Safety Features:**
+- Waits for CI to complete (up to 30 minutes)
+- Only merges if all tests pass
+- Adds manual review comment for major updates
+- Uses squash merge to maintain clean history
+- Respects branch protection rules
+
+**Manual Approval for Major Updates:**
+```bash
+# After reviewing changelog and testing locally
+gh pr merge --auto --squash <PR_NUMBER>
 ```
 
 ---

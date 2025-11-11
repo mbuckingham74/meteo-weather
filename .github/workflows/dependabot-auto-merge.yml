@@ -1,0 +1,100 @@
+name: Dependabot Auto-Merge
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    name: Auto-Merge Dependabot PRs
+    runs-on: ubuntu-latest
+    # Only run for Dependabot PRs
+    if: github.actor == 'dependabot[bot]'
+
+    steps:
+      - name: Fetch Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Wait for CI to complete
+        uses: fountainhead/action-wait-for-check@v1.2.0
+        id: wait-for-ci
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          checkName: CI Success
+          ref: ${{ github.event.pull_request.head.sha }}
+          timeoutSeconds: 1800  # 30 minutes max wait
+
+      - name: Auto-merge patch and minor updates
+        # Only auto-merge if:
+        # 1. CI passed
+        # 2. Update is patch or minor (not major)
+        # 3. Dependency is in production (not dev-only)
+        if: |
+          steps.wait-for-ci.outputs.conclusion == 'success' &&
+          (steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
+           steps.metadata.outputs.update-type == 'version-update:semver-minor')
+        run: |
+          echo "✅ Auto-merging Dependabot PR"
+          echo "Update type: ${{ steps.metadata.outputs.update-type }}"
+          echo "Dependency: ${{ steps.metadata.outputs.dependency-names }}"
+          gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Comment on major updates
+        # For major updates, add a comment explaining why it wasn't auto-merged
+        if: |
+          steps.wait-for-ci.outputs.conclusion == 'success' &&
+          steps.metadata.outputs.update-type == 'version-update:semver-major'
+        run: |
+          gh pr comment "$PR_URL" --body "🔔 **Manual Review Required**
+
+          This is a **major version update** and requires manual review before merging.
+
+          **Update Details:**
+          - Dependency: \`${{ steps.metadata.outputs.dependency-names }}\`
+          - Update Type: \`${{ steps.metadata.outputs.update-type }}\`
+
+          **Review Checklist:**
+          - [ ] Check changelog for breaking changes
+          - [ ] Review migration guide (if any)
+          - [ ] Test locally with \`docker-compose up\`
+          - [ ] Verify all 476 tests pass
+          - [ ] Check for deprecated API usage
+
+          Once reviewed and tested, merge manually or approve auto-merge with:
+          \`\`\`bash
+          gh pr merge --auto --squash ${{ github.event.pull_request.number }}
+          \`\`\`"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## 🤖 Dependabot Auto-Merge" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**PR Details:**" >> $GITHUB_STEP_SUMMARY
+          echo "- Dependency: \`${{ steps.metadata.outputs.dependency-names }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- Update Type: \`${{ steps.metadata.outputs.update-type }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- CI Status: \`${{ steps.wait-for-ci.outputs.conclusion }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [[ "${{ steps.metadata.outputs.update-type }}" == "version-update:semver-patch" ]] || [[ "${{ steps.metadata.outputs.update-type }}" == "version-update:semver-minor" ]]; then
+            if [[ "${{ steps.wait-for-ci.outputs.conclusion }}" == "success" ]]; then
+              echo "✅ **Auto-merged** (patch/minor update with passing CI)" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "❌ **Not merged** (CI failed)" >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo "⏸️ **Requires manual review** (major update)" >> $GITHUB_STEP_SUMMARY
+          fi
