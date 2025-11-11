@@ -5,17 +5,14 @@
 
 ---
 
-## 🚨 CRITICAL WARNING - SSH LOCKOUT PROTECTION 🚨
+## ✅ SSH Access Information
 
-**⛔️ NEVER AUTOMATICALLY SSH INTO tachyonfuture.com FROM CLAUDE CODE ⛔️**
+**SSH is now SAFE to use from Claude Code** - Previous lockout issues were resolved (as noted in CLAUDE.md)
 
-**THE SERVER HAS FAIL2BAN/SECURITY SOFTWARE THAT WILL IMMEDIATELY BAN THE IP AND LOCK OUT THE USER - EVEN IF THE IP IS WHITELISTED**
-
-**IF YOU NEED TO CHECK SERVER STATUS:**
-1. **ASK THE USER FIRST** before running any SSH commands
-2. User must manually SSH from their terminal
-3. User must manually run commands and report results back
-4. DO NOT use ssh in Bash tool calls - it causes instant lockout
+**SSH Access:**
+- You can safely use SSH commands via the Bash tool
+- Authentication uses SSH keys with 1Password Touch ID
+- The server accepts connections from Claude Code
 
 **SSH AUTHENTICATION REQUIREMENTS:**
 - **SSH KEY AUTHENTICATION ONLY** - Never attempt programmatic password entry
@@ -41,7 +38,7 @@
 - **Server:** `tachyonfuture.com`
 - **User:** `michael`
 - **Email:** `michael.buckingham74@gmail.com`
-- **SSH Command:** `ssh michael@tachyonfuture.com` **(MANUAL ONLY - NEVER AUTOMATED)**
+- **SSH Command:** `ssh michael@tachyonfuture.com`
 - **Authentication:** **SSH KEY ONLY** - User provides biometric auth (1Password Touch ID) when prompted
 - **⚠️ NEVER use password-based or programmatic authentication**
 - **Sudo Password:** `<stored_in_.env.secrets>`
