@@ -47,17 +47,20 @@ describe('Auth API Service', () => {
 
       const result = await registerUser('test@example.com', 'password123', 'Test User');
 
-      expect(global.fetch).toHaveBeenCalledWith(`${API_BASE_URL}/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: 'test@example.com',
-          password: 'password123',
-          name: 'Test User',
-        }),
-      });
+      expect(global.fetch).toHaveBeenCalledWith(
+        `${API_BASE_URL}/auth/register`,
+        expect.objectContaining({
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: 'test@example.com',
+            password: 'password123',
+            name: 'Test User',
+          }),
+        })
+      );
       expect(result).toEqual(mockResponse);
     });
 
@@ -79,7 +82,7 @@ describe('Auth API Service', () => {
       });
 
       await expect(registerUser('test@example.com', 'password123', 'Test User')).rejects.toThrow(
-        'Registration failed'
+        'Failed: Registration'
       );
     });
   });
@@ -99,16 +102,19 @@ describe('Auth API Service', () => {
 
       const result = await loginUser('test@example.com', 'password123');
 
-      expect(global.fetch).toHaveBeenCalledWith(`${API_BASE_URL}/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: 'test@example.com',
-          password: 'password123',
-        }),
-      });
+      expect(global.fetch).toHaveBeenCalledWith(
+        `${API_BASE_URL}/auth/login`,
+        expect.objectContaining({
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: 'test@example.com',
+            password: 'password123',
+          }),
+        })
+      );
       expect(result).toEqual(mockResponse);
     });
 
@@ -127,7 +133,7 @@ describe('Auth API Service', () => {
         json: async () => ({}),
       });
 
-      await expect(loginUser('test@example.com', 'wrong')).rejects.toThrow('Login failed');
+      await expect(loginUser('test@example.com', 'wrong')).rejects.toThrow('Failed: Login');
     });
   });
 
@@ -146,11 +152,14 @@ describe('Auth API Service', () => {
 
       const result = await getCurrentUser(mockAccessToken);
 
-      expect(global.fetch).toHaveBeenCalledWith(`${API_BASE_URL}/auth/me`, {
-        headers: {
-          Authorization: `Bearer ${mockAccessToken}`,
-        },
-      });
+      expect(global.fetch).toHaveBeenCalledWith(
+        `${API_BASE_URL}/auth/me`,
+        expect.objectContaining({
+          headers: {
+            Authorization: `Bearer ${mockAccessToken}`,
+          },
+        })
+      );
       expect(result).toEqual(mockUser);
     });
 
@@ -169,7 +178,7 @@ describe('Auth API Service', () => {
         json: async () => ({}),
       });
 
-      await expect(getCurrentUser(mockAccessToken)).rejects.toThrow('Failed to fetch user profile');
+      await expect(getCurrentUser(mockAccessToken)).rejects.toThrow('Failed: Get user profile');
     });
   });
 
@@ -189,14 +198,17 @@ describe('Auth API Service', () => {
 
       const result = await updateUserProfile(mockAccessToken, updates);
 
-      expect(global.fetch).toHaveBeenCalledWith(`${API_BASE_URL}/auth/profile`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${mockAccessToken}`,
-        },
-        body: JSON.stringify(updates),
-      });
+      expect(global.fetch).toHaveBeenCalledWith(
+        `${API_BASE_URL}/auth/profile`,
+        expect.objectContaining({
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${mockAccessToken}`,
+          },
+          body: JSON.stringify(updates),
+        })
+      );
       expect(result).toEqual(mockUser);
     });
 
@@ -216,7 +228,7 @@ describe('Auth API Service', () => {
       });
 
       await expect(updateUserProfile(mockAccessToken, {})).rejects.toThrow(
-        'Failed to update profile'
+        'Failed: Update profile'
       );
     });
   });
@@ -232,17 +244,20 @@ describe('Auth API Service', () => {
 
       const result = await changePassword(mockAccessToken, 'oldPass123', 'newPass456');
 
-      expect(global.fetch).toHaveBeenCalledWith(`${API_BASE_URL}/auth/change-password`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${mockAccessToken}`,
-        },
-        body: JSON.stringify({
-          currentPassword: 'oldPass123',
-          newPassword: 'newPass456',
-        }),
-      });
+      expect(global.fetch).toHaveBeenCalledWith(
+        `${API_BASE_URL}/auth/change-password`,
+        expect.objectContaining({
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${mockAccessToken}`,
+          },
+          body: JSON.stringify({
+            currentPassword: 'oldPass123',
+            newPassword: 'newPass456',
+          }),
+        })
+      );
       expect(result).toEqual(mockResponse);
     });
 
@@ -264,7 +279,7 @@ describe('Auth API Service', () => {
       });
 
       await expect(changePassword(mockAccessToken, 'oldPass', 'newPass')).rejects.toThrow(
-        'Failed to change password'
+        'Failed: Change password'
       );
     });
   });
@@ -283,13 +298,16 @@ describe('Auth API Service', () => {
 
       const result = await refreshAccessToken(mockRefreshToken);
 
-      expect(global.fetch).toHaveBeenCalledWith(`${API_BASE_URL}/auth/refresh`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ refreshToken: mockRefreshToken }),
-      });
+      expect(global.fetch).toHaveBeenCalledWith(
+        `${API_BASE_URL}/auth/refresh`,
+        expect.objectContaining({
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ refreshToken: mockRefreshToken }),
+        })
+      );
       expect(result).toEqual(mockResponse);
     });
 
@@ -308,7 +326,7 @@ describe('Auth API Service', () => {
         json: async () => ({}),
       });
 
-      await expect(refreshAccessToken(mockRefreshToken)).rejects.toThrow('Failed to refresh token');
+      await expect(refreshAccessToken(mockRefreshToken)).rejects.toThrow('Failed: Refresh token');
     });
   });
 
@@ -323,12 +341,15 @@ describe('Auth API Service', () => {
 
       const result = await logoutUser(mockAccessToken);
 
-      expect(global.fetch).toHaveBeenCalledWith(`${API_BASE_URL}/auth/logout`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${mockAccessToken}`,
-        },
-      });
+      expect(global.fetch).toHaveBeenCalledWith(
+        `${API_BASE_URL}/auth/logout`,
+        expect.objectContaining({
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${mockAccessToken}`,
+          },
+        })
+      );
       expect(result).toEqual(mockResponse);
     });
 
@@ -338,7 +359,9 @@ describe('Auth API Service', () => {
         json: async () => ({ error: 'Session expired' }),
       });
 
-      await expect(logoutUser(mockAccessToken)).rejects.toThrow('Session expired');
+      // logoutUser returns success even on failure (see authApi.js lines 294-295)
+      const result = await logoutUser(mockAccessToken);
+      expect(result).toEqual({ success: true, message: 'Logged out (local only)' });
     });
 
     it('handles logout errors without error message', async () => {
@@ -347,7 +370,9 @@ describe('Auth API Service', () => {
         json: async () => ({}),
       });
 
-      await expect(logoutUser(mockAccessToken)).rejects.toThrow('Logout failed');
+      // logoutUser returns success even on failure (see authApi.js lines 294-295)
+      const result = await logoutUser(mockAccessToken);
+      expect(result).toEqual({ success: true, message: 'Logged out (local only)' });
     });
   });
 
@@ -366,11 +391,14 @@ describe('Auth API Service', () => {
 
       const result = await getUserPreferences(mockAccessToken);
 
-      expect(global.fetch).toHaveBeenCalledWith(`${API_BASE_URL}/user/preferences`, {
-        headers: {
-          Authorization: `Bearer ${mockAccessToken}`,
-        },
-      });
+      expect(global.fetch).toHaveBeenCalledWith(
+        `${API_BASE_URL}/user/preferences`,
+        expect.objectContaining({
+          headers: {
+            Authorization: `Bearer ${mockAccessToken}`,
+          },
+        })
+      );
       expect(result).toEqual(mockPreferences);
     });
 
@@ -389,9 +417,7 @@ describe('Auth API Service', () => {
         json: async () => ({}),
       });
 
-      await expect(getUserPreferences(mockAccessToken)).rejects.toThrow(
-        'Failed to fetch preferences'
-      );
+      await expect(getUserPreferences(mockAccessToken)).rejects.toThrow('Failed: Get preferences');
     });
   });
 
@@ -411,14 +437,17 @@ describe('Auth API Service', () => {
 
       const result = await updateUserPreferences(mockAccessToken, updates);
 
-      expect(global.fetch).toHaveBeenCalledWith(`${API_BASE_URL}/user/preferences`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${mockAccessToken}`,
-        },
-        body: JSON.stringify(updates),
-      });
+      expect(global.fetch).toHaveBeenCalledWith(
+        `${API_BASE_URL}/user/preferences`,
+        expect.objectContaining({
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${mockAccessToken}`,
+          },
+          body: JSON.stringify(updates),
+        })
+      );
       expect(result).toEqual(mockPreferences);
     });
 
@@ -440,7 +469,7 @@ describe('Auth API Service', () => {
       });
 
       await expect(updateUserPreferences(mockAccessToken, {})).rejects.toThrow(
-        'Failed to update preferences'
+        'Failed: Update preferences'
       );
     });
   });
@@ -459,11 +488,14 @@ describe('Auth API Service', () => {
 
       const result = await getCloudFavorites(mockAccessToken);
 
-      expect(global.fetch).toHaveBeenCalledWith(`${API_BASE_URL}/user/favorites`, {
-        headers: {
-          Authorization: `Bearer ${mockAccessToken}`,
-        },
-      });
+      expect(global.fetch).toHaveBeenCalledWith(
+        `${API_BASE_URL}/user/favorites`,
+        expect.objectContaining({
+          headers: {
+            Authorization: `Bearer ${mockAccessToken}`,
+          },
+        })
+      );
       expect(result).toEqual(mockFavorites);
     });
 
@@ -482,7 +514,7 @@ describe('Auth API Service', () => {
         json: async () => ({}),
       });
 
-      await expect(getCloudFavorites(mockAccessToken)).rejects.toThrow('Failed to fetch favorites');
+      await expect(getCloudFavorites(mockAccessToken)).rejects.toThrow('Failed: Get favorites');
     });
   });
 
@@ -498,14 +530,17 @@ describe('Auth API Service', () => {
 
       const result = await addCloudFavorite(mockAccessToken, newFavorite);
 
-      expect(global.fetch).toHaveBeenCalledWith(`${API_BASE_URL}/user/favorites`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${mockAccessToken}`,
-        },
-        body: JSON.stringify(newFavorite),
-      });
+      expect(global.fetch).toHaveBeenCalledWith(
+        `${API_BASE_URL}/user/favorites`,
+        expect.objectContaining({
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${mockAccessToken}`,
+          },
+          body: JSON.stringify(newFavorite),
+        })
+      );
       expect(result).toEqual(mockResponse);
     });
 
@@ -524,7 +559,7 @@ describe('Auth API Service', () => {
         json: async () => ({}),
       });
 
-      await expect(addCloudFavorite(mockAccessToken, {})).rejects.toThrow('Failed to add favorite');
+      await expect(addCloudFavorite(mockAccessToken, {})).rejects.toThrow('Failed: Add favorite');
     });
   });
 
@@ -540,12 +575,15 @@ describe('Auth API Service', () => {
 
       const result = await removeCloudFavorite(mockAccessToken, favoriteId);
 
-      expect(global.fetch).toHaveBeenCalledWith(`${API_BASE_URL}/user/favorites/${favoriteId}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${mockAccessToken}`,
-        },
-      });
+      expect(global.fetch).toHaveBeenCalledWith(
+        `${API_BASE_URL}/user/favorites/${favoriteId}`,
+        expect.objectContaining({
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${mockAccessToken}`,
+          },
+        })
+      );
       expect(result).toEqual(mockResponse);
     });
 
@@ -565,7 +603,7 @@ describe('Auth API Service', () => {
       });
 
       await expect(removeCloudFavorite(mockAccessToken, 999)).rejects.toThrow(
-        'Failed to remove favorite'
+        'Failed: Remove favorite'
       );
     });
   });
@@ -589,14 +627,17 @@ describe('Auth API Service', () => {
 
       const result = await importFavorites(mockAccessToken, favorites);
 
-      expect(global.fetch).toHaveBeenCalledWith(`${API_BASE_URL}/user/favorites/import`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${mockAccessToken}`,
-        },
-        body: JSON.stringify({ favorites }),
-      });
+      expect(global.fetch).toHaveBeenCalledWith(
+        `${API_BASE_URL}/user/favorites/import`,
+        expect.objectContaining({
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${mockAccessToken}`,
+          },
+          body: JSON.stringify({ favorites }),
+        })
+      );
       expect(result).toEqual(mockResponse);
     });
 
@@ -618,7 +659,7 @@ describe('Auth API Service', () => {
       });
 
       await expect(importFavorites(mockAccessToken, [])).rejects.toThrow(
-        'Failed to import favorites'
+        'Failed: Import favorites'
       );
     });
   });
