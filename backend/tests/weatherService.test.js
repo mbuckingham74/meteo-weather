@@ -1,6 +1,14 @@
 const nock = require('nock');
 const weatherService = require('../services/weatherService');
 
+// Mock database pool to prevent connections
+jest.mock('../config/database', () => ({
+  pool: {
+    query: jest.fn(),
+    end: jest.fn(),
+  },
+}));
+
 // Mock the historical data service to prevent database calls
 jest.mock('../services/historicalDataService', () => ({
   getHistoricalWeather: jest.fn().mockResolvedValue(null),
