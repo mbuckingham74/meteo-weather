@@ -6,22 +6,24 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 // Mock axios before any imports
-vi.mock('axios', () => ({
-  default: {
+vi.mock('axios', () => {
+  const createMockAxios = () => ({
     get: vi.fn(),
     interceptors: {
       response: {
         use: vi.fn(),
       },
     },
-  },
-  get: vi.fn(),
-  interceptors: {
-    response: {
-      use: vi.fn(),
-    },
-  },
-}));
+  });
+
+  const mockAxios = createMockAxios();
+  mockAxios.create = vi.fn(() => createMockAxios());
+
+  return {
+    default: mockAxios,
+    ...mockAxios,
+  };
+});
 
 import axios from 'axios';
 import {
