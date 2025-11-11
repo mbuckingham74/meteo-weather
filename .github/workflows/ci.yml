@@ -104,7 +104,7 @@ jobs:
       - name: Run tests
         run: |
           cd backend
-          npm test -- --forceExit
+          npm test
         env:
           NODE_ENV: test
 
