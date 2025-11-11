@@ -28,6 +28,28 @@ All notable changes to the Meteo Weather App project are documented in this file
 
 ## [Unreleased]
 
+### 🐛 Bug Fixes
+- **CSS Modules Test Migration (PR #21)** - Fixed 78 test failures from CSS Modules migration
+  - **Root Cause:** CSS class selectors (`class="alert"`) replaced with hashed names (`class="_alert_a85bc4"`)
+  - **Solution Pattern:** Added `data-testid` attributes, replaced class selectors with `getByTestId()`
+  - **Components Fixed:**
+    - TemperatureUnitToggle (17 tests) - Added data-testid to all interactive elements
+    - AuthHeader (22 tests) - Fixed Vitest mock syntax, added react-router-dom mock
+    - TemperatureUnitContext (4 tests) - Removed Storage.prototype spies, use localStorage directly
+    - ThemeContext (4 tests) - Same localStorage pattern
+    - favoritesService (27 tests) - Removed all localStorage spies (121 lines)
+    - AuthContext (9 tests) - Fixed async initialization issues
+    - authApi (27 tests) - Updated error message assertions
+    - LocationSearchBar (22 tests) - Fixed fake timer conflicts with async debounce
+  - **Test Infrastructure Fixes:**
+    - setupTests.jsx: Fixed axios.create() mock to return new instances
+    - setupTests.jsx: Added config/api mock for module loading
+    - weatherApi.test.js: Fixed local axios mock override
+  - **Test Score:** 442 passing → 519 passing (+77 tests fixed)
+  - **Remaining:** 34 pre-existing weatherApi failures (unrelated to CSS Modules)
+  - **8 Commits:** 72a11e3, 0ccef30, ed32edc, fd6aaca, b023bcf, 065acea, 69aeb99, d3578e0
+  - **Files Changed:** 17 files (test files + components + setupTests.jsx)
+
 ### 🎉 New Features
 - **Theme System Enhancements** - Comprehensive color audit and theme improvements
   - Added theme presets with validation system (`docs/ui-ux/COMPONENT_TOKEN_CATALOG.md`, 90 lines)
