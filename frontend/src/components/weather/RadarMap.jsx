@@ -113,8 +113,8 @@ function RadarMap({ latitude, longitude, zoom = 8, height = 250, alerts = [] }) 
         align-items: center;
         justify-content: center;
         font-size: 18px;
-        border: 3px solid var(--bg-elevated, #ffffff);
-        box-shadow: var(--shadow-md, 0 12px 32px rgba(15, 23, 42, 0.12));
+        border: 3px solid var(--bg-elevated);
+        box-shadow: var(--shadow-md);
         cursor: pointer;
       ">⚠️</div>`,
       iconSize: [32, 32],

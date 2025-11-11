@@ -78,15 +78,9 @@ function AirQualityCard({ latitude, longitude }) {
       </h3>
 
       {/* Main AQI Display */}
-      <div
-        className={styles.main}
-        style={{ borderColor: level?.color || 'var(--border-light, #d5d9e4)' }}
-      >
+      <div className={styles.main} style={{ borderColor: level?.color || 'var(--border-light)' }}>
         <div className={styles.valueContainer}>
-          <div
-            className={styles.value}
-            style={{ color: level?.color || 'var(--text-primary, #0f172a)' }}
-          >
+          <div className={styles.value} style={{ color: level?.color || 'var(--text-primary)' }}>
             {aqi !== null && aqi !== undefined ? Math.round(aqi) : '—'}
           </div>
           <div className={styles.label}>{level?.level || 'Unknown'}</div>
