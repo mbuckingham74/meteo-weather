@@ -11,8 +11,8 @@
   - Stylelint now runs via root lint scripts, husky pre-commit, and CI (`frontend-lint` job). See completion write-up: docs/development/CSS_PHASE_3.3_COMPLETE.md.
 - [x] **Unified Breakpoint Source**
   - Breakpoint values now live in `frontend/config/breakpoints.json`, PostCSS compiles the `--bp-*` tokens globally, ITCSS utilities use them, and JS can import `src/constants/breakpoints.js` / `useBreakpoint`. See: frontend/BREAKPOINT_SYSTEM.md.
-- [ ] **Component Token Catalog & Theme Presets**
-  - Document component-level CSS variables, ship at least two preset themes, and add automated token-usage tests to satisfy the remaining CSS audit recommendations. _(Ref: frontend/CSS_AUDIT_FIXES.md)_
+- [x] **Component Token Catalog & Theme Presets**
+  - Token inventory lives in docs/ui-ux/COMPONENT_TOKEN_CATALOG.md, new `aurora`/`sunset` presets are available via `data-theme`, and `npm run validate:tokens` enforces consistent overrides.
 - [ ] **Shared Retry/Cache Config**
   - Centralize retry/throttle helpers plus environment-aware cache TTLs so frontend services, hooks, and tests all consume the same constants with inline documentation. _(Ref: docs/development/CODE_QUALITY_AUDIT.md)_
 

@@ -9,6 +9,20 @@ import { getUserPreferences, updateUserPreferences } from '../services/authApi';
 
 const ThemeContext = createContext(null);
 
+const SUPPORTED_THEMES = ['light', 'dark', 'aurora', 'sunset'];
+const AUTO_THEME = 'auto';
+const FALLBACK_THEME = 'light';
+
+const normalizeTheme = (value) => {
+  if (value === AUTO_THEME) {
+    return AUTO_THEME;
+  }
+  if (value && SUPPORTED_THEMES.includes(value)) {
+    return value;
+  }
+  return FALLBACK_THEME;
+};
+
 export function useTheme() {
   const context = useContext(ThemeContext);
   if (!context) {
@@ -19,8 +33,8 @@ export function useTheme() {
 
 export function ThemeProvider({ children }) {
   const { isAuthenticated, accessToken } = useAuth();
-  const [themePreference, setThemePreference] = useState('auto'); // 'light', 'dark', 'auto'
-  const [actualTheme, setActualTheme] = useState('light'); // Resolved theme: 'light' or 'dark'
+  const [themePreference, setThemePreference] = useState(AUTO_THEME);
+  const [actualTheme, setActualTheme] = useState(FALLBACK_THEME);
   const [loading, setLoading] = useState(true);
 
   // Load theme preference function
@@ -31,13 +45,13 @@ export function ThemeProvider({ children }) {
         // Load from user preferences
         const preferences = await getUserPreferences(accessToken);
         if (preferences.theme) {
-          setThemePreference(preferences.theme);
+          setThemePreference(normalizeTheme(preferences.theme));
         }
       } else {
         // Load from localStorage
         const stored = localStorage.getItem('themePreference');
         if (stored) {
-          setThemePreference(stored);
+          setThemePreference(normalizeTheme(stored));
         }
       }
     } catch (error) {
@@ -54,7 +68,7 @@ export function ThemeProvider({ children }) {
 
   // Listen for system theme changes when in auto mode
   useEffect(() => {
-    if (themePreference === 'auto') {
+    if (themePreference === AUTO_THEME) {
       const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
       const handleChange = (e) => {
         setActualTheme(e.matches ? 'dark' : 'light');
@@ -69,7 +83,7 @@ export function ThemeProvider({ children }) {
       return () => mediaQuery.removeEventListener('change', handleChange);
     } else {
       // Use explicit theme preference
-      setActualTheme(themePreference);
+      setActualTheme(SUPPORTED_THEMES.includes(themePreference) ? themePreference : FALLBACK_THEME);
     }
   }, [themePreference]);
 
@@ -79,18 +93,19 @@ export function ThemeProvider({ children }) {
   }, [actualTheme]);
 
   const setTheme = async (newTheme) => {
-    setThemePreference(newTheme);
+    const normalized = normalizeTheme(newTheme);
+    setThemePreference(normalized);
 
     if (isAuthenticated && accessToken) {
       // Save to user preferences
       try {
-        await updateUserPreferences(accessToken, { theme: newTheme });
+        await updateUserPreferences(accessToken, { theme: normalized });
       } catch (error) {
         console.error('Failed to save theme preference:', error);
       }
     } else {
       // Save to localStorage
-      localStorage.setItem('themePreference', newTheme);
+      localStorage.setItem('themePreference', normalized);
     }
   };
 

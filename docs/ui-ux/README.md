@@ -10,6 +10,7 @@ UI design, UX optimization, and Material Design implementation documentation.
 - **[REDESIGN_SUMMARY.md](REDESIGN_SUMMARY.md)** - Unified Hero Card UI redesign (Nov 5)
 - **[UI_OPTIMIZATION_SUMMARY.md](UI_OPTIMIZATION_SUMMARY.md)** - Material Design 3 implementation
 - **[AI_HERO_OPTIMIZATION_SUMMARY.md](AI_HERO_OPTIMIZATION_SUMMARY.md)** - AI Hero section optimization
+- **[COMPONENT_TOKEN_CATALOG.md](COMPONENT_TOKEN_CATALOG.md)** - Token inventory + component mapping
 
 ### Density & Layout
 - **[UI_DENSITY_AUDIT_SUMMARY.md](UI_DENSITY_AUDIT_SUMMARY.md)** - Density audit findings

@@ -35,7 +35,7 @@ const customMediaMap = buildCustomMediaMap();
 module.exports = {
   plugins: [
     postcssCustomMedia({
-      importFrom: [{ customMedia: customMediaMap }],
+      customMedia: customMediaMap,
       preserve: false,
     }),
     // PurgeCSS temporarily disabled - uncomment when fixed

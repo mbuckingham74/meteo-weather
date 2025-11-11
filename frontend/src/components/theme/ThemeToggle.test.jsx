@@ -94,6 +94,32 @@ describe('ThemeToggle Component', () => {
       expect(screen.getByText('🌙')).toBeInTheDocument();
     });
 
+    it('displays aurora icon and label', () => {
+      useTheme.mockReturnValue({
+        themePreference: 'aurora',
+        actualTheme: 'aurora',
+        setTheme: mockSetTheme,
+      });
+
+      render(<ThemeToggle />);
+
+      expect(screen.getByText('🌌')).toBeInTheDocument();
+      expect(screen.getByText('Aurora')).toBeInTheDocument();
+    });
+
+    it('displays sunset icon and label', () => {
+      useTheme.mockReturnValue({
+        themePreference: 'sunset',
+        actualTheme: 'sunset',
+        setTheme: mockSetTheme,
+      });
+
+      render(<ThemeToggle />);
+
+      expect(screen.getByText('🌇')).toBeInTheDocument();
+      expect(screen.getByText('Sunset')).toBeInTheDocument();
+    });
+
     it('hides the label when compact prop is true', () => {
       useTheme.mockReturnValue({
         themePreference: 'light',
@@ -135,10 +161,40 @@ describe('ThemeToggle Component', () => {
       expect(mockSetTheme).toHaveBeenCalledWith('dark');
     });
 
-    it('cycles from dark to auto when clicked', () => {
+    it('cycles from dark to aurora when clicked', () => {
       useTheme.mockReturnValue({
         themePreference: 'dark',
         actualTheme: 'dark',
+        setTheme: mockSetTheme,
+      });
+
+      render(<ThemeToggle />);
+
+      const button = screen.getByRole('button');
+      fireEvent.click(button);
+
+      expect(mockSetTheme).toHaveBeenCalledWith('aurora');
+    });
+
+    it('cycles from aurora to sunset when clicked', () => {
+      useTheme.mockReturnValue({
+        themePreference: 'aurora',
+        actualTheme: 'aurora',
+        setTheme: mockSetTheme,
+      });
+
+      render(<ThemeToggle />);
+
+      const button = screen.getByRole('button');
+      fireEvent.click(button);
+
+      expect(mockSetTheme).toHaveBeenCalledWith('sunset');
+    });
+
+    it('cycles from sunset to auto when clicked', () => {
+      useTheme.mockReturnValue({
+        themePreference: 'sunset',
+        actualTheme: 'sunset',
         setTheme: mockSetTheme,
       });
 
@@ -239,8 +295,8 @@ describe('ThemeToggle Component', () => {
     });
   });
 
-  describe('CSS Classes', () => {
-    it('has theme-toggle-container class', () => {
+  describe('Structure', () => {
+    it('renders exactly one button element', () => {
       useTheme.mockReturnValue({
         themePreference: 'light',
         actualTheme: 'light',
@@ -249,10 +305,10 @@ describe('ThemeToggle Component', () => {
 
       const { container } = render(<ThemeToggle />);
 
-      expect(container.querySelector('.theme-toggle-container')).toBeInTheDocument();
+      expect(container.querySelectorAll('button')).toHaveLength(1);
     });
 
-    it('has theme-toggle-button class', () => {
+    it('renders the icon inside an aria-hidden span', () => {
       useTheme.mockReturnValue({
         themePreference: 'light',
         actualTheme: 'light',
@@ -261,32 +317,33 @@ describe('ThemeToggle Component', () => {
 
       render(<ThemeToggle />);
 
-      const button = screen.getByRole('button');
-      expect(button).toHaveClass('theme-toggle-button');
+      const iconSpan = screen.getByRole('button').querySelector("span[aria-hidden='true']");
+      expect(iconSpan).not.toBeNull();
     });
 
-    it('has theme-icon class on icon span', () => {
+    it('renders a label span when not compact', () => {
       useTheme.mockReturnValue({
         themePreference: 'light',
         actualTheme: 'light',
         setTheme: mockSetTheme,
       });
 
-      const { container } = render(<ThemeToggle />);
+      render(<ThemeToggle compact={false} />);
 
-      expect(container.querySelector('.theme-icon')).toBeInTheDocument();
+      const label = screen.getByText('Light');
+      expect(label.tagName).toBe('SPAN');
     });
 
-    it('has theme-label class on label span', () => {
+    it('omits the label span when compact', () => {
       useTheme.mockReturnValue({
         themePreference: 'light',
         actualTheme: 'light',
         setTheme: mockSetTheme,
       });
 
-      const { container } = render(<ThemeToggle />);
+      render(<ThemeToggle compact />);
 
-      expect(container.querySelector('.theme-label')).toBeInTheDocument();
+      expect(screen.queryByText('Light')).not.toBeInTheDocument();
     });
   });
 });
