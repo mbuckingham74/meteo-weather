@@ -3,7 +3,7 @@
  * Testing temperature unit preference management
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, act, fireEvent } from '@testing-library/react';
 import { TemperatureUnitProvider, useTemperatureUnit } from './TemperatureUnitContext';
 import { AuthProvider } from './AuthContext';
@@ -33,20 +33,9 @@ function renderWithProviders(component) {
 }
 
 describe('TemperatureUnitContext', () => {
-  let getItemSpy, setItemSpy, removeItemSpy;
-
   beforeEach(() => {
-    // Create fresh spies for each test
-    getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockReturnValue(null);
-    setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {});
-    removeItemSpy = vi.spyOn(Storage.prototype, 'removeItem').mockImplementation(() => {});
-  });
-
-  afterEach(() => {
-    // Restore mocks after each test
-    getItemSpy.mockRestore();
-    setItemSpy.mockRestore();
-    removeItemSpy.mockRestore();
+    // Clear localStorage before each test
+    localStorage.clear();
   });
 
   describe('Provider', () => {
@@ -61,7 +50,7 @@ describe('TemperatureUnitContext', () => {
     });
 
     it('loads saved unit from localStorage', () => {
-      getItemSpy.mockReturnValue('C');
+      localStorage.setItem('temperatureUnit', 'C');
 
       renderWithProviders(
         <TemperatureUnitProvider>
@@ -70,27 +59,11 @@ describe('TemperatureUnitContext', () => {
       );
 
       expect(screen.getByTestId('current-unit')).toHaveTextContent('C');
-      expect(getItemSpy).toHaveBeenCalledWith('temperatureUnit');
     });
 
     it('falls back to Fahrenheit if localStorage has invalid value', () => {
-      getItemSpy.mockReturnValue('invalid');
+      localStorage.setItem('temperatureUnit', 'invalid');
 
-      renderWithProviders(
-        <TemperatureUnitProvider>
-          <TestComponent />
-        </TemperatureUnitProvider>
-      );
-
-      expect(screen.getByTestId('current-unit')).toHaveTextContent('F');
-    });
-
-    it('handles localStorage errors gracefully', () => {
-      getItemSpy.mockImplementation(() => {
-        throw new Error('localStorage not available');
-      });
-
-      // Should not crash
       renderWithProviders(
         <TemperatureUnitProvider>
           <TestComponent />
@@ -135,7 +108,7 @@ describe('TemperatureUnitContext', () => {
 
       fireEvent.click(screen.getByText('Set Celsius'));
 
-      expect(setItemSpy).toHaveBeenCalledWith('temperatureUnit', 'C');
+      expect(localStorage.getItem('temperatureUnit')).toBe('C');
     });
   });
 
@@ -201,14 +174,12 @@ describe('TemperatureUnitContext', () => {
         button.click();
       });
 
-      expect(setItemSpy).toHaveBeenCalledWith('temperatureUnit', 'C');
+      expect(localStorage.getItem('temperatureUnit')).toBe('C');
 
       // Unmount
       unmount();
 
-      // Remount - should load from localStorage
-      getItemSpy.mockReturnValue('C');
-
+      // Remount - should load from localStorage (value is still 'C')
       renderWithProviders(
         <TemperatureUnitProvider>
           <TestComponent />

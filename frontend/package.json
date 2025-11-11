@@ -34,6 +34,8 @@
     "husky": "^9.1.7",
     "jsdom": "^26.0.0",
     "lint-staged": "^15.3.0",
+    "postcss": "^8.5.6",
+    "postcss-custom-media": "^11.0.6",
     "prettier": "^3.4.2",
     "stylelint": "^16.11.0",
     "stylelint-config-standard": "^36.0.1",
@@ -53,10 +55,12 @@
     "lint:fix": "eslint . --ext js,jsx --fix",
     "lint:css": "stylelint \"src/**/*.css\"",
     "lint:css:fix": "stylelint \"src/**/*.css\" --fix",
+    "lint:colors": "node scripts/check-unauthorized-colors.mjs",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,md}\"",
     "format:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx,json,css,md}\"",
     "type-check": "tsc --noEmit",
-    "validate": "node scripts/validate-build-config.cjs",
+    "validate:tokens": "node scripts/validate-theme-tokens.mjs",
+    "validate": "npm run lint:colors && npm run validate:tokens && node scripts/validate-build-config.cjs",
     "prebuild": "npm run validate",
     "prepare": "cd .. && husky frontend/.husky"
   },
@@ -87,7 +91,6 @@
   },
   "overrides": {
     "nth-check": "^2.1.1",
-    "postcss": "^8.4.31",
     "webpack-dev-server": "^4.15.2"
   }
 }

@@ -3,14 +3,14 @@ import { formatTemperature } from '../../utils/weatherHelpers';
 
 const FROSTED_PANEL_STYLE = {
   padding: '10px',
-  background: 'var(--overlay-accent, rgba(255, 255, 255, 0.15))',
+  background: 'var(--overlay-accent-strong)',
   borderRadius: '10px',
   backdropFilter: 'blur(10px)',
 };
 
 const FROSTED_BLOCK_STYLE = {
   padding: '12px',
-  background: 'var(--overlay-accent, rgba(255, 255, 255, 0.1))',
+  background: 'var(--overlay-accent)',
   borderRadius: '8px',
   backdropFilter: 'blur(10px)',
 };
@@ -25,11 +25,11 @@ function ThisDayInHistoryCard({ historyData, unit = 'C' }) {
       <div
         style={{
           padding: '12px',
-          background: 'var(--bg-elevated, #ffffff)',
+          background: 'var(--bg-elevated)',
           borderRadius: '8px',
-          boxShadow: 'var(--shadow-md, 0 12px 32px rgba(15, 23, 42, 0.12))',
+          boxShadow: 'var(--shadow-md)',
           textAlign: 'center',
-          color: 'var(--text-tertiary, #7b89a6)',
+          color: 'var(--text-tertiary)',
         }}
       >
         Loading historical data...
@@ -63,10 +63,10 @@ function ThisDayInHistoryCard({ historyData, unit = 'C' }) {
     <div
       style={{
         padding: '12px',
-        background: 'var(--gradient-primary, linear-gradient(135deg, #4c7ce5 0%, #7b94d6 100%))',
+        background: 'var(--gradient-primary)',
         borderRadius: '8px',
-        boxShadow: 'var(--shadow-lg, 0 18px 48px rgba(15, 23, 42, 0.18))',
-        color: 'var(--text-on-accent, #ffffff)',
+        boxShadow: 'var(--shadow-lg)',
+        color: 'var(--text-on-accent)',
       }}
     >
       {/* Header */}
@@ -203,7 +203,7 @@ function ThisDayInHistoryCard({ historyData, unit = 'C' }) {
         style={{
           ...FROSTED_BLOCK_STYLE,
           marginTop: '16px',
-          border: '1px solid var(--overlay-accent-strong, rgba(255, 255, 255, 0.2))',
+          border: '1px solid var(--overlay-accent-strong)',
         }}
       >
         <p style={{ margin: 0, fontSize: '11px', opacity: 0.85, lineHeight: '1.5' }}>

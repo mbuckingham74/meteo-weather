@@ -5,6 +5,19 @@
 
 ---
 
+## 🗓️ Today's Front-End To-Do
+
+- [x] **Phase 3.3 Stylelint Gate**
+  - Stylelint now runs via root lint scripts, husky pre-commit, and CI (`frontend-lint` job). See completion write-up: docs/development/CSS_PHASE_3.3_COMPLETE.md.
+- [x] **Unified Breakpoint Source**
+  - Breakpoint values now live in `frontend/config/breakpoints.json`, PostCSS compiles the `--bp-*` tokens globally, ITCSS utilities use them, and JS can import `src/constants/breakpoints.js` / `useBreakpoint`. See: frontend/BREAKPOINT_SYSTEM.md.
+- [x] **Component Token Catalog & Theme Presets**
+  - Token inventory lives in docs/ui-ux/COMPONENT_TOKEN_CATALOG.md, new `aurora`/`sunset` presets are available via `data-theme`, and `npm run validate:tokens` enforces consistent overrides.
+- [x] **Shared Retry/Cache Config**
+  - Retry helpers now live in `frontend/src/utils/errorHandler.js` and `backend/utils/retryHelper.js`, while cache TTLs pull from env-aware configs (`frontend/src/config/cache.js`, `backend/config/timeouts.js`). Radar/local storage services and cacheService consume the shared values.
+
+---
+
 ## ✅ Completed (November 4-5, 2025)
 
 ### Priority 1 Fixes
@@ -22,10 +35,8 @@
 ## 🚀 High Priority (User Value)
 
 ### UX Improvements
-- [ ] **Loading State Enhancement** (Est: 4 hours)
-  - Replace generic spinners with content-aware skeletons
-  - Target areas: AI query processing, chart loading, location search
-  - Files: `frontend/src/components/loading/`
+- [x] **Loading State Enhancement** (Est: 4 hours)
+  - Added AI answer skeletons, chart placeholders, and location search result skeletons so users see informative layouts instead of spinners.
 
 - [ ] **Error Recovery UX** (Est: 3 hours)
   - Add retry buttons for timeout errors

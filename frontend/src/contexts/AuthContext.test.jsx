@@ -50,15 +50,25 @@ describe('AuthContext', () => {
   let getItemSpy, setItemSpy, removeItemSpy;
 
   beforeEach(() => {
-    // Mock localStorage
-    getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockReturnValue(null);
-    setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {});
-    removeItemSpy = vi.spyOn(Storage.prototype, 'removeItem').mockImplementation(() => {});
+    vi.clearAllMocks();
+
+    // Clear localStorage before each test
+    localStorage.clear();
+
+    // Spy on localStorage methods directly
+    getItemSpy = vi.spyOn(localStorage, 'getItem');
+    setItemSpy = vi.spyOn(localStorage, 'setItem');
+    removeItemSpy = vi.spyOn(localStorage, 'removeItem');
 
     // Mock console.error
     vi.spyOn(console, 'error').mockImplementation(() => {});
 
-    vi.clearAllMocks();
+    // Mock authApi functions with default implementations (no-op for unauthenticated state)
+    authApi.getCurrentUser.mockRejectedValue(new Error('Not authenticated'));
+    authApi.refreshAccessToken.mockRejectedValue(new Error('Invalid token'));
+    authApi.registerUser.mockResolvedValue({ user: null, accessToken: null });
+    authApi.loginUser.mockResolvedValue({ user: null, accessToken: null });
+    authApi.logoutUser.mockResolvedValue({ message: 'Logged out' });
   });
 
   afterEach(() => {
@@ -88,11 +98,9 @@ describe('AuthContext', () => {
     it('loads tokens from localStorage and fetches user', async () => {
       const mockUser = { id: 1, email: 'test@example.com', name: 'Test User' };
 
-      getItemSpy.mockImplementation((key) => {
-        if (key === 'accessToken') return 'stored-access-token';
-        if (key === 'refreshToken') return 'stored-refresh-token';
-        return null;
-      });
+      // Set tokens in localStorage before rendering
+      localStorage.setItem('accessToken', 'stored-access-token');
+      localStorage.setItem('refreshToken', 'stored-refresh-token');
 
       authApi.getCurrentUser.mockResolvedValue(mockUser);
 
@@ -114,11 +122,9 @@ describe('AuthContext', () => {
     it('refreshes expired token and fetches user', async () => {
       const mockUser = { id: 1, email: 'test@example.com' };
 
-      getItemSpy.mockImplementation((key) => {
-        if (key === 'accessToken') return 'expired-token';
-        if (key === 'refreshToken') return 'valid-refresh-token';
-        return null;
-      });
+      // Set tokens in localStorage before rendering
+      localStorage.setItem('accessToken', 'expired-token');
+      localStorage.setItem('refreshToken', 'valid-refresh-token');
 
       // First getCurrentUser call fails (token expired)
       authApi.getCurrentUser.mockRejectedValueOnce(new Error('Token expired'));
@@ -148,11 +154,9 @@ describe('AuthContext', () => {
     });
 
     it('clears tokens when refresh fails', async () => {
-      getItemSpy.mockImplementation((key) => {
-        if (key === 'accessToken') return 'expired-token';
-        if (key === 'refreshToken') return 'invalid-refresh-token';
-        return null;
-      });
+      // Set tokens in localStorage before rendering
+      localStorage.setItem('accessToken', 'expired-token');
+      localStorage.setItem('refreshToken', 'invalid-refresh-token');
 
       authApi.getCurrentUser.mockRejectedValue(new Error('Token expired'));
       authApi.refreshAccessToken.mockRejectedValue(new Error('Refresh failed'));
@@ -252,14 +256,13 @@ describe('AuthContext', () => {
   describe('logout', () => {
     it('logs out user successfully', async () => {
       const mockUser = { id: 1, email: 'test@example.com' };
+      const mockLoginResponse = {
+        user: mockUser,
+        accessToken: 'test-access-token',
+        refreshToken: 'test-refresh-token',
+      };
 
-      getItemSpy.mockImplementation((key) => {
-        if (key === 'accessToken') return 'access-token';
-        if (key === 'refreshToken') return 'refresh-token';
-        return null;
-      });
-
-      authApi.getCurrentUser.mockResolvedValue(mockUser);
+      authApi.loginUser.mockResolvedValue(mockLoginResponse);
       authApi.logoutUser.mockResolvedValue({ message: 'Logged out' });
 
       render(
@@ -269,9 +272,19 @@ describe('AuthContext', () => {
       );
 
       await waitFor(() => {
+        expect(screen.getByTestId('loading')).toHaveTextContent('ready');
+      });
+
+      // Login first
+      await act(async () => {
+        screen.getByText('Login').click();
+      });
+
+      await waitFor(() => {
         expect(screen.getByTestId('is-authenticated')).toHaveTextContent('yes');
       });
 
+      // Now logout
       await act(async () => {
         screen.getByText('Logout').click();
       });
@@ -280,20 +293,20 @@ describe('AuthContext', () => {
         expect(screen.getByTestId('is-authenticated')).toHaveTextContent('no');
       });
 
-      expect(authApi.logoutUser).toHaveBeenCalledWith('access-token');
+      expect(authApi.logoutUser).toHaveBeenCalledWith('test-access-token');
       expect(removeItemSpy).toHaveBeenCalledWith('accessToken');
       expect(removeItemSpy).toHaveBeenCalledWith('refreshToken');
     });
 
     it('handles logout errors gracefully', async () => {
       const mockUser = { id: 1, email: 'test@example.com' };
+      const mockLoginResponse = {
+        user: mockUser,
+        accessToken: 'test-access-token',
+        refreshToken: 'test-refresh-token',
+      };
 
-      getItemSpy.mockImplementation((key) => {
-        if (key === 'accessToken') return 'access-token';
-        return null;
-      });
-
-      authApi.getCurrentUser.mockResolvedValue(mockUser);
+      authApi.loginUser.mockResolvedValue(mockLoginResponse);
       authApi.logoutUser.mockRejectedValue(new Error('Logout failed'));
 
       render(
@@ -303,9 +316,19 @@ describe('AuthContext', () => {
       );
 
       await waitFor(() => {
+        expect(screen.getByTestId('loading')).toHaveTextContent('ready');
+      });
+
+      // Login first
+      await act(async () => {
+        screen.getByText('Login').click();
+      });
+
+      await waitFor(() => {
         expect(screen.getByTestId('is-authenticated')).toHaveTextContent('yes');
       });
 
+      // Now logout (will fail but still clear state)
       await act(async () => {
         screen.getByText('Logout').click();
       });
@@ -323,13 +346,13 @@ describe('AuthContext', () => {
   describe('updateUser', () => {
     it('updates user data', async () => {
       const mockUser = { id: 1, email: 'test@example.com' };
+      const mockLoginResponse = {
+        user: mockUser,
+        accessToken: 'test-access-token',
+        refreshToken: 'test-refresh-token',
+      };
 
-      getItemSpy.mockImplementation((key) => {
-        if (key === 'accessToken') return 'access-token';
-        return null;
-      });
-
-      authApi.getCurrentUser.mockResolvedValue(mockUser);
+      authApi.loginUser.mockResolvedValue(mockLoginResponse);
 
       render(
         <AuthProvider>
@@ -338,9 +361,19 @@ describe('AuthContext', () => {
       );
 
       await waitFor(() => {
+        expect(screen.getByTestId('loading')).toHaveTextContent('ready');
+      });
+
+      // Login first
+      await act(async () => {
+        screen.getByText('Login').click();
+      });
+
+      await waitFor(() => {
         expect(screen.getByTestId('user')).toHaveTextContent(JSON.stringify(mockUser));
       });
 
+      // Update user
       act(() => {
         screen.getByText('Update User').click();
       });
@@ -376,6 +409,7 @@ describe('AuthContext', () => {
     });
 
     it('handles auth initialization errors gracefully', async () => {
+      // Make getItem throw an error
       getItemSpy.mockImplementation(() => {
         throw new Error('localStorage unavailable');
       });

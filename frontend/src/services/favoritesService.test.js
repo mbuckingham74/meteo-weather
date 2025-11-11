@@ -14,8 +14,6 @@ import {
 } from './favoritesService';
 
 describe('Favorites Service', () => {
-  let getItemSpy, setItemSpy, removeItemSpy;
-
   const mockLocation1 = {
     address: 'London, UK',
     latitude: 51.5074,
@@ -42,35 +40,27 @@ describe('Favorites Service', () => {
   ];
 
   beforeEach(() => {
-    // Create fresh spies for each test
-    getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockReturnValue(null);
-    setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {});
-    removeItemSpy = vi.spyOn(Storage.prototype, 'removeItem').mockImplementation(() => {});
+    // Clear localStorage before each test
+    localStorage.clear();
 
     // Mock console.error to avoid cluttering test output
     vi.spyOn(console, 'error').mockImplementation(() => {});
   });
 
   afterEach(() => {
-    // Restore mocks after each test
-    getItemSpy.mockRestore();
-    setItemSpy.mockRestore();
-    removeItemSpy.mockRestore();
+    // Restore console.error mock
     console.error.mockRestore();
   });
 
   describe('getFavorites', () => {
     it('returns empty array when no favorites stored', () => {
-      getItemSpy.mockReturnValue(null);
-
       const result = getFavorites();
 
-      expect(getItemSpy).toHaveBeenCalledWith('meteo_favorites');
       expect(result).toEqual([]);
     });
 
     it('returns parsed favorites from localStorage', () => {
-      getItemSpy.mockReturnValue(JSON.stringify(mockFavorites));
+      localStorage.setItem('meteo_favorites', JSON.stringify(mockFavorites));
 
       const result = getFavorites();
 
@@ -79,7 +69,8 @@ describe('Favorites Service', () => {
     });
 
     it('handles localStorage errors gracefully', () => {
-      getItemSpy.mockImplementation(() => {
+      const originalGetItem = localStorage.getItem;
+      localStorage.getItem = vi.fn(() => {
         throw new Error('localStorage unavailable');
       });
 
@@ -87,10 +78,12 @@ describe('Favorites Service', () => {
 
       expect(console.error).toHaveBeenCalledWith('Error loading favorites:', expect.any(Error));
       expect(result).toEqual([]);
+
+      localStorage.getItem = originalGetItem;
     });
 
     it('handles invalid JSON gracefully', () => {
-      getItemSpy.mockReturnValue('invalid json{]');
+      localStorage.setItem('meteo_favorites', 'invalid json{]');
 
       const result = getFavorites();
 
@@ -101,18 +94,12 @@ describe('Favorites Service', () => {
 
   describe('addFavorite', () => {
     it('adds new favorite successfully', () => {
-      getItemSpy.mockReturnValue(JSON.stringify([]));
-
       const result = addFavorite(mockLocation1);
 
       expect(result).toBe(true);
-      expect(setItemSpy).toHaveBeenCalledWith(
-        'meteo_favorites',
-        expect.stringContaining('51.5074')
-      );
 
       // Verify the saved data structure
-      const savedData = JSON.parse(setItemSpy.mock.calls[0][1]);
+      const savedData = JSON.parse(localStorage.getItem('meteo_favorites'));
       expect(savedData).toHaveLength(1);
       expect(savedData[0]).toMatchObject({
         address: 'London, UK',
@@ -124,29 +111,28 @@ describe('Favorites Service', () => {
     });
 
     it('adds favorite to existing list', () => {
-      getItemSpy.mockReturnValue(JSON.stringify([mockFavorites[0]]));
+      localStorage.setItem('meteo_favorites', JSON.stringify([mockFavorites[0]]));
 
       const result = addFavorite(mockLocation2);
 
       expect(result).toBe(true);
 
-      const savedData = JSON.parse(setItemSpy.mock.calls[0][1]);
+      const savedData = JSON.parse(localStorage.getItem('meteo_favorites'));
       expect(savedData).toHaveLength(2);
       expect(savedData[1]).toMatchObject(mockLocation2);
     });
 
     it('prevents duplicate favorites', () => {
-      getItemSpy.mockReturnValue(JSON.stringify(mockFavorites));
+      localStorage.setItem('meteo_favorites', JSON.stringify(mockFavorites));
 
       const result = addFavorite(mockLocation1);
 
       expect(result).toBe(false);
-      expect(setItemSpy).not.toHaveBeenCalled();
     });
 
     it('handles localStorage errors', () => {
-      getItemSpy.mockReturnValue(JSON.stringify([]));
-      setItemSpy.mockImplementation(() => {
+      const originalSetItem = localStorage.setItem;
+      localStorage.setItem = vi.fn(() => {
         throw new Error('QuotaExceededError');
       });
 
@@ -154,24 +140,23 @@ describe('Favorites Service', () => {
 
       expect(result).toBe(false);
       expect(console.error).toHaveBeenCalledWith('Error adding favorite:', expect.any(Error));
+
+      localStorage.setItem = originalSetItem;
     });
 
     it('generates correct ID format', () => {
-      getItemSpy.mockReturnValue(JSON.stringify([]));
-
       addFavorite(mockLocation1);
 
-      const savedData = JSON.parse(setItemSpy.mock.calls[0][1]);
+      const savedData = JSON.parse(localStorage.getItem('meteo_favorites'));
       expect(savedData[0].id).toBe('51.5074,-0.1278');
     });
 
     it('adds timestamp to favorites', () => {
-      getItemSpy.mockReturnValue(JSON.stringify([]));
       const beforeAdd = new Date().toISOString();
 
       addFavorite(mockLocation1);
 
-      const savedData = JSON.parse(setItemSpy.mock.calls[0][1]);
+      const savedData = JSON.parse(localStorage.getItem('meteo_favorites'));
       const afterAdd = new Date().toISOString();
 
       // Verify timestamp is in ISO format and within test duration
@@ -183,43 +168,43 @@ describe('Favorites Service', () => {
 
   describe('removeFavorite', () => {
     it('removes favorite successfully', () => {
-      getItemSpy.mockReturnValue(JSON.stringify(mockFavorites));
+      localStorage.setItem('meteo_favorites', JSON.stringify(mockFavorites));
 
       const result = removeFavorite('51.5074,-0.1278');
 
       expect(result).toBe(true);
-      expect(setItemSpy).toHaveBeenCalled();
 
-      const savedData = JSON.parse(setItemSpy.mock.calls[0][1]);
+      const savedData = JSON.parse(localStorage.getItem('meteo_favorites'));
       expect(savedData).toHaveLength(1);
       expect(savedData[0].id).toBe('48.8566,2.3522');
     });
 
     it('handles removing non-existent favorite', () => {
-      getItemSpy.mockReturnValue(JSON.stringify(mockFavorites));
+      localStorage.setItem('meteo_favorites', JSON.stringify(mockFavorites));
 
       const result = removeFavorite('99.999,99.999');
 
       expect(result).toBe(true);
 
-      const savedData = JSON.parse(setItemSpy.mock.calls[0][1]);
+      const savedData = JSON.parse(localStorage.getItem('meteo_favorites'));
       expect(savedData).toHaveLength(2); // Nothing removed
     });
 
     it('handles empty favorites list', () => {
-      getItemSpy.mockReturnValue(JSON.stringify([]));
+      localStorage.setItem('meteo_favorites', JSON.stringify([]));
 
       const result = removeFavorite('51.5074,-0.1278');
 
       expect(result).toBe(true);
 
-      const savedData = JSON.parse(setItemSpy.mock.calls[0][1]);
+      const savedData = JSON.parse(localStorage.getItem('meteo_favorites'));
       expect(savedData).toEqual([]);
     });
 
     it('handles localStorage errors', () => {
-      getItemSpy.mockReturnValue(JSON.stringify(mockFavorites));
-      setItemSpy.mockImplementation(() => {
+      localStorage.setItem('meteo_favorites', JSON.stringify(mockFavorites));
+      const originalSetItem = localStorage.setItem;
+      localStorage.setItem = vi.fn(() => {
         throw new Error('localStorage error');
       });
 
@@ -227,12 +212,14 @@ describe('Favorites Service', () => {
 
       expect(result).toBe(false);
       expect(console.error).toHaveBeenCalledWith('Error removing favorite:', expect.any(Error));
+
+      localStorage.setItem = originalSetItem;
     });
   });
 
   describe('isFavorite', () => {
     it('returns true for favorited location', () => {
-      getItemSpy.mockReturnValue(JSON.stringify(mockFavorites));
+      localStorage.setItem('meteo_favorites', JSON.stringify(mockFavorites));
 
       const result = isFavorite(51.5074, -0.1278);
 
@@ -240,7 +227,7 @@ describe('Favorites Service', () => {
     });
 
     it('returns false for non-favorited location', () => {
-      getItemSpy.mockReturnValue(JSON.stringify(mockFavorites));
+      localStorage.setItem('meteo_favorites', JSON.stringify(mockFavorites));
 
       const result = isFavorite(99.999, 99.999);
 
@@ -248,15 +235,13 @@ describe('Favorites Service', () => {
     });
 
     it('returns false for empty favorites', () => {
-      getItemSpy.mockReturnValue(JSON.stringify([]));
-
       const result = isFavorite(51.5074, -0.1278);
 
       expect(result).toBe(false);
     });
 
     it('handles exact coordinate matching', () => {
-      getItemSpy.mockReturnValue(JSON.stringify(mockFavorites));
+      localStorage.setItem('meteo_favorites', JSON.stringify(mockFavorites));
 
       // Test with exact match
       expect(isFavorite(51.5074, -0.1278)).toBe(true);
@@ -269,14 +254,17 @@ describe('Favorites Service', () => {
 
   describe('clearFavorites', () => {
     it('clears all favorites successfully', () => {
+      localStorage.setItem('meteo_favorites', JSON.stringify(mockFavorites));
+
       const result = clearFavorites();
 
       expect(result).toBe(true);
-      expect(removeItemSpy).toHaveBeenCalledWith('meteo_favorites');
+      expect(localStorage.getItem('meteo_favorites')).toBeNull();
     });
 
     it('handles localStorage errors', () => {
-      removeItemSpy.mockImplementation(() => {
+      const originalRemoveItem = localStorage.removeItem;
+      localStorage.removeItem = vi.fn(() => {
         throw new Error('localStorage error');
       });
 
@@ -284,15 +272,15 @@ describe('Favorites Service', () => {
 
       expect(result).toBe(false);
       expect(console.error).toHaveBeenCalledWith('Error clearing favorites:', expect.any(Error));
+
+      localStorage.removeItem = originalRemoveItem;
     });
 
     it('works even when no favorites exist', () => {
-      getItemSpy.mockReturnValue(null);
-
       const result = clearFavorites();
 
       expect(result).toBe(true);
-      expect(removeItemSpy).toHaveBeenCalled();
+      expect(localStorage.getItem('meteo_favorites')).toBeNull();
     });
   });
 
@@ -303,18 +291,19 @@ describe('Favorites Service', () => {
       const result = reorderFavorites(reordered);
 
       expect(result).toBe(true);
-      expect(setItemSpy).toHaveBeenCalledWith('meteo_favorites', JSON.stringify(reordered));
+      expect(localStorage.getItem('meteo_favorites')).toBe(JSON.stringify(reordered));
     });
 
     it('handles empty array', () => {
       const result = reorderFavorites([]);
 
       expect(result).toBe(true);
-      expect(setItemSpy).toHaveBeenCalledWith('meteo_favorites', JSON.stringify([]));
+      expect(localStorage.getItem('meteo_favorites')).toBe(JSON.stringify([]));
     });
 
     it('handles localStorage errors', () => {
-      setItemSpy.mockImplementation(() => {
+      const originalSetItem = localStorage.setItem;
+      localStorage.setItem = vi.fn(() => {
         throw new Error('localStorage error');
       });
 
@@ -322,11 +311,13 @@ describe('Favorites Service', () => {
 
       expect(result).toBe(false);
       expect(console.error).toHaveBeenCalledWith('Error reordering favorites:', expect.any(Error));
+
+      localStorage.setItem = originalSetItem;
     });
 
     it('overwrites existing favorites with new order', () => {
       // First, verify initial order
-      getItemSpy.mockReturnValue(JSON.stringify(mockFavorites));
+      localStorage.setItem('meteo_favorites', JSON.stringify(mockFavorites));
 
       const initialFavorites = getFavorites();
       expect(initialFavorites[0].id).toBe('51.5074,-0.1278');
@@ -336,22 +327,18 @@ describe('Favorites Service', () => {
       reorderFavorites(reversed);
 
       // Verify saved data has new order
-      const savedData = JSON.parse(setItemSpy.mock.calls[0][1]);
+      const savedData = JSON.parse(localStorage.getItem('meteo_favorites'));
       expect(savedData[0].id).toBe('48.8566,2.3522');
     });
   });
 
   describe('Integration Tests', () => {
     it('performs full workflow: add, check, remove, verify', () => {
-      // Start with empty favorites
-      getItemSpy.mockReturnValue(null);
+      // Start with empty favorites (localStorage is already cleared in beforeEach)
 
       // Add favorite
       const added = addFavorite(mockLocation1);
       expect(added).toBe(true);
-
-      // Mock localStorage to return the added favorite
-      getItemSpy.mockReturnValue(setItemSpy.mock.calls[setItemSpy.mock.calls.length - 1][1]);
 
       // Check if favorite
       expect(isFavorite(51.5074, -0.1278)).toBe(true);
@@ -360,23 +347,16 @@ describe('Favorites Service', () => {
       const removed = removeFavorite('51.5074,-0.1278');
       expect(removed).toBe(true);
 
-      // Update mock to reflect removal
-      getItemSpy.mockReturnValue(setItemSpy.mock.calls[setItemSpy.mock.calls.length - 1][1]);
-
       // Verify removal
       expect(isFavorite(51.5074, -0.1278)).toBe(false);
     });
 
     it('handles multiple adds and removes', () => {
-      getItemSpy.mockReturnValue(JSON.stringify([]));
-
       // Add first location
       addFavorite(mockLocation1);
-      getItemSpy.mockReturnValue(setItemSpy.mock.calls[setItemSpy.mock.calls.length - 1][1]);
 
       // Add second location
       addFavorite(mockLocation2);
-      getItemSpy.mockReturnValue(setItemSpy.mock.calls[setItemSpy.mock.calls.length - 1][1]);
 
       // Verify both exist
       expect(isFavorite(51.5074, -0.1278)).toBe(true);
@@ -384,7 +364,6 @@ describe('Favorites Service', () => {
 
       // Remove first
       removeFavorite('51.5074,-0.1278');
-      getItemSpy.mockReturnValue(setItemSpy.mock.calls[setItemSpy.mock.calls.length - 1][1]);
 
       // Verify first removed, second remains
       expect(isFavorite(51.5074, -0.1278)).toBe(false);

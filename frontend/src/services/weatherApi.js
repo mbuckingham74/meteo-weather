@@ -1,9 +1,12 @@
 import axios from 'axios';
 import API_CONFIG from '../config/api';
+import TIMEOUTS from '../config/timeouts';
 import { handleAPIError, retryWithBackoff } from '../utils/errorHandler';
 import { debugInfo, debugError } from '../utils/debugLogger';
 
 const API_BASE_URL = API_CONFIG.BASE_URL;
+const RETRY_ATTEMPTS = TIMEOUTS.RETRY.MAX_ATTEMPTS;
+const RETRY_DELAY = TIMEOUTS.RETRY.INITIAL_DELAY;
 
 /**
  * Weather API Service
@@ -37,8 +40,8 @@ export async function getCurrentWeather(location) {
 
     const response = await retryWithBackoff(
       async () => weatherClient.get(`/weather/current/${encodeURIComponent(location)}`),
-      3,
-      1000,
+      RETRY_ATTEMPTS,
+      RETRY_DELAY,
       `getCurrentWeather(${location})`
     );
 
@@ -63,8 +66,8 @@ export async function getWeatherForecast(location, days = 7) {
     const response = await retryWithBackoff(
       async () =>
         weatherClient.get(`/weather/forecast/${encodeURIComponent(location)}?days=${days}`),
-      3,
-      1000,
+      RETRY_ATTEMPTS,
+      RETRY_DELAY,
       `getWeatherForecast(${location}, ${days} days)`
     );
 
@@ -89,8 +92,8 @@ export async function getHourlyForecast(location, hours = 48) {
     const response = await retryWithBackoff(
       async () =>
         weatherClient.get(`/weather/hourly/${encodeURIComponent(location)}?hours=${hours}`),
-      3,
-      1000,
+      RETRY_ATTEMPTS,
+      RETRY_DELAY,
       `getHourlyForecast(${location}, ${hours} hours)`
     );
 
@@ -121,8 +124,8 @@ export async function getHistoricalWeather(location, startDate, endDate) {
         weatherClient.get(`/weather/historical/${encodeURIComponent(location)}`, {
           params: { start: startDate, end: endDate },
         }),
-      3,
-      1000,
+      RETRY_ATTEMPTS,
+      RETRY_DELAY,
       `getHistoricalWeather(${location}, ${startDate} - ${endDate})`
     );
 
@@ -181,8 +184,8 @@ export async function getAllLocations(limit = 100, offset = 0) {
         weatherClient.get('/locations', {
           params: { limit, offset },
         }),
-      2,
-      1000,
+      Math.max(2, RETRY_ATTEMPTS - 1),
+      RETRY_DELAY,
       'getAllLocations'
     );
 
@@ -240,8 +243,8 @@ export async function reverseGeocode(lat, lon) {
         weatherClient.get('/locations/reverse', {
           params: { lat, lon },
         }),
-      2,
-      1000,
+      Math.max(2, RETRY_ATTEMPTS - 1),
+      RETRY_DELAY,
       `reverseGeocode(${lat}, ${lon})`
     );
 
@@ -263,8 +266,8 @@ export async function getPopularLocations() {
 
     const response = await retryWithBackoff(
       async () => weatherClient.get('/locations/popular'),
-      2,
-      1000,
+      Math.max(2, RETRY_ATTEMPTS - 1),
+      RETRY_DELAY,
       'getPopularLocations'
     );
 

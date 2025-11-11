@@ -61,7 +61,7 @@ function CloudCoverChart({ data, days, height = 350 }) {
           padding: '12px',
           border: '1px solid var(--border-light)',
           borderRadius: '8px',
-          boxShadow: 'var(--shadow-sm, 0 4px 6px rgba(0, 0, 0, 0.1))',
+          boxShadow: 'var(--shadow-sm)',
         }}
       >
         <p style={{ margin: '0 0 8px 0', fontWeight: 'bold', color: 'var(--text-primary)' }}>

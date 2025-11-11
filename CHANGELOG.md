@@ -28,7 +28,82 @@ All notable changes to the Meteo Weather App project are documented in this file
 
 ## [Unreleased]
 
-*No unreleased changes*
+### 🐛 Bug Fixes
+- **CSS Modules Test Migration (PR #21)** - Fixed 78 test failures from CSS Modules migration
+  - **Root Cause:** CSS class selectors (`class="alert"`) replaced with hashed names (`class="_alert_a85bc4"`)
+  - **Solution Pattern:** Added `data-testid` attributes, replaced class selectors with `getByTestId()`
+  - **Components Fixed:**
+    - TemperatureUnitToggle (17 tests) - Added data-testid to all interactive elements
+    - AuthHeader (22 tests) - Fixed Vitest mock syntax, added react-router-dom mock
+    - TemperatureUnitContext (4 tests) - Removed Storage.prototype spies, use localStorage directly
+    - ThemeContext (4 tests) - Same localStorage pattern
+    - favoritesService (27 tests) - Removed all localStorage spies (121 lines)
+    - AuthContext (9 tests) - Fixed async initialization issues
+    - authApi (27 tests) - Updated error message assertions
+    - LocationSearchBar (22 tests) - Fixed fake timer conflicts with async debounce
+  - **Test Infrastructure Fixes:**
+    - setupTests.jsx: Fixed axios.create() mock to return new instances
+    - setupTests.jsx: Added config/api mock for module loading
+    - weatherApi.test.js: Fixed local axios mock override
+  - **Test Score:** 442 passing → 519 passing (+77 tests fixed)
+  - **Remaining:** 34 pre-existing weatherApi failures (unrelated to CSS Modules)
+  - **8 Commits:** 72a11e3, 0ccef30, ed32edc, fd6aaca, b023bcf, 065acea, 69aeb99, d3578e0
+  - **Files Changed:** 17 files (test files + components + setupTests.jsx)
+
+### 🎉 New Features
+- **Theme System Enhancements** - Comprehensive color audit and theme improvements
+  - Added theme presets with validation system (`docs/ui-ux/COMPONENT_TOKEN_CATALOG.md`, 90 lines)
+  - Created overlay tokens guide for glass effects (`docs/ui-ux/OVERLAY_TOKENS_GUIDE.md`, 52 lines)
+  - Implemented 151 new CSS variables in theme system (`frontend/src/styles/theme-variables.css`)
+  - Added `useBreakpoint` hook for responsive design (88 lines)
+  - Created breakpoints configuration system (`frontend/config/breakpoints.json`)
+
+- **Loading & Error Recovery UX** - Improved user feedback during data loading
+  - Added skeleton loading states for AI answers (`AIAnswerSkeleton.jsx`, 25 lines)
+  - Enhanced weather dashboard skeleton with better visual feedback (33 lines)
+  - Improved chart grid loading states (160+ lines refactored)
+
+### 🔄 Changes
+- **Color System Standardization** - "Calm Indigo" audit across all CSS files
+  - Unified color tokens across 69 files (1,975 additions, 1,131 deletions)
+  - Applied consistent color scheme to About page, AI pages, location components
+  - Updated radar map styling with theme-aware colors
+  - Standardized chart component colors (10 chart files updated)
+
+- **Build System Improvements** - Enhanced validation and quality gates
+  - Added unauthorized color checker script (`check-unauthorized-colors.mjs`, 118 lines)
+  - Implemented theme token validation script (`validate-theme-tokens.mjs`, 96 lines)
+  - Extended color guard to CSS Modules (34 lines in PostCSS config)
+  - Enforced stylelint gate in pre-commit hooks
+  - Updated husky pre-commit with color validation
+
+- **Responsive Design Overhaul** - Unified breakpoint system
+  - Centralized breakpoint definitions across frontend (`constants/breakpoints.js`, 55 lines)
+  - Updated ITCSS breakpoint utilities (54 lines)
+  - Standardized responsive behavior across components
+  - Documented breakpoint system updates (120+ lines in `BREAKPOINT_SYSTEM.md`)
+
+### ⚡ Performance
+- **Cache & Retry Optimizations** - Centralized configuration and helpers
+  - Created unified cache configuration (`frontend/src/config/cache.js`, 38 lines)
+  - Implemented retry helper utility (`backend/utils/retryHelper.js`, 55 lines)
+  - Centralized timeout configurations (`backend/config/timeouts.js`)
+  - Optimized weather service retry logic (33 lines)
+  - Enhanced radar service caching (29 lines)
+
+### 📚 Documentation
+- **UI/UX Documentation Updates**
+  - Condensed CSS Phase 3.3 documentation (584 lines → streamlined)
+  - Added component token catalog with usage examples
+  - Created overlay tokens guide for glass morphism effects
+  - Updated TODO list with completed color audit tasks
+
+### 🔧 Technical Improvements
+- **Giga AI Context Files** - Updated AI assistance documentation
+  - Enhanced `ai-services.mdc` with new service patterns (79 lines)
+  - Updated `data-flow.mdc` with cache configurations (105 lines)
+  - Refined `weather-algorithms.mdc` documentation (93 lines)
+  - Improved `weather-models.mdc` accuracy (104 lines)
 
 ---
 

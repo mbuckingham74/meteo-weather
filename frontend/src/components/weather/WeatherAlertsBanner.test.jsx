@@ -52,8 +52,8 @@ describe('WeatherAlertsBanner', () => {
   it('displays alert headlines when present and expanded', () => {
     render(<WeatherAlertsBanner alerts={mockAlerts} />);
 
-    const alertHeader = screen.getByText('Severe Thunderstorm Warning').closest('.alert-header');
-    fireEvent.click(alertHeader);
+    const alertHeaders = screen.getAllByTestId('alert-header');
+    fireEvent.click(alertHeaders[0]);
 
     expect(screen.getByText('Severe thunderstorm warning in effect')).toBeInTheDocument();
   });
@@ -61,13 +61,15 @@ describe('WeatherAlertsBanner', () => {
   it('expands alert when clicked', () => {
     render(<WeatherAlertsBanner alerts={mockAlerts} />);
 
-    const alertHeader = screen.getByText('Severe Thunderstorm Warning').closest('.alert-header');
+    const alertHeaders = screen.getAllByTestId('alert-header');
 
     // Description should not be visible initially
-    expect(screen.queryByText(/A severe thunderstorm warning has been issued/)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/A severe thunderstorm warning has been issued/)
+    ).not.toBeInTheDocument();
 
     // Click to expand
-    fireEvent.click(alertHeader);
+    fireEvent.click(alertHeaders[0]);
 
     // Description should now be visible
     expect(screen.getByText(/A severe thunderstorm warning has been issued/)).toBeInTheDocument();
@@ -76,7 +78,8 @@ describe('WeatherAlertsBanner', () => {
   it('collapses alert when clicked twice', () => {
     render(<WeatherAlertsBanner alerts={mockAlerts} />);
 
-    const alertHeader = screen.getByText('Severe Thunderstorm Warning').closest('.alert-header');
+    const alertHeaders = screen.getAllByTestId('alert-header');
+    const alertHeader = alertHeaders[0];
 
     // Expand
     fireEvent.click(alertHeader);
@@ -84,28 +87,30 @@ describe('WeatherAlertsBanner', () => {
 
     // Collapse
     fireEvent.click(alertHeader);
-    expect(screen.queryByText(/A severe thunderstorm warning has been issued/)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/A severe thunderstorm warning has been issued/)
+    ).not.toBeInTheDocument();
   });
 
   it('shows warning severity for warnings', () => {
     render(<WeatherAlertsBanner alerts={[mockAlerts[0]]} />);
 
-    const alertElement = screen.getByText('Severe Thunderstorm Warning').closest('.weather-alert');
-    expect(alertElement).toHaveClass('weather-alert-warning');
+    const alertElement = screen.getByTestId('weather-alert');
+    expect(alertElement).toHaveAttribute('data-severity', 'warning');
   });
 
   it('shows watch severity for watches', () => {
     render(<WeatherAlertsBanner alerts={[mockAlerts[1]]} />);
 
-    const alertElement = screen.getByText('Flood Watch').closest('.weather-alert');
-    expect(alertElement).toHaveClass('weather-alert-watch');
+    const alertElement = screen.getByTestId('weather-alert');
+    expect(alertElement).toHaveAttribute('data-severity', 'watch');
   });
 
   it('shows advisory severity for advisories', () => {
     render(<WeatherAlertsBanner alerts={[mockAlerts[2]]} />);
 
-    const alertElement = screen.getByText('Heat Advisory').closest('.weather-alert');
-    expect(alertElement).toHaveClass('weather-alert-advisory');
+    const alertElement = screen.getByTestId('weather-alert');
+    expect(alertElement).toHaveAttribute('data-severity', 'advisory');
   });
 
   it('displays appropriate icon for warnings', () => {
@@ -137,23 +142,25 @@ describe('WeatherAlertsBanner', () => {
   it('displays end time when expanded', () => {
     render(<WeatherAlertsBanner alerts={[mockAlerts[0]]} />);
 
-    const alertHeader = screen.getByText('Severe Thunderstorm Warning').closest('.alert-header');
+    const alertHeader = screen.getByTestId('alert-header');
     fireEvent.click(alertHeader);
 
     expect(screen.getByText(/Ends:/)).toBeInTheDocument();
   });
 
   it('handles alerts without descriptions gracefully', () => {
-    const minimalAlert = [{
-      event: 'Test Alert',
-      onset: '2025-10-28T12:00:00Z',
-    }];
+    const minimalAlert = [
+      {
+        event: 'Test Alert',
+        onset: '2025-10-28T12:00:00Z',
+      },
+    ];
 
     render(<WeatherAlertsBanner alerts={minimalAlert} />);
 
     expect(screen.getByText('Test Alert')).toBeInTheDocument();
 
-    const alertHeader = screen.getByText('Test Alert').closest('.alert-header');
+    const alertHeader = screen.getByTestId('alert-header');
     fireEvent.click(alertHeader);
 
     // Should not crash when description is missing
@@ -163,33 +170,36 @@ describe('WeatherAlertsBanner', () => {
   it('allows only one alert expanded at a time', () => {
     render(<WeatherAlertsBanner alerts={mockAlerts} />);
 
-    const alert1Header = screen.getByText('Severe Thunderstorm Warning').closest('.alert-header');
-    const alert2Header = screen.getByText('Flood Watch').closest('.alert-header');
+    const alertHeaders = screen.getAllByTestId('alert-header');
 
     // Expand first alert
-    fireEvent.click(alert1Header);
+    fireEvent.click(alertHeaders[0]);
     expect(screen.getByText(/A severe thunderstorm warning has been issued/)).toBeInTheDocument();
 
     // Expand second alert
-    fireEvent.click(alert2Header);
+    fireEvent.click(alertHeaders[1]);
 
     // First alert should now be collapsed
-    expect(screen.queryByText(/A severe thunderstorm warning has been issued/)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/A severe thunderstorm warning has been issued/)
+    ).not.toBeInTheDocument();
 
     // Second alert should be expanded
     expect(screen.getByText(/Flooding is possible/)).toBeInTheDocument();
   });
 
   it('uses info severity for unknown alert types', () => {
-    const unknownAlert = [{
-      event: 'Special Weather Statement',
-      description: 'Something is happening',
-    }];
+    const unknownAlert = [
+      {
+        event: 'Special Weather Statement',
+        description: 'Something is happening',
+      },
+    ];
 
     render(<WeatherAlertsBanner alerts={unknownAlert} />);
 
-    const alertElement = screen.getByText('Special Weather Statement').closest('.weather-alert');
-    expect(alertElement).toHaveClass('weather-alert-info');
+    const alertElement = screen.getByTestId('weather-alert');
+    expect(alertElement).toHaveAttribute('data-severity', 'info');
     expect(screen.getByText('📢')).toBeInTheDocument();
   });
 });

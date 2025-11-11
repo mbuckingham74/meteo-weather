@@ -4,6 +4,7 @@
  */
 
 import { useState } from 'react';
+import TIMEOUTS from '../config/timeouts';
 import { debugError } from './debugLogger';
 
 /**
@@ -285,8 +286,8 @@ export function useErrorHandler() {
  */
 export async function retryWithBackoff(
   fn,
-  maxRetries = 3,
-  initialDelay = 1000,
+  maxRetries = TIMEOUTS.RETRY.MAX_ATTEMPTS,
+  initialDelay = TIMEOUTS.RETRY.INITIAL_DELAY,
   context = 'Retry',
   options = {}
 ) {
@@ -343,7 +344,10 @@ export async function retryWithBackoff(
  *   {retryState.isRetrying ? `Retrying (${retryState.attempt}/${retryState.maxAttempts})...` : 'Load Data'}
  * </button>
  */
-export function useRetryHandler(maxRetries = 3, initialDelay = 1000) {
+export function useRetryHandler(
+  maxRetries = TIMEOUTS.RETRY.MAX_ATTEMPTS,
+  initialDelay = TIMEOUTS.RETRY.INITIAL_DELAY
+) {
   const [retryState, setRetryState] = useState({
     isRetrying: false,
     attempt: 0,

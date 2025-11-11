@@ -4,6 +4,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import CACHE_TTL from '../config/cache';
 import {
   getRadarMapData,
   buildRadarTileUrl,
@@ -36,7 +37,7 @@ describe('Radar Service', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     clearRadarCache(); // Clear cache before each test
-    global.fetch.mockClear();
+    global.fetch.mockReset();
   });
 
   describe('getRadarMapData', () => {
@@ -54,7 +55,7 @@ describe('Radar Service', () => {
       expect(result).toEqual(mockRadarData);
     });
 
-    it('caches radar data for 5 minutes', async () => {
+    it('caches radar data for configured TTL', async () => {
       global.fetch.mockResolvedValue({
         ok: true,
         json: async () => mockRadarData,
@@ -81,8 +82,8 @@ describe('Radar Service', () => {
       await getRadarMapData();
       expect(global.fetch).toHaveBeenCalledTimes(1);
 
-      // Advance time by 6 minutes (cache expires after 5 min)
-      vi.advanceTimersByTime(6 * 60 * 1000);
+      // Advance time beyond cache TTL
+      vi.advanceTimersByTime(CACHE_TTL.RADAR_MS + 60 * 1000);
 
       // Second call - should fetch again
       await getRadarMapData();

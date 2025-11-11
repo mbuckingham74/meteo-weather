@@ -8,6 +8,8 @@ import TemperatureBandChart from '../charts/TemperatureBandChart';
 import WindChart from '../charts/WindChart';
 import HourlyForecastChart from '../charts/HourlyForecastChart';
 import ChartSkeleton from '../common/ChartSkeleton';
+import AIAnswerSkeleton from './AIAnswerSkeleton';
+import ErrorMessage from '../common/ErrorMessage';
 import AIHistoryDropdown from './AIHistoryDropdown';
 import { addToAIHistory } from '../../utils/aiHistoryStorage';
 import API_CONFIG from '../../config/api';
@@ -442,10 +444,24 @@ function AIWeatherPage() {
           </div>
         )}
 
-        {error && <div className="error-message">❌ {error}</div>}
+        {error && (
+          <ErrorMessage
+            error={error}
+            onRetry={handleAskQuestion}
+            mode="inline"
+            retryLabel="Try again"
+            showSuggestions={false}
+          />
+        )}
       </div>
 
-      {answer && (
+      {loading && (
+        <div className="ai-answer-section" aria-live="polite">
+          <AIAnswerSkeleton />
+        </div>
+      )}
+
+      {answer && !loading && (
         <div className="ai-answer-section">
           <div className="answer-header">
             <h2>💬 Answer</h2>

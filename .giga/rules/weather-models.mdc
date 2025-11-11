@@ -1,64 +1,58 @@
 ---
-description: Defines weather data models, relationships, and structures for handling meteorological data across the application.
+description: Defines data models and relationships for weather metrics, location data, and user preferences across the application
 ---
 
 
 # weather-models
 
-Core Weather Data Models and Relationships:
+Core Data Models:
 
-1. Historical Climate Model (backend/services/climateService.js)
-- Daily temperature ranges with percentile bands (5th, 25th, 75th, 95th)
-- Record high/low temperatures with dates and sources
-- Precipitation probability distributions by month
-- Climate normals calculated from 30-year periods
-Importance Score: 95/100
+1. Location Climate Model
+Path: frontend/src/components/location/LocationComparisonView/locationData.js
+- Climate characteristics scoring matrix
+- Temperature bands with weighted importance
+- Humidity preference ranges
+- Precipitation pattern classifications
+Importance Score: 85
 
-2. Current Weather Model (backend/services/weatherService.js)
-- Real-time conditions including temperature, humidity, pressure
-- Cloud cover percentages with type classification
-- Precipitation intensity and probability modeling
-- Wind vectors with gust calculations
-Importance Score: 90/100
+2. Weather Pattern Model 
+Path: frontend/src/components/weather/WeatherDashboard/TodaysHighlights.jsx
+- Weather condition categorization schema
+- Dew point calculation mapping
+- Weather metric priority weights
+- Condition-to-icon mapping rules
+Importance Score: 75
 
-3. Weather Alert Schema (backend/routes/weather.js)
-- Severity levels: Advisory, Watch, Warning
-- Geographic polygon definitions for alert boundaries
-- Start/end timing with confidence intervals
-- Impact assessments with standardized categories
-Importance Score: 85/100
+3. Temperature Distribution Model
+Path: frontend/src/components/charts/TemperatureProbabilityChart.jsx
+- Temperature band classifications
+- Probability density mappings
+- Percentile calculation rules
+- Temperature trend categorization
+Importance Score: 80
 
-4. Location Weather Profile (backend/services/locationService.js)
-- Climate zone classification
-- Typical temperature ranges by season
-- Precipitation patterns and annual totals
-- Extreme weather event frequency
-Importance Score: 80/100
+4. Historical Precipitation Model
+Path: frontend/src/components/weather/HistoricalRainTable.jsx
+- Precipitation pattern classification
+- Rain day percentage thresholds
+- Weather condition correlations
+- Precipitation intensity scales
+Importance Score: 75
 
-Relationships and Dependencies:
+5. Climate Preference Model
+Path: frontend/src/components/location/LocationComparisonView/AILocationFinder.jsx
+- Natural language preference mapping
+- Quantifiable climate criteria translations
+- Current location baseline metrics
+- Relative comparison weights
+Importance Score: 90
 
-1. Location-Weather Binding
-- One-to-many relationship between locations and weather readings
-- Temporal indexing for historical queries
-- Spatial indexing for regional analysis
-
-2. Climate-Weather Integration
-- Historical readings feed climate normal calculations
-- Current conditions compared against climate expectations
-- Record tracking with automated updates
-
-Key Weather Data Types:
-- Temperature: Celsius/Fahrenheit with conversion logic
-- Precipitation: mm/inch with type classification
-- Wind: Speed and direction vectors
-- Pressure: Absolute and sea-level adjusted
-- Humidity: Relative and absolute calculations
-
-Data Update Frequencies:
-- Current conditions: 5-15 minutes
-- Short-term forecast: Hourly
-- Climate data: Monthly refresh
-- Records: Real-time updates
+Key Relationships:
+- Location models maintain climate scoring matrices
+- Weather patterns link to condition categories
+- Temperature distributions connect to preference models
+- Historical data maps to pattern classifications
+- User preferences correlate with climate metrics
 
 $END$
 

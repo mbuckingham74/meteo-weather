@@ -1,3 +1,5 @@
+import CACHE_TTL from '../config/cache';
+
 /**
  * Local storage keys and configuration
  * Centralized storage management
@@ -18,12 +20,6 @@ export const STORAGE_KEYS = {
 /**
  * Storage limits and configurations
  */
-export const STORAGE_LIMITS = {
-  MAX_RECENT_SEARCHES: 5,
-  LOCATION_CACHE_TTL: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
-  PREFERENCES_VERSION: 1,
-};
-
 /**
  * Default values for storage
  */
@@ -31,4 +27,10 @@ export const STORAGE_DEFAULTS = {
   RECENT_SEARCHES: [],
   TEMPERATURE_UNIT: 'F',
   THEME: 'system',
+};
+
+export const STORAGE_LIMITS = {
+  MAX_RECENT_SEARCHES: 5,
+  LOCATION_CACHE_TTL: CACHE_TTL.LOCATION_MS,
+  PREFERENCES_VERSION: 1,
 };

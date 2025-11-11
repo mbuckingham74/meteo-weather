@@ -6,29 +6,41 @@ import { useTheme } from '../../contexts/ThemeContext';
  * Simple button to cycle between light, dark, and auto themes
  * CSS Modules Migration: Phase 1.1
  */
+const THEME_SEQUENCE = ['light', 'dark', 'aurora', 'sunset', 'auto'];
+const THEME_ICONS = {
+  light: '☀️',
+  dark: '🌙',
+  aurora: '🌌',
+  sunset: '🌇',
+};
+const THEME_LABELS = {
+  light: 'Light',
+  dark: 'Dark',
+  aurora: 'Aurora',
+  sunset: 'Sunset',
+  auto: 'Auto',
+};
+
 function ThemeToggle({ compact = false }) {
   const { themePreference, actualTheme, setTheme } = useTheme();
 
   const getThemeIcon = () => {
     if (themePreference === 'auto') {
-      return actualTheme === 'dark' ? '🌙' : '☀️';
+      if (actualTheme === 'dark') return THEME_ICONS.dark;
+      return THEME_ICONS.light;
     }
-    return themePreference === 'dark' ? '🌙' : '☀️';
+    return THEME_ICONS[themePreference] || '🎨';
   };
 
   const getThemeLabel = () => {
-    if (themePreference === 'auto') {
-      return 'Auto';
-    }
-    return themePreference === 'dark' ? 'Dark' : 'Light';
+    return THEME_LABELS[themePreference] || 'Custom';
   };
 
-  // Cycle through themes: light -> dark -> auto -> light
+  // Cycle through themes: light -> dark -> aurora -> sunset -> auto -> light
   const cycleTheme = () => {
-    const themeOrder = ['light', 'dark', 'auto'];
-    const currentIndex = themeOrder.indexOf(themePreference);
-    const nextIndex = (currentIndex + 1) % themeOrder.length;
-    setTheme(themeOrder[nextIndex]);
+    const currentIndex = THEME_SEQUENCE.indexOf(themePreference);
+    const nextIndex = (currentIndex + 1) % THEME_SEQUENCE.length;
+    setTheme(THEME_SEQUENCE[nextIndex]);
   };
 
   return (

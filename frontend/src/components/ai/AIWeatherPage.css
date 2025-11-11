@@ -131,6 +131,30 @@
   animation: aiAnswerFadeIn 0.3s ease-in;
 }
 
+.ai-answer-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.ai-answer-skeleton__header {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  align-items: center;
+}
+
+.ai-answer-skeleton__body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ai-answer-skeleton__meta {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
 @keyframes aiAnswerFadeIn {
   from {
     opacity: 0;

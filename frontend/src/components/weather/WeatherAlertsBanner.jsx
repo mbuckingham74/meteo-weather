@@ -19,13 +19,13 @@ function WeatherAlertsBanner({ alerts }) {
     const eventLower = event?.toLowerCase() || '';
 
     if (eventLower.includes('warning') || eventLower.includes('severe')) {
-      return { severity: 'warning', icon: '⚠️', color: 'var(--alert-critical, #d64949)' };
+      return { severity: 'warning', icon: '⚠️', color: 'var(--alert-critical)' };
     } else if (eventLower.includes('watch')) {
-      return { severity: 'watch', icon: '👁️', color: 'var(--alert-warning, #f0a202)' };
+      return { severity: 'watch', icon: '👁️', color: 'var(--alert-warning)' };
     } else if (eventLower.includes('advisory')) {
-      return { severity: 'advisory', icon: 'ℹ️', color: 'var(--alert-advisory, #4c8ef5)' };
+      return { severity: 'advisory', icon: 'ℹ️', color: 'var(--alert-advisory)' };
     } else {
-      return { severity: 'info', icon: '📢', color: 'var(--text-secondary, #465570)' };
+      return { severity: 'info', icon: '📢', color: 'var(--text-secondary)' };
     }
   };
 
@@ -51,6 +51,8 @@ function WeatherAlertsBanner({ alerts }) {
             key={index}
             className={`${styles.alert} ${styles[`alert${style.severity.charAt(0).toUpperCase() + style.severity.slice(1)}`]}`}
             style={{ borderLeftColor: style.color }}
+            data-testid="weather-alert"
+            data-severity={style.severity}
           >
             <div
               className={styles.header}
@@ -61,6 +63,7 @@ function WeatherAlertsBanner({ alerts }) {
               aria-expanded={isExpanded}
               aria-label={`${alert.event} alert. ${isExpanded ? 'Collapse' : 'Expand'} for more details`}
               style={{ cursor: 'pointer' }}
+              data-testid="alert-header"
             >
               <div className={styles.headerContent}>
                 <span className={styles.icon} style={{ color: style.color }} aria-hidden="true">

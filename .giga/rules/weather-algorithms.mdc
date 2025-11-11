@@ -1,51 +1,60 @@
 ---
-description: Documents core weather algorithms including climate analysis, temperature distributions, historical comparisons, and radar processing
+description: Guidelines for implementing and maintaining weather analysis algorithms and climate data processing components
 ---
 
 
 # weather-algorithms
 
-The weather algorithms system implements specialized meteorological analysis and processing capabilities across several key areas:
+## Core Analysis Components
 
-## Climate Analysis Engine
-`backend/services/climateService.js`
-- Temperature probability distribution calculations using multi-year historical data
-- Record temperature identification and trend analysis 
-- Climate normals computation with configurable baseline periods
-- Seasonal pattern detection and anomaly identification
-Importance Score: 90/100
+1. Temperature Probability Distribution
+Path: frontend/src/components/charts/TemperatureProbabilityChart.jsx
+- Statistical processing of temperature ranges
+- Probability density calculations for temperature bands
+- Custom percentile analysis for temperature trends
+- Temperature band categorization system
+Importance Score: 80
 
-## Historical Comparison System
-`backend/services/historicalDataService.js`
-- Multi-year pattern recognition for temperature and precipitation
-- Percentile-based temperature band calculations
-- Statistical aggregation of historical weather events
-- Trend analysis across different time scales (daily/monthly/yearly)
-Importance Score: 85/100
+2. Climate Pattern Analysis 
+Path: frontend/src/components/location/LocationComparisonView/locationData.js
+- Weighted scoring for climate matching between locations
+- Temperature delta comparisons across time periods
+- Precipitation pattern correlation
+- Climate characteristic database integration
+Importance Score: 85
 
-## Radar Processing Pipeline
-`frontend/src/services/radarService.js`
-- Frame-based weather radar data management
-- Storm tracking calculations including direction and speed
-- Multiple data source integration (RainViewer/OpenWeather)
-- Historical frame playback with animation controls
-Importance Score: 80/100
+3. Historical Weather Processing
+Path: frontend/src/components/charts/PrecipitationChart.jsx
+- Precipitation probability correlation algorithms
+- Rain/snow differentiation logic
+- Custom aggregation for precipitation trends
+- Time-based precipitation intensity scaling
+Importance Score: 75
 
-## Temperature Distribution Analysis
-`frontend/src/components/charts/TemperatureProbabilityChart.jsx`
-- Statistical temperature distribution modeling
-- Percentile-based temperature range analysis
-- Climate normal deviation calculations
-- Confidence interval computation for forecasts
-Importance Score: 75/100
+4. Radar Data Analysis
+Path: frontend/src/services/radarService.js
+- Weather radar frame sequencing and processing
+- Storm tracking with directional calculations
+- Precipitation type detection algorithms
+- Multi-layer weather data visualization
+Importance Score: 90
 
-## Weather Pattern Recognition
-`frontend/src/utils/weatherHelpers.js`
-- Custom weather condition classification algorithms
-- Temperature band calculations for different climate zones
-- Precipitation pattern analysis and categorization
-- Weather metric normalization and unit conversion
-Importance Score: 70/100
+## Key Pattern Recognition
+
+1. Temperature Bands
+- Custom statistical models for temperature distribution
+- Probability-based temperature forecasting
+- Historical temperature correlation analysis
+
+2. Precipitation Analysis
+- Rain day percentage calculations
+- Weather condition correlations
+- Custom visualization scaling algorithms
+
+3. Climate Matching
+- Location-based climate scoring
+- Multi-factor comparison algorithms
+- Weighted preference matching
 
 $END$
 

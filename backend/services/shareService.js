@@ -4,6 +4,7 @@
  */
 
 const db = require('../config/database');
+const { retryWithBackoff } = require('../utils/retryHelper');
 
 /**
  * Generate a random URL-safe share ID
@@ -24,7 +25,6 @@ function generateShareId() {
  * @returns {Promise<Object>} { shareId, shareUrl, expiresAt }
  */
 async function createShare(answerData) {
-  const shareId = generateShareId();
   const expiresAt = new Date();
   expiresAt.setDate(expiresAt.getDate() + 7); // 7 days from now
 
@@ -35,35 +35,38 @@ async function createShare(answerData) {
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
-  const values = [
-    shareId,
-    answerData.question,
-    answerData.answer,
-    answerData.location,
-    JSON.stringify(answerData.weatherData),
-    JSON.stringify(answerData.visualizations || []),
-    JSON.stringify(answerData.followUpQuestions || []),
-    answerData.confidence,
-    answerData.tokensUsed,
-    answerData.model,
-    expiresAt
-  ];
+  let shareId;
 
-  try {
-    await db.execute(query, values);
+  await retryWithBackoff(
+    async () => {
+      shareId = generateShareId();
+      const values = [
+        shareId,
+        answerData.question,
+        answerData.answer,
+        answerData.location,
+        JSON.stringify(answerData.weatherData),
+        JSON.stringify(answerData.visualizations || []),
+        JSON.stringify(answerData.followUpQuestions || []),
+        answerData.confidence,
+        answerData.tokensUsed,
+        answerData.model,
+        expiresAt,
+      ];
 
-    return {
-      shareId,
-      shareUrl: `/ai-weather/shared/${shareId}`,
-      expiresAt: expiresAt.toISOString()
-    };
-  } catch (error) {
-    // If share_id collision (unlikely), retry once
-    if (error.code === 'ER_DUP_ENTRY') {
-      return createShare(answerData);
+      await db.execute(query, values);
+    },
+    {
+      maxAttempts: 3,
+      shouldRetry: (error) => error?.code === 'ER_DUP_ENTRY',
     }
-    throw error;
-  }
+  );
+
+  return {
+    shareId,
+    shareUrl: `/ai-weather/shared/${shareId}`,
+    expiresAt: expiresAt.toISOString(),
+  };
 }
 
 /**

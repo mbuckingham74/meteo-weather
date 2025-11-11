@@ -81,6 +81,26 @@
 - [docs/admin/QUICK_REFERENCE.md](docs/admin/QUICK_REFERENCE.md) - One-page cheat sheet (340 lines)
 - [docs/admin/IMPLEMENTATION_SUMMARY.md](docs/admin/IMPLEMENTATION_SUMMARY.md) - Technical details (890 lines)
 ### Recent Work (Nov 2025)
+- 🔄 **CSS Modules Test Migration (PR #21)** (Nov 11, 2025) - **FIXES IN PROGRESS**
+  - **Test Fixes:** Fixed 78 test failures from CSS Modules migration (442 passing → 519 passing)
+  - **Solution Pattern:** Added data-testid attributes, replaced CSS class selectors with getByTestId()
+  - **Components Fixed:** TemperatureUnitToggle (17 tests), AuthHeader (22 tests), TemperatureUnitContext (4), ThemeContext (4), favoritesService (27), AuthContext (9), authApi (27), LocationSearchBar (22)
+  - **Test Infrastructure:** Fixed axios.create() mock, added config/api mock, fixed fake timer conflicts
+  - **Remaining:** 34 pre-existing weatherApi failures (unrelated to CSS Modules)
+  - **8 Commits:** 72a11e3, 0ccef30, ed32edc, fd6aaca, b023bcf, 065acea, 69aeb99, d3578e0
+  - **Status:** Test fixes ready to push to GitHub 🔄
+- 🔄 **UI/UX: Calm Indigo Color Audit & Theme System Improvements** (Nov 10, 2025) - **PR #21 IN REVIEW**
+  - **Theme System Enhancements:** Added 151 new CSS variables, theme presets with validation, overlay tokens guide
+  - **Color Standardization:** Unified color tokens across 69 files (1,975 additions, 1,131 deletions)
+  - **Build Quality Gates:** Added unauthorized color checker (118 lines) and theme token validator (96 lines)
+  - **Responsive Design:** Centralized breakpoint system with `useBreakpoint` hook (88 lines)
+  - **Loading States:** Added skeleton components for better UX (AIAnswerSkeleton, enhanced dashboard skeleton)
+  - **Performance:** Centralized cache config (38 lines), retry helper utility (55 lines), optimized timeout configs
+  - **Documentation:** Component token catalog (90 lines), overlay tokens guide (52 lines)
+  - **Impact:** Consistent theme system, enforced color standards, improved loading UX, centralized config
+  - **Files:** 69 files changed, 8 commits (before test fixes)
+  - **PR:** https://github.com/mbuckingham74/meteo-weather/pull/21
+  - **Status:** CI/CD running, awaiting review 🔄
 - ✅ **Dependabot PR Cleanup & Major Version Migration Planning** (Nov 10, 2025)
   - **Cleaned Up PR Queue:** Processed 9 Dependabot PRs (4 updated, 5 closed)
   - **Updated Patch/Minor PRs:** axios (frontend/backend), @anthropic-ai/sdk, recharts - CI running

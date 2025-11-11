@@ -20,6 +20,8 @@ describe('LocationSearchBar Component', () => {
   let setItemSpy;
 
   beforeEach(() => {
+    vi.clearAllMocks();
+
     // Mock functions
     mockOnLocationSelect = vi.fn();
 
@@ -53,17 +55,18 @@ describe('LocationSearchBar Component', () => {
       },
     ];
 
-    // Mock localStorage
-    getItemSpy = vi.spyOn(Storage.prototype, 'getItem');
-    setItemSpy = vi.spyOn(Storage.prototype, 'setItem');
-    getItemSpy.mockReturnValue(null);
+    // Clear localStorage before each test
+    localStorage.clear();
+
+    // Spy on localStorage methods directly
+    getItemSpy = vi.spyOn(localStorage, 'getItem');
+    setItemSpy = vi.spyOn(localStorage, 'setItem');
 
     // Mock API calls
     geocodeLocation.mockResolvedValue(mockSearchResults);
     getPopularLocations.mockResolvedValue(mockPopularLocations);
 
-    // Clear all mocks
-    vi.clearAllMocks();
+    // Use fake timers for debounce testing
     vi.useFakeTimers();
   });
 
@@ -73,61 +76,90 @@ describe('LocationSearchBar Component', () => {
   });
 
   describe('Rendering', () => {
-    it('renders search input', () => {
-      render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
+    it('renders search input', async () => {
+      await act(async () => {
+        render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
+      });
 
       expect(screen.getByPlaceholderText(/search for a city/i)).toBeInTheDocument();
     });
 
-    it('renders search icon', () => {
-      render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
+    it('renders search icon', async () => {
+      await act(async () => {
+        render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
+      });
 
       expect(screen.getByText('📍')).toBeInTheDocument();
     });
 
-    it('does not show clear button when query is empty', () => {
-      render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
+    it('does not show clear button when query is empty', async () => {
+      await act(async () => {
+        render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
+      });
 
       expect(screen.queryByText('✕')).not.toBeInTheDocument();
     });
 
-    it('shows clear button when query has value', () => {
-      render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
+    it('shows clear button when query has value', async () => {
+      await act(async () => {
+        render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
+      });
 
       const input = screen.getByPlaceholderText(/search for a city/i);
-      fireEvent.change(input, { target: { value: 'Seattle' } });
+
+      act(() => {
+        fireEvent.change(input, { target: { value: 'Seattle' } });
+      });
 
       expect(screen.getByText('✕')).toBeInTheDocument();
     });
   });
 
   describe('Input Handling', () => {
-    it('updates query when typing', () => {
-      render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
+    it('updates query when typing', async () => {
+      await act(async () => {
+        render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
+      });
 
       const input = screen.getByPlaceholderText(/search for a city/i);
-      fireEvent.change(input, { target: { value: 'Seattle' } });
+
+      act(() => {
+        fireEvent.change(input, { target: { value: 'Seattle' } });
+      });
 
       expect(input).toHaveValue('Seattle');
     });
 
-    it('clears query when clear button clicked', () => {
-      render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
+    it('clears query when clear button clicked', async () => {
+      await act(async () => {
+        render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
+      });
 
       const input = screen.getByPlaceholderText(/search for a city/i);
-      fireEvent.change(input, { target: { value: 'Seattle' } });
+
+      act(() => {
+        fireEvent.change(input, { target: { value: 'Seattle' } });
+      });
 
       const clearButton = screen.getByText('✕');
-      fireEvent.click(clearButton);
+
+      act(() => {
+        fireEvent.click(clearButton);
+      });
 
       expect(input).toHaveValue('');
     });
 
-    it('shows dropdown when input is focused', () => {
-      render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
+    it('shows dropdown when input is focused', async () => {
+      await act(async () => {
+        render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
+      });
 
       const input = screen.getByPlaceholderText(/search for a city/i);
-      fireEvent.focus(input);
+
+      act(() => {
+        fireEvent.focus(input);
+      });
 
       expect(input).toHaveValue('');
       expect(screen.getByRole('listbox')).toBeInTheDocument();
@@ -136,19 +168,25 @@ describe('LocationSearchBar Component', () => {
 
   describe('Search Functionality', () => {
     it('searches locations after debounce delay', async () => {
+      // Use real timers for this test since we need async promises to resolve
+      vi.useRealTimers();
+
       render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
 
       const input = screen.getByPlaceholderText(/search for a city/i);
+
       fireEvent.change(input, { target: { value: 'Seattle' } });
 
-      // Fast-forward debounce timer
-      act(() => {
-        vi.advanceTimersByTime(300);
-      });
+      // Wait for debounce (300ms) + async call
+      await waitFor(
+        () => {
+          expect(geocodeLocation).toHaveBeenCalledWith('Seattle', 5);
+        },
+        { timeout: 1000 }
+      );
 
-      await waitFor(() => {
-        expect(geocodeLocation).toHaveBeenCalledWith('Seattle', 5);
-      });
+      // Restore fake timers for other tests
+      vi.useFakeTimers();
     });
 
     it('does not search for queries shorter than 2 characters', async () => {
@@ -165,34 +203,43 @@ describe('LocationSearchBar Component', () => {
     });
 
     it('clears previous debounce timer when typing again', async () => {
+      vi.useRealTimers();
+
       render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
 
       const input = screen.getByPlaceholderText(/search for a city/i);
 
       fireEvent.change(input, { target: { value: 'Sea' } });
-      act(() => {
-        vi.advanceTimersByTime(100);
-      });
+      // Wait less than debounce time
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       fireEvent.change(input, { target: { value: 'Seat' } });
-      act(() => {
-        vi.advanceTimersByTime(100);
-      });
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       fireEvent.change(input, { target: { value: 'Seatt' } });
-      act(() => {
-        vi.advanceTimersByTime(300);
-      });
 
-      await waitFor(() => {
-        expect(geocodeLocation).toHaveBeenCalledTimes(1);
-        expect(geocodeLocation).toHaveBeenCalledWith('Seatt', 5);
-      });
+      // Wait for debounce + async call
+      await waitFor(
+        () => {
+          expect(geocodeLocation).toHaveBeenCalledTimes(1);
+          expect(geocodeLocation).toHaveBeenCalledWith('Seatt', 5);
+        },
+        { timeout: 1000 }
+      );
+
+      vi.useFakeTimers();
     });
 
     it('shows loading indicator while searching', async () => {
+      vi.useRealTimers();
+
+      // Mock geocodeLocation to return a pending promise that we control
+      let resolveSearch;
       geocodeLocation.mockImplementation(
-        () => new Promise((resolve) => setTimeout(() => resolve(mockSearchResults), 1000))
+        () =>
+          new Promise((resolve) => {
+            resolveSearch = resolve;
+          })
       );
 
       render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
@@ -200,83 +247,101 @@ describe('LocationSearchBar Component', () => {
       const input = screen.getByPlaceholderText(/search for a city/i);
       fireEvent.change(input, { target: { value: 'Seattle' } });
 
-      act(() => {
-        vi.advanceTimersByTime(300);
-      });
-
+      // Wait for loading indicator to appear after debounce
       await waitFor(() => {
         expect(screen.getByText('⏳')).toBeInTheDocument();
       });
+
+      // Clean up - resolve the promise
+      await act(async () => {
+        resolveSearch(mockSearchResults);
+      });
+
+      vi.useFakeTimers();
     });
 
     it('displays search results when available', async () => {
+      vi.useRealTimers();
+
       render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
 
       const input = screen.getByPlaceholderText(/search for a city/i);
       fireEvent.change(input, { target: { value: 'Seattle' } });
 
-      act(() => {
-        vi.advanceTimersByTime(300);
-      });
+      // Wait for the results to be displayed
+      await waitFor(
+        () => {
+          expect(screen.getByText('Seattle, WA, USA')).toBeInTheDocument();
+        },
+        { timeout: 1000 }
+      );
 
-      await waitFor(() => {
-        expect(screen.getByText('Seattle, WA, USA')).toBeInTheDocument();
-      });
+      vi.useFakeTimers();
     });
   });
 
   describe('Location Selection', () => {
     it('calls onLocationSelect when location clicked', async () => {
+      vi.useRealTimers();
+
       render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
 
       const input = screen.getByPlaceholderText(/search for a city/i);
       fireEvent.change(input, { target: { value: 'Seattle' } });
 
-      act(() => {
-        vi.advanceTimersByTime(300);
-      });
-
-      await waitFor(() => {
-        expect(screen.getByText('Seattle, WA, USA')).toBeInTheDocument();
-      });
+      // Wait for results to render
+      await waitFor(
+        () => {
+          expect(screen.getByText('Seattle, WA, USA')).toBeInTheDocument();
+        },
+        { timeout: 1000 }
+      );
 
       fireEvent.click(screen.getByText('Seattle, WA, USA'));
 
       expect(mockOnLocationSelect).toHaveBeenCalledWith(mockSearchResults[0]);
+
+      vi.useFakeTimers();
     });
 
     it('updates input value when location selected', async () => {
+      vi.useRealTimers();
+
       render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
 
       const input = screen.getByPlaceholderText(/search for a city/i);
       fireEvent.change(input, { target: { value: 'Seattle' } });
 
-      act(() => {
-        vi.advanceTimersByTime(300);
-      });
-
-      await waitFor(() => {
-        expect(screen.getByText('Seattle, WA, USA')).toBeInTheDocument();
-      });
+      // Wait for results to render
+      await waitFor(
+        () => {
+          expect(screen.getByText('Seattle, WA, USA')).toBeInTheDocument();
+        },
+        { timeout: 1000 }
+      );
 
       fireEvent.click(screen.getByText('Seattle, WA, USA'));
 
       expect(input).toHaveValue('Seattle, WA, USA');
+
+      vi.useFakeTimers();
     });
 
     it('saves location to recent searches when selected', async () => {
+      vi.useRealTimers();
+
       render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
 
       const input = screen.getByPlaceholderText(/search for a city/i);
       fireEvent.change(input, { target: { value: 'Seattle' } });
 
-      act(() => {
-        vi.advanceTimersByTime(300);
-      });
-
-      await waitFor(() => {
-        expect(screen.getByText('Seattle, WA, USA')).toBeInTheDocument();
-      });
+      // Wait for results to render
+      await waitFor(
+        () => {
+          expect(screen.getByText('Seattle, WA, USA')).toBeInTheDocument();
+        },
+        { timeout: 1000 }
+      );
 
       fireEvent.click(screen.getByText('Seattle, WA, USA'));
 
@@ -284,11 +349,15 @@ describe('LocationSearchBar Component', () => {
         'meteo_recent_searches',
         JSON.stringify([mockSearchResults[0]])
       );
+
+      vi.useFakeTimers();
     });
   });
 
   describe('Recent Searches', () => {
-    it('loads recent searches from localStorage on mount', () => {
+    it('loads recent searches from localStorage on mount', async () => {
+      vi.useRealTimers();
+
       const savedSearches = [mockLocation];
       getItemSpy.mockReturnValue(JSON.stringify(savedSearches));
 
@@ -297,14 +366,22 @@ describe('LocationSearchBar Component', () => {
       const input = screen.getByPlaceholderText(/search for a city/i);
       fireEvent.focus(input);
 
-      expect(screen.getByText('🕐 Recent Searches')).toBeInTheDocument();
+      // Wait for dropdown to render with recent searches (async effect)
+      await waitFor(() => {
+        expect(screen.getByText('🕐 Recent Searches')).toBeInTheDocument();
+      });
+
+      vi.useFakeTimers();
     });
 
-    it('handles localStorage parse errors gracefully', () => {
+    it('handles localStorage parse errors gracefully', async () => {
       const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
       getItemSpy.mockReturnValue('invalid json');
 
-      render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
+      // Wrap in act to handle the useEffect that runs on mount
+      await act(async () => {
+        render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
+      });
 
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         'Error loading recent searches:',
@@ -316,67 +393,104 @@ describe('LocationSearchBar Component', () => {
 
   describe('Popular Locations', () => {
     it('loads popular locations on mount', async () => {
+      vi.useRealTimers();
+
       render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
 
-      await waitFor(() => {
-        expect(getPopularLocations).toHaveBeenCalled();
-      });
+      // Wait for the async useEffect to call getPopularLocations
+      await waitFor(
+        () => {
+          expect(getPopularLocations).toHaveBeenCalled();
+        },
+        { timeout: 1000 }
+      );
+
+      vi.useFakeTimers();
     });
 
     it('shows popular locations when no recent searches', async () => {
+      vi.useRealTimers();
+
       render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
 
-      await waitFor(() => {
-        expect(getPopularLocations).toHaveBeenCalled();
-      });
+      // Wait for popular locations to load
+      await waitFor(
+        () => {
+          expect(getPopularLocations).toHaveBeenCalled();
+        },
+        { timeout: 1000 }
+      );
 
       const input = screen.getByPlaceholderText(/search for a city/i);
       fireEvent.focus(input);
 
-      await waitFor(() => {
-        expect(screen.getByText('🌟 Popular Locations')).toBeInTheDocument();
-      });
+      // Wait for dropdown to show popular locations
+      await waitFor(
+        () => {
+          expect(screen.getByText('🌟 Popular Locations')).toBeInTheDocument();
+        },
+        { timeout: 1000 }
+      );
+
+      vi.useFakeTimers();
     });
   });
 
   describe('Keyboard Navigation', () => {
     it('selects first result when Enter pressed', async () => {
+      vi.useRealTimers();
+
       render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
 
       const input = screen.getByPlaceholderText(/search for a city/i);
       fireEvent.change(input, { target: { value: 'Seattle' } });
 
-      act(() => {
-        vi.advanceTimersByTime(300);
-      });
-
-      await waitFor(() => {
-        expect(screen.getByText('Seattle, WA, USA')).toBeInTheDocument();
-      });
+      // Wait for results to render
+      await waitFor(
+        () => {
+          expect(screen.getByText('Seattle, WA, USA')).toBeInTheDocument();
+        },
+        { timeout: 1000 }
+      );
 
       fireEvent.keyDown(input, { key: 'Enter' });
 
       expect(mockOnLocationSelect).toHaveBeenCalledWith(mockSearchResults[0]);
+
+      vi.useFakeTimers();
     });
 
     it('closes dropdown when Escape pressed', async () => {
+      vi.useRealTimers();
+
       render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
 
       const input = screen.getByPlaceholderText(/search for a city/i);
       fireEvent.focus(input);
 
-      await waitFor(() => {
-        expect(screen.queryByText('🌟 Popular Locations')).toBeInTheDocument();
-      });
+      // Wait for popular locations to render in dropdown
+      await waitFor(
+        () => {
+          expect(screen.queryByText('🌟 Popular Locations')).toBeInTheDocument();
+        },
+        { timeout: 1000 }
+      );
 
       fireEvent.keyDown(input, { key: 'Escape' });
 
-      expect(screen.queryByText('🌟 Popular Locations')).not.toBeInTheDocument();
+      // Wait for dropdown to close
+      await waitFor(() => {
+        expect(screen.queryByText('🌟 Popular Locations')).not.toBeInTheDocument();
+      });
+
+      vi.useFakeTimers();
     });
   });
 
   describe('Empty State', () => {
     it('shows empty state when no results found', async () => {
+      vi.useRealTimers();
+
       geocodeLocation.mockResolvedValue([]);
 
       render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
@@ -384,13 +498,15 @@ describe('LocationSearchBar Component', () => {
       const input = screen.getByPlaceholderText(/search for a city/i);
       fireEvent.change(input, { target: { value: 'XYZ' } });
 
-      act(() => {
-        vi.advanceTimersByTime(300);
-      });
+      // Wait for empty state to render
+      await waitFor(
+        () => {
+          expect(screen.getByText('No locations found')).toBeInTheDocument();
+        },
+        { timeout: 1000 }
+      );
 
-      await waitFor(() => {
-        expect(screen.getByText('No locations found')).toBeInTheDocument();
-      });
+      vi.useFakeTimers();
     });
   });
 });

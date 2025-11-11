@@ -40,7 +40,6 @@ function TestComponent() {
 }
 
 describe('ThemeContext', () => {
-  let getItemSpy, setItemSpy;
   let setAttributeSpy;
   let matchMediaMock;
 
@@ -53,9 +52,8 @@ describe('ThemeContext', () => {
       user: null,
     });
 
-    // Mock localStorage
-    getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockReturnValue(null);
-    setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {});
+    // Clear localStorage
+    localStorage.clear();
 
     // Mock document.documentElement.setAttribute
     setAttributeSpy = vi.spyOn(document.documentElement, 'setAttribute');
@@ -75,8 +73,6 @@ describe('ThemeContext', () => {
   });
 
   afterEach(() => {
-    getItemSpy.mockRestore();
-    setItemSpy.mockRestore();
     setAttributeSpy.mockRestore();
     vi.restoreAllMocks();
   });
@@ -125,7 +121,7 @@ describe('ThemeContext', () => {
     });
 
     it('loads saved theme from localStorage', async () => {
-      getItemSpy.mockReturnValue('dark');
+      localStorage.setItem('themePreference', 'dark');
 
       render(
         <ThemeProvider>
@@ -136,8 +132,6 @@ describe('ThemeContext', () => {
       await waitFor(() => {
         expect(screen.getByTestId('theme-preference')).toHaveTextContent('dark');
       });
-
-      expect(getItemSpy).toHaveBeenCalledWith('themePreference');
     });
 
     it('applies theme to document element', async () => {
@@ -246,7 +240,7 @@ describe('ThemeContext', () => {
       });
 
       await waitFor(() => {
-        expect(setItemSpy).toHaveBeenCalledWith('themePreference', 'dark');
+        expect(localStorage.getItem('themePreference')).toBe('dark');
       });
     });
   });

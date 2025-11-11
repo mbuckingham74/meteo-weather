@@ -96,6 +96,9 @@
   --overlay-soft: color-mix(in srgb, var(--text-primary) 18%, transparent);
   --overlay-accent: color-mix(in srgb, var(--text-on-accent) 20%, transparent);
   --overlay-accent-strong: color-mix(in srgb, var(--text-on-accent) 35%, transparent);
+  --surface-glass: color-mix(in srgb, var(--bg-elevated) 82%, transparent);
+  --surface-glass-strong: color-mix(in srgb, var(--bg-elevated) 92%, transparent);
+  --surface-glass-border: color-mix(in srgb, var(--text-primary) 16%, transparent);
 
   /* Hover States */
   --hover-bg: #e0e6f5;
@@ -210,6 +213,16 @@
   --info-border: #1f3b7a;
   --info-text: #8bb7ff;
 
+  /* Overlay / Glassmorphism Tokens */
+  --overlay-strong: color-mix(in srgb, var(--text-primary) 60%, transparent);
+  --overlay-medium: color-mix(in srgb, var(--text-primary) 35%, transparent);
+  --overlay-soft: color-mix(in srgb, var(--text-primary) 18%, transparent);
+  --overlay-accent: color-mix(in srgb, var(--text-on-accent) 20%, transparent);
+  --overlay-accent-strong: color-mix(in srgb, var(--text-on-accent) 35%, transparent);
+  --surface-glass: color-mix(in srgb, var(--bg-elevated) 65%, transparent);
+  --surface-glass-strong: color-mix(in srgb, var(--bg-elevated) 78%, transparent);
+  --surface-glass-border: color-mix(in srgb, var(--text-primary) 32%, transparent);
+
   /* Temperature Colors */
   --temp-hot: #ff8c8c;
   --temp-cold: #8bb7ff;
@@ -263,6 +276,144 @@
 
   --gradient-primary: linear-gradient(135deg, #5b8fff 0%, #8bb7ff 100%);
   --gradient-warm: linear-gradient(135deg, #f48c06 0%, #ffc857 100%);
+}
+
+/* Aurora Theme - Neon teals & violets */
+[data-theme='aurora'] {
+  --bg-primary: #050f1c;
+  --bg-secondary: #091a2d;
+  --bg-tertiary: #0f253d;
+  --bg-elevated: #132b49;
+
+  --text-primary: #f0f9ff;
+  --text-secondary: #c3e7ff;
+  --text-tertiary: #9bc4ef;
+  --text-disabled: #6884a8;
+  --text-on-accent: #051f1a;
+
+  --border-light: #153550;
+  --border-medium: #1d4764;
+  --border-dark: #2f5f80;
+  --border-color: #1d4764;
+
+  --accent-primary: #2de1c2;
+  --accent-secondary: #7e6bff;
+  --accent-hover: #44f2ce;
+
+  --error-bg: #320d18;
+  --error-border: #5a1326;
+  --error-text: #ff7a9c;
+
+  --success-bg: #05241d;
+  --success-border: #0f4d3b;
+  --success-text: #40f2b8;
+
+  --warning-bg: #2f1b07;
+  --warning-border: #613610;
+  --warning-text: #f4b75d;
+
+  --info-bg: #081d3d;
+  --info-border: #11315f;
+  --info-text: #8fc5ff;
+
+  --accent-bg: #0c1d2d;
+  --accent-text: #2de1c2;
+
+  --hover-bg: #0f3049;
+  --warning-bg-hover: #4f2a0b;
+  --warning-border-hover: #f6c27a;
+
+  --chart-line-primary: #2de1c2;
+  --chart-line-secondary: #7e6bff;
+  --chart-line-tertiary: #4aa2f7;
+  --chart-positive: #44f2ce;
+  --chart-cool: #2de1c2;
+  --chart-cool-accent: #7cfbff;
+  --chart-warning: #f4b75d;
+  --chart-hot: #ff7a9c;
+  --chart-grid: rgba(124, 192, 226, 0.35);
+  --chart-surface: #0b1c30;
+  --chart-text-strong: var(--text-primary);
+  --chart-text-muted: #7fa9d6;
+  --chart-tooltip-bg: rgba(1, 9, 18, 0.9);
+  --chart-tooltip-text: #f5fdff;
+
+  --shadow-sm: 0 10px 35px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 18px 48px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 26px 70px rgba(0, 0, 0, 0.55);
+  --shadow-xl: 0 40px 100px rgba(0, 0, 0, 0.6);
+
+  --gradient-primary: linear-gradient(135deg, #2de1c2 0%, #7e6bff 100%);
+  --gradient-warm: linear-gradient(135deg, #44f2ce 0%, #9b89ff 100%);
+}
+
+/* Sunset Theme - Warm highlights */
+[data-theme='sunset'] {
+  --bg-primary: #fff7f0;
+  --bg-secondary: #fff0e4;
+  --bg-tertiary: #ffe3cf;
+  --bg-elevated: #fff8f1;
+
+  --text-primary: #3c1f1a;
+  --text-secondary: #704139;
+  --text-tertiary: #a5624f;
+  --text-disabled: #c48c7a;
+  --text-on-accent: #301104;
+
+  --border-light: #ffd1bb;
+  --border-medium: #f3b194;
+  --border-dark: #c5795f;
+  --border-color: #f3b194;
+
+  --accent-primary: #ff7a59;
+  --accent-secondary: #ffb35f;
+  --accent-hover: #ff936d;
+
+  --error-bg: #ffe3e3;
+  --error-border: #ffbabd;
+  --error-text: #c23d4b;
+
+  --success-bg: #f0fff3;
+  --success-border: #b7ebc2;
+  --success-text: #238b4a;
+
+  --warning-bg: #fff3d6;
+  --warning-border: #ffd799;
+  --warning-text: #c45b19;
+
+  --info-bg: #ffeef8;
+  --info-border: #ffd2eb;
+  --info-text: #b34791;
+
+  --accent-bg: #ffe4d6;
+  --accent-text: #a1341f;
+
+  --hover-bg: #ffe1ce;
+  --warning-bg-hover: #ffe0bb;
+  --warning-border-hover: #ff9d4c;
+
+  --chart-line-primary: #ff7a59;
+  --chart-line-secondary: #ffc15f;
+  --chart-line-tertiary: #f59f5b;
+  --chart-positive: #68c495;
+  --chart-cool: #6ec1ff;
+  --chart-cool-accent: #32a3ff;
+  --chart-warning: #ff9d4c;
+  --chart-hot: #d94a38;
+  --chart-grid: rgba(195, 121, 95, 0.25);
+  --chart-surface: #fff3e4;
+  --chart-text-strong: var(--text-primary);
+  --chart-text-muted: #a15c4c;
+  --chart-tooltip-bg: rgba(60, 31, 26, 0.9);
+  --chart-tooltip-text: #fffaf5;
+
+  --shadow-sm: 0 6px 18px rgba(124, 61, 32, 0.16);
+  --shadow-md: 0 12px 28px rgba(124, 61, 32, 0.2);
+  --shadow-lg: 0 18px 44px rgba(124, 61, 32, 0.24);
+  --shadow-xl: 0 30px 70px rgba(124, 61, 32, 0.28);
+
+  --gradient-primary: linear-gradient(135deg, #ff7a59 0%, #ffb35f 100%);
+  --gradient-warm: linear-gradient(135deg, #f7634a 0%, #ffce75 100%);
 }
 
 /* ============================================

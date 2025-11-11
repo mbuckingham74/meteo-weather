@@ -63,26 +63,40 @@ vi.mock('react-leaflet', () => ({
 
 // Mock axios for API tests
 vi.mock('axios', () => {
-  const mockAxios = {
+  const createMockAxios = () => ({
     get: vi.fn(() => Promise.resolve({ data: {} })),
     post: vi.fn(() => Promise.resolve({ data: {} })),
     put: vi.fn(() => Promise.resolve({ data: {} })),
     delete: vi.fn(() => Promise.resolve({ data: {} })),
     patch: vi.fn(() => Promise.resolve({ data: {} })),
-    create: vi.fn(function () {
-      return this;
-    }),
     interceptors: {
       request: { use: vi.fn(), eject: vi.fn() },
       response: { use: vi.fn(), eject: vi.fn() },
     },
-  };
+  });
+
+  const mockAxios = createMockAxios();
+  mockAxios.create = vi.fn(() => createMockAxios());
 
   return {
     default: mockAxios,
     ...mockAxios,
   };
 });
+
+// Mock config/api module
+vi.mock('./config/api', () => ({
+  default: {
+    BASE_URL: 'http://localhost:5001/api',
+    ENDPOINTS: {
+      WEATHER: '/weather',
+      WEATHER_CURRENT: '/weather/current',
+      WEATHER_FORECAST: '/weather/forecast',
+      AUTH: '/auth',
+      LOCATIONS: '/locations',
+    },
+  },
+}));
 
 // Mock recharts for chart tests
 vi.mock('recharts', () => ({

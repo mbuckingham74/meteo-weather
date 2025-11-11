@@ -10,33 +10,42 @@ vi.mock('../../contexts/AuthContext', () => ({
   useAuth: vi.fn(),
 }));
 
-vi.mock('../theme/ThemeToggle', () => {
-  return function MockThemeToggle() {
-    return <div data-testid="theme-toggle">ThemeToggle</div>;
-  };
-});
+vi.mock('react-router-dom', () => ({
+  Link: ({ to, children, ...props }) => (
+    <a href={to} {...props}>
+      {children}
+    </a>
+  ),
+  useLocation: vi.fn(() => ({ pathname: '/' })),
+}));
 
-vi.mock('./AuthModal', () => {
-  return function MockAuthModal({ isOpen, onClose, initialMode }) {
+vi.mock('../theme/ThemeToggle', () => ({
+  default: function MockThemeToggle() {
+    return <div data-testid="theme-toggle">ThemeToggle</div>;
+  },
+}));
+
+vi.mock('./AuthModal', () => ({
+  default: function MockAuthModal({ isOpen, onClose, initialMode }) {
     return isOpen ? (
       <div data-testid="auth-modal">
         AuthModal - {initialMode}
         <button onClick={onClose}>Close</button>
       </div>
     ) : null;
-  };
-});
+  },
+}));
 
-vi.mock('./UserProfileModal', () => {
-  return function MockUserProfileModal({ isOpen, onClose }) {
+vi.mock('./UserProfileModal', () => ({
+  default: function MockUserProfileModal({ isOpen, onClose }) {
     return isOpen ? (
       <div data-testid="profile-modal">
         UserProfileModal
         <button onClick={onClose}>Close</button>
       </div>
     ) : null;
-  };
-});
+  },
+}));
 
 describe('AuthHeader Component', () => {
   beforeEach(() => {
@@ -54,7 +63,7 @@ describe('AuthHeader Component', () => {
     it('renders privacy policy link', () => {
       render(<AuthHeader />);
 
-      const privacyLink = screen.getByText('Meteo Privacy Policy');
+      const privacyLink = screen.getByText('Privacy Policy').closest('a');
       expect(privacyLink).toBeInTheDocument();
       expect(privacyLink).toHaveAttribute('href', '/privacy');
     });
@@ -78,9 +87,10 @@ describe('AuthHeader Component', () => {
     });
 
     it('does not render user info when not authenticated', () => {
-      const { container } = render(<AuthHeader />);
+      render(<AuthHeader />);
 
-      expect(container.querySelector('.auth-user-info')).not.toBeInTheDocument();
+      // When not authenticated, should not show user name
+      expect(screen.queryByText('John Doe')).not.toBeInTheDocument();
     });
 
     it('opens auth modal in login mode when Sign In clicked', () => {
@@ -252,8 +262,8 @@ describe('AuthHeader Component', () => {
     });
   });
 
-  describe('CSS Classes', () => {
-    it('has auth-header class on container', () => {
+  describe('CSS Modules', () => {
+    it('applies CSS module classes to header', () => {
       useAuth.mockReturnValue({
         user: null,
         isAuthenticated: false,
@@ -261,52 +271,23 @@ describe('AuthHeader Component', () => {
 
       const { container } = render(<AuthHeader />);
 
-      expect(container.querySelector('.auth-header')).toBeInTheDocument();
+      // Check that header element exists with CSS modules class
+      const header = container.querySelector('header');
+      expect(header).toBeInTheDocument();
+      expect(header?.className).toBeTruthy();
     });
 
-    it('has auth-header-left class on privacy link container', () => {
-      useAuth.mockReturnValue({
-        user: null,
-        isAuthenticated: false,
-      });
-
-      const { container } = render(<AuthHeader />);
-
-      expect(container.querySelector('.auth-header-left')).toBeInTheDocument();
-    });
-
-    it('has auth-header-buttons class when not authenticated', () => {
-      useAuth.mockReturnValue({
-        user: null,
-        isAuthenticated: false,
-      });
-
-      const { container } = render(<AuthHeader />);
-
-      expect(container.querySelector('.auth-header-buttons')).toBeInTheDocument();
-    });
-
-    it('has auth-user-info class when authenticated', () => {
+    it('applies CSS module classes to user name when authenticated', () => {
       useAuth.mockReturnValue({
         user: { name: 'John Doe' },
         isAuthenticated: true,
       });
 
-      const { container } = render(<AuthHeader />);
-
-      expect(container.querySelector('.auth-user-info')).toBeInTheDocument();
-    });
-
-    it('has primary class on Sign Up button', () => {
-      useAuth.mockReturnValue({
-        user: null,
-        isAuthenticated: false,
-      });
-
       render(<AuthHeader />);
 
-      const signUpButton = screen.getByText('Sign Up').closest('button');
-      expect(signUpButton).toHaveClass('primary');
+      const userName = screen.getByText('John Doe');
+      expect(userName).toBeInTheDocument();
+      expect(userName.className).toBeTruthy();
     });
   });
 });

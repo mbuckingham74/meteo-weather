@@ -30,8 +30,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--bg-elevated);
-  opacity: 0.95;
+  background: var(--surface-glass-strong);
+  border: 1px solid var(--surface-glass-border);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -118,9 +118,8 @@
 }
 
 .layer-toggle {
-  background: var(--bg-elevated);
-  opacity: 0.95;
-  border: 2px solid transparent;
+  background: var(--surface-glass);
+  border: 1px solid var(--surface-glass-border);
   border-radius: var(--radius-sm);
   padding: var(--spacing-sm) 10px;
   font-size: 18px;
@@ -141,7 +140,6 @@
 .layer-toggle.active {
   border-color: var(--accent-primary);
   background: var(--accent-bg);
-  opacity: 1;
 }
 
 .layer-toggle:disabled {
@@ -179,8 +177,8 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  background: var(--bg-elevated);
-  opacity: 0.95;
+  background: var(--surface-glass-strong);
+  border: 1px solid var(--surface-glass-border);
   padding: var(--spacing-sm) 12px;
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-sm);
@@ -259,8 +257,8 @@
   left: 10px;
   right: 10px;
   max-width: 300px;
-  background: var(--bg-elevated);
-  opacity: 0.98;
+  background: var(--surface-glass-strong);
+  border: 1px solid var(--surface-glass-border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
   z-index: 1100;
@@ -401,15 +399,14 @@
   position: absolute;
   top: 10px;
   left: 10px;
-  background: var(--bg-elevated);
-  opacity: 0.95;
+  background: var(--surface-glass-strong);
   padding: var(--spacing-md);
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-sm);
   z-index: 1000;
   backdrop-filter: blur(4px);
   min-width: 180px;
-  border: 2px solid var(--accent-primary);
+  border: 1px solid var(--surface-glass-border);
 }
 
 .storm-tracking-title {
@@ -462,8 +459,8 @@
   position: absolute;
   top: 10px;
   left: 10px;
-  background: var(--bg-elevated);
-  opacity: 0.95;
+  background: var(--surface-glass-strong);
+  border: 1px solid var(--surface-glass-border);
   padding: 10px 12px;
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-sm);
@@ -510,8 +507,8 @@
   position: absolute;
   bottom: 10px;
   left: 10px;
-  background: var(--bg-elevated);
-  opacity: 0.95;
+  background: var(--surface-glass-strong);
+  border: 1px solid var(--surface-glass-border);
   padding: var(--spacing-sm) 12px;
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-sm);

@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { geocodeLocation, getPopularLocations } from '../../services/weatherApi';
+import Skeleton from '../common/Skeleton';
+import ErrorMessage from '../common/ErrorMessage';
 import './LocationSearchBar.css';
 
 const RECENT_SEARCHES_KEY = 'meteo_recent_searches';
@@ -20,6 +22,7 @@ function LocationSearchBar({
   const [popularLocations, setPopularLocations] = useState([]);
   const [recentSearches, setRecentSearches] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [searchError, setSearchError] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const searchRef = useRef(null);
@@ -142,6 +145,7 @@ function LocationSearchBar({
   const searchLocations = async (searchQuery) => {
     if (!searchQuery || searchQuery.length < 2) {
       setResults([]);
+      setSearchError(null);
       setShowDropdown(true); // Show recent/popular locations
       return;
     }
@@ -177,9 +181,13 @@ function LocationSearchBar({
       }
 
       setResults(validResults);
+      setSearchError(null);
       setShowDropdown(true);
     } catch (error) {
       console.error('Error searching locations:', error);
+      setSearchError(
+        error?.message || 'Unable to search locations right now. Please try again shortly.'
+      );
       setResults([]);
     } finally {
       setIsLoading(false);
@@ -437,23 +445,63 @@ function LocationSearchBar({
             </div>
           )}
 
+          {/* Error State */}
+          {searchError && (
+            <div className="dropdown-error">
+              <ErrorMessage
+                error={searchError}
+                mode="inline"
+                severity="warning"
+                showSuggestions={false}
+                onRetry={() => searchLocations(query)}
+                retryLabel="Try search again"
+              />
+              {popularLocations.length > 0 && (
+                <div className="dropdown-error-suggestions">
+                  <p>Popular locations you can try:</p>
+                  <div className="popular-chips">
+                    {popularLocations.slice(0, 3).map((locationItem, index) => (
+                      <button
+                        key={`popular-retry-${index}`}
+                        type="button"
+                        onClick={() => handleSelectLocation(locationItem)}
+                      >
+                        {locationItem.address}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Empty State */}
           {query.length >= 2 &&
             !isLoading &&
+            !searchError &&
             results.length === 0 &&
             getFilteredRecentSearches(query).length === 0 && (
               <div className="dropdown-empty">
                 <span className="empty-icon">🔍</span>
                 <p>No locations found</p>
-                <p className="empty-hint">Try a different search term</p>
+                <p className="empty-hint">
+                  Try using a full city name or add the state/country for more accurate matches.
+                </p>
               </div>
             )}
 
           {/* Loading State */}
           {isLoading && query.length >= 2 && (
-            <div className="dropdown-loading">
-              <span className="loading-spinner">⏳</span>
-              <p>Searching locations...</p>
+            <div className="dropdown-loading" aria-live="polite">
+              {[...Array(3)].map((_, index) => (
+                <div key={`loading-result-${index}`} className="loading-result-row">
+                  <Skeleton variant="circular" width="36px" height="36px" />
+                  <div className="loading-result-text">
+                    <Skeleton width="160px" height="14px" />
+                    <Skeleton width="120px" height="12px" />
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>

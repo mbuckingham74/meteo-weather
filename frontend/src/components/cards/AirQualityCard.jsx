@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import API_CONFIG from '../../config/api';
+import ChartSkeleton from '../common/ChartSkeleton';
 import styles from './AirQualityCard.module.css';
 
 /**
@@ -44,10 +45,7 @@ function AirQualityCard({ latitude, longitude }) {
   if (loading) {
     return (
       <div className={styles.card}>
-        <div className={styles.loading}>
-          <div className={styles.spinner}></div>
-          <p>Loading air quality data...</p>
-        </div>
+        <ChartSkeleton height="280px" showLegend={false} />
       </div>
     );
   }
@@ -78,15 +76,9 @@ function AirQualityCard({ latitude, longitude }) {
       </h3>
 
       {/* Main AQI Display */}
-      <div
-        className={styles.main}
-        style={{ borderColor: level?.color || 'var(--border-light, #d5d9e4)' }}
-      >
+      <div className={styles.main} style={{ borderColor: level?.color || 'var(--border-light)' }}>
         <div className={styles.valueContainer}>
-          <div
-            className={styles.value}
-            style={{ color: level?.color || 'var(--text-primary, #0f172a)' }}
-          >
+          <div className={styles.value} style={{ color: level?.color || 'var(--text-primary)' }}>
             {aqi !== null && aqi !== undefined ? Math.round(aqi) : '—'}
           </div>
           <div className={styles.label}>{level?.level || 'Unknown'}</div>

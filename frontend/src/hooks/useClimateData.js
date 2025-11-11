@@ -26,7 +26,7 @@ export function useClimateNormals(location, date, years = 10) {
         const response = await axios.get(
           `${API_BASE_URL}/weather/climate/normals/${encodeURIComponent(location)}`,
           {
-            params: { date, years }
+            params: { date, years },
           }
         );
 
@@ -55,6 +55,7 @@ export function useRecordTemperatures(location, startDate, endDate, years = 10) 
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [retryToken, setRetryToken] = useState(0);
 
   useEffect(() => {
     if (!location || !startDate || !endDate) {
@@ -70,7 +71,7 @@ export function useRecordTemperatures(location, startDate, endDate, years = 10) 
         const response = await axios.get(
           `${API_BASE_URL}/weather/climate/records/${encodeURIComponent(location)}`,
           {
-            params: { start: startDate, end: endDate, years }
+            params: { start: startDate, end: endDate, years },
           }
         );
 
@@ -87,9 +88,9 @@ export function useRecordTemperatures(location, startDate, endDate, years = 10) 
     };
 
     fetchRecords();
-  }, [location, startDate, endDate, years]);
+  }, [location, startDate, endDate, years, retryToken]);
 
-  return { data, loading, error };
+  return { data, loading, error, refetch: () => setRetryToken((token) => token + 1) };
 }
 
 /**
@@ -99,6 +100,7 @@ export function useForecastComparison(location, forecastData, years = 10) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [retryToken, setRetryToken] = useState(0);
 
   useEffect(() => {
     if (!location || !forecastData || forecastData.length === 0) {
@@ -129,9 +131,9 @@ export function useForecastComparison(location, forecastData, years = 10) {
     };
 
     fetchComparison();
-  }, [location, forecastData, years]);
+  }, [location, forecastData, years, retryToken]);
 
-  return { data, loading, error };
+  return { data, loading, error, refetch: () => setRetryToken((token) => token + 1) };
 }
 
 /**
@@ -141,6 +143,7 @@ export function useThisDayInHistory(location, date = null, years = 10) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [retryToken, setRetryToken] = useState(0);
 
   useEffect(() => {
     if (!location) {
@@ -176,9 +179,9 @@ export function useThisDayInHistory(location, date = null, years = 10) {
     };
 
     fetchHistory();
-  }, [location, date, years]);
+  }, [location, date, years, retryToken]);
 
-  return { data, loading, error };
+  return { data, loading, error, refetch: () => setRetryToken((token) => token + 1) };
 }
 
 /**
@@ -188,6 +191,7 @@ export function useTemperatureProbability(location, startDate, endDate, years = 
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [retryToken, setRetryToken] = useState(0);
 
   useEffect(() => {
     if (!location || !startDate || !endDate) {
@@ -203,7 +207,7 @@ export function useTemperatureProbability(location, startDate, endDate, years = 
         const response = await axios.get(
           `${API_BASE_URL}/weather/climate/probability/${encodeURIComponent(location)}`,
           {
-            params: { start: startDate, end: endDate, years }
+            params: { start: startDate, end: endDate, years },
           }
         );
 
@@ -220,7 +224,7 @@ export function useTemperatureProbability(location, startDate, endDate, years = 
     };
 
     fetchProbability();
-  }, [location, startDate, endDate, years]);
+  }, [location, startDate, endDate, years, retryToken]);
 
-  return { data, loading, error };
+  return { data, loading, error, refetch: () => setRetryToken((token) => token + 1) };
 }
