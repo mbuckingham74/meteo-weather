@@ -56,8 +56,12 @@ Feature suggestions are welcome! Please provide:
 
 ### Pull Requests
 
+**We follow [GitHub Flow](docs/development/BRANCHING_STRATEGY.md)** - a simple branching strategy with a protected `main` branch.
+
 1. **Fork the repository** and create your branch from `main`
    ```bash
+   git checkout main
+   git pull origin main
    git checkout -b feature/your-feature-name
    ```
 
@@ -82,6 +86,9 @@ Feature suggestions are welcome! Please provide:
 6. **Follow the code style** - Pre-commit hooks will auto-format your code
 
 7. **Submit a pull request** with a clear description
+   - CI tests must pass before merge
+   - Main branch is protected and requires PRs
+   - Squash merging preferred to keep clean history
 
 **PR Template:**
 ```
@@ -398,6 +405,7 @@ Don't hesitate to ask questions in:
 
 ## 📚 Additional Resources
 
+- **[Branching Strategy](docs/development/BRANCHING_STRATEGY.md)** - **GitHub Flow workflow guide**
 - **[Developer Setup Guide](docs/getting-started/SETUP_GUIDE.md)** - Comprehensive setup instructions
 - **[Architecture Documentation](ARCHITECTURE.md)** - System design and architecture
 - **[Troubleshooting Guide](TROUBLESHOOTING.md)** - Common issues and solutions
@@ -407,4 +415,4 @@ Don't hesitate to ask questions in:
 
 Thank you for contributing to Meteo Weather App! 🌦️
 
-**Last Updated:** November 5, 2025
+**Last Updated:** November 10, 2025

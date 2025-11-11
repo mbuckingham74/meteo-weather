@@ -120,10 +120,11 @@ Welcome to the Meteo Weather App documentation! This guide will help you find ex
 ---
 
 ### [💻 Development](development/)
-**Developer guides & tools** - Code conventions, refactoring docs, migration guides, performance
+**Developer guides & tools** - Code conventions, refactoring docs, migration guides, performance, branching
 
 **Key Files:**
 - [AGENTS.md](development/AGENTS.md) - Repository guidelines
+- [BRANCHING_STRATEGY.md](development/BRANCHING_STRATEGY.md) - **GitHub Flow branching workflow**
 - [VITE_MIGRATION_GUIDE.md](development/VITE_MIGRATION_GUIDE.md) - CRA → Vite migration
 - [PERFORMANCE_OPTIMIZATION.md](development/PERFORMANCE_OPTIMIZATION.md) - Bundle optimization guide
 - [CODE_QUALITY_AUDIT.md](development/CODE_QUALITY_AUDIT.md) - Code quality analysis
@@ -207,7 +208,8 @@ Welcome to the Meteo Weather App documentation! This guide will help you find ex
 ## 📊 Project Status (Nov 2025)
 
 ### Recent Achievements
-- ✅ **CI/CD:** 50-70% faster pipeline (Nov 7)
+- ✅ **Branching Strategy:** GitHub Flow implementation (Nov 10)
+- ✅ **CI/CD:** 50-70% faster pipeline + infrastructure fixes (Nov 7-10)
 - ✅ **Accessibility:** WCAG Level AA compliance (Nov 7)
 - ✅ **Database:** 20-50x query performance (Nov 7)
 - ✅ **UI/UX:** Material Design 3 implementation (Nov 6)
@@ -264,7 +266,7 @@ Found an error or want to improve documentation?
 
 ---
 
-**Last Updated:** November 7, 2025 | **Maintained by:** Michael Buckingham
+**Last Updated:** November 10, 2025 | **Maintained by:** Michael Buckingham
 
 **Quick Links:**
 - 🏠 [Main README](../README.md)

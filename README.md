@@ -188,6 +188,7 @@ docker-compose up
 - 🤝 **Welcoming Community** - Clear contributing guidelines and code of conduct
 - 🎯 **Good First Issues** - Well-documented tasks for new contributors
 - 📊 **Quality Standards** - Pre-commit hooks, CI/CD, and automated testing
+- 🔀 **Structured Workflow** - GitHub Flow branching strategy with protected main branch
 - 🏆 **Recognition** - Contributors credited in README and documentation
 
 ---
@@ -252,7 +253,7 @@ docker-compose up
 | 💾 **Database** | Schema, ERD, optimizations | [View →](docs/database/) |
 | 🎨 **UI/UX** | Design system & guidelines | [View →](docs/ui-ux/) |
 | ⚠️ **Troubleshooting** | Common issues & solutions | [View →](docs/troubleshooting/) |
-| 💻 **Development** | Code guides & conventions | [View →](docs/development/) |
+| 💻 **Development** | Code guides, conventions, branching | [View →](docs/development/) |
 
 **Most Popular Docs:**
 - 🎯 [3-Minute Quick Start](docs/getting-started/QUICKSTART.md)
@@ -267,6 +268,7 @@ docker-compose up
 - [📡 OpenAPI Spec](docs/api/openapi.yaml) - Generate API clients
 - [📦 Postman Collection](docs/api/postman_collection.json) - Test all endpoints
 - [🗄️ Database ERD](docs/database/SCHEMA.md) - Visual schema
+- [🔀 Branching Strategy](docs/development/BRANCHING_STRATEGY.md) - **GitHub Flow workflow**
 - [🔧 Developer Setup](docs/getting-started/DEVELOPER_ONBOARDING.md) - Complete onboarding
 
 ---
@@ -858,6 +860,7 @@ Professional development workflow with automated testing, security scanning, and
 
 **Documentation**:
 - 📝 Detailed README with setup instructions
+- 🔀 BRANCHING_STRATEGY.md (GitHub Flow workflow guide)
 - 🎯 GITHUB_TOPICS.md (discovery strategy)
 - 📣 PROMOTION.md (launch content for multiple platforms)
 - 🗺️ .claude/INSTRUCTIONS.md (AI-assisted development guidelines)
@@ -1736,11 +1739,15 @@ The Visual Crossing API has rate limits on the free tier:
 
 This is a learning project inspired by Weather Spark. Contributions and suggestions are welcome!
 
+**We follow GitHub Flow:**
+
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
+3. Commit your changes using Conventional Commits (`git commit -m 'feat: add amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+5. Open a Pull Request (CI must pass before merge)
+
+**For detailed branching workflow and best practices, see [BRANCHING_STRATEGY.md](docs/development/BRANCHING_STRATEGY.md)**
 
 ---
 

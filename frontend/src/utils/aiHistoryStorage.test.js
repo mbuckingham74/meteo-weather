@@ -1,14 +1,15 @@
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
   getAIHistory,
   addToAIHistory,
   getHistoryItem,
   deleteHistoryItem,
   clearAIHistory,
-  formatHistoryTimestamp
+  formatHistoryTimestamp,
 } from './aiHistoryStorage';
 
 describe('aiHistoryStorage', () => {
@@ -19,30 +20,30 @@ describe('aiHistoryStorage', () => {
     // Create a fresh localStorage mock for each test
     localStorageMock = {
       store: {},
-      getItem: jest.fn((key) => localStorageMock.store[key] || null),
-      setItem: jest.fn((key, value) => {
+      getItem: vi.fn((key) => localStorageMock.store[key] || null),
+      setItem: vi.fn((key, value) => {
         localStorageMock.store[key] = value;
       }),
-      removeItem: jest.fn((key) => {
+      removeItem: vi.fn((key) => {
         delete localStorageMock.store[key];
       }),
-      clear: jest.fn(() => {
+      clear: vi.fn(() => {
         localStorageMock.store = {};
-      })
+      }),
     };
 
     // Replace global localStorage
     Object.defineProperty(window, 'localStorage', {
       value: localStorageMock,
-      writable: true
+      writable: true,
     });
 
     // Clear console.error spy
-    jest.spyOn(console, 'error').mockImplementation(() => {});
+    vi.spyOn(console, 'error').mockImplementation(() => {});
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     console.error.mockRestore();
   });
 
@@ -53,7 +54,7 @@ describe('aiHistoryStorage', () => {
 
     it('returns parsed history from localStorage', () => {
       const mockHistory = [
-        { id: '1', question: 'Will it rain?', timestamp: new Date().toISOString() }
+        { id: '1', question: 'Will it rain?', timestamp: new Date().toISOString() },
       ];
       localStorageMock.store['meteo_ai_history'] = JSON.stringify(mockHistory);
 
@@ -90,7 +91,7 @@ describe('aiHistoryStorage', () => {
         answer: 'Yes, expect rain in the afternoon.',
         location: 'Seattle, WA',
         confidence: 'high',
-        tokensUsed: 150
+        tokensUsed: 150,
       };
 
       addToAIHistory(item);
@@ -102,7 +103,7 @@ describe('aiHistoryStorage', () => {
         answer: item.answer,
         location: item.location,
         confidence: item.confidence,
-        tokensUsed: item.tokensUsed
+        tokensUsed: item.tokensUsed,
       });
       expect(history[0].id).toBeTruthy();
       expect(history[0].timestamp).toBeTruthy();
@@ -127,7 +128,7 @@ describe('aiHistoryStorage', () => {
         addToAIHistory({
           question: `Question ${i}`,
           answer: `Answer ${i}`,
-          location: 'Seattle'
+          location: 'Seattle',
         });
       }
 
@@ -141,7 +142,7 @@ describe('aiHistoryStorage', () => {
       const item = {
         question: 'Will it rain?',
         answer: 'Yes',
-        location: 'Seattle, WA'
+        location: 'Seattle, WA',
       };
 
       addToAIHistory(item);
@@ -169,15 +170,18 @@ describe('aiHistoryStorage', () => {
         location: 'Seattle',
         visualizations: [
           { type: 'radar', reason: 'User asked about rain', fullData: { large: 'object' } },
-          { type: 'chart', reason: 'Historical data', fullData: { large: 'object' } }
-        ]
+          { type: 'chart', reason: 'Historical data', fullData: { large: 'object' } },
+        ],
       };
 
       addToAIHistory(item);
 
       const history = getAIHistory();
       expect(history[0].visualizations).toHaveLength(2);
-      expect(history[0].visualizations[0]).toEqual({ type: 'radar', reason: 'User asked about rain' });
+      expect(history[0].visualizations[0]).toEqual({
+        type: 'radar',
+        reason: 'User asked about rain',
+      });
       expect(history[0].visualizations[0].fullData).toBeUndefined(); // Lightweight storage
     });
 
@@ -186,7 +190,7 @@ describe('aiHistoryStorage', () => {
         question: 'Will it rain?',
         answer: 'Yes',
         location: 'Seattle',
-        followUpQuestions: ['When will it stop?', 'How much rain?']
+        followUpQuestions: ['When will it stop?', 'How much rain?'],
       };
 
       addToAIHistory(item);
@@ -199,7 +203,7 @@ describe('aiHistoryStorage', () => {
       const item = {
         question: 'Simple question',
         answer: 'Simple answer',
-        location: 'Seattle'
+        location: 'Seattle',
       };
 
       addToAIHistory(item);
@@ -246,8 +250,24 @@ describe('aiHistoryStorage', () => {
     it('deletes item by ID', () => {
       // Manually create two items with unique IDs
       const history = [
-        { id: '1', question: 'Q1', answer: 'A1', location: 'Seattle', timestamp: new Date().toISOString(), visualizations: [], followUpQuestions: [] },
-        { id: '2', question: 'Q2', answer: 'A2', location: 'Portland', timestamp: new Date().toISOString(), visualizations: [], followUpQuestions: [] }
+        {
+          id: '1',
+          question: 'Q1',
+          answer: 'A1',
+          location: 'Seattle',
+          timestamp: new Date().toISOString(),
+          visualizations: [],
+          followUpQuestions: [],
+        },
+        {
+          id: '2',
+          question: 'Q2',
+          answer: 'A2',
+          location: 'Portland',
+          timestamp: new Date().toISOString(),
+          visualizations: [],
+          followUpQuestions: [],
+        },
       ];
       localStorageMock.store['meteo_ai_history'] = JSON.stringify(history);
 
@@ -361,16 +381,16 @@ describe('aiHistoryStorage', () => {
 
   describe('duplicate detection edge cases', () => {
     beforeEach(() => {
-      jest.useFakeTimers();
+      vi.useFakeTimers();
     });
 
     afterEach(() => {
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
 
     it('allows duplicate after one hour', () => {
       // Use real timers for this test instead of fake timers
-      jest.useRealTimers();
+      vi.useRealTimers();
 
       const item = { question: 'Will it rain?', answer: 'Yes', location: 'Seattle' };
 
@@ -379,12 +399,14 @@ describe('aiHistoryStorage', () => {
       const oldItem = { ...item, timestamp: oldTimestamp };
 
       // Manually add to localStorage with old timestamp
-      localStorageMock.store['meteo_ai_history'] = JSON.stringify([{
-        ...oldItem,
-        id: '1',
-        visualizations: [],
-        followUpQuestions: []
-      }]);
+      localStorageMock.store['meteo_ai_history'] = JSON.stringify([
+        {
+          ...oldItem,
+          id: '1',
+          visualizations: [],
+          followUpQuestions: [],
+        },
+      ]);
 
       // Add new item (should not be filtered as duplicate)
       addToAIHistory(item);
@@ -392,7 +414,7 @@ describe('aiHistoryStorage', () => {
       const history = getAIHistory();
       expect(history).toHaveLength(2); // Both entries kept
 
-      jest.useFakeTimers(); // Restore fake timers for afterEach
+      vi.useFakeTimers(); // Restore fake timers for afterEach
     });
   });
 });

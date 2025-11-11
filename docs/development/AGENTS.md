@@ -1,5 +1,30 @@
 # Repository Guidelines
 
+**Last Updated:** November 10, 2025
+
+## Branching Workflow
+
+This project follows **GitHub Flow** - a simple, streamlined branching strategy perfect for continuous deployment. See [BRANCHING_STRATEGY.md](BRANCHING_STRATEGY.md) for complete details.
+
+**Key Points:**
+- `main` branch is protected (requires pull requests, CI must pass)
+- Feature branches: `feature/*`, `fix/*`, `chore/*`
+- Dependabot branches: Grouped weekly updates on Mondays
+- Short-lived branches (delete after merge)
+- All commits follow Conventional Commit format
+- All commits end with Claude Code attribution
+
+**Quick Workflow:**
+```bash
+git checkout main && git pull
+git checkout -b feature/your-feature
+# Make changes
+git push -u origin feature/your-feature
+gh pr create --title "feat: Your Feature"
+# After CI passes and PR approved
+gh pr merge --squash --delete-branch
+```
+
 ## Project Structure & Module Organization
 The Meteo app is split between `frontend/` (React SPA) and `backend/` (Express API). In the client, feature code lives in `src/components` with shared hooks/context under `src/hooks` and `src/contexts`; API adapters sit in `src/services` and UI primitives in `src/utils` and `src/styles`. The API entry point is `backend/server.js`; request routing resides in `backend/routes`, reusable logic in `backend/services` and `backend/utils`, and persistence helpers in `backend/models`. Database DDL and seed scripts are stored in `/database`. Deployment manifests live in `deployment/` and shared scripts in `scripts/`.
 
