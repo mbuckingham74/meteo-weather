@@ -14,33 +14,17 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Download coverage artifact from CI
+        uses: actions/download-artifact@v4
         with:
-          node-version: '20.x'
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
-
-      - name: Install frontend dependencies
-        run: |
-          cd frontend
-          npm ci
-
-      - name: Run tests with coverage
-        run: |
-          cd frontend
-          npm run test:ci
-        env:
-          CI: true
+          name: frontend-coverage-report
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
 
       - name: Extract coverage percentage
         id: coverage
         run: |
-          cd frontend
-          STATEMENTS=$(cat coverage/coverage-summary.json | grep -o '"statements":{"total":[0-9]*,"covered":[0-9]*,"skipped":[0-9]*,"pct":[0-9.]*' | grep -o 'pct":[0-9.]*' | cut -d: -f2 | head -1)
+          STATEMENTS=$(cat coverage-summary.json | jq -r '.total.statements.pct')
           echo "statements=$STATEMENTS" >> $GITHUB_OUTPUT
           echo "Coverage: $STATEMENTS%"
 
