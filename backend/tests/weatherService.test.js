@@ -15,8 +15,6 @@ describe('Weather Service', () => {
     // Clear cache before each test
     jest.clearAllMocks();
     nock.cleanAll();
-    // Clear the in-memory cache
-    cacheService.cache.clear();
   });
 
   afterEach(() => {
