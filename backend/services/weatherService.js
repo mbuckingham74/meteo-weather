@@ -1,5 +1,7 @@
 const axios = require('axios');
 const { withCache, CACHE_TTL } = require('./cacheService');
+const TIMEOUTS = require('../config/timeouts');
+const { retryWithBackoff } = require('../utils/retryHelper');
 const historicalDataService = require('./historicalDataService');
 const { reverseGeocodeNominatim } = require('./geocodingService');
 
@@ -139,20 +141,26 @@ function buildApiUrl(location, startDate = '', endDate = '', options = {}) {
 
 /**
  * Make API request to Visual Crossing with retry logic and throttling
+ * Retries use shared configuration from config/timeouts.js
  * @param {string} url - Complete API URL
- * @param {number} retries - Number of retries (default: 2)
- * @param {number} delay - Initial delay in ms (default: 1000)
  * @returns {Promise<object>} API response data
  */
-async function makeApiRequest(url, retries = 2, delay = 1000) {
+async function makeApiRequest(url) {
   return throttleRequest(async () => {
     try {
-      const response = await axios.get(url, {
-        timeout: 10000, // 10 second timeout
-        headers: {
-          Accept: 'application/json',
-        },
-      });
+      const response = await retryWithBackoff(
+        async () =>
+          axios.get(url, {
+            timeout: TIMEOUTS.API_TIMEOUTS.WEATHER_API,
+            headers: { Accept: 'application/json' },
+          }),
+        {
+          shouldRetry: (error) => {
+            const statusCode = error.response?.status || 0;
+            return statusCode === 429 || !error.response;
+          },
+        }
+      );
 
       return {
         success: true,
@@ -161,13 +169,6 @@ async function makeApiRequest(url, retries = 2, delay = 1000) {
       };
     } catch (error) {
       const statusCode = error.response?.status || 0;
-
-      // Handle rate limiting with exponential backoff
-      if (statusCode === 429 && retries > 0) {
-        // console.log(`⏳ Rate limit hit, retrying in ${delay}ms... (${retries} retries left)`); // Disabled: reduce log volume
-        await new Promise((resolve) => setTimeout(resolve, delay));
-        return makeApiRequest(url, retries - 1, delay * 2); // Exponential backoff
-      }
 
       console.error('Visual Crossing API Error:', error.message);
 

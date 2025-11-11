@@ -144,7 +144,12 @@ const TIMEOUTS = {
   CACHE: {
     OPERATION_TIMEOUT: getEnvTimeout('CACHE_OPERATION_TIMEOUT', 100),                // 100ms - Cache get/set
     DEFAULT_TTL: getEnvTimeout('CACHE_TTL', 300000),                                 // 5 minutes - Default cache lifetime
-    WEATHER_TTL: getEnvTimeout('CACHE_WEATHER_TTL', 600000),                         // 10 minutes - Weather data
+    WEATHER_TTL: getEnvTimeout('CACHE_WEATHER_TTL', 600000),                         // 10 minutes - Weather data (generic)
+    CURRENT_WEATHER_TTL: getEnvTimeout('CACHE_CURRENT_WEATHER_TTL', 30 * 60 * 1000), // 30 minutes - Current conditions
+    FORECAST_TTL: getEnvTimeout('CACHE_FORECAST_TTL', 6 * 60 * 60 * 1000),           // 6 hours - Forecast data
+    HISTORICAL_TTL: getEnvTimeout('CACHE_HISTORICAL_TTL', 7 * 24 * 60 * 60 * 1000),  // 7 days - Historical data
+    AIR_QUALITY_TTL: getEnvTimeout('CACHE_AIR_QUALITY_TTL', 60 * 60 * 1000),         // 60 minutes - Air quality data
+    CLIMATE_TTL: getEnvTimeout('CACHE_CLIMATE_TTL', 30 * 24 * 60 * 60 * 1000),       // 30 days - Climate stats
     LOCATION_TTL: getEnvTimeout('CACHE_LOCATION_TTL', 3600000),                      // 1 hour - Geocoding results
   },
 

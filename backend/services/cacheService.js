@@ -1,4 +1,5 @@
 const { pool } = require('../config/database');
+const TIMEOUTS = require('../config/timeouts');
 const crypto = require('crypto');
 
 /**
@@ -10,12 +11,19 @@ const crypto = require('crypto');
  * Cache TTL (Time To Live) in minutes
  * Optimized for reducing API calls and staying within rate limits
  */
+const msToMinutes = (ms, fallbackMinutes) => {
+  if (!ms || !Number.isFinite(ms)) {
+    return fallbackMinutes;
+  }
+  return Math.max(Math.round(ms / 60000), 1);
+};
+
 const CACHE_TTL = {
-  CURRENT_WEATHER: 30, // 30 minutes (increased from 15)
-  FORECAST: 360, // 6 hours (increased from 2 hours)
-  HISTORICAL: 10080, // 7 days (increased from 24 hours - historical data doesn't change)
-  AIR_QUALITY: 60, // 60 minutes (increased from 30)
-  CLIMATE_STATS: 43200, // 30 days (increased from 7 days - climate stats are long-term)
+  CURRENT_WEATHER: msToMinutes(TIMEOUTS.CACHE.CURRENT_WEATHER_TTL, 30),
+  FORECAST: msToMinutes(TIMEOUTS.CACHE.FORECAST_TTL, 360),
+  HISTORICAL: msToMinutes(TIMEOUTS.CACHE.HISTORICAL_TTL, 10080),
+  AIR_QUALITY: msToMinutes(TIMEOUTS.CACHE.AIR_QUALITY_TTL, 60),
+  CLIMATE_STATS: msToMinutes(TIMEOUTS.CACHE.CLIMATE_TTL, 43200),
 };
 
 /**

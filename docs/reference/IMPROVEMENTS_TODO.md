@@ -13,8 +13,8 @@
   - Breakpoint values now live in `frontend/config/breakpoints.json`, PostCSS compiles the `--bp-*` tokens globally, ITCSS utilities use them, and JS can import `src/constants/breakpoints.js` / `useBreakpoint`. See: frontend/BREAKPOINT_SYSTEM.md.
 - [x] **Component Token Catalog & Theme Presets**
   - Token inventory lives in docs/ui-ux/COMPONENT_TOKEN_CATALOG.md, new `aurora`/`sunset` presets are available via `data-theme`, and `npm run validate:tokens` enforces consistent overrides.
-- [ ] **Shared Retry/Cache Config**
-  - Centralize retry/throttle helpers plus environment-aware cache TTLs so frontend services, hooks, and tests all consume the same constants with inline documentation. _(Ref: docs/development/CODE_QUALITY_AUDIT.md)_
+- [x] **Shared Retry/Cache Config**
+  - Retry helpers now live in `frontend/src/utils/errorHandler.js` and `backend/utils/retryHelper.js`, while cache TTLs pull from env-aware configs (`frontend/src/config/cache.js`, `backend/config/timeouts.js`). Radar/local storage services and cacheService consume the shared values.
 
 ---
 

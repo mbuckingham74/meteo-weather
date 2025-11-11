@@ -9,8 +9,10 @@
  * - Zoom level limited to 10 for free users
  */
 
+import CACHE_TTL from '../config/cache';
+
 const RAINVIEWER_API_URL = 'https://api.rainviewer.com/public/weather-maps.json';
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes (radar data updates every 10 min)
+const RADAR_CACHE_DURATION = CACHE_TTL.RADAR_MS; // Environment-aware cache duration
 
 // In-memory cache
 let cachedData = null;
@@ -24,7 +26,7 @@ let cacheTimestamp = null;
  */
 export async function getRadarMapData() {
   // Return cached data if still fresh
-  if (cachedData && cacheTimestamp && Date.now() - cacheTimestamp < CACHE_DURATION) {
+  if (cachedData && cacheTimestamp && Date.now() - cacheTimestamp < RADAR_CACHE_DURATION) {
     console.log('✅ Using cached radar data');
     return cachedData;
   }
@@ -43,7 +45,9 @@ export async function getRadarMapData() {
     cachedData = data;
     cacheTimestamp = Date.now();
 
-    console.log(`✅ Fetched radar data: ${data.radar.past.length} past frames, ${data.radar.nowcast.length} forecast frames`);
+    console.log(
+      `✅ Fetched radar data: ${data.radar.past.length} past frames, ${data.radar.nowcast.length} forecast frames`
+    );
 
     return data;
   } catch (error) {
@@ -70,7 +74,14 @@ export async function getRadarMapData() {
  * @param {boolean} snow - Enable snow detection
  * @returns {string} Tile URL template
  */
-export function buildRadarTileUrl(host, path, size = 256, colorScheme = 2, smooth = true, snow = false) {
+export function buildRadarTileUrl(
+  host,
+  path,
+  size = 256,
+  colorScheme = 2,
+  smooth = true,
+  snow = false
+) {
   const options = `${smooth ? '1' : '0'}_${snow ? '1' : '0'}`;
 
   // Return URL template - Leaflet will replace {z}/{x}/{y}
@@ -88,10 +99,10 @@ export function getPastFrames(radarData) {
     return [];
   }
 
-  return radarData.radar.past.map(frame => ({
+  return radarData.radar.past.map((frame) => ({
     time: frame.time, // Unix timestamp
     path: frame.path,
-    url: buildRadarTileUrl(radarData.host, frame.path)
+    url: buildRadarTileUrl(radarData.host, frame.path),
   }));
 }
 
@@ -106,10 +117,10 @@ export function getForecastFrames(radarData) {
     return [];
   }
 
-  return radarData.radar.nowcast.map(frame => ({
+  return radarData.radar.nowcast.map((frame) => ({
     time: frame.time, // Unix timestamp
     path: frame.path,
-    url: buildRadarTileUrl(radarData.host, frame.path)
+    url: buildRadarTileUrl(radarData.host, frame.path),
   }));
 }
 
@@ -137,7 +148,7 @@ export function formatRadarTime(unixTimestamp) {
   return date.toLocaleTimeString([], {
     hour: '2-digit',
     minute: '2-digit',
-    hour12: true
+    hour12: true,
   });
 }
 
