@@ -96,6 +96,9 @@
   --overlay-soft: color-mix(in srgb, var(--text-primary) 18%, transparent);
   --overlay-accent: color-mix(in srgb, var(--text-on-accent) 20%, transparent);
   --overlay-accent-strong: color-mix(in srgb, var(--text-on-accent) 35%, transparent);
+  --surface-glass: color-mix(in srgb, var(--bg-elevated) 82%, transparent);
+  --surface-glass-strong: color-mix(in srgb, var(--bg-elevated) 92%, transparent);
+  --surface-glass-border: color-mix(in srgb, var(--text-primary) 16%, transparent);
 
   /* Hover States */
   --hover-bg: #e0e6f5;
@@ -209,6 +212,16 @@
   --info-bg: #122147;
   --info-border: #1f3b7a;
   --info-text: #8bb7ff;
+
+  /* Overlay / Glassmorphism Tokens */
+  --overlay-strong: color-mix(in srgb, var(--text-primary) 60%, transparent);
+  --overlay-medium: color-mix(in srgb, var(--text-primary) 35%, transparent);
+  --overlay-soft: color-mix(in srgb, var(--text-primary) 18%, transparent);
+  --overlay-accent: color-mix(in srgb, var(--text-on-accent) 20%, transparent);
+  --overlay-accent-strong: color-mix(in srgb, var(--text-on-accent) 35%, transparent);
+  --surface-glass: color-mix(in srgb, var(--bg-elevated) 65%, transparent);
+  --surface-glass-strong: color-mix(in srgb, var(--bg-elevated) 78%, transparent);
+  --surface-glass-border: color-mix(in srgb, var(--text-primary) 32%, transparent);
 
   /* Temperature Colors */
   --temp-hot: #ff8c8c;

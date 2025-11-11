@@ -17,6 +17,9 @@ UI design, UX optimization, and Material Design implementation documentation.
 - **[CSS_DENSITY_AUDIT.md](CSS_DENSITY_AUDIT.md)** - CSS density analysis
 - **[QUICK_START_DENSITY.md](QUICK_START_DENSITY.md)** - Using density modes
 
+### Surfaces & Overlays
+- **[OVERLAY_TOKENS_GUIDE.md](OVERLAY_TOKENS_GUIDE.md)** - Glass/overlay token usage & patterns
+
 ## Design Principles
 
 ### Material Design 3
