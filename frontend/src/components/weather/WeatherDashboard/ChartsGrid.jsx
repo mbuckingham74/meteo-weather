@@ -16,6 +16,8 @@ import ThisDayInHistoryCard from '../../cards/ThisDayInHistoryCard';
 import AirQualityCard from '../../cards/AirQualityCard';
 import styles from './ChartsGrid.module.css';
 import useBreakpoint from '../../../hooks/useBreakpoint';
+import ChartSkeleton from '../../common/ChartSkeleton';
+import ErrorMessage from '../../common/ErrorMessage';
 
 function ChartCard({ id, wide = false, padding = 'lg', children }) {
   const className = wide ? `${styles.chartCard} ${styles.chartCardWide}` : styles.chartCard;
@@ -33,6 +35,13 @@ function ChartCard({ id, wide = false, padding = 'lg', children }) {
     </Surface>
   );
 }
+
+const ChartLoader = ({ isLoading, height = 300, children }) => {
+  if (isLoading) {
+    return <ChartSkeleton height={height} />;
+  }
+  return children;
+};
 
 /**
  * Charts Grid Component
@@ -55,6 +64,20 @@ function ChartsGrid({
   const isCompactViewport = breakpoint === 'base' || breakpoint === 'xs' || breakpoint === 'sm';
   const gridGap = isCompactViewport ? 'md' : 'lg';
   const cardPadding = isCompactViewport ? 'md' : 'lg';
+  const hourlyLoading = hourlyData?.loading;
+  const hourlySeries = hourlyData?.data?.hourly || [];
+  const thisDayLoading = thisDayHistory?.loading;
+  const thisDayError = thisDayHistory?.error;
+  const refetchThisDay = thisDayHistory?.refetch;
+  const forecastComparisonLoading = forecastComparison?.loading;
+  const forecastComparisonError = forecastComparison?.error;
+  const refetchForecastComparison = forecastComparison?.refetch;
+  const recordTempsLoading = recordTemps?.loading;
+  const recordTempsError = recordTemps?.error;
+  const refetchRecordTemps = recordTemps?.refetch;
+  const probabilityLoading = tempProbability?.loading;
+  const probabilityError = tempProbability?.error;
+  const refetchProbability = tempProbability?.refetch;
 
   return (
     <>
@@ -68,11 +91,9 @@ function ChartsGrid({
         {/* FORECAST TAB */}
         {activeTab === 'forecast' && visibleCharts.hourly && (
           <ChartCard id="chart-hourly" wide padding={cardPadding}>
-            <HourlyForecastChart
-              hourlyData={hourlyData.data?.hourly || []}
-              unit={unit}
-              height={300}
-            />
+            <ChartLoader isLoading={hourlyLoading}>
+              <HourlyForecastChart hourlyData={hourlySeries} unit={unit} height={300} />
+            </ChartLoader>
           </ChartCard>
         )}
 
@@ -146,38 +167,85 @@ function ChartsGrid({
         {/* Historical/Climate Charts */}
         {activeTab === 'historical' && visibleCharts.thisDayHistory && (
           <ChartCard id="chart-thisDayHistory" wide padding={cardPadding}>
-            <ThisDayInHistoryCard historyData={thisDayHistory.data} unit={unit} />
+            <ChartLoader isLoading={thisDayLoading} height={350}>
+              {thisDayError ? (
+                <ErrorMessage
+                  error={thisDayError}
+                  mode="inline"
+                  showSuggestions={false}
+                  onRetry={refetchThisDay}
+                />
+              ) : (
+                <ThisDayInHistoryCard historyData={thisDayHistory.data} unit={unit} />
+              )}
+            </ChartLoader>
           </ChartCard>
         )}
 
         {activeTab === 'historical' && visibleCharts.historicalComparison && (
           <ChartCard id="chart-historicalComparison" wide padding={cardPadding}>
-            <HistoricalComparisonChart
-              forecastData={data.forecast || []}
-              historicalData={forecastComparison.data || []}
-              unit={unit}
-              height={300}
-            />
+            <ChartLoader isLoading={forecastComparisonLoading} height={300}>
+              {forecastComparisonError ? (
+                <ErrorMessage
+                  error={forecastComparisonError}
+                  mode="inline"
+                  showSuggestions={false}
+                  onRetry={refetchForecastComparison}
+                  retryLabel="Retry comparison"
+                />
+              ) : (
+                <HistoricalComparisonChart
+                  forecastData={data.forecast || []}
+                  historicalData={forecastComparison.data || []}
+                  unit={unit}
+                  height={300}
+                />
+              )}
+            </ChartLoader>
           </ChartCard>
         )}
 
         {activeTab === 'historical' && visibleCharts.recordTemps && (
           <ChartCard id="chart-recordTemps" wide padding={cardPadding}>
-            <RecordTemperaturesChart
-              records={recordTemps.data?.records || []}
-              unit={unit}
-              height={300}
-            />
+            <ChartLoader isLoading={recordTempsLoading} height={300}>
+              {recordTempsError ? (
+                <ErrorMessage
+                  error={recordTempsError}
+                  mode="inline"
+                  showSuggestions={false}
+                  onRetry={refetchRecordTemps}
+                  retryLabel="Retry loading records"
+                />
+              ) : (
+                <RecordTemperaturesChart
+                  records={recordTemps.data?.records || []}
+                  unit={unit}
+                  height={300}
+                />
+              )}
+            </ChartLoader>
           </ChartCard>
         )}
 
         {activeTab === 'historical' && visibleCharts.tempProbability && (
           <ChartCard id="chart-tempProbability" wide padding={cardPadding}>
-            <TemperatureProbabilityChart
-              probabilityData={tempProbability.data}
-              unit={unit}
-              height={300}
-            />
+            <ChartLoader isLoading={probabilityLoading} height={300}>
+              {probabilityError ? (
+                <ErrorMessage
+                  error={probabilityError}
+                  mode="inline"
+                  showSuggestions={false}
+                  onRetry={refetchProbability}
+                  retryLabel="Retry probability"
+                />
+              ) : (
+                <TemperatureProbabilityChart
+                  probabilityData={tempProbability.data}
+                  unit={unit}
+                  height={300}
+                />
+              )}
+            </ChartLoader>
           </ChartCard>
         )}
       </LayoutGrid>

@@ -23,7 +23,9 @@ import LocationConfirmationModal from '../../location/LocationConfirmationModal'
 import RadarMap from '../RadarMap';
 import TodaysHighlights from './TodaysHighlights';
 import ChartsGrid from './ChartsGrid';
+import WeatherDashboardSkeleton from './WeatherDashboardSkeleton';
 import { Button, Grid, Stack, Surface } from '@components/ui/primitives';
+import ErrorMessage from '../../common/ErrorMessage';
 import '../WeatherDashboard.css';
 import HeroControls from './HeroControls';
 
@@ -86,7 +88,7 @@ function WeatherDashboard() {
   });
 
   // Fetch weather data
-  const { data, loading, error } = useForecast(location, days);
+  const { data, loading, error, refetch: refetchForecast } = useForecast(location, days);
   const hourlyData = useHourlyForecast(location, 48);
   const currentWeather = useCurrentWeather(location);
 
@@ -280,19 +282,36 @@ function WeatherDashboard() {
       </div>
 
       {/* Loading State */}
-      {loading && (
-        <div className="loading-state">
-          <div className="spinner"></div>
-          <p>Loading weather data...</p>
-        </div>
-      )}
+      {loading && <WeatherDashboardSkeleton />}
 
       {/* Error State */}
       {error && (
         <div className="error-state">
-          <p className="error-icon">⚠️</p>
-          <p className="error-message">Error: {error}</p>
-          <p className="error-hint">Please check the location and try again.</p>
+          <ErrorMessage
+            error={error}
+            mode="inline"
+            onRetry={refetchForecast}
+            retryLabel="Retry loading data"
+            showSuggestions={false}
+          />
+          <p className="error-hint">
+            If the issue persists, try selecting a nearby city or check your internet connection.
+          </p>
+          <div className="error-actions">
+            <Button variant="primary" size="sm" onClick={refetchForecast}>
+              Retry
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                const searchInput = document.querySelector('[data-search-input]');
+                searchInput?.focus();
+              }}
+            >
+              Pick Different Location
+            </Button>
+          </div>
         </div>
       )}
 

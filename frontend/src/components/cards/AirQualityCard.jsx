@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import API_CONFIG from '../../config/api';
+import ChartSkeleton from '../common/ChartSkeleton';
 import styles from './AirQualityCard.module.css';
 
 /**
@@ -44,10 +45,7 @@ function AirQualityCard({ latitude, longitude }) {
   if (loading) {
     return (
       <div className={styles.card}>
-        <div className={styles.loading}>
-          <div className={styles.spinner}></div>
-          <p>Loading air quality data...</p>
-        </div>
+        <ChartSkeleton height="280px" showLegend={false} />
       </div>
     );
   }
