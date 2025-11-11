@@ -51,6 +51,8 @@ function WeatherAlertsBanner({ alerts }) {
             key={index}
             className={`${styles.alert} ${styles[`alert${style.severity.charAt(0).toUpperCase() + style.severity.slice(1)}`]}`}
             style={{ borderLeftColor: style.color }}
+            data-testid="weather-alert"
+            data-severity={style.severity}
           >
             <div
               className={styles.header}
@@ -61,6 +63,7 @@ function WeatherAlertsBanner({ alerts }) {
               aria-expanded={isExpanded}
               aria-label={`${alert.event} alert. ${isExpanded ? 'Collapse' : 'Expand'} for more details`}
               style={{ cursor: 'pointer' }}
+              data-testid="alert-header"
             >
               <div className={styles.headerContent}>
                 <span className={styles.icon} style={{ color: style.color }} aria-hidden="true">
