@@ -318,7 +318,7 @@ function WeatherDashboard() {
       {/* Data Display */}
       {!loading && !error && data && (
         <>
-          {/* UNIFIED HERO CARD - Everything in one place */}
+          {/* UNIFIED HERO CARD - Back to single card with internal sections */}
           <Surface
             as="section"
             padding="none"
@@ -327,15 +327,9 @@ function WeatherDashboard() {
             className="unified-hero-card"
           >
             {/* Search Section */}
-            <Surface
-              as="div"
-              padding="md"
-              background="var(--bg-secondary)"
-              border="transparent"
-              className="hero-search-section"
-            >
+            <div className="hero-search-section">
               <UniversalSearchBar />
-            </Surface>
+            </div>
 
             {/* Main Weather Display - Two Column Layout */}
             <Grid

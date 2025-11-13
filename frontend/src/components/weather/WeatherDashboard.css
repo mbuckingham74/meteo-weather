@@ -12,7 +12,7 @@
   background: var(--gradient-atmosphere);
   background-size: 400% 400%;
   animation: atmosphereShift 20s ease infinite;
-  min-height: 100vh;
+  /* REMOVED min-height: 100vh - was causing massive spacing */
   border-radius: var(--radius-lg);
 }
 
@@ -92,6 +92,7 @@
    Frosted glass effect with backdrop blur and depth
    ============================================ */
 
+/* UNIFIED HERO CARD - Back to single card */
 .unified-hero-card {
   width: 100%;
   max-width: 1400px;
@@ -121,7 +122,7 @@
     border-color var(--transition-normal);
 }
 
-/* Subtle gradient overlay inside glass card */
+/* Subtle gradient overlay inside unified hero card */
 .unified-hero-card::before {
   content: '';
   position: absolute;
@@ -182,21 +183,63 @@
   }
 }
 
-/* Search Section - Compact */
+/* Search Section - DEBUG */
 .hero-search-section {
-  padding: var(--spacing-md) 16px;
+  padding: var(--spacing-xs) var(--spacing-sm); /* COMPACT: 4px 8px (was 12px 16px) */
   background: var(--bg-secondary);
+  border: 3px solid red;
+  position: relative;
+}
+.hero-search-section::before {
+  content: '🔴 SEARCH SECTION';
+  position: absolute;
+  top: -20px;
+  left: 0;
+  background: red;
+  color: white;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: bold;
+  z-index: 9999;
 }
 
-/* Main Weather Display Container - TWO COLUMN LAYOUT */
+/* Main Weather Display Container - DEBUG */
 .hero-weather-display {
-  padding: var(--spacing-lg);
+  padding: var(--spacing-xs); /* COMPACT: 4px (was 12px, -67%) */
+  border: 3px solid blue;
+  position: relative;
+}
+.hero-weather-display::before {
+  content: '🔵 WEATHER DISPLAY';
+  position: absolute;
+  top: -20px;
+  left: 0;
+  background: blue;
+  color: white;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: bold;
+  z-index: 9999;
 }
 
-/* LEFT COLUMN: Weather Info */
+/* LEFT COLUMN - DEBUG */
 .hero-left-column {
   margin-top: 0;
   padding-top: 0;
+  border: 3px solid green;
+  position: relative;
+}
+.hero-left-column::before {
+  content: '🟢 LEFT COLUMN (Temp/Stats)';
+  position: absolute;
+  top: -20px;
+  left: 0;
+  background: green;
+  color: white;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: bold;
+  z-index: 9999;
 }
 
 /* Location Header - Compact */
@@ -230,16 +273,32 @@
   display: flex;
   gap: var(--spacing-lg);
   align-items: center;
+  border: 3px solid orange;
+  position: relative;
+}
+.hero-current-conditions::before {
+  content: '🟠 CURRENT CONDITIONS';
+  position: absolute;
+  top: -20px;
+  left: 0;
+  background: orange;
+  color: white;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: bold;
+  z-index: 9999;
 }
 
 .hero-temp-main {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xs);
+  border: 2px dashed purple;
+  padding: 4px;
 }
 
 .hero-temperature {
-  font-size: var(--font-display);
+  font-size: var(--font-display); /* 48px - THIS IS HUGE! */
   font-weight: var(--fw-black);
   color: var(--text-primary);
   line-height: 1;
@@ -249,6 +308,7 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  border: 2px solid red; /* DEBUG: TEMPERATURE */
 }
 
 .hero-feels-like {
@@ -339,14 +399,41 @@
   height: 100%;
   margin-top: 0;
   padding-top: 0;
+  border: 3px solid purple;
+  position: relative;
+}
+.hero-right-column::before {
+  content: '🟣 RIGHT COLUMN (Radar)';
+  position: absolute;
+  top: -20px;
+  left: 0;
+  background: purple;
+  color: white;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: bold;
+  z-index: 9999;
 }
 
 .hero-radar-section {
   padding: 0;
   margin: 0;
-  border: none;
+  border: 3px solid yellow;
   height: 100%;
-  min-height: 500px;
+  min-height: 500px; /* THIS is forcing 500px minimum! */
+  position: relative;
+}
+.hero-radar-section::before {
+  content: '🟡 RADAR SECTION (500px min!)';
+  position: absolute;
+  top: -20px;
+  left: 0;
+  background: yellow;
+  color: black;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: bold;
+  z-index: 9999;
 }
 
 /* Highlights Section */
@@ -400,9 +487,9 @@
   font-weight: 600;
 }
 
-/* Radar Section */
+/* Radar Section - DUPLICATE RULE (line 408) - OVERRIDING line 349! */
 .hero-radar-section {
-  padding: var(--spacing-lg) 0;
+  padding: var(--spacing-xs) 0; /* COMPACT: 4px 0 (was 16px 0, -75%) */
 }
 
 /* Universal Search Hero - Full Width (OLD - keeping for backwards compatibility) */
@@ -1122,14 +1209,14 @@
     font-size: var(--font-md);
   }
 
-  /* Unified Hero Card Responsive */
+  /* Weather Data Card Responsive */
   .unified-hero-card {
     border-radius: var(--radius-xl);
     margin-bottom: var(--spacing-lg);
   }
 
   .hero-search-section {
-    padding: var(--spacing-lg) 16px;
+    padding: var(--spacing-xs) var(--spacing-sm); /* COMPACT: 4px 8px */
   }
 
   .hero-weather-display {

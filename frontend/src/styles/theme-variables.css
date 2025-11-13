@@ -173,17 +173,17 @@
      DENSITY SYSTEM - Default (Normal)
      ============================================ */
 
-  /* Spacing Scale (8pt grid) - Enhanced for glassmorphism */
+  /* Spacing Scale (8pt grid) - COMPACT for 2-scroll design */
   --spacing-2xs: 2px;
   --spacing-xs: 4px;
   --spacing-sm: 8px;
-  --spacing-md: 16px; /* Updated from 12px for better glass card padding */
-  --spacing-lg: 24px; /* Updated from 20px for 8pt grid alignment */
-  --spacing-xl: 32px; /* Updated from 24px for 8pt grid alignment */
-  --spacing-2xl: 48px;
-  --spacing-3xl: 64px;
+  --spacing-md: 12px; /* REVERTED - Keep compact */
+  --spacing-lg: 16px; /* REVERTED - Keep compact */
+  --spacing-xl: 20px; /* REVERTED - Keep compact */
+  --spacing-2xl: 24px;
+  --spacing-3xl: 32px;
 
-  /* Font Sizes - Minimum 12px for accessibility */
+  /* Font Sizes - Minimum 12px for accessibility - COMPACT */
   --font-xs: 12px;
   --font-sm: 13px;
   --font-md: 14px;
@@ -192,9 +192,9 @@
   --font-xl: 20px;
   --font-2xl: 24px;
   --font-3xl: 32px;
-  --font-4xl: 48px;
-  --font-display: 56px; /* Hero temperature - glassmorphic design */
-  --font-hero: 32px; /* Location name in glass card */
+  --font-4xl: 48px; /* Keep original temperature size */
+  --font-display: 48px; /* REDUCED - Match 4xl for compact design */
+  --font-hero: 24px; /* REDUCED - More compact location name */
 
   /* Font Weights */
   --fw-light: 300;
@@ -212,12 +212,12 @@
   --radius-2xl: 24px; /* For hero glass cards */
   --radius-3xl: 32px; /* For extra-large glass surfaces */
 
-  /* Component-Specific Spacing - Enhanced for glassmorphism */
-  --dashboard-padding: 16px;
-  --card-padding-sm: 16px;
-  --card-padding-md: 20px;
-  --card-padding-lg: 24px;
-  --card-gap: 20px; /* Space between glass cards */
+  /* Component-Specific Spacing - COMPACT for 2-scroll design */
+  --dashboard-padding: 12px; /* REVERTED */
+  --card-padding-sm: 12px; /* REVERTED */
+  --card-padding-md: 16px; /* REVERTED */
+  --card-padding-lg: 20px; /* REVERTED */
+  --card-gap: 16px; /* REDUCED - Tighter card spacing */
   --button-padding-y: 10px;
   --button-padding-x: 16px;
   --input-padding-y: 12px;
