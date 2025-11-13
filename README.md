@@ -2,9 +2,17 @@
 
 # Meteo Weather App
 
+> ### ⚠️ **UNDER ACTIVE DEVELOPMENT - UI REDESIGN IN PROGRESS** 🚧
+>
+> **Current Status:** The UI is undergoing a major glassmorphism redesign ("Meteo Clarity" design system). Expect visual changes and temporary debug borders on the beta site. See [REDESIGN_SESSION_11-13-25.md](docs/ui-ux/REDESIGN_SESSION_11-13-25.md) for details.
+>
+> **Stability:** ✅ Core functionality stable | 🎨 UI actively changing | 📊 API endpoints stable
+
+---
+
 A comprehensive weather dashboard inspired by Weather Spark, providing detailed weather forecasts, historical climate data analysis, air quality monitoring, and AI-powered location comparison tools.
 
-**🌐 Live Demo:** [https://meteo-beta.tachyonfuture.com](https://meteo-beta.tachyonfuture.com)
+**🌐 Live Demo:** [https://meteo-beta.tachyonfuture.com](https://meteo-beta.tachyonfuture.com) *(UI redesign in progress)*
 
 **Built by:** [Michael Buckingham](https://github.com/mbuckingham74) &nbsp;&nbsp;|&nbsp;&nbsp; **Repository:** [meteo-weather](https://github.com/mbuckingham74/meteo-weather) &nbsp;&nbsp;|&nbsp;&nbsp; **Roadmap:** [View Features](ROADMAP.md) &nbsp;&nbsp;|&nbsp;&nbsp; **Changelog:** [View Updates](CHANGELOG.md)
 
