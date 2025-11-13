@@ -15,6 +15,7 @@ const MODELS = {
   google: 'gemini-pro',
   mistral: 'mistral-large-latest',
   cohere: 'command',
+  ollama: process.env.OLLAMA_MODEL || 'llama3.2:3b', // Self-hosted via Ollama
 };
 
 /**
@@ -281,8 +282,34 @@ async function callCohereAPI(apiKey, systemPrompt, userMessage, maxTokens = 500)
 }
 
 /**
+ * Call Ollama API (Self-hosted) - OpenAI-compatible
+ */
+async function callOllamaAPI(apiKey, systemPrompt, userMessage, maxTokens = 500) {
+  const OpenAI = require('openai');
+  const client = new OpenAI({
+    apiKey: apiKey || 'ollama', // Ollama doesn't require real API key
+    baseURL: process.env.OLLAMA_BASE_URL || 'http://localhost:11434/v1',
+  });
+
+  const completion = await client.chat.completions.create({
+    model: MODELS.ollama,
+    max_tokens: maxTokens,
+    messages: [
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: userMessage },
+    ],
+  });
+
+  return {
+    text: completion.choices[0].message.content.trim(),
+    tokensUsed: completion.usage.prompt_tokens + completion.usage.completion_tokens,
+    model: MODELS.ollama,
+  };
+}
+
+/**
  * Generic AI API caller that routes to the appropriate provider
- * @param {string} provider - AI provider (anthropic, openai, grok, google, mistral, cohere)
+ * @param {string} provider - AI provider (anthropic, openai, grok, google, mistral, cohere, ollama)
  * @param {string} apiKey - API key for the provider
  * @param {string} systemPrompt - System prompt/instructions
  * @param {string} userMessage - User's message
@@ -308,6 +335,9 @@ async function callAIProvider(provider, apiKey, systemPrompt, userMessage, maxTo
 
     case 'cohere':
       return await callCohereAPI(apiKey, systemPrompt, userMessage, maxTokens);
+
+    case 'ollama':
+      return await callOllamaAPI(apiKey, systemPrompt, userMessage, maxTokens);
 
     default:
       throw new Error(`Unsupported AI provider: ${provider}`);

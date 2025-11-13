@@ -15,7 +15,7 @@ const {
 } = require('../services/encryptionService');
 
 // Supported AI providers
-const SUPPORTED_PROVIDERS = ['anthropic', 'openai', 'grok', 'google', 'mistral', 'cohere'];
+const SUPPORTED_PROVIDERS = ['anthropic', 'openai', 'grok', 'google', 'mistral', 'cohere', 'ollama'];
 
 // Apply admin middleware to all routes
 router.use(requireAdmin);
@@ -423,6 +423,20 @@ async function testApiKeyConnection(provider, apiKey) {
         ? response.meta.tokens.inputTokens + response.meta.tokens.outputTokens
         : 0;
       return { model: 'command', tokensUsed };
+    }
+
+    case 'ollama': {
+      const OpenAI = require('openai');
+      const client = new OpenAI({
+        apiKey: apiKey || 'ollama',
+        baseURL: process.env.OLLAMA_BASE_URL || 'http://localhost:11434/v1',
+      });
+      const response = await client.chat.completions.create({
+        model: process.env.OLLAMA_MODEL || 'llama3.2:3b',
+        messages: [{ role: 'user', content: 'Hi' }],
+        max_tokens: 10,
+      });
+      return { model: response.model, tokensUsed: response.usage.prompt_tokens + response.usage.completion_tokens };
     }
 
     default:

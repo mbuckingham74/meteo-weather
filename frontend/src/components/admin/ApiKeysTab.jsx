@@ -43,6 +43,12 @@ const PROVIDER_INFO = {
     color: '#D18EE2',
     docs: 'https://docs.cohere.com/',
   },
+  ollama: {
+    name: 'Ollama (Self-Hosted)',
+    icon: '🦙',
+    color: '#000000',
+    docs: 'https://ollama.com/',
+  },
 };
 
 const ApiKeysTab = ({ token }) => {

@@ -24,12 +24,34 @@ This feature allows admin users to manage their own AI API keys for multiple pro
 |----------|--------|-------|----------|
 | **Anthropic** (Claude) | ✅ Implemented | `claude-sonnet-4-5-20250929` | https://docs.anthropic.com/ |
 | **OpenAI** (GPT) | ✅ Implemented | `gpt-4-turbo-preview` | https://platform.openai.com/docs |
-| **Grok** (xAI) | 🔄 Stub Only | `grok-beta` | https://x.ai/ |
-| **Google AI** (Gemini) | 🔄 Stub Only | `gemini-pro` | https://ai.google.dev/ |
-| **Mistral AI** | 🔄 Stub Only | `mistral-large-latest` | https://docs.mistral.ai/ |
-| **Cohere** | 🔄 Stub Only | `command` | https://docs.cohere.com/ |
+| **Grok** (xAI) | ✅ Implemented | `grok-beta` | https://x.ai/ |
+| **Google AI** (Gemini) | ✅ Implemented | `gemini-pro` | https://ai.google.dev/ |
+| **Mistral AI** | ✅ Implemented | `mistral-large-latest` | https://docs.mistral.ai/ |
+| **Cohere** | ✅ Implemented | `command` | https://docs.cohere.com/ |
+| **Ollama** (Self-Hosted) | ✅ Implemented | `llama3.2:3b` (configurable) | https://ollama.com/ |
 
-*Note: Only Anthropic and OpenAI are fully implemented. Others can be added by implementing their API calls in `aiWeatherAnalysisService.js`.*
+*Note: All 7 providers are fully implemented and ready to use!*
+
+### Ollama - Self-Hosted AI (Community Requested!)
+
+Ollama support was added based on [community feedback from @OverStyleFR](https://github.com/mbuckingham74/meteo-weather/issues/24). This enables completely free, privacy-focused AI capabilities by running models locally on your server.
+
+**Benefits:**
+- ✅ **100% Free** - No API costs after hardware
+- ✅ **Privacy-Focused** - Data never leaves your server
+- ✅ **Self-Hosted** - Full control over infrastructure
+- ✅ **Multiple Models** - Llama, Gemma, Mistral, Phi, and more
+- ✅ **OpenAI-Compatible** - Easy integration
+
+**Setup:**
+1. Install Ollama: https://ollama.com/download
+2. Pull a model: `ollama pull llama3.2:3b`
+3. Configure in `.env`:
+   ```bash
+   OLLAMA_BASE_URL=http://localhost:11434/v1  # Or your Ollama server URL
+   OLLAMA_MODEL=llama3.2:3b  # Or any model you've pulled
+   ```
+4. Users can add "ollama" keys in Admin Panel (API key field can be left as "ollama" or any placeholder)
 
 ---
 
