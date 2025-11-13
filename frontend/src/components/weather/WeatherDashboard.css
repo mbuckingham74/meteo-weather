@@ -1,4 +1,4 @@
-/* Weather Dashboard Styles */
+/* Weather Dashboard Styles - Glassmorphic "Meteo Clarity" Design */
 
 .weather-dashboard {
   max-width: 1400px;
@@ -7,6 +7,33 @@
   font-family:
     -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
     'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+
+  /* Animated gradient background visible through glass */
+  background: var(--gradient-atmosphere);
+  background-size: 400% 400%;
+  animation: atmosphereShift 20s ease infinite;
+  min-height: 100vh;
+  border-radius: var(--radius-lg);
+}
+
+/* Subtle gradient animation */
+@keyframes atmosphereShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Respect user preference for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .weather-dashboard {
+    animation: none;
+  }
 }
 
 /* Header */
@@ -61,22 +88,98 @@
 }
 
 /* ============================================
-   UNIFIED HERO CARD - Optimized Material Design 3
-   8pt Grid System | Compact, Professional Layout
+   UNIFIED HERO CARD - Glassmorphic "Meteo Clarity" Design
+   Frosted glass effect with backdrop blur and depth
    ============================================ */
 
 .unified-hero-card {
   width: 100%;
   max-width: 1400px;
-  margin: 0 auto 16px auto;
-  background: var(--bg-elevated);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-xl);
-  border: 1px solid var(--border-light);
+  margin: 0 auto var(--card-gap) auto;
+  position: relative;
   overflow: hidden;
+
+  /* Glassmorphism core properties */
+  background: var(--glass-light);
+  backdrop-filter: var(--blur-medium) saturate(180%);
+  -webkit-backdrop-filter: var(--blur-medium) saturate(180%);
+
+  /* Glass border with shimmer */
+  border: 1px solid var(--glass-border-light);
+  border-radius: var(--radius-2xl);
+
+  /* Enhanced shadow with glow */
+  box-shadow:
+    var(--shadow-xl),
+    var(--glow-subtle),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+
+  /* Smooth transitions */
   transition:
+    transform var(--transition-normal),
     box-shadow var(--transition-normal),
     border-color var(--transition-normal);
+}
+
+/* Subtle gradient overlay inside glass card */
+.unified-hero-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--gradient-atmosphere);
+  opacity: 0.08;
+  z-index: 0;
+  pointer-events: none;
+  animation: gradientPulse 15s ease-in-out infinite;
+}
+
+@keyframes gradientPulse {
+  0%,
+  100% {
+    opacity: 0.08;
+  }
+  50% {
+    opacity: 0.15;
+  }
+}
+
+/* Respect user preference for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .unified-hero-card::before {
+    animation: none;
+    opacity: 0.1;
+  }
+}
+
+/* Hover elevation effect */
+.unified-hero-card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    var(--shadow-xl),
+    var(--glow-primary),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  border-color: var(--glass-border-strong);
+}
+
+/* Ensure content is above gradient overlay */
+.unified-hero-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Fallback for browsers without backdrop-filter support */
+@supports not (backdrop-filter: blur(24px)) {
+  .unified-hero-card {
+    background: var(--bg-elevated);
+    opacity: 0.98;
+  }
+
+  .unified-hero-card::before {
+    opacity: 0.05;
+  }
 }
 
 /* Search Section - Compact */
@@ -104,11 +207,12 @@
 
 .hero-location-name {
   margin: 0;
-  font-size: var(--font-2xl);
-  font-weight: 900;
+  font-size: var(--font-hero);
+  font-weight: var(--fw-black);
   color: var(--text-primary);
   line-height: 1.1;
   letter-spacing: -0.5px;
+  text-shadow: 0 2px 8px rgba(15, 23, 42, 0.1);
 }
 
 .hero-location-coords {
@@ -135,11 +239,16 @@
 }
 
 .hero-temperature {
-  font-size: var(--font-4xl);
-  font-weight: 800;
+  font-size: var(--font-display);
+  font-weight: var(--fw-black);
   color: var(--text-primary);
   line-height: 1;
-  letter-spacing: -1.5px;
+  letter-spacing: -2px;
+  text-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-primary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .hero-feels-like {
@@ -155,19 +264,55 @@
   align-items: center;
   gap: var(--spacing-xs);
   padding: var(--spacing-xs);
-  background: var(--bg-tertiary);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border-light);
+  position: relative;
+  overflow: hidden;
+
+  /* Subtle glass effect for stat cards */
+  background: var(--glass-light-subtle);
+  backdrop-filter: var(--blur-light);
+  -webkit-backdrop-filter: var(--blur-light);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--glass-border-light);
   transition:
     transform var(--transition-fast),
     box-shadow var(--transition-fast),
-    border-color var(--transition-fast);
+    border-color var(--transition-fast),
+    background var(--transition-fast);
+}
+
+/* Subtle shimmer on hover */
+.hero-stat::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    transparent 100%
+  );
+  transition: left 0.5s ease;
 }
 
 .hero-stat:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
-  border-color: var(--accent-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm), var(--glow-subtle);
+  border-color: var(--glass-border-strong);
+  background: var(--glass-light);
+}
+
+.hero-stat:hover::before {
+  left: 100%;
+}
+
+/* Fallback for browsers without backdrop-filter */
+@supports not (backdrop-filter: blur(16px)) {
+  .hero-stat {
+    background: var(--bg-tertiary);
+  }
 }
 
 .hero-stat-icon {
