@@ -193,14 +193,15 @@
 .hero-search-section::before {
   content: '🔴 SEARCH SECTION';
   position: absolute;
-  top: -20px;
-  left: 0;
+  top: 4px;
+  left: 4px;
   background: red;
   color: white;
   padding: 2px 8px;
   font-size: 11px;
   font-weight: bold;
   z-index: 9999;
+  border-radius: 4px;
 }
 
 /* Main Weather Display Container - DEBUG */
@@ -212,14 +213,15 @@
 .hero-weather-display::before {
   content: '🔵 WEATHER DISPLAY';
   position: absolute;
-  top: -20px;
-  left: 0;
+  top: 4px;
+  right: 4px;
   background: blue;
   color: white;
   padding: 2px 8px;
   font-size: 11px;
   font-weight: bold;
   z-index: 9999;
+  border-radius: 4px;
 }
 
 /* LEFT COLUMN - DEBUG */
@@ -232,14 +234,15 @@
 .hero-left-column::before {
   content: '🟢 LEFT COLUMN (Temp/Stats)';
   position: absolute;
-  top: -20px;
-  left: 0;
+  top: 4px;
+  left: 4px;
   background: green;
   color: white;
   padding: 2px 8px;
   font-size: 11px;
   font-weight: bold;
   z-index: 9999;
+  border-radius: 4px;
 }
 
 /* Location Header - Compact */
@@ -279,14 +282,15 @@
 .hero-current-conditions::before {
   content: '🟠 CURRENT CONDITIONS';
   position: absolute;
-  top: -20px;
-  left: 0;
+  bottom: 4px;
+  left: 4px;
   background: orange;
   color: white;
   padding: 2px 8px;
   font-size: 11px;
   font-weight: bold;
   z-index: 9999;
+  border-radius: 4px;
 }
 
 .hero-temp-main {
@@ -405,14 +409,15 @@
 .hero-right-column::before {
   content: '🟣 RIGHT COLUMN (Radar)';
   position: absolute;
-  top: -20px;
-  left: 0;
+  top: 4px;
+  right: 4px;
   background: purple;
   color: white;
   padding: 2px 8px;
   font-size: 11px;
   font-weight: bold;
   z-index: 9999;
+  border-radius: 4px;
 }
 
 .hero-radar-section {
@@ -426,14 +431,15 @@
 .hero-radar-section::before {
   content: '🟡 RADAR SECTION (500px min!)';
   position: absolute;
-  top: -20px;
-  left: 0;
+  top: 4px;
+  left: 4px;
   background: yellow;
   color: black;
   padding: 2px 8px;
   font-size: 11px;
   font-weight: bold;
   z-index: 9999;
+  border-radius: 4px;
 }
 
 /* Highlights Section */
