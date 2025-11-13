@@ -209,6 +209,8 @@
   padding: var(--spacing-xs); /* COMPACT: 4px (was 12px, -67%) */
   border: 3px solid blue;
   position: relative;
+  /* Override Grid component to use 35/65 split instead of 50/50 */
+  grid-template-columns: 35fr 65fr !important;
 }
 .hero-weather-display::before {
   content: '🔵 WEATHER DISPLAY';
