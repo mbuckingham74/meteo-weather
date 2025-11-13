@@ -2,6 +2,24 @@
 
 # Meteo Weather App
 
+> ### 🚧 **PROJECT UNDER HEAVY CONSTRUCTION** 🚧
+>
+> **We're Building Something Great!** The UI is undergoing a complete redesign with our new "Meteo Clarity" glassmorphism design system.
+>
+> ### 🎨 **We Need Your Help!**
+>
+> **Calling all UX/UI Designers!** We're looking for contributors to help shape the visual direction of Meteo Weather. Whether you're a seasoned designer or just getting started, we'd love your input on:
+> - Visual design and aesthetics
+> - User experience improvements
+> - Accessibility enhancements
+> - Mobile-first design patterns
+>
+> **Interested?** Open an issue or submit a PR! Check out the [redesign branch](https://github.com/mbuckingham74/meteo-weather/tree/feature/glassmorphism-ui-redesign) to see what we're working on.
+>
+> **Current Status:** ✅ Core functionality stable | 🎨 UI actively changing | 📊 API endpoints stable
+
+---
+
 A comprehensive weather dashboard inspired by Weather Spark, providing detailed weather forecasts, historical climate data analysis, air quality monitoring, and AI-powered location comparison tools.
 
 **🌐 Live Demo:** [https://meteo-beta.tachyonfuture.com](https://meteo-beta.tachyonfuture.com)
