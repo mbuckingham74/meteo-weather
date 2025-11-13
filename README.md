@@ -2,11 +2,21 @@
 
 # Meteo Weather App
 
-> ### ⚠️ **UNDER ACTIVE DEVELOPMENT - UI REDESIGN IN PROGRESS** 🚧
+> ### 🚧 **PROJECT UNDER HEAVY CONSTRUCTION** 🚧
 >
-> **Current Status:** The UI is undergoing a major glassmorphism redesign ("Meteo Clarity" design system). Expect visual changes and temporary debug borders on the beta site. See [REDESIGN_SESSION_11-13-25.md](docs/ui-ux/REDESIGN_SESSION_11-13-25.md) for details.
+> **We're Building Something Great!** The UI is undergoing a complete redesign with our new "Meteo Clarity" glassmorphism design system.
 >
-> **Stability:** ✅ Core functionality stable | 🎨 UI actively changing | 📊 API endpoints stable
+> ### 🎨 **We Need Your Help!**
+>
+> **Calling all UX/UI Designers!** We're looking for contributors to help shape the visual direction of Meteo Weather. Whether you're a seasoned designer or just getting started, we'd love your input on:
+> - Visual design and aesthetics
+> - User experience improvements
+> - Accessibility enhancements
+> - Mobile-first design patterns
+>
+> **Interested?** Open an issue or submit a PR! Check out our [design system docs](docs/ui-ux/REDESIGN_SESSION_11-13-25.md) to see what we're working on.
+>
+> **Current Status:** ✅ Core functionality stable | 🎨 UI actively changing | 📊 API endpoints stable
 
 ---
 
