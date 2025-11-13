@@ -81,9 +81,30 @@
 - [docs/admin/QUICK_REFERENCE.md](docs/admin/QUICK_REFERENCE.md) - One-page cheat sheet (340 lines)
 - [docs/admin/IMPLEMENTATION_SUMMARY.md](docs/admin/IMPLEMENTATION_SUMMARY.md) - Technical details (890 lines)
 ### Recent Work (Nov 2025)
+- ✅ **AI Provider Selector UI** (Nov 13, 2025)
+  - **Enhancement:** Added user-facing dropdown to select AI provider in AI Weather page
+  - **Features:** Provider selection dropdown, localStorage persistence, visual icons (🤖 🧠 ⚡ 🔮 🌊 🧬 🦙)
+  - **User Experience:** Seamless provider switching, preference saved across sessions, default to Anthropic
+  - **Integration:** Connected to both /ai-weather/validate and /ai-weather/analyze API endpoints
+  - **Design:** Material Design 3 consistent styling, accessible with proper labels, focus states
+  - **Technical:** useState with localStorage sync, useEffect for persistence, theme variables
+  - **Impact:** Users can now choose their preferred AI provider per query, works with user-managed API keys
+  - **Commit:** 2234b20
+  - **Status:** Complete, ready for beta testing ✅
+- ✅ **Ollama Self-Hosted AI Support** (Nov 13, 2025) - **Community Requested!**
+  - **Feature Request:** Implemented based on suggestion from @OverStyleFR in issue #24
+  - **Provider #7:** Added Ollama as 7th AI provider for completely free, self-hosted AI
+  - **Implementation:** OpenAI-compatible API integration with configurable base URL and model
+  - **Benefits:** 100% free (no API costs), privacy-focused (data stays local), self-hosted control
+  - **Models Supported:** Llama, Gemma, Mistral, Phi, and any Ollama-compatible model
+  - **Environment Variables:** OLLAMA_BASE_URL (default: http://localhost:11434/v1), OLLAMA_MODEL (default: llama3.2:3b)
+  - **Frontend:** Added llama icon (🦙), displays as "Ollama (Self-Hosted)" in Admin Panel
+  - **Community Credit:** @OverStyleFR credited in commit message, documentation, and issue comments
+  - **Commits:** 60cc8f3 (initial multi-provider), 1248367 (Ollama support)
+  - **Status:** Fully implemented, awaiting beta testing ✅
 - ✅ **User-Managed API Keys Feature** (Nov 13, 2025)
   - **Complete Implementation:** Backend + Frontend + Database + Documentation (20+ files)
-  - **Multi-Provider Support:** 6 AI providers (Anthropic, OpenAI, Grok, Google AI, Mistral, Cohere)
+  - **Multi-Provider Support:** 7 AI providers (Anthropic, OpenAI, Grok, Google AI, Mistral, Cohere, Ollama)
   - **Security:** AES-256-GCM encryption with PBKDF2 key derivation (100k iterations)
   - **Admin Panel UI:** New "🔑 API Keys" tab with full CRUD operations
   - **Features:** Usage tracking, monthly limits, test connection, default key selection, masked display
