@@ -67,7 +67,25 @@ Each major section now has **colored borders with labels** for systematic troubl
 ✅ Added visual debugging system with labeled borders
 ✅ Reduced container padding from 12px → **4px** (-67%)
 
-### 4. Backend Rate Limit Adjustment (app.js)
+### 4. Debug Label Positioning Fix
+✅ Repositioned debug labels to prevent stacking:
+- 🔴 **SEARCH SECTION**: Top-left (4px, 4px)
+- 🔵 **WEATHER DISPLAY**: Top-right (4px, right 4px)
+- 🟢 **LEFT COLUMN**: Top-left (4px, 4px)
+- 🟠 **CURRENT CONDITIONS**: Bottom-left (bottom 4px, 4px)
+- 🟣 **RIGHT COLUMN**: Top-right (4px, right 4px)
+- 🟡 **RADAR SECTION**: Top-left (4px, 4px)
+- Added `border-radius: 4px` to all labels for polish
+
+### 5. Column Layout Optimization - 35/65 Split
+✅ **Major improvement** - Changed grid layout from 50/50 to 35/65:
+- **Left Column (Temp/Stats)**: 35% width
+- **Right Column (Radar Map)**: 65% width
+- Added `grid-template-columns: 35fr 65fr !important;` to `.hero-weather-display`
+- **Result**: Both columns now visible side-by-side on desktop
+- **Benefit**: Easier debugging, better horizontal space utilization
+
+### 6. Backend Rate Limit Adjustment (app.js)
 ✅ Increased local dev rate limit: 100 → **1000 requests/15min**
 - Production still protected at 100 req/15min
 - Prevents rate limiting during frequent testing/refreshing
@@ -230,10 +248,17 @@ Search for and remove:
 
 ## Session Timeline
 - **Start:** November 13, 2025, ~2:00 AM PST
-- **Current:** November 13, 2025, ~2:35 AM PST
-- **Duration:** ~35 minutes
-- **Changes:** 8+ file modifications, debug system implemented
-- **Status:** Ready for collaborator review
+- **Phase 1:** Debug system implementation (2:00 AM - 2:35 AM)
+- **Phase 2:** Label positioning fix (deployment issue resolved)
+- **Phase 3:** 35/65 column layout optimization
+- **Current:** November 13, 2025, ~9:00 AM PST
+- **Duration:** ~7 hours (with breaks)
+- **Changes:** 8+ file modifications across 3 commits
+- **Commits:**
+  - `ca53f3d` - Initial debug system
+  - `0c4f496` - Debug label positioning fix
+  - `198dae2` - 35/65 column layout
+- **Status:** ✅ Side-by-side view working, ready for next phase
 
 ## References
 - [Glassmorphism Phase 1 Complete](./GLASSMORPHISM_PHASE1_COMPLETE.md)
@@ -243,7 +268,8 @@ Search for and remove:
 
 ---
 
-**Last Updated:** November 13, 2025, 2:35 AM PST
+**Last Updated:** November 13, 2025, 9:00 AM PST
 **Author:** Claude Code (AI Assistant)
 **User:** Michael Buckingham
 **Collaborator:** TBD (will access beta site)
+**Session Status:** Active - Debug mode enabled, side-by-side layout working
