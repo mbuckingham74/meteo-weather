@@ -1,58 +1,59 @@
 ---
-description: Defines data models and relationships for weather metrics, location data, and user preferences across the application
+description: Documentation for weather data models and relationships used in the project's climate analysis systems
 ---
 
 
 # weather-models
 
-Core Data Models:
+## Core Weather Data Models
 
-1. Location Climate Model
-Path: frontend/src/components/location/LocationComparisonView/locationData.js
-- Climate characteristics scoring matrix
-- Temperature bands with weighted importance
-- Humidity preference ranges
-- Precipitation pattern classifications
-Importance Score: 85
+### Location Climate Model
+- Temperature patterns with 30-day smoothing
+- Humidity characteristic curves  
+- Precipitation frequency distributions
+- Seasonal pattern fingerprints
+- Multi-year climate normals
 
-2. Weather Pattern Model 
-Path: frontend/src/components/weather/WeatherDashboard/TodaysHighlights.jsx
-- Weather condition categorization schema
-- Dew point calculation mapping
-- Weather metric priority weights
-- Condition-to-icon mapping rules
-Importance Score: 75
+### Weather Pattern Models
+- Custom pattern classification system
+- Statistical clustering definitions
+- Pattern sequence matching rules
+- Historical frequency tracking
+- Anomaly detection thresholds
 
-3. Temperature Distribution Model
-Path: frontend/src/components/charts/TemperatureProbabilityChart.jsx
-- Temperature band classifications
-- Probability density mappings
-- Percentile calculation rules
-- Temperature trend categorization
-Importance Score: 80
+### Activity Impact Models
+- Weighted scoring formulas per activity
+- Environmental factor relationships:
+  - Temperature influence (40%)
+  - Humidity effects (25%)
+  - Precipitation impact (20%)
+  - Wind considerations (15%)
+- Activity-specific ideal ranges
 
-4. Historical Precipitation Model
-Path: frontend/src/components/weather/HistoricalRainTable.jsx
-- Precipitation pattern classification
-- Rain day percentage thresholds
-- Weather condition correlations
-- Precipitation intensity scales
-Importance Score: 75
+### Location Similarity Model  
+- Climate compatibility scoring
+- Temperature delta calculations
+- Precipitation pattern matching
+- Humidity level comparisons
+- Location twinning algorithms
 
-5. Climate Preference Model
-Path: frontend/src/components/location/LocationComparisonView/AILocationFinder.jsx
-- Natural language preference mapping
-- Quantifiable climate criteria translations
-- Current location baseline metrics
-- Relative comparison weights
-Importance Score: 90
+### Weather History Model
+- Multi-timeframe aggregations
+- Pattern normalization rules
+- Record tracking system
+- Statistical distribution models
+- Trend analysis parameters
 
-Key Relationships:
-- Location models maintain climate scoring matrices
-- Weather patterns link to condition categories
-- Temperature distributions connect to preference models
-- Historical data maps to pattern classifications
-- User preferences correlate with climate metrics
+### Air Quality Models
+- Pollutant measurement scales
+- Health impact calculations  
+- AQI conversion formulas
+- Multi-source data normalization
+- Alert threshold definitions
+
+Importance Score: 90/100
+
+The models represent the core domain logic for weather analysis, implementing sophisticated meteorological relationships and climate pattern detection. They form the foundation for the project's unique weather analysis capabilities.
 
 $END$
 

@@ -81,6 +81,20 @@
 - [docs/admin/QUICK_REFERENCE.md](docs/admin/QUICK_REFERENCE.md) - One-page cheat sheet (340 lines)
 - [docs/admin/IMPLEMENTATION_SUMMARY.md](docs/admin/IMPLEMENTATION_SUMMARY.md) - Technical details (890 lines)
 ### Recent Work (Nov 2025)
+- ✅ **User-Managed API Keys Feature** (Nov 13, 2025)
+  - **Complete Implementation:** Backend + Frontend + Database + Documentation (20+ files)
+  - **Multi-Provider Support:** 6 AI providers (Anthropic, OpenAI, Grok, Google AI, Mistral, Cohere)
+  - **Security:** AES-256-GCM encryption with PBKDF2 key derivation (100k iterations)
+  - **Admin Panel UI:** New "🔑 API Keys" tab with full CRUD operations
+  - **Features:** Usage tracking, monthly limits, test connection, default key selection, masked display
+  - **Fallback Logic:** User keys → System defaults (seamless)
+  - **Backend Files:** encryptionService.js, userApiKeyService.js, apiKeys.js routes, aiWeatherAnalysisService.js updates
+  - **Frontend Components:** ApiKeysTab.jsx, ApiKeyCard.jsx, AddApiKeyModal.jsx + CSS
+  - **Database:** Migration 008_add_user_api_keys.sql (user_api_keys table)
+  - **Dependencies:** openai, @google/generative-ai, @mistralai/mistralai, cohere-ai
+  - **Documentation:** docs/development/USER_API_KEYS_IMPLEMENTATION.md (470+ lines)
+  - **Environment:** API_KEY_ENCRYPTION_SECRET added to .env (64-char hex)
+  - **Status:** Fully deployed and functional ✅
 - 🔄 **CSS Modules Test Migration (PR #21)** (Nov 11, 2025) - **FIXES IN PROGRESS**
   - **Test Fixes:** Fixed 78 test failures from CSS Modules migration (442 passing → 519 passing)
   - **Solution Pattern:** Added data-testid attributes, replaced CSS class selectors with getByTestId()
@@ -565,49 +579,45 @@ This ensures:
 - Explain your OBSERVATIONS clearly, then provide REASONING to identify the exact issue. Add console logs when needed to gather more information.
 
 
-The weather analysis system implements complex business logic across several key domains:
+The weather application implements sophisticated climate analysis and location matching through four core subsystems:
 
-## Core Location & Climate Analysis
-- Location comparison engine using weighted scoring for climate matching
-- Multi-location weather aggregation spanning 7 days to 5 years
-- Historical climate pattern analysis with cross-location metrics
-- Natural language processing for climate preferences
-- VPN/proxy detection for location reliability
+## Location Comparison System
+Core logic for matching and comparing locations based on climate characteristics:
+- Custom scoring algorithm evaluating temperature, humidity, and precipitation patterns
+- Multi-factor location database with detailed climate attributes
+- Sophisticated matching system considering seasonal variations
+- Weather pattern comparison across multiple timeframes
 
-File Organization:
-```
-frontend/src/components/location/
-├── LocationComparisonView/
-│   ├── locationData.js          # Climate matching algorithms
-│   ├── LocationComparisonView.jsx  # Weather comparison logic
-│   └── AILocationFinder.jsx     # Climate preference processing
-├── LocationConfirmationModal.jsx # Location validation system
-└── FavoritesPanel.jsx          # Cloud-local sync system
-```
+Importance Score: 85/100
 
-## Weather Data Processing
-- Radar animation system with storm tracking simulation
-- Weather condition categorization and classification
-- Precipitation probability correlation analysis
-- Temperature distribution statistical processing
-- Historical precipitation pattern analysis
+## Climate Data Processing
+Handles complex climate data aggregation and analysis:
+- Multi-timeframe comparison algorithms spanning 7 days to 5 years 
+- Historical weather normalization and pattern detection
+- Automated location recommendations based on climate preferences
+- Complex data aggregation for varied analysis windows
 
-## AI Integration
-- Weather query processing with confidence scoring
-- Smart query classification system
-- Contextual suggestion engine
-- Weather-specific cache management
-- Background sync for favorite locations
+Importance Score: 90/100
 
-Business Logic Importance: 90/100
-Justification:
-- Complex climate comparison algorithms
-- Sophisticated location validation
-- Intelligent data aggregation
-- Natural language processing
-- Smart synchronization systems
+## Location Validation
+Advanced location verification system:
+- Multi-tier accuracy classification (GPS, Wi-Fi, IP-based)
+- VPN/proxy detection for location verification
+- Custom confirmation workflow for uncertain locations
+- Hybrid local/cloud synchronization for favorites
 
-The system's architecture emphasizes intelligent comparison and analysis of climate data while maintaining accurate location validation and user preference processing.
+Importance Score: 75/100
+
+## Core Business Rules
+Key algorithms and scoring systems:
+- Temperature delta matching with weighted priority
+- Humidity pattern alignment calculations
+- Precipitation preference analysis
+- Seasonal trend evaluation
+- Historical data normalization rules
+- Multi-point location comparison (up to 4 locations)
+
+Importance Score: 80/100
 
 $END$
 

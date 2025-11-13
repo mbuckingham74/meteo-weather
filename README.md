@@ -93,6 +93,7 @@ A comprehensive weather dashboard inspired by Weather Spark, providing detailed 
 - **⌨️ Complete Keyboard Navigation** - Full keyboard support with modal focus traps, logical tab order, and escape handlers
 - **📴 PWA Support** - Install as app, offline mode, and smart caching
 - **🔧 Admin Panel** - Comprehensive dashboard for site owners with 6 tabs: system stats, user analytics, weather data insights, AI usage & cost tracking, cache management, and database monitoring
+- **🔑 User-Managed API Keys** - Bring your own API keys for 6 AI providers (Anthropic, OpenAI, Grok, Google, Mistral, Cohere) with secure AES-256-GCM encryption, usage tracking, and automatic fallback to system defaults
 
 ---
 

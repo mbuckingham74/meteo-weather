@@ -16,6 +16,7 @@ const aiWeatherAnalysisRoutes = require('./routes/aiWeatherAnalysis');
 const shareAnswerRoutes = require('./routes/shareAnswer');
 const userPreferencesRoutes = require('./routes/userPreferences');
 const adminRoutes = require('./routes/admin');
+const apiKeysRoutes = require('./routes/apiKeys');
 
 const app = express();
 
@@ -181,6 +182,7 @@ app.use('/api/ai-weather', aiWeatherAnalysisRoutes);
 app.use('/api/share', shareAnswerRoutes);
 app.use('/api/user-preferences', userPreferencesRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/api-keys', apiKeysRoutes);
 
 // 404 handler
 app.use((req, res) => {

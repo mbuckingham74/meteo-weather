@@ -22,15 +22,19 @@
   "type": "commonjs",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.68.0",
+    "@google/generative-ai": "^0.21.0",
+    "@mistralai/mistralai": "^1.10.0",
     "axios": "^1.7.7",
     "bcryptjs": "^3.0.2",
+    "cohere-ai": "^7.19.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.1",
     "express-rate-limit": "^8.2.1",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
-    "mysql2": "^3.11.5"
+    "mysql2": "^3.11.5",
+    "openai": "^4.104.0"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",

@@ -1,16 +1,21 @@
 /**
  * AI Weather Analysis Service
- * Uses Claude API (Anthropic) to analyze weather data and answer natural language questions
+ * Supports multiple AI providers: Anthropic Claude, OpenAI, Grok, Google, Mistral, Cohere
+ * Uses user-provided API keys when available, falls back to system keys
  */
 
 const Anthropic = require('@anthropic-ai/sdk');
+const { getApiKeyForProvider, updateApiKeyUsage } = require('./userApiKeyService');
 
-// Initialize Anthropic client
-const anthropic = new Anthropic({
-  apiKey: process.env.METEO_ANTHROPIC_API_KEY,
-});
-
-const MODEL = 'claude-sonnet-4-5-20250929';
+// Model configurations for each provider
+const MODELS = {
+  anthropic: 'claude-sonnet-4-5-20250929',
+  openai: 'gpt-4-turbo-preview',
+  grok: 'grok-beta', // xAI's model name
+  google: 'gemini-pro',
+  mistral: 'mistral-large-latest',
+  cohere: 'command',
+};
 
 /**
  * Detect query intent and suggest relevant visualizations
@@ -140,14 +145,186 @@ function generateFollowUpQuestions(query, _visualizations, _weatherData) {
 }
 
 /**
+ * Call Anthropic API
+ */
+async function callAnthropicAPI(apiKey, systemPrompt, userMessage, maxTokens = 500) {
+  const client = new Anthropic({ apiKey });
+  const message = await client.messages.create({
+    model: MODELS.anthropic,
+    max_tokens: maxTokens,
+    system: systemPrompt,
+    messages: [{ role: 'user', content: userMessage }],
+  });
+
+  return {
+    text: message.content[0].text.trim(),
+    tokensUsed: message.usage.input_tokens + message.usage.output_tokens,
+    model: MODELS.anthropic,
+  };
+}
+
+/**
+ * Call OpenAI API
+ */
+async function callOpenAIAPI(apiKey, systemPrompt, userMessage, maxTokens = 500) {
+  const OpenAI = require('openai');
+  const client = new OpenAI({ apiKey });
+
+  const completion = await client.chat.completions.create({
+    model: MODELS.openai,
+    max_tokens: maxTokens,
+    messages: [
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: userMessage },
+    ],
+  });
+
+  return {
+    text: completion.choices[0].message.content.trim(),
+    tokensUsed: completion.usage.prompt_tokens + completion.usage.completion_tokens,
+    model: MODELS.openai,
+  };
+}
+
+/**
+ * Call Grok API (xAI) - OpenAI-compatible
+ */
+async function callGrokAPI(apiKey, systemPrompt, userMessage, maxTokens = 500) {
+  const OpenAI = require('openai');
+  const client = new OpenAI({
+    apiKey,
+    baseURL: 'https://api.x.ai/v1', // Grok uses OpenAI-compatible API
+  });
+
+  const completion = await client.chat.completions.create({
+    model: MODELS.grok,
+    max_tokens: maxTokens,
+    messages: [
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: userMessage },
+    ],
+  });
+
+  return {
+    text: completion.choices[0].message.content.trim(),
+    tokensUsed: completion.usage.prompt_tokens + completion.usage.completion_tokens,
+    model: MODELS.grok,
+  };
+}
+
+/**
+ * Call Google AI (Gemini) API
+ */
+async function callGoogleAIAPI(apiKey, systemPrompt, userMessage, maxTokens = 500) {
+  const { GoogleGenerativeAI } = require('@google/generative-ai');
+  const genAI = new GoogleGenerativeAI(apiKey);
+  const model = genAI.getGenerativeModel({ model: MODELS.google });
+
+  const prompt = `${systemPrompt}\n\nUser: ${userMessage}`;
+  const result = await model.generateContent(prompt);
+  const response = await result.response;
+  const text = response.text();
+
+  return {
+    text: text.trim(),
+    tokensUsed: response.usageMetadata
+      ? response.usageMetadata.promptTokenCount + response.usageMetadata.candidatesTokenCount
+      : 0,
+    model: MODELS.google,
+  };
+}
+
+/**
+ * Call Mistral AI API
+ */
+async function callMistralAPI(apiKey, systemPrompt, userMessage, maxTokens = 500) {
+  const MistralClient = require('@mistralai/mistralai').default;
+  const client = new MistralClient(apiKey);
+
+  const response = await client.chat({
+    model: MODELS.mistral,
+    maxTokens: maxTokens,
+    messages: [
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: userMessage },
+    ],
+  });
+
+  return {
+    text: response.choices[0].message.content.trim(),
+    tokensUsed: response.usage.prompt_tokens + response.usage.completion_tokens,
+    model: MODELS.mistral,
+  };
+}
+
+/**
+ * Call Cohere API
+ */
+async function callCohereAPI(apiKey, systemPrompt, userMessage, maxTokens = 500) {
+  const { CohereClient } = require('cohere-ai');
+  const cohere = new CohereClient({ token: apiKey });
+
+  const response = await cohere.chat({
+    model: MODELS.cohere,
+    message: userMessage,
+    preamble: systemPrompt,
+    maxTokens: maxTokens,
+  });
+
+  return {
+    text: response.text.trim(),
+    tokensUsed: response.meta?.tokens
+      ? response.meta.tokens.inputTokens + response.meta.tokens.outputTokens
+      : 0,
+    model: MODELS.cohere,
+  };
+}
+
+/**
+ * Generic AI API caller that routes to the appropriate provider
+ * @param {string} provider - AI provider (anthropic, openai, grok, google, mistral, cohere)
+ * @param {string} apiKey - API key for the provider
+ * @param {string} systemPrompt - System prompt/instructions
+ * @param {string} userMessage - User's message
+ * @param {number} maxTokens - Maximum tokens to generate
+ * @returns {Promise<{text: string, tokensUsed: number, model: string}>}
+ */
+async function callAIProvider(provider, apiKey, systemPrompt, userMessage, maxTokens = 500) {
+  switch (provider.toLowerCase()) {
+    case 'anthropic':
+      return await callAnthropicAPI(apiKey, systemPrompt, userMessage, maxTokens);
+
+    case 'openai':
+      return await callOpenAIAPI(apiKey, systemPrompt, userMessage, maxTokens);
+
+    case 'grok':
+      return await callGrokAPI(apiKey, systemPrompt, userMessage, maxTokens);
+
+    case 'google':
+      return await callGoogleAIAPI(apiKey, systemPrompt, userMessage, maxTokens);
+
+    case 'mistral':
+      return await callMistralAPI(apiKey, systemPrompt, userMessage, maxTokens);
+
+    case 'cohere':
+      return await callCohereAPI(apiKey, systemPrompt, userMessage, maxTokens);
+
+    default:
+      throw new Error(`Unsupported AI provider: ${provider}`);
+  }
+}
+
+/**
  * Validate that a user query is a legitimate weather question
  * Quick, low-cost validation before expensive parsing
  *
  * @param {string} query - User's natural language question
  * @param {Object} weatherData - Current weather/forecast data for context
- * @returns {Promise<Object>} { isValid: boolean, reason: string }
+ * @param {number|null} userId - User ID (optional, for user API key support)
+ * @param {string} provider - AI provider to use (default: 'anthropic')
+ * @returns {Promise<Object>} { isValid: boolean, reason: string, tokensUsed: number }
  */
-async function validateWeatherQuery(query, weatherData) {
+async function validateWeatherQuery(query, weatherData, userId = null, provider = 'anthropic') {
   const systemPrompt = `You are a query validator for a weather application. Determine if the user's question is a legitimate weather-related query.
 
 Valid queries include:
@@ -165,22 +342,15 @@ Invalid queries include:
 Respond with ONLY a JSON object: { "isValid": true/false, "reason": "brief explanation" }`;
 
   try {
-    const message = await anthropic.messages.create({
-      model: MODEL,
-      max_tokens: 200,
-      system: systemPrompt,
-      messages: [
-        {
-          role: 'user',
-          content: `Query: "${query}"\n\nWeather context: ${weatherData.location.address}, Current: ${weatherData.current.conditions}, ${weatherData.current.temperature}°C`,
-        },
-      ],
-    });
+    // Get API key (user's key or system fallback)
+    const keyInfo = await getApiKeyForProvider(userId, provider);
 
-    const responseText = message.content[0].text.trim();
+    const userMessage = `Query: "${query}"\n\nWeather context: ${weatherData.location.address}, Current: ${weatherData.current.conditions}, ${weatherData.current.temperature}°C`;
+
+    const response = await callAIProvider(provider, keyInfo.apiKey, systemPrompt, userMessage, 200);
 
     // Strip markdown code blocks if present
-    let jsonText = responseText;
+    let jsonText = response.text;
     if (jsonText.startsWith('```json')) {
       jsonText = jsonText.replace(/^```json\n/, '').replace(/\n```$/, '');
     } else if (jsonText.startsWith('```')) {
@@ -189,10 +359,17 @@ Respond with ONLY a JSON object: { "isValid": true/false, "reason": "brief expla
 
     const result = JSON.parse(jsonText);
 
+    // Update usage if using user's key
+    if (keyInfo.isUserKey) {
+      await updateApiKeyUsage(keyInfo.keyId, response.tokensUsed);
+    }
+
     return {
       isValid: result.isValid === true,
       reason: result.reason || 'Unknown',
-      tokensUsed: message.usage.input_tokens + message.usage.output_tokens,
+      tokensUsed: response.tokensUsed,
+      provider: provider,
+      usingUserKey: keyInfo.isUserKey,
     };
   } catch (error) {
     console.error('Error validating weather query:', error);
@@ -205,9 +382,11 @@ Respond with ONLY a JSON object: { "isValid": true/false, "reason": "brief expla
  *
  * @param {string} query - User's natural language question
  * @param {Object} weatherData - Complete weather data (current, forecast, location)
- * @returns {Promise<Object>} { answer: string, confidence: string, tokensUsed: number, suggestedVisualizations: Array }
+ * @param {number|null} userId - User ID (optional, for user API key support)
+ * @param {string} provider - AI provider to use (default: 'anthropic')
+ * @returns {Promise<Object>} { answer: string, confidence: string, tokensUsed: number, model: string, suggestedVisualizations: Array, followUpQuestions: Array }
  */
-async function analyzeWeatherQuestion(query, weatherData) {
+async function analyzeWeatherQuestion(query, weatherData, userId = null, provider = 'anthropic') {
   // Detect visualization intent FIRST
   const suggestedVisualizations = detectVisualizationIntent(query, weatherData);
 
@@ -226,19 +405,10 @@ Weather Data Available:
 ${JSON.stringify(weatherData, null, 2)}`;
 
   try {
-    const message = await anthropic.messages.create({
-      model: MODEL,
-      max_tokens: 500,
-      system: systemPrompt,
-      messages: [
-        {
-          role: 'user',
-          content: query,
-        },
-      ],
-    });
+    // Get API key (user's key or system fallback)
+    const keyInfo = await getApiKeyForProvider(userId, provider);
 
-    const answer = message.content[0].text.trim();
+    const response = await callAIProvider(provider, keyInfo.apiKey, systemPrompt, query, 500);
 
     // Generate contextual follow-up questions
     const followUpQuestions = generateFollowUpQuestions(
@@ -247,13 +417,21 @@ ${JSON.stringify(weatherData, null, 2)}`;
       weatherData
     );
 
+    // Update usage if using user's key
+    if (keyInfo.isUserKey) {
+      await updateApiKeyUsage(keyInfo.keyId, response.tokensUsed);
+    }
+
     return {
-      answer,
-      confidence: 'high', // Could be enhanced with actual confidence scoring
-      tokensUsed: message.usage.input_tokens + message.usage.output_tokens,
-      model: MODEL,
-      suggestedVisualizations, // Return visualization suggestions
-      followUpQuestions, // NEW: Return follow-up questions
+      answer: response.text,
+      confidence: 'high',
+      tokensUsed: response.tokensUsed,
+      model: response.model,
+      suggestedVisualizations,
+      followUpQuestions,
+      provider: provider,
+      usingUserKey: keyInfo.isUserKey,
+      keyName: keyInfo.keyName,
     };
   } catch (error) {
     console.error('Error analyzing weather question:', error);
@@ -267,4 +445,5 @@ module.exports = {
   // Exported for testing
   detectVisualizationIntent,
   generateFollowUpQuestions,
+  callAIProvider,
 };
