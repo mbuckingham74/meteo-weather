@@ -6,6 +6,7 @@ import {
   logoutUser as apiLogoutUser,
   refreshAccessToken,
 } from '../services/authApi';
+import { debugError } from '../utils/debugLogger';
 
 /**
  * Authentication Context
@@ -64,7 +65,7 @@ export function AuthProvider({ children }) {
           }
         }
       } catch (error) {
-        console.error('Auth initialization error:', error);
+        debugError('Auth Context', 'Auth initialization error', error);
       } finally {
         setLoading(false);
       }
@@ -134,7 +135,7 @@ export function AuthProvider({ children }) {
         await apiLogoutUser(accessToken);
       }
     } catch (error) {
-      console.error('Logout error:', error);
+      debugError('Auth Context', 'Logout error', error);
     } finally {
       // Clear state and localStorage
       setUser(null);

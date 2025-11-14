@@ -5,6 +5,7 @@ import {
   clearVersionedData,
   getMigrationInfo,
 } from '../utils/localStorageVersion';
+import { debugError, debugWarn, debugInfo } from '../utils/debugLogger';
 
 /**
  * LocationContext
@@ -70,7 +71,7 @@ function sanitizeLocationData(locationObj) {
       };
     } else {
       // No coordinates available, this shouldn't happen but return null to trigger default
-      console.warn('Location has placeholder address and no coordinates');
+      debugWarn('Location Context', 'Location has placeholder address and no coordinates');
       return null;
     }
   }
