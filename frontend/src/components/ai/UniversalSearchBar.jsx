@@ -9,11 +9,8 @@ import WindChart from '../charts/WindChart';
 import HourlyForecastChart from '../charts/HourlyForecastChart';
 import ChartSkeleton from '../common/ChartSkeleton';
 import { addToAIHistory } from '../../utils/aiHistoryStorage';
-import API_CONFIG from '../../config/api';
+import useApi from '../../hooks/useApi';
 import './UniversalSearchBar.css';
-
-// Use centralized API configuration
-const API_BASE_URL = API_CONFIG.BASE_URL;
 
 /**
  * Universal Smart Search Bar
@@ -24,6 +21,7 @@ const API_BASE_URL = API_CONFIG.BASE_URL;
 function UniversalSearchBar() {
   const { location, selectLocation } = useLocation();
   const { unit } = useTemperatureUnit();
+  const api = useApi({ showErrorToast: false }); // Manual error handling for better UX
   const [query, setQuery] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -136,17 +134,11 @@ function UniversalSearchBar() {
       });
 
       // Step 1: Validate query
-      const validateRes = await fetch(`${API_BASE_URL}/ai-weather/validate`, {
+      const validateData = await api('/ai-weather/validate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: question, location }),
+        body: { query: question, location },
+        skipAuth: true,
       });
-
-      const validateData = await validateRes.json();
-
-      if (!validateRes.ok) {
-        throw new Error(validateData.error || 'Validation failed');
-      }
 
       if (!validateData.isValid) {
         setAiError(`Invalid query: ${validateData.reason}`);
@@ -155,21 +147,15 @@ function UniversalSearchBar() {
       }
 
       // Step 2: Get AI analysis
-      const analyzeRes = await fetch(`${API_BASE_URL}/ai-weather/analyze`, {
+      const analyzeData = await api('/ai-weather/analyze', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: {
           query: question,
           location,
           days: 7,
-        }),
+        },
+        skipAuth: true,
       });
-
-      const analyzeData = await analyzeRes.json();
-
-      if (!analyzeRes.ok) {
-        throw new Error(analyzeData.error || 'Analysis failed');
-      }
 
       // Set AI answer
       setAiAnswer({

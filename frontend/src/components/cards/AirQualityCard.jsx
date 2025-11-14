@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import API_CONFIG from '../../config/api';
+import useApi from '../../hooks/useApi';
 import ChartSkeleton from '../common/ChartSkeleton';
 import styles from './AirQualityCard.module.css';
 
@@ -8,6 +8,7 @@ import styles from './AirQualityCard.module.css';
  * Displays current air quality index and pollutant details
  */
 function AirQualityCard({ latitude, longitude }) {
+  const api = useApi({ showErrorToast: false }); // Manual error handling for better UX
   const [aqiData, setAqiData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -17,11 +18,7 @@ function AirQualityCard({ latitude, longitude }) {
       setLoading(true);
       setError(null);
 
-      const response = await fetch(
-        `${API_CONFIG.BASE_URL}/air-quality?lat=${latitude}&lon=${longitude}&days=1`
-      );
-
-      const result = await response.json();
+      const result = await api(`/air-quality?lat=${latitude}&lon=${longitude}&days=1`);
 
       if (result.success) {
         setAqiData(result.data);
@@ -34,7 +31,7 @@ function AirQualityCard({ latitude, longitude }) {
     } finally {
       setLoading(false);
     }
-  }, [latitude, longitude]);
+  }, [api, latitude, longitude]);
 
   useEffect(() => {
     if (latitude && longitude) {

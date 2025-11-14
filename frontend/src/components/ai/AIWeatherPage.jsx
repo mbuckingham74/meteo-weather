@@ -12,11 +12,8 @@ import AIAnswerSkeleton from './AIAnswerSkeleton';
 import ErrorMessage from '../common/ErrorMessage';
 import AIHistoryDropdown from './AIHistoryDropdown';
 import { addToAIHistory } from '../../utils/aiHistoryStorage';
-import API_CONFIG from '../../config/api';
+import useApi from '../../hooks/useApi';
 import './AIWeatherPage.css';
-
-// Use centralized API configuration
-const API_BASE_URL = API_CONFIG.BASE_URL;
 
 /**
  * AI Weather Page
@@ -26,6 +23,7 @@ function AIWeatherPage() {
   const { location } = useLocation();
   const { unit } = useTemperatureUnit();
   const routerLocation = useRouterLocation();
+  const api = useApi({ showErrorToast: false }); // Manual error handling for better UX
   const [question, setQuestion] = useState('');
   const [provider, setProvider] = useState(
     localStorage.getItem('preferredAIProvider') || 'anthropic'
@@ -99,20 +97,18 @@ function AIWeatherPage() {
       const validateController = new AbortController();
       const validateTimeout = setTimeout(() => validateController.abort(), 10000);
 
-      const validateResponse = await fetch(`${API_BASE_URL}/ai-weather/validate`, {
+      const validation = await api('/ai-weather/validate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: {
           query: question,
           location,
           provider,
-        }),
+        },
         signal: validateController.signal,
+        skipAuth: true,
       });
 
       clearTimeout(validateTimeout);
-
-      const validation = await validateResponse.json();
 
       if (!validation.isValid) {
         setError(`Invalid query: ${validation.reason}`);
@@ -124,22 +120,20 @@ function AIWeatherPage() {
       const analyzeController = new AbortController();
       const analyzeTimeout = setTimeout(() => analyzeController.abort(), 20000);
 
-      const analyzeResponse = await fetch(`${API_BASE_URL}/ai-weather/analyze`, {
+      const analysis = await api('/ai-weather/analyze', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: {
           query: question,
           location,
           days: 7,
           provider,
-        }),
+        },
         signal: analyzeController.signal,
+        skipAuth: true,
       });
 
       clearTimeout(analyzeTimeout);
       clearTimeout(timeoutId); // Clear the overall timeout
-
-      const analysis = await analyzeResponse.json();
 
       if (analysis.error) {
         setError(`Error: ${analysis.error}`);
@@ -236,13 +230,11 @@ function AIWeatherPage() {
         model: answer.model,
       };
 
-      const response = await fetch(`${API_BASE_URL}/share/create`, {
+      const result = await api('/share/create', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(shareData),
+        body: shareData,
+        skipAuth: true,
       });
-
-      const result = await response.json();
 
       if (result.success) {
         const fullUrl = `${window.location.origin}${result.shareUrl}`;

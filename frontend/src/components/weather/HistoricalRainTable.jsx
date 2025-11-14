@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import API_CONFIG from '../../config/api';
+import useApi from '../../hooks/useApi';
 import styles from './HistoricalRainTable.module.css';
-
-const API_BASE_URL = API_CONFIG.BASE_URL;
 
 /**
  * Historical Rain Table Component
@@ -13,6 +11,7 @@ const API_BASE_URL = API_CONFIG.BASE_URL;
  * @param {number} years - Number of years to display (default: 25)
  */
 function HistoricalRainTable({ location, date, years = 25 }) {
+  const api = useApi({ showErrorToast: false }); // Manual error handling for better UX
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -29,8 +28,7 @@ function HistoricalRainTable({ location, date, years = 25 }) {
           years: years.toString(),
         });
 
-        const response = await fetch(`${API_BASE_URL}/weather/historical-date?${params}`);
-        const result = await response.json();
+        const result = await api(`/weather/historical-date?${params}`, { skipAuth: true });
 
         if (result.success) {
           setData(result.data);

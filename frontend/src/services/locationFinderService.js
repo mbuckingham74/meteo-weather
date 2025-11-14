@@ -1,6 +1,4 @@
-import API_CONFIG from '../config/api';
-
-const API_BASE_URL = API_CONFIG.BASE_URL;
+import { apiRequest } from './apiClient';
 
 /**
  * Validate if a user query is legitimate for location/climate search
@@ -9,19 +7,11 @@ const API_BASE_URL = API_CONFIG.BASE_URL;
  */
 export async function validateQuery(userInput) {
   try {
-    const response = await fetch(`${API_BASE_URL}/ai-location-finder/validate-query`, {
+    const data = await apiRequest('/ai-location-finder/validate-query', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ userInput }),
+      body: { userInput },
+      skipAuth: true,
     });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error || `HTTP error! status: ${response.status}`);
-    }
 
     return data;
   } catch (error) {
@@ -38,22 +28,14 @@ export async function validateQuery(userInput) {
  */
 export async function parseLocationQuery(userInput, currentLocation = null) {
   try {
-    const response = await fetch(`${API_BASE_URL}/ai-location-finder/parse-query`, {
+    const data = await apiRequest('/ai-location-finder/parse-query', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
+      body: {
         userInput,
         currentLocation,
-      }),
+      },
+      skipAuth: true,
     });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error || `HTTP error! status: ${response.status}`);
-    }
 
     return data;
   } catch (error) {

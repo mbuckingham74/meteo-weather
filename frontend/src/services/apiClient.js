@@ -2,6 +2,12 @@
  * Centralized API Client
  * Single source of truth for all API requests to prevent URL inconsistencies
  * and provide unified error handling, auth, and request configuration.
+ *
+ * Features:
+ * - Request deduplication (prevents duplicate in-flight requests)
+ * - Automatic auth header handling
+ * - Unified error handling with ApiError class
+ * - AbortController support for cancellation
  */
 
 import API_CONFIG from '../config/api';
@@ -19,13 +25,32 @@ export class ApiError extends Error {
 }
 
 /**
- * Make an API request
+ * Request deduplication cache
+ * Maps request keys to in-flight promises
+ */
+const inflightRequests = new Map();
+
+/**
+ * Generate a unique cache key for request deduplication
+ * @param {string} url - Full URL
+ * @param {Object} fetchOptions - Fetch options
+ * @returns {string} Cache key
+ */
+function getRequestKey(url, fetchOptions) {
+  const method = fetchOptions.method || 'GET';
+  const body = fetchOptions.body || '';
+  return `${method}:${url}:${body}`;
+}
+
+/**
+ * Make an API request with automatic deduplication
  * @param {string} endpoint - API endpoint (should start with /, e.g., '/admin/stats')
  * @param {Object} options - Fetch options
  * @param {string} options.method - HTTP method (GET, POST, PUT, DELETE, PATCH)
  * @param {Object} options.body - Request body (will be JSON stringified)
  * @param {Object} options.headers - Additional headers
  * @param {boolean} options.skipAuth - Skip adding Authorization header (default: false)
+ * @param {boolean} options.skipDedup - Skip request deduplication (default: false)
  * @param {AbortSignal} options.signal - AbortController signal for cancellation
  * @returns {Promise<Object>} Response data
  * @throws {ApiError} If request fails
@@ -44,6 +69,10 @@ export class ApiError extends Error {
  * @example
  * // DELETE request
  * await apiRequest(`/api-keys/${keyId}`, { method: 'DELETE' });
+ *
+ * @example
+ * // Skip deduplication for time-sensitive requests
+ * const data = await apiRequest('/weather/current', { skipDedup: true });
  */
 export async function apiRequest(endpoint, options = {}) {
   // Ensure endpoint starts with /
@@ -78,6 +107,40 @@ export async function apiRequest(endpoint, options = {}) {
     fetchOptions.body = JSON.stringify(options.body);
   }
 
+  // Request deduplication (skip for mutations by default, or if explicitly requested)
+  const shouldDeduplicate =
+    !options.skipDedup && (fetchOptions.method === 'GET' || fetchOptions.method === 'HEAD');
+
+  if (shouldDeduplicate) {
+    const requestKey = getRequestKey(url, fetchOptions);
+
+    // Return existing promise if request is already in-flight
+    if (inflightRequests.has(requestKey)) {
+      return inflightRequests.get(requestKey);
+    }
+
+    // Create and cache the request promise
+    const requestPromise = executeRequest(url, fetchOptions).finally(() => {
+      // Remove from cache when complete (success or failure)
+      inflightRequests.delete(requestKey);
+    });
+
+    inflightRequests.set(requestKey, requestPromise);
+    return requestPromise;
+  }
+
+  // Execute request without deduplication
+  return executeRequest(url, fetchOptions);
+}
+
+/**
+ * Execute the actual fetch request (internal helper)
+ * @param {string} url - Full URL
+ * @param {Object} fetchOptions - Fetch options
+ * @returns {Promise<Object>} Response data
+ * @throws {ApiError} If request fails
+ */
+async function executeRequest(url, fetchOptions) {
   try {
     const response = await fetch(url, fetchOptions);
 

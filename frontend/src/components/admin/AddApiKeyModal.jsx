@@ -1,7 +1,6 @@
 import { useState } from 'react';
+import useApi from '../../hooks/useApi';
 import './AddApiKeyModal.css';
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
 const KEY_FORMAT_HINTS = {
   anthropic: 'Starts with "sk-ant-" (example: sk-ant-api03-xxx...)',
@@ -13,6 +12,7 @@ const KEY_FORMAT_HINTS = {
 };
 
 const AddApiKeyModal = ({ provider, providerInfo, token, onClose, onSuccess }) => {
+  const api = useApi({ showErrorToast: false }); // Manual error handling for better UX
   const [formData, setFormData] = useState({
     keyName: '',
     apiKey: '',
@@ -47,26 +47,16 @@ const AddApiKeyModal = ({ provider, providerInfo, token, onClose, onSuccess }) =
     try {
       setSubmitting(true);
 
-      const response = await fetch(`${API_BASE_URL}/api/api-keys`, {
+      await api('/api-keys', {
         method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+        body: {
           provider,
           keyName: formData.keyName.trim(),
           apiKey: formData.apiKey.trim(),
           isDefault: formData.isDefault,
           usageLimit: formData.usageLimit ? parseInt(formData.usageLimit) : null,
-        }),
+        },
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to add API key');
-      }
 
       onSuccess();
     } catch (err) {

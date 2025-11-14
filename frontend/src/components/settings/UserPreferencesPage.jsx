@@ -6,12 +6,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import API_CONFIG from '../../config/api';
+import useApi from '../../hooks/useApi';
 import './UserPreferencesPage.css';
 
 const UserPreferencesPage = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
+  const api = useApi({ showErrorToast: false }); // Manual error handling for better UX
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState(null);
@@ -49,22 +50,7 @@ const UserPreferencesPage = () => {
   const fetchPreferences = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
-
-      const response = await fetch(
-        `${API_CONFIG.BASE_URL.replace('/api', '')}/api/user-preferences`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch preferences');
-      }
-
-      const data = await response.json();
+      const data = await api('/user-preferences');
 
       // Convert time from HH:MM:SS to HH:MM for input
       if (data.report_time) {
@@ -87,29 +73,14 @@ const UserPreferencesPage = () => {
     setError(null);
 
     try {
-      const token = localStorage.getItem('token');
+      await api('/user-preferences', {
+        method: 'PUT',
+        body: {
+          ...preferences,
+          report_time: preferences.report_time + ':00', // Convert HH:MM to HH:MM:SS
+        },
+      });
 
-      const response = await fetch(
-        `${API_CONFIG.BASE_URL.replace('/api', '')}/api/user-preferences`,
-        {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            ...preferences,
-            report_time: preferences.report_time + ':00', // Convert HH:MM to HH:MM:SS
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to save preferences');
-      }
-
-      await response.json();
       setMessage('Preferences saved successfully!');
 
       // Update local context if needed

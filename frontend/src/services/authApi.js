@@ -1,15 +1,13 @@
-import API_CONFIG from '../config/api';
+import { apiRequest, ApiError } from './apiClient';
 import { handleAPIError, ERROR_CODES, AppError } from '../utils/errorHandler';
 import { debugInfo, debugError } from '../utils/debugLogger';
 
-const API_BASE_URL = API_CONFIG.BASE_URL;
-
 /**
  * Authentication API Service
- * Handles all auth-related API calls
+ * Handles all auth-related API calls using centralized apiClient
  *
  * All functions use:
- * - Centralized error handling via errorHandler utility
+ * - Centralized API client for consistency
  * - Timeout protection (5s for auth operations)
  * - User-friendly error messages with specific guidance
  * - Token expiration detection
@@ -19,26 +17,27 @@ const API_BASE_URL = API_CONFIG.BASE_URL;
 const AUTH_TIMEOUT = 5000;
 
 /**
- * Helper to make authenticated fetch requests with timeout
- * @param {string} url - API endpoint
- * @param {Object} options - Fetch options
+ * Helper to make API requests with auth-specific timeout and error handling
+ * @param {string} endpoint - API endpoint (e.g., '/auth/login')
+ * @param {Object} options - API request options
  * @param {string} context - Error context for debugging
- * @returns {Promise<Response>} Fetch response
+ * @returns {Promise<Object>} Response data
  */
-async function fetchWithTimeout(url, options = {}, context = 'API Request') {
+async function authRequest(endpoint, options = {}, context = 'API Request') {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), AUTH_TIMEOUT);
 
   try {
     debugInfo('Auth API', context);
 
-    const response = await fetch(url, {
+    const data = await apiRequest(endpoint, {
       ...options,
       signal: controller.signal,
     });
 
     clearTimeout(timeoutId);
-    return response;
+    debugInfo('Auth API', `${context} - Success`);
+    return data;
   } catch (error) {
     clearTimeout(timeoutId);
 
@@ -52,50 +51,38 @@ async function fetchWithTimeout(url, options = {}, context = 'API Request') {
       );
     }
 
-    throw error;
-  }
-}
+    // Handle ApiError from apiClient
+    if (error instanceof ApiError) {
+      // Map status codes to error codes
+      let errorCode = ERROR_CODES.API_ERROR;
+      let recoverable = true;
 
-/**
- * Process API response and throw appropriate errors
- * @param {Response} response - Fetch response
- * @param {string} context - Error context
- * @returns {Promise<Object>} Response data
- */
-async function handleResponse(response, context) {
-  const data = await response.json();
+      if (error.status === 401) {
+        errorCode = ERROR_CODES.TOKEN_EXPIRED;
+        recoverable = false; // User must log in again
+      } else if (error.status === 403) {
+        errorCode = ERROR_CODES.UNAUTHORIZED;
+        recoverable = false;
+      } else if (error.status === 404) {
+        errorCode = ERROR_CODES.DATA_NOT_FOUND;
+      } else if (error.status === 422) {
+        errorCode = ERROR_CODES.VALIDATION_ERROR;
+      } else if (error.status === 429) {
+        errorCode = ERROR_CODES.RATE_LIMITED;
+      } else if (error.status >= 500) {
+        errorCode = ERROR_CODES.SERVER_ERROR;
+      }
 
-  if (!response.ok) {
-    // Map status codes to error codes
-    let errorCode = ERROR_CODES.API_ERROR;
-    let recoverable = true;
+      debugError('Auth API', `${context} - ${error.status}: ${error.message}`);
 
-    if (response.status === 401) {
-      errorCode = ERROR_CODES.TOKEN_EXPIRED;
-      recoverable = false; // User must log in again
-    } else if (response.status === 403) {
-      errorCode = ERROR_CODES.UNAUTHORIZED;
-      recoverable = false;
-    } else if (response.status === 404) {
-      errorCode = ERROR_CODES.DATA_NOT_FOUND;
-    } else if (response.status === 422) {
-      errorCode = ERROR_CODES.VALIDATION_ERROR;
-    } else if (response.status === 429) {
-      errorCode = ERROR_CODES.RATE_LIMITED;
-    } else if (response.status >= 500) {
-      errorCode = ERROR_CODES.SERVER_ERROR;
+      throw new AppError(error.message, errorCode, recoverable, {
+        status: error.status,
+        context,
+      });
     }
 
-    debugError('Auth API', `${context} - ${response.status}: ${data.error || 'Unknown error'}`);
-
-    throw new AppError(data.error || `Failed: ${context}`, errorCode, recoverable, {
-      status: response.status,
-      context,
-    });
+    throw error;
   }
-
-  debugInfo('Auth API', `${context} - Success`);
-  return data;
 }
 
 /**
@@ -108,17 +95,15 @@ async function handleResponse(response, context) {
  */
 export async function registerUser(email, password, name) {
   try {
-    const response = await fetchWithTimeout(
-      `${API_BASE_URL}/auth/register`,
+    return await authRequest(
+      '/auth/register',
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, name }),
+        body: { email, password, name },
+        skipAuth: true,
       },
       'Registering new user'
     );
-
-    return await handleResponse(response, 'Registration');
   } catch (error) {
     if (error instanceof AppError) throw error;
     throw handleAPIError(error, 'Registering your account');
@@ -134,17 +119,15 @@ export async function registerUser(email, password, name) {
  */
 export async function loginUser(email, password) {
   try {
-    const response = await fetchWithTimeout(
-      `${API_BASE_URL}/auth/login`,
+    return await authRequest(
+      '/auth/login',
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: { email, password },
+        skipAuth: true,
       },
       `Logging in user: ${email}`
     );
-
-    return await handleResponse(response, 'Login');
   } catch (error) {
     if (error instanceof AppError) throw error;
     throw handleAPIError(error, 'Logging in');
@@ -159,15 +142,7 @@ export async function loginUser(email, password) {
  */
 export async function getCurrentUser(accessToken) {
   try {
-    const response = await fetchWithTimeout(
-      `${API_BASE_URL}/auth/me`,
-      {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      },
-      'Fetching user profile'
-    );
-
-    const data = await handleResponse(response, 'Get user profile');
+    const data = await authRequest('/auth/me', {}, 'Fetching user profile');
     return data.user;
   } catch (error) {
     if (error instanceof AppError) throw error;
@@ -184,20 +159,14 @@ export async function getCurrentUser(accessToken) {
  */
 export async function updateUserProfile(accessToken, updates) {
   try {
-    const response = await fetchWithTimeout(
-      `${API_BASE_URL}/auth/profile`,
+    const data = await authRequest(
+      '/auth/profile',
       {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify(updates),
+        body: updates,
       },
       'Updating user profile'
     );
-
-    const data = await handleResponse(response, 'Update profile');
     return data.user;
   } catch (error) {
     if (error instanceof AppError) throw error;
@@ -215,20 +184,14 @@ export async function updateUserProfile(accessToken, updates) {
  */
 export async function changePassword(accessToken, currentPassword, newPassword) {
   try {
-    const response = await fetchWithTimeout(
-      `${API_BASE_URL}/auth/change-password`,
+    return await authRequest(
+      '/auth/change-password',
       {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({ currentPassword, newPassword }),
+        body: { currentPassword, newPassword },
       },
       'Changing password'
     );
-
-    return await handleResponse(response, 'Change password');
   } catch (error) {
     if (error instanceof AppError) throw error;
     throw handleAPIError(error, 'Changing your password');
@@ -243,17 +206,15 @@ export async function changePassword(accessToken, currentPassword, newPassword) 
  */
 export async function refreshAccessToken(refreshToken) {
   try {
-    const response = await fetchWithTimeout(
-      `${API_BASE_URL}/auth/refresh`,
+    return await authRequest(
+      '/auth/refresh',
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ refreshToken }),
+        body: { refreshToken },
+        skipAuth: true,
       },
       'Refreshing access token'
     );
-
-    return await handleResponse(response, 'Refresh token');
   } catch (error) {
     if (error instanceof AppError) {
       // Special handling for expired refresh tokens
@@ -278,16 +239,7 @@ export async function refreshAccessToken(refreshToken) {
  */
 export async function logoutUser(accessToken) {
   try {
-    const response = await fetchWithTimeout(
-      `${API_BASE_URL}/auth/logout`,
-      {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${accessToken}` },
-      },
-      'Logging out user'
-    );
-
-    return await handleResponse(response, 'Logout');
+    return await authRequest('/auth/logout', { method: 'POST' }, 'Logging out user');
   } catch (error) {
     // Logout failures are not critical - user is trying to leave anyway
     debugError('Auth API', 'Logout failed but will continue', error);
@@ -304,15 +256,7 @@ export async function logoutUser(accessToken) {
  */
 export async function getUserPreferences(accessToken) {
   try {
-    const response = await fetchWithTimeout(
-      `${API_BASE_URL}/user/preferences`,
-      {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      },
-      'Fetching user preferences'
-    );
-
-    const data = await handleResponse(response, 'Get preferences');
+    const data = await authRequest('/user/preferences', {}, 'Fetching user preferences');
     return data.preferences;
   } catch (error) {
     if (error instanceof AppError) throw error;
@@ -329,20 +273,14 @@ export async function getUserPreferences(accessToken) {
  */
 export async function updateUserPreferences(accessToken, preferences) {
   try {
-    const response = await fetchWithTimeout(
-      `${API_BASE_URL}/user/preferences`,
+    const data = await authRequest(
+      '/user/preferences',
       {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify(preferences),
+        body: preferences,
       },
       'Updating user preferences'
     );
-
-    const data = await handleResponse(response, 'Update preferences');
     return data.preferences;
   } catch (error) {
     if (error instanceof AppError) throw error;
@@ -358,15 +296,7 @@ export async function updateUserPreferences(accessToken, preferences) {
  */
 export async function getCloudFavorites(accessToken) {
   try {
-    const response = await fetchWithTimeout(
-      `${API_BASE_URL}/user/favorites`,
-      {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      },
-      'Fetching cloud favorites'
-    );
-
-    const data = await handleResponse(response, 'Get favorites');
+    const data = await authRequest('/user/favorites', {}, 'Fetching cloud favorites');
     return data.favorites;
   } catch (error) {
     if (error instanceof AppError) throw error;
@@ -383,20 +313,14 @@ export async function getCloudFavorites(accessToken) {
  */
 export async function addCloudFavorite(accessToken, favorite) {
   try {
-    const response = await fetchWithTimeout(
-      `${API_BASE_URL}/user/favorites`,
+    const data = await authRequest(
+      '/user/favorites',
       {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify(favorite),
+        body: favorite,
       },
       `Adding favorite: ${favorite.location_name || favorite.address}`
     );
-
-    const data = await handleResponse(response, 'Add favorite');
     return data.favorite;
   } catch (error) {
     if (error instanceof AppError) throw error;
@@ -413,16 +337,13 @@ export async function addCloudFavorite(accessToken, favorite) {
  */
 export async function removeCloudFavorite(accessToken, favoriteId) {
   try {
-    const response = await fetchWithTimeout(
-      `${API_BASE_URL}/user/favorites/${favoriteId}`,
+    return await authRequest(
+      `/user/favorites/${favoriteId}`,
       {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${accessToken}` },
       },
       `Removing favorite ID: ${favoriteId}`
     );
-
-    return await handleResponse(response, 'Remove favorite');
   } catch (error) {
     if (error instanceof AppError) throw error;
     throw handleAPIError(error, 'Removing location from favorites');
@@ -440,20 +361,14 @@ export async function importFavorites(accessToken, favorites) {
   try {
     debugInfo('Auth API', `Importing ${favorites.length} favorites to cloud`);
 
-    const response = await fetchWithTimeout(
-      `${API_BASE_URL}/user/favorites/import`,
+    return await authRequest(
+      '/user/favorites/import',
       {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({ favorites }),
+        body: { favorites },
       },
       `Importing ${favorites.length} favorites`
     );
-
-    return await handleResponse(response, 'Import favorites');
   } catch (error) {
     if (error instanceof AppError) throw error;
     throw handleAPIError(error, 'Importing your favorites to the cloud');

@@ -7,11 +7,8 @@ import TemperatureBandChart from '../charts/TemperatureBandChart';
 import WindChart from '../charts/WindChart';
 import HourlyForecastChart from '../charts/HourlyForecastChart';
 import ChartSkeleton from '../common/ChartSkeleton';
-import API_CONFIG from '../../config/api';
+import useApi from '../../hooks/useApi';
 import './AIWeatherPage.css';
-
-// Use centralized API configuration
-const API_BASE_URL = API_CONFIG.BASE_URL;
 
 /**
  * Shared Answer Page
@@ -20,6 +17,7 @@ const API_BASE_URL = API_CONFIG.BASE_URL;
 function SharedAnswerPage() {
   const { shareId } = useParams();
   const { unit } = useTemperatureUnit();
+  const api = useApi({ showErrorToast: false }); // Manual error handling for better UX
   const [sharedAnswer, setSharedAnswer] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -35,22 +33,17 @@ function SharedAnswerPage() {
       }
 
       try {
-        const response = await fetch(`${API_BASE_URL}/share/${shareId}`);
-        const data = await response.json();
-
-        if (response.ok) {
-          setSharedAnswer(data);
-        } else {
-          setError(data.error || 'Failed to load shared answer');
-        }
+        const data = await api(`/share/${shareId}`, { skipAuth: true });
+        setSharedAnswer(data);
       } catch (err) {
-        setError(`Failed to load shared answer: ${err.message}`);
+        setError(err.message || 'Failed to load shared answer');
       } finally {
         setLoading(false);
       }
     }
 
     fetchSharedAnswer();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shareId]);
 
   // Auto-mark visualizations as loaded after a short delay
