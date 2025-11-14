@@ -1,4 +1,4 @@
-const db = require('../config/database');
+const { pool } = require('../config/database');
 
 /**
  * Admin Service
@@ -32,7 +32,7 @@ class AdminService {
    */
   async getDatabaseStats() {
     try {
-      const [dbSize] = await db.query(`
+      const [dbSize] = await pool.query(`
         SELECT
           SUM(data_length + index_length) / 1024 / 1024 AS size_mb,
           COUNT(*) AS table_count
@@ -40,7 +40,7 @@ class AdminService {
         WHERE table_schema = DATABASE()
       `);
 
-      const [tableSizes] = await db.query(`
+      const [tableSizes] = await pool.query(`
         SELECT
           table_name,
           ROUND((data_length + index_length) / 1024 / 1024, 2) AS size_mb,
@@ -71,25 +71,25 @@ class AdminService {
    */
   async getUserStats() {
     try {
-      const [totalUsers] = await db.query('SELECT COUNT(*) as count FROM users');
+      const [totalUsers] = await pool.query('SELECT COUNT(*) as count FROM users');
 
-      const [recentUsers] = await db.query(`
+      const [recentUsers] = await pool.query(`
         SELECT COUNT(*) as count
         FROM users
         WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
       `);
 
-      const [activeUsers] = await db.query(`
+      const [activeUsers] = await pool.query(`
         SELECT COUNT(*) as count
         FROM users
         WHERE last_login >= DATE_SUB(NOW(), INTERVAL 30 DAY)
       `);
 
-      const [usersWithFavorites] = await db.query(`
+      const [usersWithFavorites] = await pool.query(`
         SELECT COUNT(DISTINCT user_id) as count FROM user_favorites
       `);
 
-      const [avgFavorites] = await db.query(`
+      const [avgFavorites] = await pool.query(`
         SELECT AVG(favorite_count) as avg_favorites
         FROM (
           SELECT user_id, COUNT(*) as favorite_count
@@ -122,11 +122,11 @@ class AdminService {
    */
   async getWeatherStats() {
     try {
-      const [locationCount] = await db.query('SELECT COUNT(*) as count FROM locations');
+      const [locationCount] = await pool.query('SELECT COUNT(*) as count FROM locations');
 
-      const [weatherDataCount] = await db.query('SELECT COUNT(*) as count FROM weather_data');
+      const [weatherDataCount] = await pool.query('SELECT COUNT(*) as count FROM weather_data');
 
-      const [mostQueriedLocations] = await db.query(`
+      const [mostQueriedLocations] = await pool.query(`
         SELECT
           l.city_name,
           l.country,
@@ -139,14 +139,14 @@ class AdminService {
         LIMIT 10
       `);
 
-      const [recentLocations] = await db.query(`
+      const [recentLocations] = await pool.query(`
         SELECT city_name, country, created_at
         FROM locations
         ORDER BY created_at DESC
         LIMIT 5
       `);
 
-      const [dataSourceBreakdown] = await db.query(`
+      const [dataSourceBreakdown] = await pool.query(`
         SELECT
           data_source,
           COUNT(*) as count
@@ -178,7 +178,7 @@ class AdminService {
    */
   async getCacheStats() {
     try {
-      const [cacheStats] = await db.query(`
+      const [cacheStats] = await pool.query(`
         SELECT
           COUNT(*) as total_entries,
           SUM(CASE WHEN expires_at > NOW() THEN 1 ELSE 0 END) as valid_entries,
@@ -189,20 +189,20 @@ class AdminService {
         GROUP BY api_source
       `);
 
-      const [totalCache] = await db.query('SELECT COUNT(*) as count FROM api_cache');
+      const [totalCache] = await pool.query('SELECT COUNT(*) as count FROM api_cache');
 
-      const [validCache] = await db.query(`
+      const [validCache] = await pool.query(`
         SELECT COUNT(*) as count FROM api_cache WHERE expires_at > NOW()
       `);
 
-      const [cacheHitRate] = await db.query(`
+      const [cacheHitRate] = await pool.query(`
         SELECT
           SUM(CASE WHEN expires_at > NOW() THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as hit_rate
         FROM api_cache
         WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
       `);
 
-      const [oldestCache] = await db.query(`
+      const [oldestCache] = await pool.query(`
         SELECT cache_key, created_at, expires_at, api_source
         FROM api_cache
         WHERE expires_at > NOW()
@@ -236,21 +236,21 @@ class AdminService {
    */
   async getAIStats() {
     try {
-      const [totalShares] = await db.query('SELECT COUNT(*) as count FROM shared_ai_answers');
+      const [totalShares] = await pool.query('SELECT COUNT(*) as count FROM shared_ai_answers');
 
-      const [recentShares] = await db.query(`
+      const [recentShares] = await pool.query(`
         SELECT COUNT(*) as count
         FROM shared_ai_answers
         WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
       `);
 
-      const [totalViews] = await db.query('SELECT SUM(views) as total FROM shared_ai_answers');
+      const [totalViews] = await pool.query('SELECT SUM(views) as total FROM shared_ai_answers');
 
-      const [totalTokens] = await db.query('SELECT SUM(tokens_used) as total FROM shared_ai_answers');
+      const [totalTokens] = await pool.query('SELECT SUM(tokens_used) as total FROM shared_ai_answers');
 
-      const [avgTokens] = await db.query('SELECT AVG(tokens_used) as avg FROM shared_ai_answers');
+      const [avgTokens] = await pool.query('SELECT AVG(tokens_used) as avg FROM shared_ai_answers');
 
-      const [topSharedAnswers] = await db.query(`
+      const [topSharedAnswers] = await pool.query(`
         SELECT
           share_id,
           question,
@@ -264,7 +264,7 @@ class AdminService {
         LIMIT 10
       `);
 
-      const [confidenceBreakdown] = await db.query(`
+      const [confidenceBreakdown] = await pool.query(`
         SELECT
           confidence,
           COUNT(*) as count,
@@ -311,7 +311,7 @@ class AdminService {
    */
   async getAPIStats() {
     try {
-      const [cacheByDay] = await db.query(`
+      const [cacheByDay] = await pool.query(`
         SELECT
           DATE(created_at) as date,
           api_source,
@@ -323,7 +323,7 @@ class AdminService {
         LIMIT 30
       `);
 
-      const [totalRequests] = await db.query(`
+      const [totalRequests] = await pool.query(`
         SELECT
           api_source,
           COUNT(*) as total_requests
@@ -331,7 +331,7 @@ class AdminService {
         GROUP BY api_source
       `);
 
-      const [requestsLast24h] = await db.query(`
+      const [requestsLast24h] = await pool.query(`
         SELECT
           api_source,
           COUNT(*) as requests
@@ -362,7 +362,7 @@ class AdminService {
    */
   async clearExpiredCache() {
     try {
-      const [result] = await db.query('DELETE FROM api_cache WHERE expires_at <= NOW()');
+      const [result] = await pool.query('DELETE FROM api_cache WHERE expires_at <= NOW()');
       return {
         success: true,
         deletedCount: result.affectedRows
@@ -378,7 +378,7 @@ class AdminService {
    */
   async clearAllCache() {
     try {
-      const [result] = await db.query('DELETE FROM api_cache');
+      const [result] = await pool.query('DELETE FROM api_cache');
       return {
         success: true,
         deletedCount: result.affectedRows
@@ -394,7 +394,7 @@ class AdminService {
    */
   async clearCacheBySource(apiSource) {
     try {
-      const [result] = await db.query('DELETE FROM api_cache WHERE api_source = ?', [apiSource]);
+      const [result] = await pool.query('DELETE FROM api_cache WHERE api_source = ?', [apiSource]);
       return {
         success: true,
         deletedCount: result.affectedRows
@@ -410,14 +410,14 @@ class AdminService {
    */
   async getSystemHealth() {
     try {
-      const [dbStatus] = await db.query('SELECT 1 as healthy');
+      const [dbStatus] = await pool.query('SELECT 1 as healthy');
 
       // Check for common issues
-      const [expiredCacheCount] = await db.query(
+      const [expiredCacheCount] = await pool.query(
         'SELECT COUNT(*) as count FROM api_cache WHERE expires_at <= NOW()'
       );
 
-      const [oldExpiredShares] = await db.query(
+      const [oldExpiredShares] = await pool.query(
         'SELECT COUNT(*) as count FROM shared_ai_answers WHERE expires_at <= NOW()'
       );
 
