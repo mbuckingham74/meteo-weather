@@ -124,6 +124,7 @@ Welcome to the Meteo Weather App documentation! This guide will help you find ex
 
 **Key Files:**
 - [AGENTS.md](development/AGENTS.md) - Repository guidelines
+- [API_ARCHITECTURE_IMPROVEMENTS.md](development/API_ARCHITECTURE_IMPROVEMENTS.md) - **API client refactoring (P0-P3A, 1000+ lines)**
 - [BRANCHING_STRATEGY.md](development/BRANCHING_STRATEGY.md) - **GitHub Flow branching workflow**
 - [VITE_MIGRATION_GUIDE.md](development/VITE_MIGRATION_GUIDE.md) - CRA → Vite migration
 - [PERFORMANCE_OPTIMIZATION.md](development/PERFORMANCE_OPTIMIZATION.md) - Bundle optimization guide
