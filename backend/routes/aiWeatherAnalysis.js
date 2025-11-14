@@ -14,7 +14,8 @@ const { getCurrentWeather, getForecast } = require('../services/weatherService')
  */
 router.post('/validate', async (req, res) => {
   try {
-    const { query, location } = req.body;
+    const { query, location, provider = 'anthropic' } = req.body;
+    const userId = req.user?.userId || null; // Get userId from JWT if authenticated
 
     if (!query || !location) {
       return res.status(400).json({ error: 'Query and location are required' });
@@ -23,12 +24,14 @@ router.post('/validate', async (req, res) => {
     // Fetch minimal weather data for validation context
     const weatherData = await getCurrentWeather(location);
 
-    const validation = await validateWeatherQuery(query, weatherData);
+    const validation = await validateWeatherQuery(query, weatherData, userId, provider);
 
     res.json({
       isValid: validation.isValid,
       reason: validation.reason,
-      tokensUsed: validation.tokensUsed
+      tokensUsed: validation.tokensUsed,
+      provider: validation.provider,
+      usingUserKey: validation.usingUserKey
     });
   } catch (error) {
     console.error('Error validating query:', error);
@@ -42,7 +45,8 @@ router.post('/validate', async (req, res) => {
  */
 router.post('/analyze', async (req, res) => {
   try {
-    const { query, location, days = 7 } = req.body;
+    const { query, location, days = 7, provider = 'anthropic' } = req.body;
+    const userId = req.user?.userId || null; // Get userId from JWT if authenticated
 
     if (!query || !location) {
       return res.status(400).json({ error: 'Query and location are required' });
@@ -61,7 +65,7 @@ router.post('/analyze', async (req, res) => {
       queriedAt: new Date().toISOString()
     };
 
-    const analysis = await analyzeWeatherQuestion(query, weatherData);
+    const analysis = await analyzeWeatherQuestion(query, weatherData, userId, provider);
 
     res.json({
       query,
@@ -84,6 +88,9 @@ router.post('/analyze', async (req, res) => {
       followUpQuestions: analysis.followUpQuestions || [], // NEW: Include follow-up questions
       tokensUsed: analysis.tokensUsed,
       model: analysis.model,
+      provider: analysis.provider,
+      usingUserKey: analysis.usingUserKey,
+      keyName: analysis.keyName,
       timestamp: new Date().toISOString()
     });
   } catch (error) {

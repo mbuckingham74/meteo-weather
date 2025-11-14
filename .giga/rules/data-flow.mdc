@@ -1,65 +1,47 @@
 ---
-description: Use when analyzing data flow patterns, state management, and data transformation logic in weather application components
+description: Defines data flow patterns for weather information processing, caching, and state management across components
 ---
 
 
 # data-flow
 
-## Core Data Flow Architecture
+## Core Data Flow Patterns
 
-### Weather Data Aggregation Pipeline
-Path: backend/services/weatherService.js
-- Weather data flows through multi-stage aggregation:
-  1. Raw API data ingestion from multiple providers
-  2. Data normalization and standardization layer
-  3. Historical data merging with current conditions
-  4. Cache integration layer for optimized delivery
-- Intelligent fallback system between data sources
-- Custom caching strategies based on data type age
+### Weather Data Aggregation Flow
+- Multi-source weather data integration via LocationComparisonView
+- Historical data normalized through Climate Data Aggregation system
+- Hybrid local/cloud sync for user favorites with conflict resolution
+- Multi-timeframe data comparison (7 days to 5 years)
+- Weather pattern matching across different locations
 
-### Location-Based Data Flow
-Path: frontend/src/components/location/LocationComparisonView/locationData.js
-- Bi-directional location data synchronization:
-  1. User location → Climate preferences
-  2. Climate preferences → Location suggestions
-  3. Location suggestions → Weather comparisons
-- Stateful location context management
-- Smart caching of location-specific weather data
+### Caching Strategy 
+- Weather data uses stale-while-revalidate with 15-minute TTL
+- Location data cached with accuracy tier classification
+- Historical patterns cached with seasonal considerations
+- Smart deduplication for favorite locations
+- Background sync specific to weather updates
 
-### Climate Data Processing Pipeline
-Path: backend/services/climateService.js
-- Multi-stage climate data transformation:
-  1. Raw historical data ingestion
-  2. Statistical aggregation by time period
-  3. Climate normal calculations
-  4. Pattern detection and analysis
-- Cached climate statistics with invalidation rules
+### State Management Architecture
+- Location state synchronized with URL parameters
+- Climate preferences persisted across sessions
+- Multi-point comparison state (up to 4 locations)
+- Weather alert severity classification state
+- Historical trend analysis state
 
-### AI Query Processing Flow
-Path: frontend/src/components/ai/AIWeatherPage.jsx
-- Natural language query processing pipeline:
-  1. Query intent classification
-  2. Weather criteria extraction
-  3. Data source selection
-  4. Response generation and caching
-- Contextual data retention for follow-up queries
+### Data Transformation Pipeline
+- Temperature delta matching calculations
+- Humidity pattern alignment processing
+- Precipitation preference analysis
+- Seasonal pattern normalization
+- Climate similarity scoring computations
 
-### Weather State Management
-Path: frontend/src/hooks/useClimateData.js
-- Centralized weather state management:
-  1. Current conditions
-  2. Historical comparisons
-  3. User preferences
-  4. Location favorites
-- Intelligent cache invalidation based on data freshness
-- State synchronization across components
+Key Files:
+- frontend/src/components/location/LocationComparisonView/locationData.js
+- frontend/src/components/location/LocationConfirmationModal.jsx
+- frontend/src/components/location/LocationComparisonView/LocationComparisonView.jsx
+- frontend/src/components/location/FavoritesPanel.jsx
 
 Importance Score: 90/100
-- Critical data transformation pipelines
-- Complex state management patterns
-- Multi-source data aggregation
-- Domain-specific caching strategies
-- Intelligent data flow orchestration
 
 $END$
 

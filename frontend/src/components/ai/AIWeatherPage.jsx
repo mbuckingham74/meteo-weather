@@ -27,6 +27,9 @@ function AIWeatherPage() {
   const { unit } = useTemperatureUnit();
   const routerLocation = useRouterLocation();
   const [question, setQuestion] = useState('');
+  const [provider, setProvider] = useState(
+    localStorage.getItem('preferredAIProvider') || 'anthropic'
+  );
   const [answer, setAnswer] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -34,6 +37,11 @@ function AIWeatherPage() {
   const [visualizationsLoaded, setVisualizationsLoaded] = useState({});
   const [shareLoading, setShareLoading] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
+
+  // Save provider preference to localStorage
+  React.useEffect(() => {
+    localStorage.setItem('preferredAIProvider', provider);
+  }, [provider]);
 
   // Auto-mark visualizations as loaded after a short delay (simulates loading)
   React.useEffect(() => {
@@ -97,6 +105,7 @@ function AIWeatherPage() {
         body: JSON.stringify({
           query: question,
           location,
+          provider,
         }),
         signal: validateController.signal,
       });
@@ -122,6 +131,7 @@ function AIWeatherPage() {
           query: question,
           location,
           days: 7,
+          provider,
         }),
         signal: analyzeController.signal,
       });
@@ -418,6 +428,27 @@ function AIWeatherPage() {
       </div>
 
       <div className="ai-question-section">
+        <div className="provider-selector-wrapper">
+          <label htmlFor="ai-provider-select" className="provider-label">
+            AI Provider:
+          </label>
+          <select
+            id="ai-provider-select"
+            value={provider}
+            onChange={(e) => setProvider(e.target.value)}
+            className="provider-select"
+            disabled={loading}
+          >
+            <option value="anthropic">🤖 Anthropic (Claude)</option>
+            <option value="openai">🧠 OpenAI (GPT-4)</option>
+            <option value="grok">⚡ Grok (xAI)</option>
+            <option value="google">🔮 Google AI (Gemini)</option>
+            <option value="mistral">🌊 Mistral AI</option>
+            <option value="cohere">🧬 Cohere</option>
+            <option value="ollama">🦙 Ollama (Self-Hosted)</option>
+          </select>
+        </div>
+
         <div className="question-input-wrapper">
           <input
             type="text"

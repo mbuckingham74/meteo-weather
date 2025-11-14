@@ -51,7 +51,7 @@
 .ai-weather-hero {
   background: var(--ai-hero-bg-gradient);
   border-radius: var(--radius-lg);
-  padding: var(--spacing-md) var(--spacing-lg);
+  padding: var(--spacing-sm) var(--spacing-md); /* COMPACT: 8px 12px (was 12px 16px) */
   margin: 0;
   box-shadow: var(--ai-hero-shadow);
   position: relative;
@@ -120,22 +120,22 @@
 }
 
 .ai-hero-title {
-  font-size: var(--font-xl);
+  font-size: var(--font-lg); /* COMPACT: 18px (was 20px) */
   font-weight: 900;
   color: var(--ai-hero-title-color);
-  margin: 0 0 var(--spacing-xs) 0;
+  margin: 0 0 var(--spacing-2xs) 0; /* COMPACT: 2px (was 4px) */
   line-height: 1.2;
 }
 
 .ai-hero-subtitle {
-  font-size: var(--font-md);
+  font-size: var(--font-sm); /* COMPACT: 13px (was 14px) */
   color: var(--ai-hero-subtitle-color);
-  margin: 0 0 var(--spacing-md) 0;
+  margin: 0 0 var(--spacing-sm) 0; /* COMPACT: 8px (was 12px) */
   line-height: 1.4;
 }
 
 .ai-hero-input-section {
-  margin-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-sm); /* COMPACT: 8px (was 12px) */
 }
 
 .ai-hero-input-wrapper {
@@ -146,8 +146,8 @@
 
 .ai-hero-input {
   flex: 1;
-  padding: var(--spacing-sm) var(--spacing-md);
-  font-size: var(--font-base);
+  padding: var(--spacing-xs) var(--spacing-sm); /* COMPACT: 4px 8px (was 8px 12px) */
+  font-size: var(--font-sm); /* COMPACT: 13px (was 16px) */
   font-family: inherit;
   color: var(--ai-hero-input-text);
   background: var(--ai-hero-input-bg);
@@ -173,8 +173,8 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
-  padding: var(--spacing-sm) var(--spacing-lg);
-  font-size: var(--font-base);
+  padding: var(--spacing-xs) var(--spacing-md); /* COMPACT: 4px 12px (was 8px 16px) */
+  font-size: var(--font-sm); /* COMPACT: 13px (was 16px) */
   font-weight: 700;
   color: var(--ai-hero-button-text);
   background: var(--ai-hero-button-bg);
@@ -222,14 +222,14 @@
 }
 
 .ai-hero-examples {
-  margin-bottom: var(--spacing-sm);
+  margin-bottom: var(--spacing-xs); /* COMPACT: 4px (was 8px) */
 }
 
 .ai-examples-label {
   font-size: var(--font-xs);
   font-weight: 600;
   color: var(--ai-hero-subtitle-color);
-  margin: 0 0 var(--spacing-xs) 0;
+  margin: 0 0 var(--spacing-2xs) 0; /* COMPACT: 2px (was 4px) */
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -237,12 +237,12 @@
 .ai-examples-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacing-xs);
+  gap: var(--spacing-2xs); /* COMPACT: 2px (was 4px) */
 }
 
 .ai-example-chip {
-  padding: var(--spacing-xs) var(--spacing-sm);
-  font-size: var(--font-sm);
+  padding: var(--spacing-2xs) var(--spacing-xs); /* COMPACT: 2px 4px (was 4px 8px) */
+  font-size: var(--font-xs); /* COMPACT: 12px (was 13px) */
   font-weight: 500;
   color: var(--ai-hero-badge-text);
   background: var(--ai-hero-chip-bg);

@@ -7,37 +7,37 @@
   text-align: center;
 }
 
-/* Hero Message */
+/* Hero Message - COMPACT for 2-scroll design */
 .universal-hero {
-  margin-bottom: 32px;
+  margin-bottom: 12px; /* COMPACT: 32px → 12px (-63%) */
   text-align: center;
 }
 
 .universal-hero-title {
-  font-size: var(--font-3xl);
+  font-size: var(--font-xl); /* COMPACT: 20px (was 32px, -38%) */
   font-weight: 700;
   color: var(--text-primary);
-  margin: 0 0 12px 0;
+  margin: 0 0 4px 0; /* COMPACT: 12px → 4px (-67%) */
   letter-spacing: -0.5px;
 }
 
 .universal-hero-subtitle {
-  font-size: var(--font-lg);
+  font-size: var(--font-sm); /* COMPACT: 13px (was 18px, -28%) */
   font-weight: 400;
   color: var(--text-secondary);
   margin: 0;
   line-height: 1.5;
 }
 
-/* Main Input Wrapper - Larger, More Prominent */
+/* Main Input Wrapper - COMPACT for 2-scroll design */
 .universal-input-wrapper {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px; /* COMPACT: 16px → 12px */
   background: var(--bg-elevated);
   border: 2px solid var(--border-color);
   border-radius: var(--radius-xl);
-  padding: 18px 24px;
+  padding: 10px 16px; /* COMPACT: 18px 24px → 10px 16px (-44%, -33%) */
   transition:
     border-color 0.3s ease,
     box-shadow 0.3s ease,
@@ -64,9 +64,9 @@
   background: transparent;
   border: none;
   color: var(--text-primary);
-  font-size: 18px;
+  font-size: 14px; /* COMPACT: 18px → 14px (-22%) */
   outline: none;
-  padding: 6px 0;
+  padding: 4px 0; /* COMPACT: 6px → 4px */
   font-weight: 400;
 }
 
@@ -110,15 +110,15 @@
   transform: none;
 }
 
-/* Example Query Bar - Separate Row Below Input */
+/* Example Query Bar - COMPACT for 2-scroll design */
 .universal-examples {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 6px; /* COMPACT: 10px → 6px */
   flex-wrap: wrap;
-  margin-top: 16px;
-  padding: 14px 20px;
+  margin-top: 8px; /* COMPACT: 16px → 8px (-50%) */
+  padding: 6px 10px; /* COMPACT: 14px 20px → 6px 10px (-57%, -50%) */
   background: var(--bg-secondary);
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-color);
@@ -127,20 +127,20 @@
 .universal-examples-label {
   display: block;
   color: var(--text-primary);
-  font-size: 15px;
+  font-size: 11px; /* COMPACT: 15px → 11px (-27%) */
   font-weight: 600;
-  margin-bottom: 16px;
+  margin-bottom: 6px; /* COMPACT: 16px → 6px (-63%) */
   text-transform: none;
   letter-spacing: 0.3px;
 }
 
 .universal-example-chip {
-  padding: var(--spacing-sm) 16px;
+  padding: 4px 10px; /* COMPACT: 8px 16px → 4px 10px (-50%, -38%) */
   background: var(--bg-elevated);
   border: 1.5px solid var(--border-color);
   border-radius: 20px;
   color: var(--text-primary);
-  font-size: var(--font-base);
+  font-size: 12px; /* COMPACT: 16px → 12px (-25%) */
   font-weight: 500;
   cursor: pointer;
   transition:
@@ -240,22 +240,22 @@
   font-weight: 600;
 }
 
-/* Responsive Design */
+/* Responsive Design - COMPACT for 2-scroll design */
 @media (max-width: 768px) {
   .universal-search-bar {
     max-width: 100%;
   }
 
   .universal-hero-title {
-    font-size: 28px;
+    font-size: 18px; /* COMPACT: 28px → 18px */
   }
 
   .universal-hero-subtitle {
-    font-size: 15px;
+    font-size: 12px; /* COMPACT: 15px → 12px */
   }
 
   .universal-input-wrapper {
-    padding: 14px 18px;
+    padding: 8px 12px; /* COMPACT: 14px 18px → 8px 12px */
     border-radius: var(--radius-lg);
   }
 
@@ -264,7 +264,7 @@
   }
 
   .universal-search-input {
-    font-size: var(--font-lg);
+    font-size: var(--font-sm); /* COMPACT: 13px (was 18px) */
   }
 
   .universal-submit-button {
@@ -295,19 +295,19 @@
 
 @media (max-width: 480px) {
   .universal-hero-title {
-    font-size: var(--font-2xl);
+    font-size: var(--font-lg); /* COMPACT: 18px (was 24px) */
   }
 
   .universal-hero-subtitle {
-    font-size: var(--font-base);
+    font-size: var(--font-sm); /* COMPACT: 13px (was 16px) */
   }
 
   .universal-input-wrapper {
-    padding: var(--spacing-md) 16px;
+    padding: 8px 12px; /* COMPACT (was 12px 16px) */
   }
 
   .universal-search-input {
-    font-size: 15px;
+    font-size: 13px; /* COMPACT: (was 15px) */
   }
 
   .universal-submit-button {

@@ -14,7 +14,7 @@
 > - Accessibility enhancements
 > - Mobile-first design patterns
 >
-> **Interested?** Open an issue or submit a PR! Check out the [redesign branch](https://github.com/mbuckingham74/meteo-weather/tree/feature/glassmorphism-ui-redesign) to see what we're working on.
+> **Interested?** Open an issue or submit a PR! Check out our [design system docs](docs/ui-ux/REDESIGN_SESSION_11-13-25.md) to see what we're working on.
 >
 > **Current Status:** ✅ Core functionality stable | 🎨 UI actively changing | 📊 API endpoints stable
 
@@ -22,7 +22,7 @@
 
 A comprehensive weather dashboard inspired by Weather Spark, providing detailed weather forecasts, historical climate data analysis, air quality monitoring, and AI-powered location comparison tools.
 
-**🌐 Live Demo:** [https://meteo-beta.tachyonfuture.com](https://meteo-beta.tachyonfuture.com)
+**🌐 Live Demo:** [https://meteo-beta.tachyonfuture.com](https://meteo-beta.tachyonfuture.com) *(UI redesign in progress)*
 
 **Built by:** [Michael Buckingham](https://github.com/mbuckingham74) &nbsp;&nbsp;|&nbsp;&nbsp; **Repository:** [meteo-weather](https://github.com/mbuckingham74/meteo-weather) &nbsp;&nbsp;|&nbsp;&nbsp; **Roadmap:** [View Features](ROADMAP.md) &nbsp;&nbsp;|&nbsp;&nbsp; **Changelog:** [View Updates](CHANGELOG.md)
 
@@ -103,6 +103,7 @@ A comprehensive weather dashboard inspired by Weather Spark, providing detailed 
 - **⌨️ Complete Keyboard Navigation** - Full keyboard support with modal focus traps, logical tab order, and escape handlers
 - **📴 PWA Support** - Install as app, offline mode, and smart caching
 - **🔧 Admin Panel** - Comprehensive dashboard for site owners with 6 tabs: system stats, user analytics, weather data insights, AI usage & cost tracking, cache management, and database monitoring
+- **🔑 User-Managed API Keys** - Bring your own API keys for 7 AI providers (Anthropic, OpenAI, Grok, Google, Mistral, Cohere, Ollama) with secure AES-256-GCM encryption, usage tracking, and automatic fallback to system defaults. Includes self-hosted Ollama support for free, privacy-focused AI!
 
 ---
 

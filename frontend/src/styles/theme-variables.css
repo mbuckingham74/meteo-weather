@@ -90,7 +90,44 @@
   --success-surface-strong: color-mix(in srgb, var(--success-text) 80%, transparent);
   --success-border-strong: color-mix(in srgb, var(--success-text) 35%, transparent);
 
-  /* Overlay / Glassmorphism Tokens */
+  /* ============================================
+     GLASSMORPHISM SYSTEM - "Meteo Clarity"
+     ============================================ */
+
+  /* Glass Surfaces (Light Theme) */
+  --glass-light: rgba(255, 255, 255, 0.65);
+  --glass-light-strong: rgba(255, 255, 255, 0.85);
+  --glass-light-subtle: rgba(255, 255, 255, 0.45);
+
+  /* Glass Borders */
+  --glass-border-light: rgba(255, 255, 255, 0.25);
+  --glass-border-strong: rgba(255, 255, 255, 0.4);
+
+  /* Background Gradients (visible through glass) */
+  --gradient-atmosphere: linear-gradient(
+    135deg,
+    #4c7ce5 0%,
+    #7b94d6 25%,
+    #a9b7d3 50%,
+    #8bb7ff 75%,
+    #aecbff 100%
+  );
+  --gradient-weather-warm: linear-gradient(135deg, #ff7a59 0%, #f0a202 50%, #f48c06 100%);
+  --gradient-weather-cool: linear-gradient(135deg, #4c8ef5 0%, #33b6de 50%, #2de1c2 100%);
+  --gradient-weather-neutral: linear-gradient(135deg, #7b94d6 0%, #a9b7d3 50%, #c0cae2 100%);
+
+  /* Glow Effects */
+  --glow-primary: 0 8px 32px rgba(76, 124, 229, 0.35);
+  --glow-warm: 0 8px 32px rgba(240, 162, 2, 0.35);
+  --glow-cool: 0 8px 32px rgba(76, 142, 245, 0.35);
+  --glow-subtle: 0 4px 16px rgba(76, 124, 229, 0.2);
+
+  /* Backdrop Blur Values */
+  --blur-light: blur(16px);
+  --blur-medium: blur(24px);
+  --blur-heavy: blur(32px);
+
+  /* Legacy Overlay Tokens (keeping for backwards compatibility) */
   --overlay-strong: color-mix(in srgb, var(--text-primary) 60%, transparent);
   --overlay-medium: color-mix(in srgb, var(--text-primary) 35%, transparent);
   --overlay-soft: color-mix(in srgb, var(--text-primary) 18%, transparent);
@@ -136,14 +173,17 @@
      DENSITY SYSTEM - Default (Normal)
      ============================================ */
 
-  /* Spacing Scale (8pt grid) */
+  /* Spacing Scale (8pt grid) - COMPACT for 2-scroll design */
+  --spacing-2xs: 2px;
   --spacing-xs: 4px;
   --spacing-sm: 8px;
-  --spacing-md: 12px;
-  --spacing-lg: 20px;
-  --spacing-xl: 24px;
+  --spacing-md: 12px; /* REVERTED - Keep compact */
+  --spacing-lg: 16px; /* REVERTED - Keep compact */
+  --spacing-xl: 20px; /* REVERTED - Keep compact */
+  --spacing-2xl: 24px;
+  --spacing-3xl: 32px;
 
-  /* Font Sizes - Minimum 12px for accessibility */
+  /* Font Sizes - Minimum 12px for accessibility - COMPACT */
   --font-xs: 12px;
   --font-sm: 13px;
   --font-md: 14px;
@@ -152,17 +192,32 @@
   --font-xl: 20px;
   --font-2xl: 24px;
   --font-3xl: 32px;
-  --font-4xl: 48px;
+  --font-4xl: 48px; /* Keep original temperature size */
+  --font-display: 48px; /* REDUCED - Match 4xl for compact design */
+  --font-hero: 24px; /* REDUCED - More compact location name */
 
-  /* Border Radius */
+  /* Font Weights */
+  --fw-light: 300;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  --fw-black: 900;
+
+  /* Border Radius - Enhanced for glassmorphism */
   --radius-sm: 6px;
   --radius-md: 8px;
   --radius-lg: 12px;
   --radius-xl: 16px;
+  --radius-2xl: 24px; /* For hero glass cards */
+  --radius-3xl: 32px; /* For extra-large glass surfaces */
 
-  /* Component-Specific Spacing */
-  --dashboard-padding: 12px;
-  --card-padding: 12px;
+  /* Component-Specific Spacing - COMPACT for 2-scroll design */
+  --dashboard-padding: 12px; /* REVERTED */
+  --card-padding-sm: 12px; /* REVERTED */
+  --card-padding-md: 16px; /* REVERTED */
+  --card-padding-lg: 20px; /* REVERTED */
+  --card-gap: 16px; /* REDUCED - Tighter card spacing */
   --button-padding-y: 10px;
   --button-padding-x: 16px;
   --input-padding-y: 12px;
@@ -170,9 +225,9 @@
   --icon-size-sm: 18px;
   --icon-size-md: 20px;
   --icon-size-lg: 24px;
-  --gap-sm: 6px;
-  --gap-md: 8px;
-  --gap-lg: 12px;
+  --gap-sm: 8px;
+  --gap-md: 12px;
+  --gap-lg: 16px;
 }
 
 /* Dark Theme */
@@ -213,7 +268,44 @@
   --info-border: #1f3b7a;
   --info-text: #8bb7ff;
 
-  /* Overlay / Glassmorphism Tokens */
+  /* ============================================
+     GLASSMORPHISM SYSTEM - "Meteo Clarity" (Dark)
+     ============================================ */
+
+  /* Glass Surfaces (Dark Theme) */
+  --glass-light: rgba(30, 41, 59, 0.65);
+  --glass-light-strong: rgba(30, 41, 59, 0.85);
+  --glass-light-subtle: rgba(30, 41, 59, 0.45);
+
+  /* Glass Borders */
+  --glass-border-light: rgba(255, 255, 255, 0.15);
+  --glass-border-strong: rgba(255, 255, 255, 0.25);
+
+  /* Background Gradients (dark mode) */
+  --gradient-atmosphere: linear-gradient(
+    135deg,
+    #1e293b 0%,
+    #273554 25%,
+    #324269 50%,
+    #3b5998 75%,
+    #4c7ce5 100%
+  );
+  --gradient-weather-warm: linear-gradient(135deg, #ff8c6d 0%, #ffc857 50%, #f4b75d 100%);
+  --gradient-weather-cool: linear-gradient(135deg, #5b8fff 0%, #33b6de 50%, #2de1c2 100%);
+  --gradient-weather-neutral: linear-gradient(135deg, #324269 0%, #4b5a82 50%, #5c6789 100%);
+
+  /* Glow Effects (dark mode - more prominent) */
+  --glow-primary: 0 8px 32px rgba(130, 167, 255, 0.4);
+  --glow-warm: 0 8px 32px rgba(255, 200, 87, 0.4);
+  --glow-cool: 0 8px 32px rgba(139, 183, 255, 0.4);
+  --glow-subtle: 0 4px 16px rgba(130, 167, 255, 0.25);
+
+  /* Backdrop Blur Values */
+  --blur-light: blur(16px);
+  --blur-medium: blur(24px);
+  --blur-heavy: blur(32px);
+
+  /* Legacy Overlay Tokens (keeping for backwards compatibility) */
   --overlay-strong: color-mix(in srgb, var(--text-primary) 60%, transparent);
   --overlay-medium: color-mix(in srgb, var(--text-primary) 35%, transparent);
   --overlay-soft: color-mix(in srgb, var(--text-primary) 18%, transparent);

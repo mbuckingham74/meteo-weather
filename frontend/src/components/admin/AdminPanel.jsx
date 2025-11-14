@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../common/ToastContainer';
 import AdminPanelSkeleton from './AdminPanelSkeleton';
+import ApiKeysTab from './ApiKeysTab';
 import {
   exportOverviewStats,
   exportUserStats,
@@ -192,6 +193,12 @@ const AdminPanel = () => {
         >
           🗄️ Database
         </button>
+        <button
+          className={activeTab === 'api-keys' ? 'active' : ''}
+          onClick={() => setActiveTab('api-keys')}
+        >
+          🔑 API Keys
+        </button>
       </div>
 
       <div className="admin-content">
@@ -207,6 +214,7 @@ const AdminPanel = () => {
           />
         )}
         {activeTab === 'database' && <DatabaseTab stats={stats.database} />}
+        {activeTab === 'api-keys' && <ApiKeysTab token={token} />}
       </div>
     </div>
   );
