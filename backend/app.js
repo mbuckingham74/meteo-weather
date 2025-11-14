@@ -20,6 +20,10 @@ const apiKeysRoutes = require('./routes/apiKeys');
 
 const app = express();
 
+// Trust proxy - required when behind Nginx/reverse proxy
+// This allows express-rate-limit to correctly identify users via X-Forwarded-For
+app.set('trust proxy', 1);
+
 // ============================================
 // SECURITY MIDDLEWARE (Order matters!)
 // ============================================
