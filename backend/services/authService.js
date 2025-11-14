@@ -74,7 +74,7 @@ async function loginUser(email, password) {
   try {
     // Find user (include admin status)
     const [users] = await pool.query(
-      'SELECT id, email, password_hash, name, is_admin FROM users WHERE email = ?',
+      'SELECT id, email, password_hash, username, is_admin FROM users WHERE email = ?',
       [email]
     );
 
@@ -104,7 +104,7 @@ async function loginUser(email, password) {
       user: {
         id: user.id,
         email: user.email,
-        name: user.name,
+        name: user.username,
         isAdmin: user.is_admin
       },
       ...tokens
@@ -198,7 +198,7 @@ async function refreshAccessToken(refreshToken) {
 async function getUserById(userId) {
   try {
     const [users] = await pool.query(
-      'SELECT id, email, name, is_admin, created_at, last_login FROM users WHERE id = ?',
+      'SELECT id, email, username, is_admin, created_at, last_login FROM users WHERE id = ?',
       [userId]
     );
 
@@ -212,7 +212,7 @@ async function getUserById(userId) {
     return {
       id: user.id,
       email: user.email,
-      name: user.name,
+      name: user.username,
       isAdmin: user.is_admin,
       created_at: user.created_at,
       last_login: user.last_login
