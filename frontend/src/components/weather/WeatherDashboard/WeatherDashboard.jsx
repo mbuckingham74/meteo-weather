@@ -18,6 +18,7 @@ import useKeyboardShortcuts, {
 import useLocationConfirmation from '../../../hooks/useLocationConfirmation';
 import { WEATHER_CONFIG } from '../../../constants/weather';
 import WeatherAlertsBanner from '../WeatherAlertsBanner';
+import LocationSearchBar from '../../location/LocationSearchBar';
 import UniversalSearchBar from '../../ai/UniversalSearchBar';
 import LocationConfirmationModal from '../../location/LocationConfirmationModal';
 import RadarMap from '../RadarMap';
@@ -46,7 +47,6 @@ function WeatherDashboard() {
   const [detectingLocation, setDetectingLocation] = useState(false);
   const [locationError, setLocationError] = useState(null);
   const [activeTab, setActiveTab] = useState('forecast');
-  const [hasAttemptedGeolocation, setHasAttemptedGeolocation] = useState(false);
 
   // Location confirmation hook (VPN/IP detection)
   const locationConfirmation = useLocationConfirmation(selectLocation);
@@ -287,7 +287,12 @@ function WeatherDashboard() {
             <p style={{ marginBottom: '24px', color: 'var(--color-text-secondary)' }}>
               Search for a location or use your current location
             </p>
-            <UniversalSearchBar />
+            <LocationSearchBar
+              onLocationSelect={selectLocation}
+              currentLocation={locationData}
+              onDetectLocation={handleUseMyLocation}
+              detectingLocation={detectingLocation}
+            />
             <div style={{ marginTop: '16px' }}>
               <Button variant="ghost" size="md" onClick={handleUseMyLocation}>
                 📍 Use My Location
