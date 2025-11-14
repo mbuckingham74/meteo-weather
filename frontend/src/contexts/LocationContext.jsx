@@ -107,16 +107,14 @@ export function LocationProvider({ children }) {
       if (data) {
         const sanitized = sanitizeLocationData(data);
         if (sanitized) {
-          return sanitized.address || sanitized.location_name;
+          return sanitized.address || sanitized.location_name || DEFAULT_LOCATION;
         }
       }
     } catch (error) {
       console.error('Error loading saved location:', error);
     }
-    // FIX: Don't set DEFAULT_LOCATION when locationData is null
-    // This was causing weather API to fetch for "Seattle, WA" while geolocation was running
-    // Let geolocation set the first location, or user can search manually
-    return null;
+    // Return DEFAULT_LOCATION for first-time users to show weather immediately
+    return DEFAULT_LOCATION;
   });
 
   const [locationData, setLocationData] = useState(() => {
@@ -149,9 +147,8 @@ export function LocationProvider({ children }) {
   }, []);
 
   const clearLocation = useCallback(() => {
-    // FIX: Set both to null to trigger geolocation on home page
-    // Previously set DEFAULT_LOCATION which caused API fetch mismatch
-    setLocation(null);
+    // Reset to DEFAULT_LOCATION when clearing
+    setLocation(DEFAULT_LOCATION);
     setLocationData(null);
 
     // Clear versioned data
