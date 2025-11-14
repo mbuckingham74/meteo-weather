@@ -82,7 +82,7 @@ const ApiKeysTab = ({ token }) => {
     } finally {
       setLoading(false);
     }
-  }, [token, toast]);
+  }, [token]); // Removed toast from dependencies to prevent infinite loop
 
   useEffect(() => {
     fetchKeys();
