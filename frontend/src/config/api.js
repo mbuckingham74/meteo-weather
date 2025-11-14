@@ -88,35 +88,4 @@ const API_CONFIG = {
   },
 };
 
-/**
- * Helper function to build full API URL
- * @param {string} endpoint - Endpoint path (use API_CONFIG.ENDPOINTS)
- * @param {string} pathParams - Additional path parameters
- * @returns {string} Full API URL
- *
- * @example
- * buildUrl(API_CONFIG.ENDPOINTS.WEATHER_FORECAST, '/Seattle,WA')
- * // Returns: http://localhost:5001/api/weather/forecast/Seattle,WA
- */
-export function buildUrl(endpoint, pathParams = '') {
-  return `${API_CONFIG.BASE_URL}${endpoint}${pathParams}`;
-}
-
-/**
- * Helper function to build URL with query parameters
- * @param {string} endpoint - Endpoint path
- * @param {object} queryParams - Query parameters object
- * @returns {string} Full API URL with query string
- *
- * @example
- * buildUrlWithQuery(API_CONFIG.ENDPOINTS.WEATHER_FORECAST, { days: 7 })
- * // Returns: http://localhost:5001/api/weather/forecast?days=7
- */
-export function buildUrlWithQuery(endpoint, queryParams = {}) {
-  const url = `${API_CONFIG.BASE_URL}${endpoint}`;
-  const params = new URLSearchParams(queryParams);
-  const queryString = params.toString();
-  return queryString ? `${url}?${queryString}` : url;
-}
-
 export default API_CONFIG;

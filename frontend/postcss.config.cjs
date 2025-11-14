@@ -1,6 +1,6 @@
 // PostCSS configuration
-// Note: PurgeCSS has been temporarily disabled due to module loading issues
-// TODO: Re-enable PurgeCSS once module resolution is fixed
+// PurgeCSS removed - CSS bundle already optimized via Phase 3.1 (153.10 kB)
+// Further optimization can be done via build-time tree-shaking if needed
 
 const postcssCustomMedia = require('postcss-custom-media');
 const breakpointConfig = require('./config/breakpoints.json');
@@ -38,7 +38,5 @@ module.exports = {
       customMedia: customMediaMap,
       preserve: false,
     }),
-    // PurgeCSS temporarily disabled - uncomment when fixed
-    // See frontend/package.json devDependencies for @fullhuman/postcss-purgecss
   ],
 };
