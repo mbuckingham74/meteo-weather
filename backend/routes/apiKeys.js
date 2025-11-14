@@ -5,7 +5,7 @@
 
 const express = require('express');
 const router = express.Router();
-const db = require('../config/database');
+const { pool } = require('../config/database');
 const { requireAdmin } = require('../middleware/adminMiddleware');
 const {
   encryptApiKey,
@@ -28,7 +28,7 @@ router.get('/', async (req, res) => {
   try {
     const userId = req.user.userId;
 
-    const [keys] = await db.query(
+    const [keys] = await pool.query(
       `SELECT
         id,
         provider,
@@ -93,7 +93,7 @@ router.post('/', async (req, res) => {
     }
 
     // Check for duplicate key name
-    const [existing] = await db.query(
+    const [existing] = await pool.query(
       'SELECT id FROM user_api_keys WHERE user_id = ? AND key_name = ?',
       [userId, keyName]
     );
@@ -107,14 +107,14 @@ router.post('/', async (req, res) => {
 
     // If this is set as default, unset other defaults for this provider
     if (isDefault) {
-      await db.query(
+      await pool.query(
         'UPDATE user_api_keys SET is_default = FALSE WHERE user_id = ? AND provider = ?',
         [userId, provider.toLowerCase()]
       );
     }
 
     // Insert new key
-    const [result] = await db.query(
+    const [result] = await pool.query(
       `INSERT INTO user_api_keys
         (user_id, provider, key_name, encrypted_key, is_default, usage_limit, tokens_reset_at)
       VALUES (?, ?, ?, ?, ?, ?, NOW())`,
@@ -122,7 +122,7 @@ router.post('/', async (req, res) => {
     );
 
     // Fetch the created key
-    const [newKey] = await db.query(
+    const [newKey] = await pool.query(
       `SELECT
         id, provider, key_name, is_active, is_default, usage_limit,
         tokens_used, tokens_reset_at, last_used_at, created_at
@@ -154,7 +154,7 @@ router.put('/:id', async (req, res) => {
     const { keyName, isActive, isDefault, usageLimit } = req.body;
 
     // Check ownership
-    const [key] = await db.query('SELECT * FROM user_api_keys WHERE id = ? AND user_id = ?', [
+    const [key] = await pool.query('SELECT * FROM user_api_keys WHERE id = ? AND user_id = ?', [
       keyId,
       userId,
     ]);
@@ -168,7 +168,7 @@ router.put('/:id', async (req, res) => {
 
     if (keyName !== undefined) {
       // Check for duplicate name
-      const [existing] = await db.query(
+      const [existing] = await pool.query(
         'SELECT id FROM user_api_keys WHERE user_id = ? AND key_name = ? AND id != ?',
         [userId, keyName, keyId]
       );
@@ -189,7 +189,7 @@ router.put('/:id', async (req, res) => {
     if (isDefault !== undefined) {
       // If setting as default, unset other defaults for this provider
       if (isDefault) {
-        await db.query(
+        await pool.query(
           'UPDATE user_api_keys SET is_default = FALSE WHERE user_id = ? AND provider = ? AND id != ?',
           [userId, key[0].provider, keyId]
         );
@@ -210,13 +210,13 @@ router.put('/:id', async (req, res) => {
 
     values.push(keyId, userId);
 
-    await db.query(
+    await pool.query(
       `UPDATE user_api_keys SET ${updates.join(', ')} WHERE id = ? AND user_id = ?`,
       values
     );
 
     // Fetch updated key
-    const [updated] = await db.query(
+    const [updated] = await pool.query(
       `SELECT
         id, provider, key_name, is_active, is_default, usage_limit,
         tokens_used, tokens_reset_at, last_used_at, created_at
@@ -246,7 +246,7 @@ router.delete('/:id', async (req, res) => {
     const keyId = req.params.id;
 
     // Check ownership
-    const [key] = await db.query('SELECT id FROM user_api_keys WHERE id = ? AND user_id = ?', [
+    const [key] = await pool.query('SELECT id FROM user_api_keys WHERE id = ? AND user_id = ?', [
       keyId,
       userId,
     ]);
@@ -255,7 +255,7 @@ router.delete('/:id', async (req, res) => {
       return res.status(404).json({ error: 'API key not found' });
     }
 
-    await db.query('DELETE FROM user_api_keys WHERE id = ? AND user_id = ?', [keyId, userId]);
+    await pool.query('DELETE FROM user_api_keys WHERE id = ? AND user_id = ?', [keyId, userId]);
 
     res.json({
       success: true,
@@ -277,7 +277,7 @@ router.post('/:id/test', async (req, res) => {
     const keyId = req.params.id;
 
     // Fetch the key
-    const [key] = await db.query(
+    const [key] = await pool.query(
       'SELECT provider, encrypted_key FROM user_api_keys WHERE id = ? AND user_id = ?',
       [keyId, userId]
     );
@@ -323,7 +323,7 @@ router.post('/reset-usage/:id', async (req, res) => {
     const keyId = req.params.id;
 
     // Check ownership
-    const [key] = await db.query('SELECT id FROM user_api_keys WHERE id = ? AND user_id = ?', [
+    const [key] = await pool.query('SELECT id FROM user_api_keys WHERE id = ? AND user_id = ?', [
       keyId,
       userId,
     ]);
@@ -332,7 +332,7 @@ router.post('/reset-usage/:id', async (req, res) => {
       return res.status(404).json({ error: 'API key not found' });
     }
 
-    await db.query(
+    await pool.query(
       'UPDATE user_api_keys SET tokens_used = 0, tokens_reset_at = NOW() WHERE id = ?',
       [keyId]
     );
