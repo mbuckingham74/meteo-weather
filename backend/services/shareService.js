@@ -3,7 +3,7 @@
  * Handles creating and retrieving shareable AI weather analysis results
  */
 
-const db = require('../config/database');
+const { pool } = require('../config/database');
 const { retryWithBackoff } = require('../utils/retryHelper');
 
 /**
@@ -54,7 +54,7 @@ async function createShare(answerData) {
         expiresAt,
       ];
 
-      await db.execute(query, values);
+      await pool.execute(query, values);
     },
     {
       maxAttempts: 3,
@@ -85,7 +85,7 @@ async function getSharedAnswer(shareId) {
   `;
 
   try {
-    const [rows] = await db.execute(query, [shareId]);
+    const [rows] = await pool.execute(query, [shareId]);
 
     if (rows.length === 0) {
       return null;
@@ -94,7 +94,7 @@ async function getSharedAnswer(shareId) {
     const share = rows[0];
 
     // Increment view count
-    await db.execute(
+    await pool.execute(
       'UPDATE shared_ai_answers SET views = views + 1 WHERE share_id = ?',
       [shareId]
     );
@@ -128,7 +128,7 @@ async function cleanupExpiredShares() {
   const query = 'DELETE FROM shared_ai_answers WHERE expires_at < NOW()';
 
   try {
-    const [result] = await db.execute(query);
+    const [result] = await pool.execute(query);
     return result.affectedRows;
   } catch (error) {
     console.error('Error cleaning up expired shares:', error);

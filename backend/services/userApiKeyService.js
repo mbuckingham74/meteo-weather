@@ -3,7 +3,7 @@
  * Handles fetching and managing user-provided API keys for AI providers
  */
 
-const db = require('../config/database');
+const { pool } = require('../config/database');
 const { decryptApiKey } = require('./encryptionService');
 
 /**
@@ -19,7 +19,7 @@ async function getUserApiKey(userId, provider) {
       return null;
     }
 
-    const [keys] = await db.query(
+    const [keys] = await pool.query(
       `SELECT
         id, key_name, encrypted_key, usage_limit, tokens_used
       FROM user_api_keys
@@ -71,7 +71,7 @@ async function updateApiKeyUsage(keyId, tokensUsed) {
       return;
     }
 
-    await db.query(
+    await pool.query(
       `UPDATE user_api_keys
       SET tokens_used = tokens_used + ?,
           last_used_at = NOW()
@@ -90,7 +90,7 @@ async function updateApiKeyUsage(keyId, tokensUsed) {
  */
 async function resetMonthlyUsage() {
   try {
-    const [result] = await db.query(
+    const [result] = await pool.query(
       `UPDATE user_api_keys
       SET tokens_used = 0,
           tokens_reset_at = NOW()

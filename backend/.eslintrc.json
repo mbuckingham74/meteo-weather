@@ -19,6 +19,13 @@
     ],
     "no-console": "off",
     "no-process-exit": "warn",
-    "no-throw-literal": "error"
+    "no-throw-literal": "error",
+    "no-restricted-syntax": [
+      "error",
+      {
+        "selector": "VariableDeclarator[id.name='db'][init.callee.name='require']",
+        "message": "❌ Use destructured import: const { pool } = require('../config/database') instead of const db = require('../config/database'). The database module exports { pool }, not a 'db' object."
+      }
+    ]
   }
 }

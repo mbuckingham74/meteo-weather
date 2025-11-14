@@ -5,7 +5,7 @@
 
 const express = require('express');
 const router = express.Router();
-const db = require('../config/database');
+const { pool } = require('../config/database');
 const { authenticateToken } = require('../middleware/authMiddleware');
 
 /**
@@ -16,7 +16,7 @@ router.get('/', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.userId;
 
-    const [rows] = await db.query(
+    const [rows] = await pool.query(
       `SELECT
         temperature_unit,
         default_forecast_days,
@@ -139,7 +139,7 @@ router.put('/', authenticateToken, async (req, res) => {
         updated_at = CURRENT_TIMESTAMP
     `;
 
-    await db.query(query, [
+    await pool.query(query, [
       userId,
       temperature_unit || 'F',
       default_forecast_days || 7,
@@ -155,7 +155,7 @@ router.put('/', authenticateToken, async (req, res) => {
     ]);
 
     // Fetch updated preferences
-    const [rows] = await db.query(
+    const [rows] = await pool.query(
       'SELECT * FROM user_preferences WHERE user_id = ?',
       [userId]
     );
@@ -235,14 +235,14 @@ router.patch('/', authenticateToken, async (req, res) => {
       WHERE user_id = ?
     `;
 
-    const [result] = await db.query(query, values);
+    const [result] = await pool.query(query, values);
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ error: 'User preferences not found. Use PUT to create.' });
     }
 
     // Fetch updated preferences
-    const [rows] = await db.query(
+    const [rows] = await pool.query(
       'SELECT * FROM user_preferences WHERE user_id = ?',
       [userId]
     );
@@ -273,7 +273,7 @@ router.delete('/', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.userId;
 
-    await db.query('DELETE FROM user_preferences WHERE user_id = ?', [userId]);
+    await pool.query('DELETE FROM user_preferences WHERE user_id = ?', [userId]);
 
     res.json({ message: 'Preferences reset to defaults' });
   } catch (error) {
