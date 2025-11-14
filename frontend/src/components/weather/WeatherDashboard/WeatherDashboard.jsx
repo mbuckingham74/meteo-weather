@@ -110,35 +110,30 @@ function WeatherDashboard() {
     }
   }, [loading, error, data, announce]);
 
-  // Auto-detect location on home page if no location saved
-  useEffect(() => {
-    const isHomePage = routerLocation.pathname === '/';
-    const hasNoSavedLocation = !locationData || !locationData.latitude;
+  // REMOVED: Auto-detect location useEffect
+  // NEW APPROACH: User clicks "Use My Location" button explicitly
+  // This prevents infinite loops, race conditions, and gives user control
 
-    if (isHomePage && hasNoSavedLocation && !hasAttemptedGeolocation) {
-      setHasAttemptedGeolocation(true);
-      setDetectingLocation(true);
-      setLocationError(null);
+  // Manual location detection handler (called by button click)
+  const handleUseMyLocation = () => {
+    setDetectingLocation(true);
+    setLocationError(null);
 
-      getCurrentLocation()
-        .then((currentLoc) => {
-          if (currentLoc.requiresConfirmation) {
-            locationConfirmation.requestConfirmation(currentLoc);
-          } else {
-            selectLocation(currentLoc);
-          }
-        })
-        .catch((error) => {
-          setLocationError(error.message);
-        })
-        .finally(() => {
-          setDetectingLocation(false);
-        });
-    }
-    // FIX: Removed selectLocation and locationConfirmation from deps
-    // These functions change on every render, causing infinite loop
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [routerLocation.pathname, locationData, hasAttemptedGeolocation]);
+    getCurrentLocation()
+      .then((currentLoc) => {
+        if (currentLoc.requiresConfirmation) {
+          locationConfirmation.requestConfirmation(currentLoc);
+        } else {
+          selectLocation(currentLoc);
+        }
+      })
+      .catch((error) => {
+        setLocationError(error.message);
+      })
+      .finally(() => {
+        setDetectingLocation(false);
+      });
+  };
 
   // Sync location with URL (but don't redirect from home page)
   useEffect(() => {
@@ -290,9 +285,14 @@ function WeatherDashboard() {
           >
             <h2 style={{ marginBottom: '16px' }}>Welcome to Meteo Weather</h2>
             <p style={{ marginBottom: '24px', color: 'var(--color-text-secondary)' }}>
-              Search for a location to get started
+              Search for a location or use your current location
             </p>
             <UniversalSearchBar />
+            <div style={{ marginTop: '16px' }}>
+              <Button variant="ghost" size="md" onClick={handleUseMyLocation}>
+                📍 Use My Location
+              </Button>
+            </div>
           </Surface>
         </div>
       )}
