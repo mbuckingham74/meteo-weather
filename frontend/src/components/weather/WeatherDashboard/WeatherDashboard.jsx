@@ -281,11 +281,46 @@ function WeatherDashboard() {
         {!loading && !error && data && 'Weather data loaded'}
       </div>
 
+      {/* No Location State - Show search when no location is set */}
+      {!location && !detectingLocation && !loading && (
+        <div className="no-location-state">
+          <Surface
+            as="section"
+            padding="lg"
+            radius="lg"
+            elevation="md"
+            style={{ textAlign: 'center', maxWidth: '600px', margin: '40px auto' }}
+          >
+            <h2 style={{ marginBottom: '16px' }}>Welcome to Meteo Weather</h2>
+            <p style={{ marginBottom: '24px', color: 'var(--color-text-secondary)' }}>
+              Search for a location to get started
+            </p>
+            <UniversalSearchBar />
+          </Surface>
+        </div>
+      )}
+
+      {/* Detecting Location State */}
+      {detectingLocation && (
+        <div className="detecting-location-state">
+          <WeatherDashboardSkeleton />
+          <p
+            style={{
+              textAlign: 'center',
+              marginTop: '16px',
+              color: 'var(--color-text-secondary)',
+            }}
+          >
+            Detecting your location...
+          </p>
+        </div>
+      )}
+
       {/* Loading State */}
-      {loading && <WeatherDashboardSkeleton />}
+      {location && loading && <WeatherDashboardSkeleton />}
 
       {/* Error State */}
-      {error && (
+      {location && error && (
         <div className="error-state">
           <ErrorMessage
             error={error}
