@@ -5,6 +5,7 @@
  *
  * Features:
  * - Request deduplication (prevents duplicate in-flight requests)
+ * - Automatic retry with exponential backoff
  * - Automatic auth header handling
  * - Unified error handling with ApiError class
  * - AbortController support for cancellation
@@ -31,6 +32,75 @@ export class ApiError extends Error {
 const inflightRequests = new Map();
 
 /**
+ * Retry configuration
+ */
+const RETRY_CONFIG = {
+  maxAttempts: 3, // Total attempts (initial + 2 retries)
+  baseDelay: 1000, // 1 second
+  maxDelay: 8000, // 8 seconds
+  retryableStatusCodes: [408, 429, 500, 502, 503, 504], // Retryable HTTP status codes
+  retryableErrors: ['NetworkError', 'TypeError', 'AbortError'], // Retryable error types
+};
+
+/**
+ * Calculate delay for exponential backoff with jitter
+ * @param {number} attempt - Current attempt number (0-indexed)
+ * @returns {number} Delay in milliseconds
+ */
+function calculateBackoffDelay(attempt) {
+  // Exponential backoff: delay = baseDelay * 2^attempt
+  const exponentialDelay = RETRY_CONFIG.baseDelay * Math.pow(2, attempt);
+
+  // Cap at maxDelay
+  const cappedDelay = Math.min(exponentialDelay, RETRY_CONFIG.maxDelay);
+
+  // Add jitter (randomize ±25% to prevent thundering herd)
+  const jitter = cappedDelay * 0.25 * (Math.random() - 0.5);
+
+  return Math.floor(cappedDelay + jitter);
+}
+
+/**
+ * Check if an error is retryable
+ * @param {Error|ApiError} error - Error to check
+ * @param {string} method - HTTP method
+ * @returns {boolean} True if error is retryable
+ */
+function isRetryableError(error, method) {
+  // Only retry safe methods (GET, HEAD) by default
+  // POST/PUT/DELETE could have side effects
+  if (method !== 'GET' && method !== 'HEAD') {
+    return false;
+  }
+
+  // Check if it's an ApiError with retryable status code
+  if (error instanceof ApiError) {
+    return RETRY_CONFIG.retryableStatusCodes.includes(error.status);
+  }
+
+  // Check if it's a network error
+  if (error.name === 'TypeError' && error.message.includes('fetch')) {
+    return true; // Network error
+  }
+
+  // Timeout errors are retryable
+  if (error.name === 'AbortError') {
+    return true;
+  }
+
+  return false;
+}
+
+/**
+ * Sleep for a specified duration
+ * @param {number} ms - Milliseconds to sleep
+ * @returns {Promise<void>}
+ */
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/**
  * Generate a unique cache key for request deduplication
  * @param {string} url - Full URL
  * @param {Object} fetchOptions - Fetch options
@@ -43,7 +113,7 @@ function getRequestKey(url, fetchOptions) {
 }
 
 /**
- * Make an API request with automatic deduplication
+ * Make an API request with automatic deduplication and retry
  * @param {string} endpoint - API endpoint (should start with /, e.g., '/admin/stats')
  * @param {Object} options - Fetch options
  * @param {string} options.method - HTTP method (GET, POST, PUT, DELETE, PATCH)
@@ -51,16 +121,18 @@ function getRequestKey(url, fetchOptions) {
  * @param {Object} options.headers - Additional headers
  * @param {boolean} options.skipAuth - Skip adding Authorization header (default: false)
  * @param {boolean} options.skipDedup - Skip request deduplication (default: false)
+ * @param {boolean} options.skipRetry - Skip automatic retry (default: false)
+ * @param {number} options.maxRetries - Maximum retry attempts (default: 2, total 3 attempts)
  * @param {AbortSignal} options.signal - AbortController signal for cancellation
  * @returns {Promise<Object>} Response data
- * @throws {ApiError} If request fails
+ * @throws {ApiError} If request fails after all retries
  *
  * @example
- * // GET request
+ * // GET request with automatic retry
  * const data = await apiRequest('/admin/stats');
  *
  * @example
- * // POST request with body
+ * // POST request with body (no retry by default)
  * const result = await apiRequest('/api-keys', {
  *   method: 'POST',
  *   body: { provider: 'anthropic', keyName: 'My Key', apiKey: 'sk-...' }
@@ -73,6 +145,10 @@ function getRequestKey(url, fetchOptions) {
  * @example
  * // Skip deduplication for time-sensitive requests
  * const data = await apiRequest('/weather/current', { skipDedup: true });
+ *
+ * @example
+ * // Disable retry for critical requests
+ * const data = await apiRequest('/critical-endpoint', { skipRetry: true });
  */
 export async function apiRequest(endpoint, options = {}) {
   // Ensure endpoint starts with /
@@ -119,8 +195,13 @@ export async function apiRequest(endpoint, options = {}) {
       return inflightRequests.get(requestKey);
     }
 
-    // Create and cache the request promise
-    const requestPromise = executeRequest(url, fetchOptions).finally(() => {
+    // Create and cache the request promise (with retry)
+    const requestPromise = executeRequestWithRetry(
+      url,
+      fetchOptions,
+      options.skipRetry,
+      options.maxRetries
+    ).finally(() => {
       // Remove from cache when complete (success or failure)
       inflightRequests.delete(requestKey);
     });
@@ -129,8 +210,67 @@ export async function apiRequest(endpoint, options = {}) {
     return requestPromise;
   }
 
-  // Execute request without deduplication
-  return executeRequest(url, fetchOptions);
+  // Execute request without deduplication (with retry)
+  return executeRequestWithRetry(url, fetchOptions, options.skipRetry, options.maxRetries);
+}
+
+/**
+ * Execute request with automatic retry logic
+ * @param {string} url - Full URL
+ * @param {Object} fetchOptions - Fetch options
+ * @param {boolean} skipRetry - Skip retry logic
+ * @param {number} maxRetries - Maximum retry attempts
+ * @returns {Promise<Object>} Response data
+ * @throws {ApiError} If request fails after all retries
+ */
+async function executeRequestWithRetry(url, fetchOptions, skipRetry = false, maxRetries = 2) {
+  const method = fetchOptions.method || 'GET';
+  const maxAttempts = skipRetry ? 1 : maxRetries + 1;
+
+  let lastError;
+
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    try {
+      // Execute the request
+      const data = await executeRequest(url, fetchOptions);
+
+      // Success - return data
+      if (attempt > 0) {
+        console.info(
+          `[API Client] Request succeeded after ${attempt} ${attempt === 1 ? 'retry' : 'retries'}`
+        );
+      }
+      return data;
+    } catch (error) {
+      lastError = error;
+
+      // Don't retry if we're on the last attempt
+      if (attempt === maxAttempts - 1) {
+        break;
+      }
+
+      // Check if error is retryable
+      if (!isRetryableError(error, method)) {
+        console.info(`[API Client] Error not retryable (method: ${method}, error: ${error.name})`);
+        break;
+      }
+
+      // Calculate backoff delay
+      const delay = calculateBackoffDelay(attempt);
+
+      console.info(
+        `[API Client] Retry ${attempt + 1}/${maxRetries} after ${delay}ms (${error.name}: ${error.message})`
+      );
+
+      // Wait before retrying
+      await sleep(delay);
+
+      // Continue to next attempt
+    }
+  }
+
+  // All retries exhausted - throw the last error
+  throw lastError;
 }
 
 /**
