@@ -29,6 +29,7 @@
 
 ### Specialized Guides
 - **[AGENTS.md](AGENTS.md)** - Working with AI agents
+- **[API Architecture Improvements](API_ARCHITECTURE_IMPROVEMENTS.md)** - Centralized API client (P0-P3A)
 - **[Build Validation](../BUILD_VALIDATION.md)** - Build configuration validation
 - **[Security Audit](../RATE_LIMITING_AND_SECURITY_AUDIT.md)** - Security implementation
 - **[Error Message Style Guide](../ERROR_MESSAGE_STYLE_GUIDE.md)** - Error handling standards
@@ -160,4 +161,4 @@ Common issues and solutions:
 
 **Happy coding! 🌦️**
 
-**Last Updated:** November 5, 2025
+**Last Updated:** November 14, 2025

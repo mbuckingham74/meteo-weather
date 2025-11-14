@@ -72,6 +72,7 @@
 **💻 Development:**
 - [docs/development/](docs/development/) - Developer guides & tools
 - [docs/development/AGENTS.md](docs/development/AGENTS.md) - Repository guidelines
+- [docs/development/API_ARCHITECTURE_IMPROVEMENTS.md](docs/development/API_ARCHITECTURE_IMPROVEMENTS.md) - API client refactoring (P0-P3A)
 - [docs/development/VITE_MIGRATION_GUIDE.md](docs/development/VITE_MIGRATION_GUIDE.md) - CRA to Vite migration
 - [docs/development/REFACTORING_SUMMARY.md](docs/development/REFACTORING_SUMMARY.md) - Code organization overhaul
 **🔧 Admin Panel:**
@@ -81,6 +82,18 @@
 - [docs/admin/QUICK_REFERENCE.md](docs/admin/QUICK_REFERENCE.md) - One-page cheat sheet (340 lines)
 - [docs/admin/IMPLEMENTATION_SUMMARY.md](docs/admin/IMPLEMENTATION_SUMMARY.md) - Technical details (890 lines)
 ### Recent Work (Nov 2025)
+- ✅ **API Architecture Improvements (P0-P3A)** (Nov 14, 2025)
+  - **Complete Refactoring:** Centralized API client with retry, deduplication, and unified error handling
+  - **P0:** Fixed backend database imports (db → pool), added ESLint rule to prevent regression
+  - **P1:** Created centralized apiClient.js (372 lines) with ApiError class, auth integration, unified config
+  - **P2-A:** Migrated 10 frontend files to use centralized client (100% coverage, 80% code reduction)
+  - **P2-B:** Implemented request deduplication (prevents duplicate in-flight GET/HEAD requests)
+  - **P3-A:** Added automatic retry logic with exponential backoff (1s → 2s → 4s) and jitter (±25%)
+  - **Features:** Retries transient failures (5xx, 429, 408, network errors, timeouts), safe by default (only GET/HEAD)
+  - **Impact:** Better reliability, consistent error handling, reduced boilerplate, production-ready API layer
+  - **Documentation:** [API_ARCHITECTURE_IMPROVEMENTS.md](docs/development/API_ARCHITECTURE_IMPROVEMENTS.md) (comprehensive 700+ line guide)
+  - **Commit:** 9488020
+  - **Status:** Complete, deployed to production ✅
 - ✅ **AI Provider Selector UI** (Nov 13, 2025)
   - **Enhancement:** Added user-facing dropdown to select AI provider in AI Weather page
   - **Features:** Provider selection dropdown, localStorage persistence, visual icons (🤖 🧠 ⚡ 🔮 🌊 🧬 🦙)
