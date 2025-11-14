@@ -135,13 +135,10 @@ function WeatherDashboard() {
           setDetectingLocation(false);
         });
     }
-  }, [
-    routerLocation.pathname,
-    locationData,
-    hasAttemptedGeolocation,
-    selectLocation,
-    locationConfirmation,
-  ]);
+    // FIX: Removed selectLocation and locationConfirmation from deps
+    // These functions change on every render, causing infinite loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [routerLocation.pathname, locationData, hasAttemptedGeolocation]);
 
   // Sync location with URL (but don't redirect from home page)
   useEffect(() => {
