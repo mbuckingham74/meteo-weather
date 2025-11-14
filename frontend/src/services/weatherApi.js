@@ -1,32 +1,23 @@
-import axios from 'axios';
-import API_CONFIG from '../config/api';
-import TIMEOUTS from '../config/timeouts';
-import { handleAPIError, retryWithBackoff } from '../utils/errorHandler';
-import { debugInfo, debugError } from '../utils/debugLogger';
-
-const API_BASE_URL = API_CONFIG.BASE_URL;
-const RETRY_ATTEMPTS = TIMEOUTS.RETRY.MAX_ATTEMPTS;
-const RETRY_DELAY = TIMEOUTS.RETRY.INITIAL_DELAY;
-
 /**
  * Weather API Service
- * Communicates with the backend API
+ * Centralized weather data endpoints using apiClient
  *
- * All functions use:
- * - Centralized error handling via errorHandler utility
- * - Timeout protection (10s for data, 30s for AI endpoints)
- * - Retry logic with exponential backoff for network failures
- * - User-friendly error messages
+ * Migration: Part of P0-P3A API Architecture Improvements
+ * Replaced custom axios instance with centralized apiClient
+ *
+ * Features:
+ * - Automatic retry with exponential backoff (via apiClient)
+ * - Request deduplication (via apiClient)
+ * - Unified error handling via ApiError
+ * - Consistent timeout configuration
+ * - Debug logging for troubleshooting
+ * - User-friendly error messages via handleAPIError
  */
 
-// Timeout configuration
-const TIMEOUT_WEATHER_DATA = 10000; // 10 seconds for weather data
-
-// Create axios instance with default timeout
-const weatherClient = axios.create({
-  baseURL: API_BASE_URL,
-  timeout: TIMEOUT_WEATHER_DATA,
-});
+import { apiRequest, ApiError } from './apiClient';
+import API_CONFIG from '../config/api';
+import { handleAPIError } from '../utils/errorHandler';
+import { debugInfo, debugError } from '../utils/debugLogger';
 
 /**
  * Get current weather for a location
@@ -38,15 +29,11 @@ export async function getCurrentWeather(location) {
   try {
     debugInfo('Weather API', `Fetching current weather for: ${location}`);
 
-    const response = await retryWithBackoff(
-      async () => weatherClient.get(`/weather/current/${encodeURIComponent(location)}`),
-      RETRY_ATTEMPTS,
-      RETRY_DELAY,
-      `getCurrentWeather(${location})`
-    );
+    const endpoint = `${API_CONFIG.ENDPOINTS.WEATHER_CURRENT}/${encodeURIComponent(location)}`;
+    const response = await apiRequest(endpoint, { method: 'GET' });
 
     debugInfo('Weather API', `Successfully fetched current weather for: ${location}`);
-    return response.data;
+    return response;
   } catch (error) {
     throw handleAPIError(error, `Loading current weather for ${location}`);
   }
@@ -63,16 +50,11 @@ export async function getWeatherForecast(location, days = 7) {
   try {
     debugInfo('Weather API', `Fetching ${days}-day forecast for: ${location}`);
 
-    const response = await retryWithBackoff(
-      async () =>
-        weatherClient.get(`/weather/forecast/${encodeURIComponent(location)}?days=${days}`),
-      RETRY_ATTEMPTS,
-      RETRY_DELAY,
-      `getWeatherForecast(${location}, ${days} days)`
-    );
+    const endpoint = `${API_CONFIG.ENDPOINTS.WEATHER_FORECAST}/${encodeURIComponent(location)}?days=${days}`;
+    const response = await apiRequest(endpoint, { method: 'GET' });
 
     debugInfo('Weather API', `Successfully fetched forecast for: ${location}`);
-    return response.data;
+    return response;
   } catch (error) {
     throw handleAPIError(error, `Loading ${days}-day forecast for ${location}`);
   }
@@ -89,16 +71,11 @@ export async function getHourlyForecast(location, hours = 48) {
   try {
     debugInfo('Weather API', `Fetching ${hours}-hour forecast for: ${location}`);
 
-    const response = await retryWithBackoff(
-      async () =>
-        weatherClient.get(`/weather/hourly/${encodeURIComponent(location)}?hours=${hours}`),
-      RETRY_ATTEMPTS,
-      RETRY_DELAY,
-      `getHourlyForecast(${location}, ${hours} hours)`
-    );
+    const endpoint = `${API_CONFIG.ENDPOINTS.WEATHER_HOURLY}/${encodeURIComponent(location)}?hours=${hours}`;
+    const response = await apiRequest(endpoint, { method: 'GET' });
 
     debugInfo('Weather API', `Successfully fetched hourly forecast for: ${location}`);
-    return response.data;
+    return response;
   } catch (error) {
     throw handleAPIError(error, `Loading hourly forecast for ${location}`);
   }
@@ -119,18 +96,12 @@ export async function getHistoricalWeather(location, startDate, endDate) {
       `Fetching historical data for: ${location} (${startDate} to ${endDate})`
     );
 
-    const response = await retryWithBackoff(
-      async () =>
-        weatherClient.get(`/weather/historical/${encodeURIComponent(location)}`, {
-          params: { start: startDate, end: endDate },
-        }),
-      RETRY_ATTEMPTS,
-      RETRY_DELAY,
-      `getHistoricalWeather(${location}, ${startDate} - ${endDate})`
-    );
+    const params = new URLSearchParams({ start: startDate, end: endDate });
+    const endpoint = `${API_CONFIG.ENDPOINTS.WEATHER_HISTORICAL}/${encodeURIComponent(location)}?${params}`;
+    const response = await apiRequest(endpoint, { method: 'GET' });
 
     debugInfo('Weather API', `Successfully fetched historical data for: ${location}`);
-    return response.data;
+    return response;
   } catch (error) {
     throw handleAPIError(
       error,
@@ -155,15 +126,16 @@ export async function searchLocations(query, limit = 10) {
   try {
     debugInfo('Weather API', `Searching locations: "${query}" (limit: ${limit})`);
 
-    const response = await weatherClient.get('/locations/search', {
-      params: { q: query, limit },
-    });
+    const params = new URLSearchParams({ q: query, limit: limit.toString() });
+    const endpoint = `${API_CONFIG.LOCATIONS}/search?${params}`;
+    const response = await apiRequest(endpoint, { method: 'GET' });
 
-    const locations = response.data.locations || [];
+    const locations = response.locations || [];
     debugInfo('Weather API', `Found ${locations.length} locations for: "${query}"`);
     return locations;
   } catch (error) {
-    // Don't retry search queries - they're user-initiated
+    // Don't throw errors for search - return empty array
+    debugError('Weather API', `Search failed for "${query}"`, error);
     throw handleAPIError(error, `Searching for "${query}"`);
   }
 }
@@ -179,17 +151,11 @@ export async function getAllLocations(limit = 100, offset = 0) {
   try {
     debugInfo('Weather API', `Fetching all locations (limit: ${limit}, offset: ${offset})`);
 
-    const response = await retryWithBackoff(
-      async () =>
-        weatherClient.get('/locations', {
-          params: { limit, offset },
-        }),
-      Math.max(2, RETRY_ATTEMPTS - 1),
-      RETRY_DELAY,
-      'getAllLocations'
-    );
+    const params = new URLSearchParams({ limit: limit.toString(), offset: offset.toString() });
+    const endpoint = `${API_CONFIG.ENDPOINTS.LOCATIONS}?${params}`;
+    const response = await apiRequest(endpoint, { method: 'GET' });
 
-    const locations = response.data.locations || [];
+    const locations = response.locations || [];
     debugInfo('Weather API', `Fetched ${locations.length} locations`);
     return locations;
   } catch (error) {
@@ -212,12 +178,14 @@ export async function geocodeLocation(query, limit = 5) {
   try {
     debugInfo('Weather API', `Geocoding: "${query}" (limit: ${limit})`);
 
-    const response = await weatherClient.get('/locations/geocode', {
-      params: { q: query, limit },
+    const params = new URLSearchParams({ q: query, limit: limit.toString() });
+    const endpoint = `${API_CONFIG.ENDPOINTS.LOCATIONS_GEOCODE}?${params}`;
+    const response = await apiRequest(endpoint, {
+      method: 'GET',
       timeout: 5000, // Faster timeout for autocomplete
     });
 
-    const results = response.data.results || [];
+    const results = response.results || [];
     debugInfo('Weather API', `Geocoded ${results.length} results for: "${query}"`);
     return results;
   } catch (error) {
@@ -238,18 +206,12 @@ export async function reverseGeocode(lat, lon) {
   try {
     debugInfo('Weather API', `Reverse geocoding: (${lat}, ${lon})`);
 
-    const response = await retryWithBackoff(
-      async () =>
-        weatherClient.get('/locations/reverse', {
-          params: { lat, lon },
-        }),
-      Math.max(2, RETRY_ATTEMPTS - 1),
-      RETRY_DELAY,
-      `reverseGeocode(${lat}, ${lon})`
-    );
+    const params = new URLSearchParams({ lat: lat.toString(), lon: lon.toString() });
+    const endpoint = `${API_CONFIG.ENDPOINTS.LOCATIONS_REVERSE}?${params}`;
+    const response = await apiRequest(endpoint, { method: 'GET' });
 
-    debugInfo('Weather API', `Successfully reverse geocoded: ${response.data.location?.address}`);
-    return response.data.location;
+    debugInfo('Weather API', `Successfully reverse geocoded: ${response.location?.address}`);
+    return response.location;
   } catch (error) {
     throw handleAPIError(error, `Finding location at coordinates (${lat}, ${lon})`);
   }
@@ -264,14 +226,10 @@ export async function getPopularLocations() {
   try {
     debugInfo('Weather API', 'Fetching popular locations');
 
-    const response = await retryWithBackoff(
-      async () => weatherClient.get('/locations/popular'),
-      Math.max(2, RETRY_ATTEMPTS - 1),
-      RETRY_DELAY,
-      'getPopularLocations'
-    );
+    const endpoint = API_CONFIG.ENDPOINTS.LOCATIONS_POPULAR;
+    const response = await apiRequest(endpoint, { method: 'GET' });
 
-    const locations = response.data.locations || [];
+    const locations = response.locations || [];
     debugInfo('Weather API', `Fetched ${locations.length} popular locations`);
     return locations;
   } catch (error) {
@@ -288,12 +246,14 @@ export async function testApiConnection() {
   try {
     debugInfo('Weather API', 'Testing API connection');
 
-    const response = await weatherClient.get('/weather/test', {
+    const endpoint = `${API_CONFIG.ENDPOINTS.WEATHER}/test`;
+    const response = await apiRequest(endpoint, {
+      method: 'GET',
       timeout: 5000, // Short timeout for connection test
     });
 
     debugInfo('Weather API', 'API connection test successful');
-    return response.data;
+    return response;
   } catch (error) {
     throw handleAPIError(error, 'Testing API connection');
   }
