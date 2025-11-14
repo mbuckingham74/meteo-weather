@@ -159,6 +159,10 @@ function getSystemApiKey(provider) {
       return process.env.MISTRAL_API_KEY || null;
     case 'cohere':
       return process.env.COHERE_API_KEY || null;
+    case 'ollama':
+      // Ollama is self-hosted, no API key needed
+      // Return placeholder that will be accepted by OpenAI-compatible client
+      return 'ollama';
     default:
       return null;
   }

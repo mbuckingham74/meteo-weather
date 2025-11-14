@@ -26,7 +26,7 @@ router.use(requireAdmin);
  */
 router.get('/', async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
 
     const [keys] = await db.query(
       `SELECT
@@ -72,7 +72,7 @@ router.get('/', async (req, res) => {
  */
 router.post('/', async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     const { provider, keyName, apiKey, isDefault, usageLimit } = req.body;
 
     // Validation
@@ -149,7 +149,7 @@ router.post('/', async (req, res) => {
  */
 router.put('/:id', async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     const keyId = req.params.id;
     const { keyName, isActive, isDefault, usageLimit } = req.body;
 
@@ -242,7 +242,7 @@ router.put('/:id', async (req, res) => {
  */
 router.delete('/:id', async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     const keyId = req.params.id;
 
     // Check ownership
@@ -273,7 +273,7 @@ router.delete('/:id', async (req, res) => {
  */
 router.post('/:id/test', async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     const keyId = req.params.id;
 
     // Fetch the key
@@ -319,7 +319,7 @@ router.post('/:id/test', async (req, res) => {
  */
 router.post('/reset-usage/:id', async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     const keyId = req.params.id;
 
     // Check ownership
