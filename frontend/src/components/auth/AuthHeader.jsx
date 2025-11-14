@@ -12,7 +12,7 @@ import styles from './AuthHeader.module.css';
  * Displays authentication status and provides login/profile access
  */
 function AuthHeader() {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [authMode, setAuthMode] = useState('login');
@@ -31,6 +31,12 @@ function AuthHeader() {
 
   const handleProfileClick = () => {
     setShowProfileModal(true);
+  };
+
+  const handleLogout = () => {
+    if (window.confirm('Are you sure you want to log out?')) {
+      logout();
+    }
   };
 
   // Get user initials for avatar
@@ -69,7 +75,7 @@ function AuthHeader() {
         </Stack>
         {isAuthenticated ? (
           <Stack direction="row" gap="md" align="center" className={styles.userSection}>
-            <span className={styles.userName}>{user?.name}</span>
+            <span className={styles.userName}>{user?.name || user?.email}</span>
             <button
               type="button"
               className={styles.avatar}
@@ -78,6 +84,9 @@ function AuthHeader() {
             >
               {getUserInitials()}
             </button>
+            <Button onClick={handleLogout} variant="ghost" size="sm">
+              Sign Out
+            </Button>
             <ThemeToggle />
           </Stack>
         ) : (
