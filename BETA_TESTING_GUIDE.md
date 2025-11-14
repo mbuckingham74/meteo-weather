@@ -15,6 +15,7 @@ Three major features were just implemented and need testing on the beta server:
 - **Frontend:** https://meteo-beta.tachyonfuture.com
 - **API:** https://api.meteo-beta.tachyonfuture.com
 - **Admin Panel:** https://meteo-beta.tachyonfuture.com/admin
+- **AI Weather Page:** https://meteo-beta.tachyonfuture.com/ai-weather
 
 ---
 
@@ -23,8 +24,9 @@ Three major features were just implemented and need testing on the beta server:
 ### 1. User-Managed API Keys (Admin Panel)
 
 **Access the Feature:**
-1. Log in to your account
-2. Navigate to Admin Panel → "🔑 API Keys" tab
+1. Go to **[Admin Panel](https://meteo-beta.tachyonfuture.com/admin)** (must be logged in)
+2. Click on the **"🔑 API Keys"** tab
+3. You should see a list of 7 AI providers
 
 **Test Cases:**
 
@@ -76,7 +78,8 @@ Three major features were just implemented and need testing on the beta server:
 ### 2. AI Provider Selector UI
 
 **Access the Feature:**
-1. Navigate to "🤖 AI Weather" page
+1. Go to **[AI Weather Page](https://meteo-beta.tachyonfuture.com/ai-weather)**
+2. Look for the "AI Provider:" dropdown above the question input box
 
 **Test Cases:**
 
