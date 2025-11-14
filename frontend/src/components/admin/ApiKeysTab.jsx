@@ -63,7 +63,7 @@ const ApiKeysTab = ({ token }) => {
   const fetchKeys = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_BASE_URL}/api/api-keys`, {
+      const response = await fetch(`${API_BASE_URL}/api-keys`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -106,7 +106,7 @@ const ApiKeysTab = ({ token }) => {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/api-keys/${keyId}`, {
+      const response = await fetch(`${API_BASE_URL}/api-keys/${keyId}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -127,7 +127,7 @@ const ApiKeysTab = ({ token }) => {
 
   const handleUpdateKey = async (keyId, updates) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/api-keys/${keyId}`, {
+      const response = await fetch(`${API_BASE_URL}/api-keys/${keyId}`, {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -151,7 +151,7 @@ const ApiKeysTab = ({ token }) => {
   const handleTestKey = async (keyId, provider, keyName) => {
     try {
       toast.info(`Testing ${keyName}...`);
-      const response = await fetch(`${API_BASE_URL}/api/api-keys/${keyId}/test`, {
+      const response = await fetch(`${API_BASE_URL}/api-keys/${keyId}/test`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -179,7 +179,7 @@ const ApiKeysTab = ({ token }) => {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/api-keys/reset-usage/${keyId}`, {
+      const response = await fetch(`${API_BASE_URL}/api-keys/reset-usage/${keyId}`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,

@@ -32,7 +32,7 @@ const AdminPanel = () => {
       setLoading(true);
       setError(null);
 
-      const response = await fetch(`${API_BASE_URL}/api/admin/stats`, {
+      const response = await fetch(`${API_BASE_URL}/admin/stats`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -67,7 +67,7 @@ const AdminPanel = () => {
     if (!window.confirm('Clear all expired cache entries?')) return;
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/admin/cache/clear-expired`, {
+      const response = await fetch(`${API_BASE_URL}/admin/cache/clear-expired`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -94,7 +94,7 @@ const AdminPanel = () => {
       return;
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/admin/cache/clear-all`, {
+      const response = await fetch(`${API_BASE_URL}/admin/cache/clear-all`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
