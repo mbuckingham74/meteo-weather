@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { useToast } from '../common/ToastContainer';
+import useApi from '../../hooks/useApi';
 import AdminPanelSkeleton from './AdminPanelSkeleton';
 import ApiKeysTab from './ApiKeysTab';
 import {
@@ -13,11 +13,10 @@ import {
 } from '../../utils/csvExport';
 import './AdminPanel.css';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-
 const AdminPanel = () => {
   const { user, token } = useAuth();
-  const toast = useToast();
+  const api = useApi({ showErrorToast: false });
+  const apiWithToast = useApi({ showSuccessToast: true });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
@@ -32,24 +31,14 @@ const AdminPanel = () => {
       setLoading(true);
       setError(null);
 
-      const response = await fetch(`${API_BASE_URL}/admin/stats`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch statistics');
-      }
-
-      const data = await response.json();
+      const data = await api('/admin/stats');
       setStats(data.stats);
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, [api]);
 
   useEffect(() => {
     if (isAdmin) {
@@ -67,21 +56,24 @@ const AdminPanel = () => {
     if (!window.confirm('Clear all expired cache entries?')) return;
 
     try {
-      const response = await fetch(`${API_BASE_URL}/admin/cache/clear-expired`, {
+      const data = await apiWithToast('/admin/cache/clear-expired', {
         method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
+        successMessage: `Cleared ${await getExpiredCount()} expired cache entries`,
       });
-
-      const data = await response.json();
       if (data.success) {
-        toast.success(`Cleared ${data.deletedCount} expired cache entries`);
         fetchStats();
       }
     } catch (err) {
-      toast.error(`Error: ${err.message}`);
+      // Error toast already shown by apiWithToast
+    }
+  };
+
+  const getExpiredCount = async () => {
+    try {
+      const data = await api('/admin/stats');
+      return data.stats.cache.expiredEntries;
+    } catch {
+      return 0;
     }
   };
 
@@ -94,21 +86,15 @@ const AdminPanel = () => {
       return;
 
     try {
-      const response = await fetch(`${API_BASE_URL}/admin/cache/clear-all`, {
+      const data = await apiWithToast('/admin/cache/clear-all', {
         method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
+        successMessage: 'All cache entries cleared successfully',
       });
-
-      const data = await response.json();
       if (data.success) {
-        toast.success(data.message);
         fetchStats();
       }
     } catch (err) {
-      toast.error(`Error: ${err.message}`);
+      // Error toast already shown by apiWithToast
     }
   };
 

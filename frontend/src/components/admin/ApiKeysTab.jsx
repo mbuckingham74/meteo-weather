@@ -1,10 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
+import useApi from '../../hooks/useApi';
 import { useToast } from '../common/ToastContainer';
 import ApiKeyCard from './ApiKeyCard';
 import AddApiKeyModal from './AddApiKeyModal';
 import './ApiKeysTab.css';
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
 const PROVIDER_INFO = {
   anthropic: {
@@ -52,6 +51,7 @@ const PROVIDER_INFO = {
 };
 
 const ApiKeysTab = ({ token }) => {
+  const api = useApi();
   const toast = useToast();
   const [loading, setLoading] = useState(true);
   const [keys, setKeys] = useState({});
@@ -63,26 +63,16 @@ const ApiKeysTab = ({ token }) => {
   const fetchKeys = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_BASE_URL}/api-keys`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch API keys');
-      }
-
-      const data = await response.json();
+      const data = await api('/api-keys');
       setKeys(data.keys || {});
       setProviders(data.providers || []);
     } catch (error) {
       console.error('Error fetching API keys:', error);
-      toast.error(`Failed to load API keys: ${error.message}`);
+      // Error toast already shown by useApi hook
     } finally {
       setLoading(false);
     }
-  }, [token]); // Removed toast from dependencies to prevent infinite loop
+  }, [api]);
 
   useEffect(() => {
     fetchKeys();
@@ -106,63 +96,30 @@ const ApiKeysTab = ({ token }) => {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api-keys/${keyId}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to delete API key');
-      }
-
+      await api(`/api-keys/${keyId}`, { method: 'DELETE' });
       toast.success('API key deleted successfully');
       fetchKeys();
     } catch (error) {
       console.error('Error deleting API key:', error);
-      toast.error(`Failed to delete key: ${error.message}`);
+      // Error toast already shown by useApi
     }
   };
 
   const handleUpdateKey = async (keyId, updates) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api-keys/${keyId}`, {
-        method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updates),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update API key');
-      }
-
+      await api(`/api-keys/${keyId}`, { method: 'PUT', body: updates });
       toast.success('API key updated successfully');
       fetchKeys();
     } catch (error) {
       console.error('Error updating API key:', error);
-      toast.error(`Failed to update key: ${error.message}`);
+      // Error toast already shown by useApi
     }
   };
 
   const handleTestKey = async (keyId, provider, keyName) => {
     try {
       toast.info(`Testing ${keyName}...`);
-      const response = await fetch(`${API_BASE_URL}/api-keys/${keyId}/test`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Connection test failed');
-      }
+      const data = await api(`/api-keys/${keyId}/test`, { method: 'POST' });
 
       toast.success(
         `✅ ${keyName} is working! Model: ${data.details.model} (${data.details.tokensUsed} tokens used)`
@@ -179,22 +136,12 @@ const ApiKeysTab = ({ token }) => {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api-keys/reset-usage/${keyId}`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to reset usage');
-      }
-
+      await api(`/api-keys/reset-usage/${keyId}`, { method: 'POST' });
       toast.success('Usage reset successfully');
       fetchKeys();
     } catch (error) {
       console.error('Error resetting usage:', error);
-      toast.error(`Failed to reset usage: ${error.message}`);
+      // Error toast already shown by useApi
     }
   };
 
