@@ -42,6 +42,8 @@ vi.mock('../config/api', () => ({
       LOCATIONS_REVERSE: '/locations/reverse',
       LOCATIONS_POPULAR: '/locations/popular',
     },
+    // Top-level properties for backward compatibility (weatherApi.js uses these)
+    LOCATIONS: '/locations',
   },
 }));
 
