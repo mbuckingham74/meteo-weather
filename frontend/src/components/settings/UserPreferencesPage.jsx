@@ -44,27 +44,27 @@ const UserPreferencesPage = () => {
       return;
     }
 
-    fetchPreferences();
-  }, [isAuthenticated, navigate]);
+    const fetchPreferences = async () => {
+      try {
+        setLoading(true);
+        const data = await api('/user-preferences');
 
-  const fetchPreferences = async () => {
-    try {
-      setLoading(true);
-      const data = await api('/user-preferences');
+        // Convert time from HH:MM:SS to HH:MM for input
+        if (data.report_time) {
+          data.report_time = data.report_time.substring(0, 5);
+        }
 
-      // Convert time from HH:MM:SS to HH:MM for input
-      if (data.report_time) {
-        data.report_time = data.report_time.substring(0, 5);
+        setPreferences(data);
+      } catch (err) {
+        console.error('Error fetching preferences:', err);
+        setError('Failed to load preferences');
+      } finally {
+        setLoading(false);
       }
+    };
 
-      setPreferences(data);
-    } catch (err) {
-      console.error('Error fetching preferences:', err);
-      setError('Failed to load preferences');
-    } finally {
-      setLoading(false);
-    }
-  };
+    fetchPreferences();
+  }, [isAuthenticated, navigate, api]);
 
   const handleSave = async (e) => {
     e.preventDefault();

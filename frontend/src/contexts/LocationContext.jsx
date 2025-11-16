@@ -5,7 +5,7 @@ import {
   clearVersionedData,
   getMigrationInfo,
 } from '../utils/localStorageVersion';
-import { debugError, debugWarn, debugInfo } from '../utils/debugLogger';
+import { debugWarn } from '../utils/debugLogger';
 
 /**
  * LocationContext

@@ -11,7 +11,7 @@ const KEY_FORMAT_HINTS = {
   cohere: 'Get your key from Cohere dashboard',
 };
 
-const AddApiKeyModal = ({ provider, providerInfo, token, onClose, onSuccess }) => {
+const AddApiKeyModal = ({ provider, providerInfo, _token, onClose, onSuccess }) => {
   const api = useApi({ showErrorToast: false }); // Manual error handling for better UX
   const [formData, setFormData] = useState({
     keyName: '',

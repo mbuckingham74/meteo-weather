@@ -140,7 +140,7 @@ export async function loginUser(email, password) {
  * @returns {Promise<Object>} User profile
  * @throws {AppError} User-friendly error with recovery guidance
  */
-export async function getCurrentUser(accessToken) {
+export async function getCurrentUser(_accessToken) {
   try {
     const data = await authRequest('/auth/me', {}, 'Fetching user profile');
     return data.user;
@@ -237,7 +237,7 @@ export async function refreshAccessToken(refreshToken) {
  * @returns {Promise<Object>} Logout confirmation
  * @throws {AppError} User-friendly error with recovery guidance
  */
-export async function logoutUser(accessToken) {
+export async function logoutUser(_accessToken) {
   try {
     return await authRequest('/auth/logout', { method: 'POST' }, 'Logging out user');
   } catch (error) {
@@ -254,7 +254,7 @@ export async function logoutUser(accessToken) {
  * @returns {Promise<Object>} User preferences
  * @throws {AppError} User-friendly error with recovery guidance
  */
-export async function getUserPreferences(accessToken) {
+export async function getUserPreferences(_accessToken) {
   try {
     const data = await authRequest('/user/preferences', {}, 'Fetching user preferences');
     return data.preferences;
@@ -294,7 +294,7 @@ export async function updateUserPreferences(accessToken, preferences) {
  * @returns {Promise<Array>} User favorites
  * @throws {AppError} User-friendly error with recovery guidance
  */
-export async function getCloudFavorites(accessToken) {
+export async function getCloudFavorites(_accessToken) {
   try {
     const data = await authRequest('/user/favorites', {}, 'Fetching cloud favorites');
     return data.favorites;

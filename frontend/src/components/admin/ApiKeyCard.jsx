@@ -4,7 +4,7 @@ import './ApiKeyCard.css';
 const ApiKeyCard = ({
   apiKey,
   provider,
-  providerInfo,
+  _providerInfo,
   onDelete,
   onUpdate,
   onTest,
