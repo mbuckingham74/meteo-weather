@@ -5,30 +5,44 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
-// Mock axios before any imports
-vi.mock('axios', () => {
-  // Create shared mock functions so all axios instances use the same mock
-  const sharedGet = vi.fn();
+// Mock apiClient before any imports
+vi.mock('./apiClient', () => ({
+  apiRequest: vi.fn(),
+}));
 
-  const createMockAxios = () => ({
-    get: sharedGet,
-    interceptors: {
-      response: {
-        use: vi.fn(),
-      },
+// Mock errorHandler
+vi.mock('../utils/errorHandler', () => ({
+  handleAPIError: vi.fn((error, context) => {
+    // Return an AppError-like object
+    const appError = new Error(error.message || 'Network error - check your connection');
+    appError.code = 'UNKNOWN_ERROR';
+    appError.recoverable = true;
+    return appError;
+  }),
+}));
+
+// Mock debugLogger
+vi.mock('../utils/debugLogger', () => ({
+  debugInfo: vi.fn(),
+  debugError: vi.fn(),
+}));
+
+// Mock API config
+vi.mock('../config/api', () => ({
+  default: {
+    BASE_URL: 'http://localhost:5001/api',
+    ENDPOINTS: {
+      WEATHER_CURRENT: '/weather/current',
+      WEATHER_FORECAST: '/weather/forecast',
+      WEATHER_HOURLY: '/weather/hourly',
+      WEATHER_HISTORICAL: '/weather/historical',
     },
-  });
+    LOCATIONS: '/locations',
+    HEALTH: '/health',
+  },
+}));
 
-  const mockAxios = createMockAxios();
-  mockAxios.create = vi.fn(() => createMockAxios());
-
-  return {
-    default: mockAxios,
-    ...mockAxios,
-  };
-});
-
-import axios from 'axios';
+import { apiRequest } from './apiClient';
 import {
   getCurrentWeather,
   getWeatherForecast,
@@ -55,37 +69,38 @@ describe('Weather API Service', () => {
         conditions: 'Cloudy',
       };
 
-      axios.get.mockResolvedValue({ data: mockData });
+      apiRequest.mockResolvedValue(mockData);
 
       const result = await getCurrentWeather('London,UK');
 
-      expect(axios.get).toHaveBeenCalledWith('/weather/current/London%2CUK');
+      expect(apiRequest).toHaveBeenCalledWith('/weather/current/London%2CUK', { method: 'GET' });
       expect(result).toEqual(mockData);
     });
 
     it('encodes special characters in location', async () => {
-      axios.get.mockResolvedValue({ data: {} });
+      apiRequest.mockResolvedValue({});
 
       await getCurrentWeather('São Paulo, Brazil');
 
-      expect(axios.get).toHaveBeenCalledWith(
-        expect.stringContaining('S%C3%A3o%20Paulo%2C%20Brazil')
+      expect(apiRequest).toHaveBeenCalledWith(
+        expect.stringContaining('S%C3%A3o%20Paulo%2C%20Brazil'),
+        { method: 'GET' }
       );
     });
 
     it('handles API errors', async () => {
-      const mockError = new Error('Network error');
-      mockError.response = { status: 500, data: { message: 'Network error' } };
-      axios.get.mockRejectedValue(mockError);
+      const mockError = new Error('Network error - check your connection');
+      apiRequest.mockRejectedValue(mockError);
 
-      await expect(getCurrentWeather('London')).rejects.toThrow('Network error');
+      await expect(getCurrentWeather('London')).rejects.toThrow(
+        'Network error - check your connection'
+      );
     });
 
     it('logs errors to console', async () => {
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
       const mockError = new Error('API Error');
-      mockError.response = { status: 500, data: { message: 'API Error' } };
-      axios.get.mockRejectedValue(mockError);
+      apiRequest.mockRejectedValue(mockError);
 
       await expect(getCurrentWeather('London')).rejects.toThrow();
 
@@ -99,100 +114,107 @@ describe('Weather API Service', () => {
   describe('getWeatherForecast', () => {
     it('fetches forecast with default days', async () => {
       const mockData = { forecast: [] };
-      axios.get.mockResolvedValue({ data: mockData });
+      apiRequest.mockResolvedValue(mockData);
 
       const result = await getWeatherForecast('Seattle');
 
-      expect(axios.get).toHaveBeenCalledWith('/weather/forecast/Seattle?days=7');
+      expect(apiRequest).toHaveBeenCalledWith('/weather/forecast/Seattle?days=7', {
+        method: 'GET',
+      });
       expect(result).toEqual(mockData);
     });
 
     it('fetches forecast with custom days', async () => {
       const mockData = { forecast: [] };
-      axios.get.mockResolvedValue({ data: mockData });
+      apiRequest.mockResolvedValue(mockData);
 
       await getWeatherForecast('Seattle', 14);
 
-      expect(axios.get).toHaveBeenCalledWith('/weather/forecast/Seattle?days=14');
+      expect(apiRequest).toHaveBeenCalledWith('/weather/forecast/Seattle?days=14', {
+        method: 'GET',
+      });
     });
 
     it('encodes location in URL', async () => {
-      axios.get.mockResolvedValue({ data: {} });
+      apiRequest.mockResolvedValue({});
 
       await getWeatherForecast('New York, NY');
 
-      expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('New%20York%2C%20NY'));
+      expect(apiRequest).toHaveBeenCalledWith(expect.stringContaining('New%20York%2C%20NY'), {
+        method: 'GET',
+      });
     });
 
     it('handles errors', async () => {
-      const mockError = new Error('Forecast error');
-      mockError.response = { status: 500, data: { message: 'Forecast error' } };
-      axios.get.mockRejectedValue(mockError);
+      const mockError = new Error('Network error - check your connection');
+      apiRequest.mockRejectedValue(mockError);
 
-      await expect(getWeatherForecast('Seattle')).rejects.toThrow('Forecast error');
+      await expect(getWeatherForecast('Seattle')).rejects.toThrow(
+        'Network error - check your connection'
+      );
     });
   });
 
   describe('getHourlyForecast', () => {
     it('fetches hourly forecast with default hours', async () => {
       const mockData = { hourly: [] };
-      axios.get.mockResolvedValue({ data: mockData });
+      apiRequest.mockResolvedValue(mockData);
 
       const result = await getHourlyForecast('Boston');
 
-      expect(axios.get).toHaveBeenCalledWith('/weather/hourly/Boston?hours=48');
+      expect(apiRequest).toHaveBeenCalledWith('/weather/hourly/Boston?hours=48', { method: 'GET' });
       expect(result).toEqual(mockData);
     });
 
     it('fetches hourly forecast with custom hours', async () => {
       const mockData = { hourly: [] };
-      axios.get.mockResolvedValue({ data: mockData });
+      apiRequest.mockResolvedValue(mockData);
 
       await getHourlyForecast('Boston', 72);
 
-      expect(axios.get).toHaveBeenCalledWith('/weather/hourly/Boston?hours=72');
+      expect(apiRequest).toHaveBeenCalledWith('/weather/hourly/Boston?hours=72', { method: 'GET' });
     });
 
     it('handles errors', async () => {
-      const mockError = new Error('Hourly error');
-      mockError.response = { status: 500, data: { message: 'Hourly error' } };
-      axios.get.mockRejectedValue(mockError);
+      const mockError = new Error('Network error - check your connection');
+      apiRequest.mockRejectedValue(mockError);
 
-      await expect(getHourlyForecast('Boston')).rejects.toThrow('Hourly error');
+      await expect(getHourlyForecast('Boston')).rejects.toThrow(
+        'Network error - check your connection'
+      );
     });
   });
 
   describe('getHistoricalWeather', () => {
     it('fetches historical weather with date range', async () => {
       const mockData = { historical: [] };
-      axios.get.mockResolvedValue({ data: mockData });
+      apiRequest.mockResolvedValue(mockData);
 
       const result = await getHistoricalWeather('Chicago', '2025-01-01', '2025-01-31');
 
-      expect(axios.get).toHaveBeenCalledWith('/weather/historical/Chicago', {
-        params: { start: '2025-01-01', end: '2025-01-31' },
-      });
+      expect(apiRequest).toHaveBeenCalledWith(
+        '/weather/historical/Chicago?start=2025-01-01&end=2025-01-31',
+        { method: 'GET' }
+      );
       expect(result).toEqual(mockData);
     });
 
     it('encodes location in URL', async () => {
-      axios.get.mockResolvedValue({ data: {} });
+      apiRequest.mockResolvedValue({});
 
       await getHistoricalWeather('San Francisco, CA', '2025-01-01', '2025-01-31');
 
-      expect(axios.get).toHaveBeenCalledWith(
-        expect.stringContaining('San%20Francisco%2C%20CA'),
-        expect.any(Object)
-      );
+      expect(apiRequest).toHaveBeenCalledWith(expect.stringContaining('San%20Francisco%2C%20CA'), {
+        method: 'GET',
+      });
     });
 
     it('handles errors', async () => {
-      const mockError = new Error('Historical error');
-      mockError.response = { status: 500, data: { message: 'Historical error' } };
-      axios.get.mockRejectedValue(mockError);
+      const mockError = new Error('Network error - check your connection');
+      apiRequest.mockRejectedValue(mockError);
 
       await expect(getHistoricalWeather('Chicago', '2025-01-01', '2025-01-31')).rejects.toThrow(
-        'Historical error'
+        'Network error - check your connection'
       );
     });
   });
@@ -200,29 +222,29 @@ describe('Weather API Service', () => {
   describe('searchLocations', () => {
     it('searches locations with default limit', async () => {
       const mockData = { locations: [{ name: 'Paris' }, { name: 'Paris, TX' }] };
-      axios.get.mockResolvedValue({ data: mockData });
+      apiRequest.mockResolvedValue(mockData);
 
       const result = await searchLocations('Paris');
 
-      expect(axios.get).toHaveBeenCalledWith('/locations/search', {
-        params: { q: 'Paris', limit: 10 },
+      expect(apiRequest).toHaveBeenCalledWith('/locations/search?q=Paris&limit=10', {
+        method: 'GET',
       });
       expect(result).toEqual(mockData.locations);
     });
 
     it('searches locations with custom limit', async () => {
       const mockData = { locations: [] };
-      axios.get.mockResolvedValue({ data: mockData });
+      apiRequest.mockResolvedValue(mockData);
 
       await searchLocations('London', 5);
 
-      expect(axios.get).toHaveBeenCalledWith('/locations/search', {
-        params: { q: 'London', limit: 5 },
+      expect(apiRequest).toHaveBeenCalledWith('/locations/search?q=London&limit=5', {
+        method: 'GET',
       });
     });
 
     it('returns empty array if locations is undefined', async () => {
-      axios.get.mockResolvedValue({ data: {} });
+      apiRequest.mockResolvedValue({});
 
       const result = await searchLocations('NonExistent');
 
@@ -230,22 +252,23 @@ describe('Weather API Service', () => {
     });
 
     it('handles errors', async () => {
-      const mockError = new Error('Search error');
-      mockError.response = { status: 500, data: { message: 'Search error' } };
-      axios.get.mockRejectedValue(mockError);
+      const mockError = new Error('Network error - check your connection');
+      apiRequest.mockRejectedValue(mockError);
 
-      await expect(searchLocations('Paris')).rejects.toThrow('Search error');
+      await expect(searchLocations('Paris')).rejects.toThrow(
+        'Network error - check your connection'
+      );
     });
   });
 
   describe('getAllLocations', () => {
     it('fetches all locations with default pagination', async () => {
       const mockData = { locations: [{ name: 'Location1' }] };
-      axios.get.mockResolvedValue({ data: mockData });
+      apiRequest.mockResolvedValue(mockData);
 
       const result = await getAllLocations();
 
-      expect(axios.get).toHaveBeenCalledWith('/locations', {
+      expect(apiRequest).toHaveBeenCalledWith('/locations', {
         params: { limit: 100, offset: 0 },
       });
       expect(result).toEqual(mockData.locations);
@@ -253,17 +276,17 @@ describe('Weather API Service', () => {
 
     it('fetches locations with custom pagination', async () => {
       const mockData = { locations: [] };
-      axios.get.mockResolvedValue({ data: mockData });
+      apiRequest.mockResolvedValue(mockData);
 
       await getAllLocations(50, 25);
 
-      expect(axios.get).toHaveBeenCalledWith('/locations', {
+      expect(apiRequest).toHaveBeenCalledWith('/locations', {
         params: { limit: 50, offset: 25 },
       });
     });
 
     it('returns empty array if locations is undefined', async () => {
-      axios.get.mockResolvedValue({ data: {} });
+      apiRequest.mockResolvedValue({});
 
       const result = await getAllLocations();
 
@@ -273,7 +296,7 @@ describe('Weather API Service', () => {
     it('handles errors', async () => {
       const mockError = new Error('Get all error');
       mockError.response = { status: 500, data: { message: 'Get all error' } };
-      axios.get.mockRejectedValue(mockError);
+      apiRequest.mockRejectedValue(mockError);
 
       await expect(getAllLocations()).rejects.toThrow('Get all error');
     });
@@ -284,11 +307,11 @@ describe('Weather API Service', () => {
       const mockData = {
         results: [{ name: 'New York', lat: 40.7128, lon: -74.006 }],
       };
-      axios.get.mockResolvedValue({ data: mockData });
+      apiRequest.mockResolvedValue(mockData);
 
       const result = await geocodeLocation('New York');
 
-      expect(axios.get).toHaveBeenCalledWith('/locations/geocode', {
+      expect(apiRequest).toHaveBeenCalledWith('/locations/geocode', {
         params: { q: 'New York', limit: 5 },
         timeout: 5000,
       });
@@ -297,18 +320,18 @@ describe('Weather API Service', () => {
 
     it('geocodes location with custom limit', async () => {
       const mockData = { results: [] };
-      axios.get.mockResolvedValue({ data: mockData });
+      apiRequest.mockResolvedValue(mockData);
 
       await geocodeLocation('Seattle', 10);
 
-      expect(axios.get).toHaveBeenCalledWith('/locations/geocode', {
+      expect(apiRequest).toHaveBeenCalledWith('/locations/geocode', {
         params: { q: 'Seattle', limit: 10 },
         timeout: 5000,
       });
     });
 
     it('returns empty array if results is undefined', async () => {
-      axios.get.mockResolvedValue({ data: {} });
+      apiRequest.mockResolvedValue({});
 
       const result = await geocodeLocation('Test');
 
@@ -318,7 +341,7 @@ describe('Weather API Service', () => {
     it('handles errors', async () => {
       const mockError = new Error('Geocode error');
       mockError.response = { status: 500, data: { message: 'Geocode error' } };
-      axios.get.mockRejectedValue(mockError);
+      apiRequest.mockRejectedValue(mockError);
 
       // geocodeLocation doesn't throw errors - it returns empty array for autocomplete
       const result = await geocodeLocation('Test');
@@ -331,11 +354,11 @@ describe('Weather API Service', () => {
       const mockData = {
         location: { name: 'San Francisco', lat: 37.7749, lon: -122.4194 },
       };
-      axios.get.mockResolvedValue({ data: mockData });
+      apiRequest.mockResolvedValue(mockData);
 
       const result = await reverseGeocode(37.7749, -122.4194);
 
-      expect(axios.get).toHaveBeenCalledWith('/locations/reverse', {
+      expect(apiRequest).toHaveBeenCalledWith('/locations/reverse', {
         params: { lat: 37.7749, lon: -122.4194 },
       });
       expect(result).toEqual(mockData.location);
@@ -343,19 +366,19 @@ describe('Weather API Service', () => {
 
     it('handles negative coordinates', async () => {
       const mockData = { location: {} };
-      axios.get.mockResolvedValue({ data: mockData });
+      apiRequest.mockResolvedValue(mockData);
 
       await reverseGeocode(-33.8688, 151.2093);
 
-      expect(axios.get).toHaveBeenCalledWith('/locations/reverse', {
-        params: { lat: -33.8688, lon: 151.2093 },
+      expect(apiRequest).toHaveBeenCalledWith('/locations/reverse?lat=-33.8688&lon=151.2093', {
+        method: 'GET',
       });
     });
 
     it('handles errors', async () => {
       const mockError = new Error('Reverse geocode error');
       mockError.response = { status: 500, data: { message: 'Reverse geocode error' } };
-      axios.get.mockRejectedValue(mockError);
+      apiRequest.mockRejectedValue(mockError);
 
       await expect(reverseGeocode(0, 0)).rejects.toThrow('Reverse geocode error');
     });
@@ -366,16 +389,16 @@ describe('Weather API Service', () => {
       const mockData = {
         locations: [{ name: 'London' }, { name: 'Paris' }, { name: 'Tokyo' }],
       };
-      axios.get.mockResolvedValue({ data: mockData });
+      apiRequest.mockResolvedValue(mockData);
 
       const result = await getPopularLocations();
 
-      expect(axios.get).toHaveBeenCalledWith('/locations/popular');
+      expect(apiRequest).toHaveBeenCalledWith('/locations/popular', { method: 'GET' });
       expect(result).toEqual(mockData.locations);
     });
 
     it('returns empty array if locations is undefined', async () => {
-      axios.get.mockResolvedValue({ data: {} });
+      apiRequest.mockResolvedValue({});
 
       const result = await getPopularLocations();
 
@@ -385,7 +408,7 @@ describe('Weather API Service', () => {
     it('handles errors', async () => {
       const mockError = new Error('Popular error');
       mockError.response = { status: 500, data: { message: 'Popular error' } };
-      axios.get.mockRejectedValue(mockError);
+      apiRequest.mockRejectedValue(mockError);
 
       await expect(getPopularLocations()).rejects.toThrow('Popular error');
     });
@@ -394,18 +417,18 @@ describe('Weather API Service', () => {
   describe('testApiConnection', () => {
     it('tests API connection successfully', async () => {
       const mockData = { status: 'ok', message: 'API is working' };
-      axios.get.mockResolvedValue({ data: mockData });
+      apiRequest.mockResolvedValue(mockData);
 
       const result = await testApiConnection();
 
-      expect(axios.get).toHaveBeenCalledWith('/weather/test', { timeout: 5000 });
+      expect(apiRequest).toHaveBeenCalledWith('/weather/test', { timeout: 5000 });
       expect(result).toEqual(mockData);
     });
 
     it('handles connection errors', async () => {
       const mockError = new Error('Connection failed');
       mockError.response = { status: 500, data: { message: 'Connection failed' } };
-      axios.get.mockRejectedValue(mockError);
+      apiRequest.mockRejectedValue(mockError);
 
       await expect(testApiConnection()).rejects.toThrow('Connection failed');
     });
@@ -419,7 +442,7 @@ describe('Weather API Service', () => {
         data: { error: 'Rate limit exceeded' },
       };
 
-      axios.get.mockRejectedValue(mockError);
+      apiRequest.mockRejectedValue(mockError);
 
       await expect(getCurrentWeather('Test')).rejects.toMatchObject({
         code: 'RATE_LIMITED',

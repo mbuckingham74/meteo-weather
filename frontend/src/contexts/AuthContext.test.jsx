@@ -337,8 +337,8 @@ describe('AuthContext', () => {
         expect(screen.getByTestId('is-authenticated')).toHaveTextContent('no');
       });
 
-      expect(console.error).toHaveBeenCalledWith('Logout error:', expect.any(Error));
-      // Should still clear state even if API call fails
+      // Note: debugError is used instead of console.error, and only logs in dev mode
+      // So we just verify the function behavior (state cleared even on error)
       expect(removeItemSpy).toHaveBeenCalledWith('accessToken');
     });
   });
@@ -424,7 +424,8 @@ describe('AuthContext', () => {
         expect(screen.getByTestId('loading')).toHaveTextContent('ready');
       });
 
-      expect(console.error).toHaveBeenCalledWith('Auth initialization error:', expect.any(Error));
+      // Note: debugError is used instead of console.error, and only logs in dev mode
+      // The important thing is that the component handles the error gracefully (loading completes)
     });
   });
 });
