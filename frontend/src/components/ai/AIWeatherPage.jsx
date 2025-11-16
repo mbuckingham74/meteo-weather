@@ -162,7 +162,7 @@ function AIWeatherPage() {
     } finally {
       setLoading(false);
     }
-  }, [question, location]);
+  }, [question, location, api, provider]);
 
   // Auto-submit when question is pre-filled from URL and location is available
   React.useEffect(() => {
@@ -253,7 +253,7 @@ function AIWeatherPage() {
     } finally {
       setShareLoading(false);
     }
-  }, [answer, question]);
+  }, [answer, question, api]);
 
   // Handle selecting a history item - replay the cached answer
   const handleSelectHistory = React.useCallback((historyItem) => {

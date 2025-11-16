@@ -216,7 +216,7 @@ async function callGrokAPI(apiKey, systemPrompt, userMessage, maxTokens = 500) {
 /**
  * Call Google AI (Gemini) API
  */
-async function callGoogleAIAPI(apiKey, systemPrompt, userMessage, maxTokens = 500) {
+async function callGoogleAIAPI(apiKey, systemPrompt, userMessage, _maxTokens = 500) {
   const { GoogleGenerativeAI } = require('@google/generative-ai');
   const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({ model: MODELS.google });

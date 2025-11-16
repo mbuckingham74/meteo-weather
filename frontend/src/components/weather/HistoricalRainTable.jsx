@@ -46,7 +46,7 @@ function HistoricalRainTable({ location, date, years = 25 }) {
     if (location && date) {
       fetchHistoricalData();
     }
-  }, [location, date, years]);
+  }, [location, date, years, api]);
 
   if (loading) {
     return (

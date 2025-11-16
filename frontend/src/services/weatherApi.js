@@ -14,7 +14,7 @@
  * - User-friendly error messages via handleAPIError
  */
 
-import { apiRequest, ApiError } from './apiClient';
+import { apiRequest } from './apiClient';
 import API_CONFIG from '../config/api';
 import { handleAPIError } from '../utils/errorHandler';
 import { debugInfo, debugError } from '../utils/debugLogger';

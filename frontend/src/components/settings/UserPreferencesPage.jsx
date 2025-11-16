@@ -3,7 +3,7 @@
  * Comprehensive settings page for user preferences with auth integration
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import useApi from '../../hooks/useApi';
@@ -37,17 +37,8 @@ const UserPreferencesPage = () => {
   const [locationSearch, setLocationSearch] = useState('');
   const [searchResults, setSearchResults] = useState([]);
 
-  // Fetch preferences on mount
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/login', { state: { from: '/preferences' } });
-      return;
-    }
-
-    fetchPreferences();
-  }, [isAuthenticated, navigate]);
-
-  const fetchPreferences = async () => {
+  // Fetch preferences function (memoized)
+  const fetchPreferences = useCallback(async () => {
     try {
       setLoading(true);
       const data = await api('/user-preferences');
@@ -64,7 +55,17 @@ const UserPreferencesPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [api]);
+
+  // Fetch preferences on mount
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/login', { state: { from: '/preferences' } });
+      return;
+    }
+
+    fetchPreferences();
+  }, [isAuthenticated, navigate, fetchPreferences]);
 
   const handleSave = async (e) => {
     e.preventDefault();
