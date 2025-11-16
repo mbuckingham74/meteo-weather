@@ -3,7 +3,7 @@
  * Comprehensive settings page for user preferences with auth integration
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import useApi from '../../hooks/useApi';
@@ -37,6 +37,26 @@ const UserPreferencesPage = () => {
   const [locationSearch, setLocationSearch] = useState('');
   const [searchResults, setSearchResults] = useState([]);
 
+  // Fetch preferences function (memoized)
+  const fetchPreferences = useCallback(async () => {
+    try {
+      setLoading(true);
+      const data = await api('/user-preferences');
+
+      // Convert time from HH:MM:SS to HH:MM for input
+      if (data.report_time) {
+        data.report_time = data.report_time.substring(0, 5);
+      }
+
+      setPreferences(data);
+    } catch (err) {
+      console.error('Error fetching preferences:', err);
+      setError('Failed to load preferences');
+    } finally {
+      setLoading(false);
+    }
+  }, [api]);
+
   // Fetch preferences on mount
   useEffect(() => {
     if (!isAuthenticated) {
@@ -44,27 +64,8 @@ const UserPreferencesPage = () => {
       return;
     }
 
-    const fetchPreferences = async () => {
-      try {
-        setLoading(true);
-        const data = await api('/user-preferences');
-
-        // Convert time from HH:MM:SS to HH:MM for input
-        if (data.report_time) {
-          data.report_time = data.report_time.substring(0, 5);
-        }
-
-        setPreferences(data);
-      } catch (err) {
-        console.error('Error fetching preferences:', err);
-        setError('Failed to load preferences');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchPreferences();
-  }, [isAuthenticated, navigate, api]);
+  }, [isAuthenticated, navigate, fetchPreferences]);
 
   const handleSave = async (e) => {
     e.preventDefault();
