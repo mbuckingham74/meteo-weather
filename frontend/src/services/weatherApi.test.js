@@ -12,10 +12,10 @@ vi.mock('./apiClient', () => ({
 
 // Mock errorHandler
 vi.mock('../utils/errorHandler', () => ({
-  handleAPIError: vi.fn((error, context) => {
+  handleAPIError: vi.fn((error, _context) => {
     // Return an AppError-like object
     const appError = new Error(error.message || 'Network error - check your connection');
-    appError.code = 'UNKNOWN_ERROR';
+    appError.code = error.response?.status === 429 ? 'RATE_LIMITED' : 'UNKNOWN_ERROR';
     appError.recoverable = true;
     return appError;
   }),
@@ -32,13 +32,16 @@ vi.mock('../config/api', () => ({
   default: {
     BASE_URL: 'http://localhost:5001/api',
     ENDPOINTS: {
+      WEATHER: '/weather',
       WEATHER_CURRENT: '/weather/current',
       WEATHER_FORECAST: '/weather/forecast',
       WEATHER_HOURLY: '/weather/hourly',
       WEATHER_HISTORICAL: '/weather/historical',
+      LOCATIONS: '/locations',
+      LOCATIONS_GEOCODE: '/locations/geocode',
+      LOCATIONS_REVERSE: '/locations/reverse',
+      LOCATIONS_POPULAR: '/locations/popular',
     },
-    LOCATIONS: '/locations',
-    HEALTH: '/health',
   },
 }));
 
@@ -268,8 +271,8 @@ describe('Weather API Service', () => {
 
       const result = await getAllLocations();
 
-      expect(apiRequest).toHaveBeenCalledWith('/locations', {
-        params: { limit: 100, offset: 0 },
+      expect(apiRequest).toHaveBeenCalledWith('/locations?limit=100&offset=0', {
+        method: 'GET',
       });
       expect(result).toEqual(mockData.locations);
     });
@@ -280,8 +283,8 @@ describe('Weather API Service', () => {
 
       await getAllLocations(50, 25);
 
-      expect(apiRequest).toHaveBeenCalledWith('/locations', {
-        params: { limit: 50, offset: 25 },
+      expect(apiRequest).toHaveBeenCalledWith('/locations?limit=50&offset=25', {
+        method: 'GET',
       });
     });
 
@@ -311,8 +314,8 @@ describe('Weather API Service', () => {
 
       const result = await geocodeLocation('New York');
 
-      expect(apiRequest).toHaveBeenCalledWith('/locations/geocode', {
-        params: { q: 'New York', limit: 5 },
+      expect(apiRequest).toHaveBeenCalledWith('/locations/geocode?q=New+York&limit=5', {
+        method: 'GET',
         timeout: 5000,
       });
       expect(result).toEqual(mockData.results);
@@ -324,8 +327,8 @@ describe('Weather API Service', () => {
 
       await geocodeLocation('Seattle', 10);
 
-      expect(apiRequest).toHaveBeenCalledWith('/locations/geocode', {
-        params: { q: 'Seattle', limit: 10 },
+      expect(apiRequest).toHaveBeenCalledWith('/locations/geocode?q=Seattle&limit=10', {
+        method: 'GET',
         timeout: 5000,
       });
     });
@@ -358,8 +361,8 @@ describe('Weather API Service', () => {
 
       const result = await reverseGeocode(37.7749, -122.4194);
 
-      expect(apiRequest).toHaveBeenCalledWith('/locations/reverse', {
-        params: { lat: 37.7749, lon: -122.4194 },
+      expect(apiRequest).toHaveBeenCalledWith('/locations/reverse?lat=37.7749&lon=-122.4194', {
+        method: 'GET',
       });
       expect(result).toEqual(mockData.location);
     });
@@ -421,7 +424,10 @@ describe('Weather API Service', () => {
 
       const result = await testApiConnection();
 
-      expect(apiRequest).toHaveBeenCalledWith('/weather/test', { timeout: 5000 });
+      expect(apiRequest).toHaveBeenCalledWith('/weather/test', {
+        method: 'GET',
+        timeout: 5000,
+      });
       expect(result).toEqual(mockData);
     });
 
