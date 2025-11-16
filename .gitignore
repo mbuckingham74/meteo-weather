@@ -15,6 +15,10 @@ frontend/.env
 # Private developer documentation (contains deployment credentials and internal details)
 .DEVELOPER_ONBOARDING.md
 
+# Session context files (user-specific)
+.claude/.SESSION_START.txt
+.SESSION_START.txt
+
 # Build outputs
 frontend/build/
 dist/
