@@ -71,19 +71,25 @@ describe('AuthHeader Component', () => {
     it('renders Sign In button when not authenticated', () => {
       render(<AuthHeader />);
 
-      expect(screen.getByText('Sign In')).toBeInTheDocument();
+      // Component has both desktop and mobile "Sign In" buttons
+      const signInButtons = screen.getAllByText('Sign In');
+      expect(signInButtons.length).toBeGreaterThanOrEqual(1);
     });
 
     it('renders Sign Up button when not authenticated', () => {
       render(<AuthHeader />);
 
-      expect(screen.getByText('Sign Up')).toBeInTheDocument();
+      // Component has both desktop and mobile "Sign Up" buttons
+      const signUpButtons = screen.getAllByText('Sign Up');
+      expect(signUpButtons.length).toBeGreaterThanOrEqual(1);
     });
 
     it('renders ThemeToggle when not authenticated', () => {
       render(<AuthHeader />);
 
-      expect(screen.getByTestId('theme-toggle')).toBeInTheDocument();
+      // Component has multiple theme toggles (desktop + mobile)
+      const themeToggles = screen.getAllByTestId('theme-toggle');
+      expect(themeToggles.length).toBeGreaterThanOrEqual(1);
     });
 
     it('does not render user info when not authenticated', () => {
@@ -96,8 +102,9 @@ describe('AuthHeader Component', () => {
     it('opens auth modal in login mode when Sign In clicked', () => {
       render(<AuthHeader />);
 
-      const signInButton = screen.getByText('Sign In');
-      fireEvent.click(signInButton);
+      // Component has both desktop and mobile "Sign In" buttons - click the first one
+      const signInButtons = screen.getAllByText('Sign In');
+      fireEvent.click(signInButtons[0]);
 
       expect(screen.getByTestId('auth-modal')).toBeInTheDocument();
       expect(screen.getByText(/AuthModal - login/i)).toBeInTheDocument();
@@ -106,8 +113,9 @@ describe('AuthHeader Component', () => {
     it('opens auth modal in register mode when Sign Up clicked', () => {
       render(<AuthHeader />);
 
-      const signUpButton = screen.getByText('Sign Up');
-      fireEvent.click(signUpButton);
+      // Component has both desktop and mobile "Sign Up" buttons - click the first one
+      const signUpButtons = screen.getAllByText('Sign Up');
+      fireEvent.click(signUpButtons[0]);
 
       expect(screen.getByTestId('auth-modal')).toBeInTheDocument();
       expect(screen.getByText(/AuthModal - register/i)).toBeInTheDocument();
@@ -116,9 +124,9 @@ describe('AuthHeader Component', () => {
     it('closes auth modal when onClose called', () => {
       render(<AuthHeader />);
 
-      // Open modal
-      const signInButton = screen.getByText('Sign In');
-      fireEvent.click(signInButton);
+      // Open modal - component has both desktop and mobile "Sign In" buttons
+      const signInButtons = screen.getAllByText('Sign In');
+      fireEvent.click(signInButtons[0]);
 
       expect(screen.getByTestId('auth-modal')).toBeInTheDocument();
 
@@ -147,7 +155,9 @@ describe('AuthHeader Component', () => {
     it('renders user name when authenticated', () => {
       render(<AuthHeader />);
 
-      expect(screen.getByText('John Doe')).toBeInTheDocument();
+      // User name appears in both desktop and mobile views
+      const userNames = screen.getAllByText('John Doe');
+      expect(userNames.length).toBeGreaterThanOrEqual(1);
     });
 
     it('renders user avatar button when authenticated', () => {
@@ -171,7 +181,9 @@ describe('AuthHeader Component', () => {
     it('renders ThemeToggle when authenticated', () => {
       render(<AuthHeader />);
 
-      expect(screen.getByTestId('theme-toggle')).toBeInTheDocument();
+      // Component has multiple theme toggles (desktop + mobile)
+      const themeToggles = screen.getAllByTestId('theme-toggle');
+      expect(themeToggles.length).toBeGreaterThanOrEqual(1);
     });
 
     it('opens profile modal when avatar clicked', () => {
@@ -285,9 +297,10 @@ describe('AuthHeader Component', () => {
 
       render(<AuthHeader />);
 
-      const userName = screen.getByText('John Doe');
-      expect(userName).toBeInTheDocument();
-      expect(userName.className).toBeTruthy();
+      // User name appears in both desktop and mobile views - check first one
+      const userNames = screen.getAllByText('John Doe');
+      expect(userNames.length).toBeGreaterThanOrEqual(1);
+      expect(userNames[0].className).toBeTruthy();
     });
   });
 });
