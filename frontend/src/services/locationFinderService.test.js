@@ -6,6 +6,35 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { validateQuery, parseLocationQuery } from './locationFinderService';
 
+/**
+ * Helper to create proper Response-like objects for fetch mocks
+ * Includes headers Map to prevent "Cannot read properties of undefined (reading 'get')" errors
+ */
+const createMockResponse = (data, options = {}) => {
+  const status = options.status || 200;
+  const ok = options.ok !== undefined ? options.ok : status < 400;
+  let statusText = options.statusText;
+
+  if (!statusText) {
+    if (status === 200) statusText = 'OK';
+    else if (status === 400) statusText = 'Bad Request';
+    else if (status === 401) statusText = 'Unauthorized';
+    else if (status === 403) statusText = 'Forbidden';
+    else if (status === 404) statusText = 'Not Found';
+    else if (status === 500) statusText = 'Internal Server Error';
+    else statusText = 'Unknown';
+  }
+
+  return {
+    ok,
+    status,
+    statusText,
+    headers: new Map([['content-type', 'application/json']]),
+    json: async () => data,
+    text: async () => JSON.stringify(data),
+  };
+};
+
 describe('Location Finder Service', () => {
   let originalFetch;
 
@@ -30,12 +59,7 @@ describe('Location Finder Service', () => {
         tokensUsed: 250,
       };
 
-      global.fetch = vi.fn(() =>
-        Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve(mockResponse),
-        })
-      );
+      global.fetch = vi.fn(() => Promise.resolve(createMockResponse(mockResponse)));
 
       const result = await validateQuery('I want somewhere warmer with less rain');
 
@@ -58,12 +82,7 @@ describe('Location Finder Service', () => {
         tokensUsed: 200,
       };
 
-      global.fetch = vi.fn(() =>
-        Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve(mockResponse),
-        })
-      );
+      global.fetch = vi.fn(() => Promise.resolve(createMockResponse(mockResponse)));
 
       const result = await validateQuery('test');
 
@@ -73,11 +92,7 @@ describe('Location Finder Service', () => {
 
     it('handles API error responses', async () => {
       global.fetch = vi.fn(() =>
-        Promise.resolve({
-          ok: false,
-          status: 400,
-          json: () => Promise.resolve({ error: 'Bad request' }),
-        })
+        Promise.resolve(createMockResponse({ error: 'Bad request' }, { status: 400, ok: false }))
       );
 
       await expect(validateQuery('test query')).rejects.toThrow('Bad request');
@@ -91,11 +106,9 @@ describe('Location Finder Service', () => {
 
     it('sends correct API endpoint', async () => {
       global.fetch = vi.fn(() =>
-        Promise.resolve({
-          ok: true,
-          json: () =>
-            Promise.resolve({ success: true, isValid: true, reason: '', tokensUsed: 250 }),
-        })
+        Promise.resolve(
+          createMockResponse({ success: true, isValid: true, reason: '', tokensUsed: 250 })
+        )
       );
 
       await validateQuery('test query');
@@ -131,12 +144,7 @@ describe('Location Finder Service', () => {
         cost: '$0.005',
       };
 
-      global.fetch = vi.fn(() =>
-        Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve(mockResponse),
-        })
-      );
+      global.fetch = vi.fn(() => Promise.resolve(createMockResponse(mockResponse)));
 
       const result = await parseLocationQuery(
         'I want somewhere 15 degrees cooler from June-October'
@@ -164,12 +172,7 @@ describe('Location Finder Service', () => {
         cost: '$0.007',
       };
 
-      global.fetch = vi.fn(() =>
-        Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve(mockResponse),
-        })
-      );
+      global.fetch = vi.fn(() => Promise.resolve(createMockResponse(mockResponse)));
 
       const result = await parseLocationQuery(
         'I currently live in New Smyrna Beach, FL. I want somewhere 15 degrees cooler',
@@ -182,16 +185,14 @@ describe('Location Finder Service', () => {
 
     it('sends current location to API', async () => {
       global.fetch = vi.fn(() =>
-        Promise.resolve({
-          ok: true,
-          json: () =>
-            Promise.resolve({
-              success: true,
-              criteria: {},
-              tokensUsed: 500,
-              cost: '$0.005',
-            }),
-        })
+        Promise.resolve(
+          createMockResponse({
+            success: true,
+            criteria: {},
+            tokensUsed: 500,
+            cost: '$0.005',
+          })
+        )
       );
 
       await parseLocationQuery('test query', mockCurrentLocation);
@@ -206,11 +207,9 @@ describe('Location Finder Service', () => {
 
     it('handles API error responses', async () => {
       global.fetch = vi.fn(() =>
-        Promise.resolve({
-          ok: false,
-          status: 500,
-          json: () => Promise.resolve({ error: 'AI service unavailable' }),
-        })
+        Promise.resolve(
+          createMockResponse({ error: 'AI service unavailable' }, { status: 500, ok: false })
+        )
       );
 
       await expect(parseLocationQuery('test query')).rejects.toThrow('AI service unavailable');
@@ -240,12 +239,7 @@ describe('Location Finder Service', () => {
         cost: '$0.010',
       };
 
-      global.fetch = vi.fn(() =>
-        Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve(mockResponse),
-        })
-      );
+      global.fetch = vi.fn(() => Promise.resolve(createMockResponse(mockResponse)));
 
       const result = await parseLocationQuery(
         'I live in Miami and want somewhere much cooler and less humid'
@@ -264,16 +258,14 @@ describe('Location Finder Service', () => {
 
     it('handles missing optional current location', async () => {
       global.fetch = vi.fn(() =>
-        Promise.resolve({
-          ok: true,
-          json: () =>
-            Promise.resolve({
-              success: true,
-              criteria: { current_location: null },
-              tokensUsed: 450,
-              cost: '$0.005',
-            }),
-        })
+        Promise.resolve(
+          createMockResponse({
+            success: true,
+            criteria: { current_location: null },
+            tokensUsed: 450,
+            cost: '$0.005',
+          })
+        )
       );
 
       const _result = await parseLocationQuery('I want somewhere cooler');
@@ -288,16 +280,14 @@ describe('Location Finder Service', () => {
   describe('API URL Configuration', () => {
     it('uses correct API endpoint for validation', async () => {
       global.fetch = vi.fn(() =>
-        Promise.resolve({
-          ok: true,
-          json: () =>
-            Promise.resolve({
-              success: true,
-              isValid: true,
-              reason: '',
-              tokensUsed: 250,
-            }),
-        })
+        Promise.resolve(
+          createMockResponse({
+            success: true,
+            isValid: true,
+            reason: '',
+            tokensUsed: 250,
+          })
+        )
       );
 
       await validateQuery('test');
@@ -310,16 +300,14 @@ describe('Location Finder Service', () => {
 
     it('uses correct API endpoint for parsing', async () => {
       global.fetch = vi.fn(() =>
-        Promise.resolve({
-          ok: true,
-          json: () =>
-            Promise.resolve({
-              success: true,
-              criteria: {},
-              tokensUsed: 500,
-              cost: '$0.005',
-            }),
-        })
+        Promise.resolve(
+          createMockResponse({
+            success: true,
+            criteria: {},
+            tokensUsed: 500,
+            cost: '$0.005',
+          })
+        )
       );
 
       await parseLocationQuery('test');

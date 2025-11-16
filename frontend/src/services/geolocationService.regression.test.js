@@ -13,6 +13,35 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
+/**
+ * Helper to create proper Response-like objects for fetch mocks
+ * Includes headers Map to prevent "Cannot read properties of undefined (reading 'get')" errors
+ */
+const createMockResponse = (data, options = {}) => {
+  const status = options.status || 200;
+  const ok = options.ok !== undefined ? options.ok : status < 400;
+  let statusText = options.statusText;
+
+  if (!statusText) {
+    if (status === 200) statusText = 'OK';
+    else if (status === 400) statusText = 'Bad Request';
+    else if (status === 401) statusText = 'Unauthorized';
+    else if (status === 403) statusText = 'Forbidden';
+    else if (status === 404) statusText = 'Not Found';
+    else if (status === 500) statusText = 'Internal Server Error';
+    else statusText = 'Unknown';
+  }
+
+  return {
+    ok,
+    status,
+    statusText,
+    headers: new Map([['content-type', 'application/json']]),
+    json: async () => data,
+    text: async () => JSON.stringify(data),
+  };
+};
+
 // Mock the reverseGeocode function
 vi.mock('./weatherApi', () => ({
   reverseGeocode: vi.fn(),
@@ -38,12 +67,7 @@ describe('🚨 REGRESSION PREVENTION: Old Location Bug', () => {
         timezone: 'Africa/Johannesburg',
       };
 
-      global.fetch = vi.fn(() =>
-        Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve(mockIPResponse),
-        })
-      );
+      global.fetch = vi.fn(() => Promise.resolve(createMockResponse(mockIPResponse)));
 
       const mockGeolocation = {
         getCurrentPosition: vi.fn((success, error) => {
@@ -79,12 +103,7 @@ describe('🚨 REGRESSION PREVENTION: Old Location Bug', () => {
         timezone: 'Africa/Johannesburg',
       };
 
-      global.fetch = vi.fn(() =>
-        Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve(mockIPResponse),
-        })
-      );
+      global.fetch = vi.fn(() => Promise.resolve(createMockResponse(mockIPResponse)));
 
       const mockGeolocation = {
         getCurrentPosition: vi.fn((success, error) => {
@@ -115,12 +134,7 @@ describe('🚨 REGRESSION PREVENTION: Old Location Bug', () => {
         timezone: 'Africa/Johannesburg',
       };
 
-      global.fetch = vi.fn(() =>
-        Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve(mockIPResponse),
-        })
-      );
+      global.fetch = vi.fn(() => Promise.resolve(createMockResponse(mockIPResponse)));
 
       const mockGeolocation = {
         getCurrentPosition: vi.fn((success, error) => {
