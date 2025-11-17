@@ -1,14 +1,45 @@
 # 🗺️ Meteo Weather App - Product Roadmap
 
-**Last Updated:** November 8, 2025
+**Last Updated:** November 17, 2025
 
-This roadmap outlines planned features and improvements for the Meteo Weather App. Items are organized by priority and estimated complexity.
+This roadmap outlines planned features and improvements for the Meteo Weather App. Items are organized by priority tiers and estimated complexity.
 
 ---
 
 ## 🎯 Vision
 
 Transform Meteo into a comprehensive weather intelligence platform that combines real-time data, historical analysis, AI insights, and interactive visualizations to help users understand and predict weather patterns.
+
+---
+
+## 📊 New Features Summary (Nov 2025)
+
+**12 new feature proposals organized by priority:**
+
+### Tier 1: High Impact, Medium Effort (Weeks 1-3)
+1. **📧 Email Notifications** - 8-10 hours (infrastructure ready!)
+2. **🔔 Web Push Notifications** - 2-3 days (PWA enhancement)
+3. **📱 Enhanced PWA with Offline Mode** - 3-4 days (installable app)
+
+### Tier 2: High Impact, Higher Effort (Q1 2026)
+4. **🗺️ Multi-City Weather Map** - 1-2 weeks (visualize all favorites)
+5. **🤖 AI Weather Insights** - 1-2 weeks (⭐ UNIQUE DIFFERENTIATOR)
+6. **📊 Historical Weather Lookup** - 1 week (research tool)
+
+### Tier 3: Unique Differentiators (Q1-Q2 2026)
+7. **🌤️ Activity Recommendations** - 2-3 weeks (weather → action)
+8. **🧳 AI Trip Planning** - 3-4 weeks (vacation optimizer)
+9. **📈 Climate Change Tracker** - 2-3 weeks (educational value)
+
+### Tier 4: Quick Wins (1-3 days each)
+10. **⚡ Alert Digest** - 1 day (smart summaries)
+11. **🌍 Weather Twins** - 2-3 days (fun, shareable)
+12. **📸 Story Sharing** - 2 days (social engagement)
+
+**Recommended Start Order:**
+1. Email Notifications (Week 1) - Low effort, high value
+2. AI Weather Insights (Week 2-3) - Perfect for AI-first brand
+3. Activity Recommendations (Week 4-6) - Sticky engagement feature
 
 ---
 
@@ -23,7 +54,640 @@ Transform Meteo into a comprehensive weather intelligence platform that combines
 
 ---
 
-## 📋 Planned Features
+## 📋 Tier 1: High Impact, Medium Effort (1-2 weeks)
+
+### 📧 Email Notifications System ⭐⭐⭐⭐⭐
+**Priority:** Critical | **Complexity:** Low | **Target:** Week 1 | **Est. Time:** 8-10 hours
+
+> Infrastructure already built - just needs SMTP integration
+
+**Why This First:**
+- UI already complete in UserPreferencesPage
+- Database schema already in place
+- Immediate user value and retention driver
+- Low effort, high ROI
+
+**Core Features:**
+- **Daily Weather Reports:** Morning forecast emails with 7-day outlook
+- **Weekly Summaries:** Sunday evening recap with week ahead preview
+- **Severe Weather Alerts:** Instant notifications for warnings, watches, advisories
+- **Custom Triggers:** User-defined thresholds (temp > 90°F, AQI > 150, etc.)
+- **Multi-Location Support:** Separate reports for each saved location
+- **Timezone-Aware:** Emails sent in user's local time
+- **Unsubscribe Management:** Granular control per notification type
+
+**Technical Implementation:**
+- **SMTP Service:** SendGrid or AWS SES integration
+- **Email Templates:** Responsive HTML templates with weather data
+- **Cron Jobs:** `sendWeatherReports.js` runs at scheduled times
+- **Queue System:** Background jobs for email sending
+- **Database Tables:** Already exist (user_preferences with notification settings)
+- **Environment Variables:**
+  ```env
+  SMTP_HOST=smtp.sendgrid.net
+  SMTP_PORT=587
+  SMTP_USER=apikey
+  SMTP_PASS=<sendgrid_api_key>
+  FROM_EMAIL=noreply@meteo-beta.tachyonfuture.com
+  ```
+
+**User Experience:**
+```
+Daily Weather Report - Seattle, WA
+Sent every morning at 7:00 AM
+
+Good morning! Here's your weather for Monday, Nov 17:
+
+🌤️ Today: Partly cloudy, High 58°F, Low 45°F
+☔ Rain: 30% chance in afternoon
+💨 Wind: Light, 5-10 mph from SW
+
+This Week:
+Tue: Sunny, 62°F | Wed: Cloudy, 55°F | Thu: Rain, 52°F
+[View Full Forecast →]
+```
+
+---
+
+### 🔔 Web Push Notifications ⭐⭐⭐⭐⭐
+**Priority:** High | **Complexity:** Medium | **Target:** Week 2 | **Est. Time:** 2-3 days
+
+> Mobile-like experience for critical weather alerts
+
+**Core Features:**
+- **Severe Weather Push:** Instant notifications for tornado warnings, flash floods, etc.
+- **Custom Alert Triggers:** "Notify me when temp drops below 32°F"
+- **AQI Alerts:** "Alert when air quality exceeds 100 (unhealthy)"
+- **Rain Notifications:** "Notify 30 minutes before rain starts"
+- **Location-Based:** Automatic alerts for current location + favorites
+- **Do Not Disturb:** Quiet hours (10 PM - 7 AM)
+- **Rich Notifications:** Weather icons, current conditions in notification
+
+**Technical Implementation:**
+- **Service Worker API:** Already have PWA infrastructure
+- **Push API:** Web Push Protocol with VAPID keys
+- **Backend:** Push notification service in Node.js
+- **Database:** `push_subscriptions` table for device tokens
+- **Integration:** Visual Crossing weather alerts API
+- **Frontend:** Permission request UI, notification preferences
+- **Libraries:** `web-push` npm package
+
+**User Experience:**
+```
+[Browser Notification]
+🌪️ Tornado Warning - Seattle, WA
+Until 6:45 PM. Seek shelter immediately.
+Tap for details →
+```
+
+---
+
+### 📱 Enhanced PWA with Offline Mode ⭐⭐⭐⭐
+**Priority:** High | **Complexity:** Medium | **Target:** Week 3 | **Est. Time:** 3-4 days
+
+> Transform into a true installable weather app
+
+**Current Status:** Basic PWA support exists
+**Enhancement Goal:** Full offline functionality and native-like experience
+
+**Core Features:**
+- **Offline Weather Access:**
+  - Cache last 7 days of weather for all favorite locations
+  - Current conditions available offline
+  - Radar images cached (last 2 hours)
+  - Graceful degradation when offline
+- **Background Sync:**
+  - Automatic updates when connection restored
+  - Queue failed API requests for retry
+  - Sync favorites across devices
+- **Install Experience:**
+  - Custom install prompts (iOS/Android)
+  - Splash screen with brand colors
+  - App icon (multiple sizes)
+  - Home screen shortcuts
+- **Native Features:**
+  - Share API integration (share weather to other apps)
+  - App badges (notification count)
+  - Standalone mode (no browser UI)
+
+**Technical Implementation:**
+- **Service Worker:** Advanced caching strategies
+  - Cache-first for historical data
+  - Network-first for current conditions
+  - Stale-while-revalidate for forecasts
+- **IndexedDB:** Client-side database for offline storage
+- **Manifest.json:** Enhanced with shortcuts, categories
+- **Background Sync API:** For queued updates
+- **Cache Management:** Automatic cleanup of old data (> 7 days)
+
+**User Experience:**
+```
+[Install Prompt]
+📱 Install Meteo Weather
+
+Get instant access to weather with:
+✓ Offline mode for saved locations
+✓ Faster loading times
+✓ Push notifications for alerts
+✓ Home screen icon
+
+[Install] [Not Now]
+```
+
+---
+
+## 📋 Tier 2: High Impact, Higher Effort (2-4 weeks)
+
+### 🗺️ Multi-City Weather Map Dashboard ⭐⭐⭐⭐⭐
+**Priority:** High | **Complexity:** Medium-High | **Target:** Q1 2026 | **Est. Time:** 1-2 weeks
+
+> Visualize weather across all favorite locations at once
+
+**Core Features:**
+- **Interactive World Map:**
+  - Leaflet map showing all saved locations
+  - Custom markers with current temp + weather icon
+  - Color-coded by temperature or AQI
+  - Cluster markers when zoomed out
+- **Quick Comparison:**
+  - Click marker → Weather summary popup
+  - "Compare Selected" button for multi-city comparison
+  - Heatmap overlay for temperature visualization
+- **Layer Toggles:**
+  - Temperature layer (color gradient)
+  - Precipitation layer (animated)
+  - Air quality layer (AQI color coding)
+  - Severe weather alerts overlay
+  - Wind speed and direction
+- **Time Slider:**
+  - Scrub through 48-hour forecast
+  - Watch weather systems move across map
+  - Animate precipitation patterns
+
+**Technical Implementation:**
+- **Frontend:** Leaflet with custom markers
+- **Data:** Batch API calls for all locations (cached)
+- **Rendering:** Canvas rendering for performance
+- **Optimization:** Lazy load marker details on click
+- **Mobile:** Touch-friendly controls, responsive layout
+
+**User Experience:**
+```
+🗺️ My Weather Map
+[Interactive map showing 5 favorite locations]
+
+Seattle, WA: 52°F ☁️
+Portland, OR: 55°F 🌧️
+Denver, CO: 68°F ☀️
+Chicago, IL: 45°F 🌬️
+Boston, MA: 42°F ❄️
+
+[Temperature] [Precipitation] [AQI] [Alerts]
+```
+
+---
+
+### 🤖 AI Weather Insights & Summaries ⭐⭐⭐⭐⭐
+**Priority:** Critical | **Complexity:** Medium-High | **Target:** Q1 2026 | **Est. Time:** 1-2 weeks
+
+> Leverage AI to transform weather data into contextual intelligence
+
+**Why This Matters:**
+- **Unique Differentiator:** No other weather app offers AI-generated insights
+- **Aligns with AI-First Approach:** Extends your Claude Sonnet 4.5 integration
+- **High User Value:** Turns data into actionable advice
+
+**Core Features:**
+- **Daily Weather Summary:**
+  - "Today will be 5°F warmer than average for November. Rain likely after 2 PM. Pack an umbrella!"
+  - Contextual advice based on historical patterns
+  - Personalized for user's activity patterns
+- **Week Ahead Intelligence:**
+  - "Coldest week in 3 years. Expect temperatures 10°F below normal."
+  - "Perfect hiking weather Thu-Sat: clear skies, 65-70°F."
+  - Early warning for unusual patterns
+- **Travel Planning:**
+  - "Best days to visit Seattle next week: Wed-Fri (clear skies, 70°F)"
+  - Avoid/recommend dates based on weather goals
+- **Anomaly Detection:**
+  - "⚠️ Unusual: Temperature 20°F above historical average"
+  - "First frost 3 weeks later than typical"
+  - Statistical significance explained
+
+**Technical Implementation:**
+- **AI Model:** Claude Sonnet 4.5 for analysis
+- **Data Pipeline:**
+  1. Fetch 7-day forecast + 10-year historical average
+  2. Calculate deviations from normal
+  3. Send to Claude with context
+  4. Generate natural language summary
+- **Cost Optimization:**
+  - Batch process daily summaries at 6 AM (off-peak)
+  - Cache insights for 12 hours
+  - ~$0.01-0.02 per summary
+  - Budget: $5/month for 250-500 daily summaries
+- **Database:** `ai_insights` table with caching
+- **Frontend:** Insight card on dashboard, expandable details
+
+**User Experience:**
+```
+🤖 AI Weather Insights
+
+📊 This Week Summary
+"Unusually warm week ahead! Temperatures will be 8-12°F
+above normal for mid-November. Great time for outdoor
+activities. Last time it was this warm in November: 2016."
+
+💡 Today's Advice
+"Perfect weather for your usual Saturday run! Temps in
+the ideal 60-65°F range, low humidity, no rain expected."
+
+⚠️ Weather Alert
+"Cold front arriving Wednesday. Temperature drop of 25°F
+in 12 hours. Dress in layers!"
+
+[View Detailed Analysis →]
+```
+
+---
+
+### 📊 Historical Weather Lookup Tool ⭐⭐⭐⭐
+**Priority:** High | **Complexity:** Low-Medium | **Target:** Q1 2026 | **Est. Time:** 1 week
+
+> Search specific past weather data for any date and location
+
+**Use Cases:**
+- **Trip Planning:** "What was the weather in Paris on June 15, 2019?"
+- **Insurance Claims:** Verify weather conditions on specific date
+- **Event Planning:** Check historical weather for recurring events
+- **Research:** Climate data for academic/scientific purposes
+- **Personal Memory:** "What was the weather on my wedding day?"
+
+**Core Features:**
+- **Single Date Lookup:**
+  - Date picker (back to 1970s via Visual Crossing)
+  - Location search
+  - Detailed conditions for that specific day
+  - Comparison to historical average for that date
+- **Date Range Lookup:**
+  - Select start/end dates (up to 1 year)
+  - Aggregate statistics (avg temp, total precip)
+  - Record days within range
+  - Export to CSV
+- **Bulk Lookup (Premium):**
+  - Upload CSV with (date, location) pairs
+  - Batch process up to 1000 records
+  - Download results as spreadsheet
+  - Perfect for researchers/businesses
+
+**Technical Implementation:**
+- **API:** Visual Crossing Timeline API (historical data back to 1970)
+- **Caching:** Aggressive caching (historical data never changes)
+  - Cache TTL: 365 days for past weather
+  - Reduce API costs significantly
+- **Database:** `historical_lookups` table for popular queries
+- **Export:** CSV generator with formatting
+- **Rate Limiting:** 10 lookups/hour for free, unlimited for premium
+
+**User Experience:**
+```
+🔍 Historical Weather Lookup
+
+📅 Select Date: [June 15, 2019]
+📍 Location: [Paris, France]
+
+[Search]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Weather on June 15, 2019
+Paris, France
+
+🌡️ Temperature: 75°F (High) / 58°F (Low)
+☀️ Conditions: Partly Cloudy
+💧 Precipitation: 0.0 in
+💨 Wind: 8 mph SW
+☁️ Cloud Cover: 35%
+
+📊 Comparison to Historical Average:
+  Temperature: 3°F above normal
+  This was a warmer than average day
+
+[Export to CSV] [View Full Month]
+```
+
+---
+
+## 📋 Tier 3: Unique Differentiators (3-6 weeks)
+
+### 🌤️ Weather-Based Activity Recommendations ⭐⭐⭐⭐⭐
+**Priority:** High | **Complexity:** Medium-High | **Target:** Q1 2026 | **Est. Time:** 2-3 weeks
+
+> Connect weather data to actionable lifestyle decisions
+
+**Why This Is Special:**
+- **Market Gap:** No mainstream weather app does this comprehensively
+- **Sticky Feature:** Users check daily for activity guidance
+- **Easy to Extend:** Add new activities based on user requests
+- **Social Sharing:** "Perfect hiking weather today!" posts
+
+**Activity Categories:**
+1. **Outdoor Sports:**
+   - Hiking, Running, Cycling, Golf, Tennis
+   - Threshold-based scoring (ideal temp, wind, precipitation)
+2. **Photography:**
+   - Golden hour timing
+   - Sunset quality prediction (cloud cover score)
+   - Astrophotography conditions (moon phase, cloud cover)
+   - Aurora forecast (for northern latitudes)
+3. **Gardening:**
+   - Planting conditions (soil temp, frost risk)
+   - Watering recommendations (rain forecast)
+   - Pest activity alerts (temp + humidity triggers)
+4. **Stargazing:**
+   - Clear sky prediction
+   - Moon phase and rise/set times
+   - Light pollution overlay
+   - Best viewing hours
+5. **Water Activities:**
+   - Beach score (temp, UV, wind, waves)
+   - Sailing conditions (wind speed, direction)
+   - Fishing forecast (pressure, temperature, moon)
+6. **Aviation:**
+   - Drone flying (wind, precipitation, visibility)
+   - Small aircraft VFR conditions
+   - Balloon launch windows
+
+**Implementation:**
+- **Rule Engine:** Weighted scoring for each activity
+  ```javascript
+  hikingScore = {
+    temp: { ideal: 65, range: [50, 75], weight: 0.35 },
+    precipitation: { threshold: 0.1, weight: 0.25 },
+    wind: { max: 15, weight: 0.15 },
+    humidity: { max: 70, weight: 0.15 },
+    visibility: { min: 5, weight: 0.10 }
+  }
+  ```
+- **AI Enhancement (Optional):** Claude generates personalized suggestions
+- **Database:** `activity_scores` table with daily calculations
+- **Frontend:** Activity cards with scores, charts showing optimal days
+
+**User Experience:**
+```
+🌤️ Activity Recommendations - Today
+
+🏃 Running: 95/100 ⭐ EXCELLENT
+  Perfect conditions! 62°F, low humidity, no rain.
+  └─ Best time: 7-9 AM (coolest temps)
+
+📸 Photography: 85/100 ⭐ GREAT
+  Golden hour at 6:42 PM. Partial clouds for dramatic sunset.
+  └─ Sunset quality: 8/10
+
+⛳ Golf: 78/100 ⭐ GOOD
+  Light wind, comfortable temps. Slight rain chance afternoon.
+  └─ Best tee time: Before 2 PM
+
+🌟 Stargazing: 40/100 ❌ POOR
+  Cloudy skies expected. Try tomorrow (90/100).
+
+[View All Activities →]
+```
+
+---
+
+### 🧳 AI-Powered Trip Planning Assistant ⭐⭐⭐⭐⭐
+**Priority:** High | **Complexity:** High | **Target:** Q2 2026 | **Est. Time:** 3-4 weeks
+
+> Extend AI location finder to full trip planning with weather optimization
+
+**Core Features:**
+- **Destination Suggestions:**
+  - "I want to visit Europe in July for 2 weeks. I hate heat and rain."
+  - AI suggests: "Edinburgh, Scotland & Bergen, Norway (avg 60-65°F, moderate rain)"
+  - Shows 10-year July weather averages + current year forecast
+- **Best Time to Visit:**
+  - "When should I visit Tokyo?"
+  - AI analyzes historical weather + events + tourism seasons
+  - Recommends optimal months with weather justification
+- **Multi-City Itinerary:**
+  - "Plan 2-week Europe trip with good weather"
+  - AI optimizes route based on weather patterns
+  - Suggests order to visit cities for best conditions
+- **Day-by-Day Breakdown:**
+  - Hourly forecast for each day of trip
+  - Packing list generator based on forecast
+  - Activity recommendations per day
+  - Backup plans for rainy days
+
+**Technical Implementation:**
+- **AI:** Claude Sonnet 4.5 for planning logic
+- **Data:** Visual Crossing historical + forecast data
+- **Optimization Algorithm:** Traveling salesman with weather weights
+- **Database:** `trip_plans` table for saved itineraries
+- **Cost:** ~$0.05-0.10 per trip plan (acceptable for premium feature)
+
+**User Experience:**
+```
+🧳 AI Trip Planner
+
+Your Request:
+"2-week Europe trip in July. I prefer 65-75°F,
+ avoid rain, want to see mountains and coastline."
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🤖 AI Recommendations
+
+📍 Suggested Route (14 days):
+1. Bergen, Norway (3 days)
+   • Avg: 63°F | Rain: 40% chance
+   • Activities: Fjord tours, hiking
+
+2. Edinburgh, Scotland (4 days)
+   • Avg: 66°F | Rain: 35% chance
+   • Activities: Castle, Arthur's Seat hike
+
+3. Lake District, England (3 days)
+   • Avg: 68°F | Rain: 30% chance
+   • Activities: Mountain hiking, lakes
+
+4. Dublin, Ireland (4 days)
+   • Avg: 65°F | Rain: 45% chance
+   • Activities: Coastal walks, pubs
+
+💼 Packing List: Light jacket, rain shell, layers...
+[View Full Itinerary →] [Save Plan]
+```
+
+---
+
+### 📈 Climate Change Tracker ⭐⭐⭐⭐
+**Priority:** Medium | **Complexity:** Medium-High | **Target:** Q2 2026 | **Est. Time:** 2-3 weeks
+
+> Visualize long-term climate trends and changes
+
+**Why This Matters:**
+- **Timely Topic:** High public interest in climate change
+- **Educational Value:** Data-driven climate education
+- **Media Appeal:** Shareable visualizations for news outlets
+- **Academic Use:** Research and teaching tool
+
+**Core Features:**
+- **Temperature Trends:**
+  - "Seattle summers are 3.2°F warmer than 30 years ago"
+  - Decadal temperature change visualization
+  - Linear regression trend lines
+  - Statistical significance testing
+- **Extreme Weather Frequency:**
+  - Heat wave days per year (90°F+ days)
+  - Cold snaps (< 32°F days)
+  - Heavy rain events (> 1 inch/day)
+  - Drought duration tracking
+- **Seasonal Shifts:**
+  - "Frost-free season extended by 18 days since 1990"
+  - First/last frost dates over time
+  - Growing season length
+  - Snow season duration
+- **Precipitation Patterns:**
+  - Annual rainfall trends
+  - Seasonal distribution changes
+  - Wet/dry spell frequency
+
+**Technical Implementation:**
+- **Data Sources:**
+  - Visual Crossing historical records (1970+)
+  - NOAA climate datasets (optional, for deeper history)
+  - ERA5 reanalysis data
+- **Analysis:** Python statistical analysis
+  - Mann-Kendall trend test
+  - Linear regression
+  - Moving averages (5-year, 10-year)
+- **Visualization:** Recharts time series, heatmaps
+- **Database:** `climate_trends` table with pre-computed statistics
+
+**User Experience:**
+```
+📈 Climate Change Analysis - Seattle, WA
+
+🌡️ Temperature Trends (1990-2024)
+  Average Temperature: +2.1°F
+  Summer Average: +3.2°F
+  Winter Average: +1.8°F
+  [Interactive chart showing warming trend]
+
+🔥 Extreme Heat Events
+  90°F+ days per year:
+  1990s: 5 days/year
+  2020s: 12 days/year (+140%)
+
+❄️ Winter Changes
+  Frost-Free Season: +18 days
+  First Frost: Oct 15 → Nov 2
+  Last Frost: Apr 1 → Mar 14
+
+💧 Precipitation Patterns
+  Annual Rainfall: -2.3% (not significant)
+  Heavy Rain Events: +25% (> 1 in/day)
+  Drought Frequency: +15%
+
+[Download Report] [Share on Social Media]
+```
+
+---
+
+## 📋 Tier 4: Quick Wins (1-3 days each)
+
+### ⚡ Severe Weather Alert Digest ⭐⭐⭐
+**Priority:** Medium | **Complexity:** Low | **Target:** Q1 2026 | **Est. Time:** 1 day
+
+> Smart summaries of active alerts to reduce alert fatigue
+
+**Problem:** Multiple alerts can overwhelm users
+**Solution:** AI-generated summary with priority scoring
+
+**Core Features:**
+- **Alert Aggregation:** Group related alerts (heat advisory + air quality)
+- **Priority Scoring:** High/Medium/Low based on severity and timing
+- **Smart Summaries:** "3 active alerts: Heat Advisory (prepare), Flash Flood Watch (monitor)"
+- **Action Items:** Clear next steps per alert
+- **Map Integration:** Visual overview of affected areas
+
+**Technical Implementation:**
+- Simple priority algorithm based on NWS severity codes
+- Optional Claude API for natural language summaries
+- Frontend: Alert summary card on dashboard
+
+---
+
+### 🌍 "Weather Twins" Feature ⭐⭐⭐⭐
+**Priority:** High | **Complexity:** Low | **Target:** Q1 2026 | **Est. Time:** 2-3 days
+
+> Find cities worldwide with similar weather to yours right now
+
+**Core Features:**
+- **Real-Time Matching:** Find 5-10 cities with similar current conditions
+- **Similarity Algorithm:**
+  - Temperature (±5°F tolerance)
+  - Precipitation type and intensity
+  - Humidity levels (±15% tolerance)
+  - Cloud cover (±20% tolerance)
+- **World Map Visualization:** Interactive markers for twin cities
+- **Historical Patterns:** "These cities are often weather twins"
+- **Social Sharing:** "Seattle and Bergen, Norway are weather twins today!"
+
+**Technical Implementation:**
+- **Backend:** SQL queries with tolerance ranges + clustering
+- **Algorithm:** Multi-factor similarity scoring (temp 40%, precip 30%, humidity 20%, conditions 10%)
+- **Data:** Leverage existing weather_data table (585K+ records)
+- **Frontend:** Leaflet map with custom markers
+
+**User Experience:**
+```
+Current: Seattle, WA - 52°F, Light Rain, 85% Humidity
+
+Your Weather Twins Right Now:
+🌍 Cardiff, Wales - 53°F, Drizzle, 83% Humidity
+🌍 Bergen, Norway - 50°F, Rain, 87% Humidity
+🌍 Hobart, Tasmania - 51°F, Showers, 84% Humidity
+```
+
+---
+
+### 📸 Weather Story Sharing ⭐⭐⭐
+**Priority:** Medium | **Complexity:** Low | **Target:** Q1 2026 | **Est. Time:** 2 days
+
+> Create beautiful, shareable weather cards for social media
+
+**Core Features:**
+- **Auto-Generated Cards:** Beautiful graphics with current conditions + location
+- **Templates:** Multiple design styles (minimal, bold, gradient, nature)
+- **Customization:** Add photo background, choose color scheme
+- **Export Formats:** Instagram story (1080×1920), Twitter card (1200×600), square (1080×1080)
+- **One-Click Share:** Direct share to social platforms
+
+**Technical Implementation:**
+- **html2canvas:** Already using for radar screenshots
+- **Templates:** Pre-designed CSS layouts
+- **Social APIs:** Share API integration
+- **Open Graph:** Rich preview cards
+
+**User Experience:**
+```
+[Beautiful Weather Card]
+━━━━━━━━━━━━━━━━━━━━━
+Seattle, WA
+━━━━━━━━━━━━━━━━━━━━━
+52°F | Light Rain ☔
+Feels like 48°F
+━━━━━━━━━━━━━━━━━━━━━
+meteo-beta.tachyonfuture.com
+
+[Download] [Share to Instagram] [Share to Twitter]
+```
+
+---
+
+## 📋 Existing Planned Features (from original roadmap)
 
 ### 🌍 Extreme Weather Pattern Explorer
 **Priority:** High | **Complexity:** High | **Target:** Q1 2026
