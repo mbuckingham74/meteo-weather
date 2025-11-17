@@ -7,10 +7,9 @@ on:
     branches: [ main, develop ]
 
 # Cancel in-progress workflows when new commit is pushed
-# TEMPORARILY DISABLED: Let backend tests complete for PR #21
-# concurrency:
-#   group: ${{ github.workflow }}-${{ github.ref }}
-#   cancel-in-progress: true
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   NODE_VERSION: '20.x'
@@ -364,8 +363,13 @@ jobs:
   pr-comment:
     name: Post PR Comment
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && needs.frontend-test.result == 'success'
+    # Skip for Dependabot PRs (they have restricted GITHUB_TOKEN permissions)
+    if: github.event_name == 'pull_request' && github.actor != 'dependabot[bot]' && needs.frontend-test.result == 'success'
     needs: [frontend-test, backend-test]
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
 
     steps:
       - name: Download coverage report
