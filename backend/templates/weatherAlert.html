@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather Alert</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background-color: #fef2f2;
+      color: #1a202c;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+    }
+    .header {
+      background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+      padding: 32px 24px;
+      text-align: center;
+      color: #ffffff;
+    }
+    .header .alert-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+    .header h1 {
+      margin: 0 0 8px 0;
+      font-size: 28px;
+      font-weight: 700;
+    }
+    .header .severity {
+      display: inline-block;
+      padding: 6px 12px;
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .alert-info {
+      padding: 24px;
+      background-color: #fef2f2;
+      border-left: 4px solid #dc2626;
+    }
+    .info-row {
+      margin-bottom: 16px;
+    }
+    .info-row:last-child {
+      margin-bottom: 0;
+    }
+    .info-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #991b1b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .info-value {
+      font-size: 16px;
+      color: #2d3748;
+      line-height: 1.5;
+    }
+    .location-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      background-color: #fee2e2;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #7f1d1d;
+    }
+    .time-info {
+      display: flex;
+      gap: 24px;
+      margin-top: 16px;
+      padding: 16px;
+      background-color: #ffffff;
+      border-radius: 8px;
+      border: 1px solid #fecaca;
+    }
+    .time-block {
+      flex: 1;
+    }
+    .time-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #991b1b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .time-value {
+      font-size: 14px;
+      color: #2d3748;
+      font-weight: 500;
+    }
+    .description-section {
+      padding: 24px;
+    }
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #991b1b;
+      margin: 0 0 12px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .description-text {
+      font-size: 15px;
+      color: #2d3748;
+      line-height: 1.7;
+      margin: 0;
+    }
+    .instructions-section {
+      padding: 0 24px 24px 24px;
+    }
+    .instructions-box {
+      background-color: #fffbeb;
+      border: 2px solid #fbbf24;
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .instructions-icon {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+    .instructions-text {
+      font-size: 15px;
+      color: #78350f;
+      line-height: 1.7;
+      margin: 0;
+      font-weight: 500;
+    }
+    .severity-extreme .header {
+      background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 100%);
+    }
+    .severity-severe .header {
+      background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+    }
+    .severity-moderate .header {
+      background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+    }
+    .severity-minor .header {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    }
+    .cta-section {
+      text-align: center;
+      padding: 0 24px 24px 24px;
+    }
+    .button {
+      display: inline-block;
+      background-color: #dc2626;
+      color: #ffffff;
+      padding: 14px 28px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      margin: 8px;
+    }
+    .button-secondary {
+      background-color: #6b7280;
+    }
+    .footer {
+      background-color: #fef2f2;
+      padding: 24px;
+      text-align: center;
+      border-top: 1px solid #fecaca;
+    }
+    .footer-text {
+      font-size: 12px;
+      color: #718096;
+      margin: 8px 0;
+    }
+    .footer-warning {
+      font-size: 13px;
+      color: #991b1b;
+      font-weight: 600;
+      margin: 12px 0;
+    }
+    @media only screen and (max-width: 600px) {
+      .time-info {
+        flex-direction: column;
+        gap: 12px;
+      }
+      .button {
+        display: block;
+        margin: 8px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container severity-{{SEVERITY}}">
+    <!-- Alert Header -->
+    <div class="header">
+      <div class="alert-icon">⚠️</div>
+      <h1>{{EVENT}}</h1>
+      <span class="severity">{{SEVERITY}} Alert</span>
+    </div>
+
+    <!-- Alert Information -->
+    <div class="alert-info">
+      <div class="info-row">
+        <div class="info-label">📍 Affected Area</div>
+        <div class="info-value">
+          <span class="location-badge">
+            <span>📌</span>
+            <span>{{LOCATION}}</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="time-info">
+        <div class="time-block">
+          <div class="time-label">⏰ Effective</div>
+          <div class="time-value">{{EFFECTIVE_TIME}}</div>
+        </div>
+        <div class="time-block">
+          <div class="time-label">⏱️ Expires</div>
+          <div class="time-value">{{EXPIRATION_TIME}}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alert Description -->
+    <div class="description-section">
+      <h2 class="section-title">📋 Alert Details</h2>
+      <p class="description-text">{{DESCRIPTION}}</p>
+    </div>
+
+    <!-- Safety Instructions (if provided) -->
+    {{#if INSTRUCTIONS}}
+    <div class="instructions-section">
+      <div class="instructions-box">
+        <div class="instructions-icon">🛡️</div>
+        <h2 class="section-title" style="color: #78350f;">Safety Instructions</h2>
+        <p class="instructions-text">{{INSTRUCTIONS}}</p>
+      </div>
+    </div>
+    {{/if}}
+
+    <!-- Call to Action -->
+    <div class="cta-section">
+      <a href="{{VIEW_URL}}" class="button">View Live Weather Dashboard</a>
+      <br>
+      <a href="https://www.weather.gov/safety" class="button button-secondary">Weather Safety Tips</a>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p class="footer-warning">⚠️ This is an automated alert from Meteo Weather. Please monitor local news and official sources for updates.</p>
+      <p class="footer-text">You're receiving this because you enabled severe weather alert notifications.</p>
+      <p class="footer-text">Alert data sourced from Visual Crossing Weather API and National Weather Service.</p>
+      <p class="footer-text">© 2025 Meteo Weather. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>

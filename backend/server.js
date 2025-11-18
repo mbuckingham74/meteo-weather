@@ -1,6 +1,7 @@
 require('dotenv').config();
 const app = require('./app');
 const { testConnection } = require('./config/database');
+const emailScheduler = require('./services/emailScheduler');
 
 const PORT = process.env.PORT || 5001;
 
@@ -17,6 +18,7 @@ async function startServer() {
       console.log(`📊 Environment: ${process.env.NODE_ENV}`);
       console.log(`🗄️  Database: ${process.env.DB_NAME}`);
       console.log(`🌤️  Visual Crossing API: ${process.env.VISUAL_CROSSING_API_KEY ? 'Configured' : 'Not configured'}`);
+      console.log(`📧 Email Notifications: ${process.env.EMAIL_ENABLED === 'true' ? 'Enabled' : 'Disabled'}`);
       console.log(`\n🔗 API Endpoints:`);
       console.log(`   Health check:      http://localhost:${PORT}/api/health`);
       console.log(`   Weather test:      http://localhost:${PORT}/api/weather/test`);
@@ -24,6 +26,18 @@ async function startServer() {
       console.log(`   Forecast:          http://localhost:${PORT}/api/weather/forecast/:location`);
       console.log(`   Historical:        http://localhost:${PORT}/api/weather/historical/:location`);
       console.log(`   Locations:         http://localhost:${PORT}/api/locations\n`);
+
+      // Initialize email schedulers after server starts
+      emailScheduler.initializeSchedulers();
+    });
+
+    // Graceful shutdown
+    process.on('SIGTERM', () => {
+      console.log('SIGTERM signal received: closing HTTP server');
+      emailScheduler.stopAllSchedulers();
+      server.close(() => {
+        console.log('HTTP server closed');
+      });
     });
 
     return server;
