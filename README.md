@@ -111,39 +111,11 @@ A comprehensive weather dashboard inspired by Weather Spark, providing detailed 
 
 <div align="center">
 
-### Main Dashboard
-<!-- Add screenshot: Ultra-compact two-column layout with weather info and interactive radar -->
-![Main Dashboard](docs/screenshots/dashboard.png)
-*Ultra-compact dashboard with weather info and interactive radar map side-by-side*
+**Coming Soon - Full UI/UX redesign and refactor in progress.**
 
-### AI Weather Assistant
-<!-- Add screenshot: AI Weather page showing natural language queries and visualizations -->
-![AI Weather Assistant](docs/screenshots/ai-weather.png)
-*Ask weather questions in natural language - powered by Claude Sonnet 4.5*
-
-### Location Comparison
-<!-- Add screenshot: Compare view showing multiple locations side-by-side -->
-![Location Comparison](docs/screenshots/comparison.png)
-*Compare weather across multiple cities with historical climate data*
-
-### Interactive Radar Map
-<!-- Add screenshot: Radar map with animation controls and weather alerts -->
-![Interactive Radar](docs/screenshots/radar.png)
-*Real-time precipitation radar with 2 hours of historical data and storm tracking*
-
-### Weather Charts & Analytics
-<!-- Add screenshot: Various weather charts (temperature, precipitation, wind, etc.) -->
-![Weather Charts](docs/screenshots/charts.png)
-*15+ interactive charts for detailed weather analysis*
-
-### Dark Mode
-<!-- Add screenshot: Dark mode interface showing theme consistency -->
-![Dark Mode](docs/screenshots/dark-mode.png)
-*Full dark mode support with complete theming across all components*
+Check out the [live demo](https://meteo-beta.tachyonfuture.com) to see the current interface in action!
 
 </div>
-
-> **Note:** Screenshots are placeholders. Add actual screenshots to `docs/screenshots/` directory.
 
 ---
 
