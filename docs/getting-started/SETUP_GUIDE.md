@@ -45,11 +45,11 @@ This installs dependencies for root, frontend, and backend.
 ### 3. Set Up Environment Variables
 
 ```bash
-# Copy the example environment file
-cp .env.example backend/.env
+# Copy the example environment file to project root
+cp .env.example .env
 ```
 
-Edit `backend/.env` with your API keys (see [API Keys](#-getting-api-keys) section below).
+Edit `.env` with your API keys (see [API Keys](#-getting-api-keys) section below).
 
 **Minimum required for local development:**
 ```env

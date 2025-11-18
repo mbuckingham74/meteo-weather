@@ -74,13 +74,13 @@ Now, you'll need two FREE API keys. Open your browser and:
 [Shows signing up on both sites]
 
 [1:40 - Configure Environment]
-Back in your terminal, create the environment file:
+Back in your terminal, create the environment file in the project root:
 
-cp .env.example backend/.env
+cp .env.example .env
 
 [Shows command]
 
-Now open backend/.env in your text editor and paste your API keys:
+Now open .env in your text editor and paste your API keys:
 
 VISUAL_CROSSING_API_KEY=your_key_here
 OPENWEATHER_API_KEY=your_key_here
