@@ -1,4 +1,4 @@
-import { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 import {
   loginUser as apiLoginUser,
   registerUser as apiRegisterUser,
@@ -6,7 +6,6 @@ import {
   logoutUser as apiLogoutUser,
   refreshAccessToken,
 } from '../services/authApi';
-import { debugError } from '../utils/debugLogger';
 
 /**
  * Authentication Context
@@ -65,7 +64,7 @@ export function AuthProvider({ children }) {
           }
         }
       } catch (error) {
-        debugError('Auth Context', 'Auth initialization error', error);
+        console.error('Auth initialization error:', error);
       } finally {
         setLoading(false);
       }
@@ -135,7 +134,7 @@ export function AuthProvider({ children }) {
         await apiLogoutUser(accessToken);
       }
     } catch (error) {
-      debugError('Auth Context', 'Logout error', error);
+      console.error('Logout error:', error);
     } finally {
       // Clear state and localStorage
       setUser(null);
@@ -153,7 +152,6 @@ export function AuthProvider({ children }) {
 
   const value = {
     user,
-    token: accessToken, // Alias for accessToken (used by AdminPanel)
     accessToken,
     refreshToken,
     loading,
