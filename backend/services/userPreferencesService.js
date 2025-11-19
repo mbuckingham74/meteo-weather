@@ -15,13 +15,7 @@ async function getUserPreferences(userId) {
         temperature_unit,
         default_forecast_days,
         default_location,
-        theme,
-        email_notifications,
-        daily_weather_report,
-        weather_alert_notifications,
-        weekly_summary,
-        report_time,
-        report_locations
+        theme
       FROM user_preferences
       WHERE user_id = ?`,
       [userId]
@@ -38,27 +32,11 @@ async function getUserPreferences(userId) {
         temperature_unit: 'C',
         default_forecast_days: 7,
         default_location: null,
-        theme: 'light',
-        email_notifications: false,
-        daily_weather_report: false,
-        weather_alert_notifications: false,
-        weekly_summary: false,
-        report_time: '08:00:00',
-        report_locations: []
+        theme: 'light'
       };
     }
 
-    // Parse JSON report_locations if it exists
-    const result = preferences[0];
-    if (result.report_locations && typeof result.report_locations === 'string') {
-      try {
-        result.report_locations = JSON.parse(result.report_locations);
-      } catch (e) {
-        result.report_locations = [];
-      }
-    }
-
-    return result;
+    return preferences[0];
   } catch (error) {
     console.error('Get preferences error:', error);
     throw error;
@@ -74,13 +52,7 @@ async function updateUserPreferences(userId, updates) {
       'temperature_unit',
       'default_forecast_days',
       'default_location',
-      'theme',
-      'email_notifications',
-      'daily_weather_report',
-      'weather_alert_notifications',
-      'weekly_summary',
-      'report_time',
-      'report_locations'
+      'theme'
     ];
 
     const updateFields = [];
@@ -89,12 +61,7 @@ async function updateUserPreferences(userId, updates) {
     for (const [key, value] of Object.entries(updates)) {
       if (allowedFields.includes(key) && value !== undefined) {
         updateFields.push(`${key} = ?`);
-        // Stringify report_locations if it's an array/object
-        if (key === 'report_locations' && typeof value === 'object') {
-          updateValues.push(JSON.stringify(value));
-        } else {
-          updateValues.push(value);
-        }
+        updateValues.push(value);
       }
     }
 
