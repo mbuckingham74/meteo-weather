@@ -1408,6 +1408,7 @@ The community helps shape this roadmap. Features with the most user interest mov
 - Adds unnecessary complexity for minimal benefit
 - Web push notifications provide better user experience
 - SMTP services are expensive/complicated for indie projects
+- **⚠️ CRITICAL: DO NOT USE SENDGRID - wasted 90 minutes on failed DNS setup**
 
 **Alternative Considered:**
 - Web Push Notifications (prioritized instead - see Tier 1)
@@ -1425,9 +1426,10 @@ The community helps shape this roadmap. Features with the most user interest mov
 
 **If Reconsidered:**
 Will require either:
-1. Paid SMTP service with simpler setup
+1. Paid SMTP service with simpler setup (NOT SendGrid)
 2. Self-hosted SMTP server (complex to maintain)
-3. Alternative free tier email service
+3. Alternative free tier email service (e.g., Resend, Mailgun, AWS SES)
+4. **NEVER SendGrid - their free tier DNS requirements are a time sink**
 
 ---
 
