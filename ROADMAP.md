@@ -17,9 +17,8 @@ Transform Meteo into a comprehensive weather intelligence platform that combines
 **12 new feature proposals organized by priority:**
 
 ### Tier 1: High Impact, Medium Effort (Weeks 1-3)
-1. **📧 Email Notifications** - 8-10 hours (infrastructure ready!)
-2. **🔔 Web Push Notifications** - 2-3 days (PWA enhancement)
-3. **📱 Enhanced PWA with Offline Mode** - 3-4 days (installable app)
+1. **🔔 Web Push Notifications** - 2-3 days (PWA enhancement)
+2. **📱 Enhanced PWA with Offline Mode** - 3-4 days (installable app)
 
 ### Tier 2: High Impact, Higher Effort (Q1 2026)
 4. **🗺️ Multi-City Weather Map** - 1-2 weeks (visualize all favorites)
@@ -37,7 +36,7 @@ Transform Meteo into a comprehensive weather intelligence platform that combines
 12. **📸 Story Sharing** - 2 days (social engagement)
 
 **Recommended Start Order:**
-1. Email Notifications (Week 1) - Low effort, high value
+1. Web Push Notifications (Week 1) - No third-party dependencies
 2. AI Weather Insights (Week 2-3) - Perfect for AI-first brand
 3. Activity Recommendations (Week 4-6) - Sticky engagement feature
 
@@ -55,59 +54,6 @@ Transform Meteo into a comprehensive weather intelligence platform that combines
 ---
 
 ## 📋 Tier 1: High Impact, Medium Effort (1-2 weeks)
-
-### 📧 Email Notifications System ⭐⭐⭐⭐⭐
-**Priority:** Critical | **Complexity:** Low | **Target:** Week 1 | **Est. Time:** 8-10 hours
-
-> Infrastructure already built - just needs SMTP integration
-
-**Why This First:**
-- UI already complete in UserPreferencesPage
-- Database schema already in place
-- Immediate user value and retention driver
-- Low effort, high ROI
-
-**Core Features:**
-- **Daily Weather Reports:** Morning forecast emails with 7-day outlook
-- **Weekly Summaries:** Sunday evening recap with week ahead preview
-- **Severe Weather Alerts:** Instant notifications for warnings, watches, advisories
-- **Custom Triggers:** User-defined thresholds (temp > 90°F, AQI > 150, etc.)
-- **Multi-Location Support:** Separate reports for each saved location
-- **Timezone-Aware:** Emails sent in user's local time
-- **Unsubscribe Management:** Granular control per notification type
-
-**Technical Implementation:**
-- **SMTP Service:** SendGrid or AWS SES integration
-- **Email Templates:** Responsive HTML templates with weather data
-- **Cron Jobs:** `sendWeatherReports.js` runs at scheduled times
-- **Queue System:** Background jobs for email sending
-- **Database Tables:** Already exist (user_preferences with notification settings)
-- **Environment Variables:**
-  ```env
-  SMTP_HOST=smtp.sendgrid.net
-  SMTP_PORT=587
-  SMTP_USER=apikey
-  SMTP_PASS=<sendgrid_api_key>
-  FROM_EMAIL=noreply@meteo-beta.tachyonfuture.com
-  ```
-
-**User Experience:**
-```
-Daily Weather Report - Seattle, WA
-Sent every morning at 7:00 AM
-
-Good morning! Here's your weather for Monday, Nov 17:
-
-🌤️ Today: Partly cloudy, High 58°F, Low 45°F
-☔ Rain: 30% chance in afternoon
-💨 Wind: Light, 5-10 mph from SW
-
-This Week:
-Tue: Sunny, 62°F | Wed: Cloudy, 55°F | Thu: Rain, 52°F
-[View Full Forecast →]
-```
-
----
 
 ### 🔔 Web Push Notifications ⭐⭐⭐⭐⭐
 **Priority:** High | **Complexity:** Medium | **Target:** Week 2 | **Est. Time:** 2-3 days
@@ -1445,6 +1391,43 @@ The community helps shape this roadmap. Features with the most user interest mov
 - **v1.0.0** (Oct 2025): Initial release with core weather features
 - **v0.9.0** (Sep 2025): Beta release with AI weather assistant
 - **v0.8.0** (Aug 2025): Alpha release with basic features
+
+---
+
+---
+
+## 📋 Deferred Features (Low Priority)
+
+### 📧 Email Notifications System ⭐
+**Priority:** Low | **Complexity:** High (third-party dependencies) | **Target:** TBD | **Est. Time:** Unknown
+
+> **Status:** Infrastructure complete, but BLOCKED by SendGrid domain authentication requirements
+
+**Why Deferred:**
+- SendGrid free tier requires complex DNS domain authentication
+- Adds unnecessary complexity for minimal benefit
+- Web push notifications provide better user experience
+- SMTP services are expensive/complicated for indie projects
+
+**Alternative Considered:**
+- Web Push Notifications (prioritized instead - see Tier 1)
+- No third-party dependencies
+- Better mobile experience
+- Instant delivery
+
+**Code Status:**
+- ✅ Backend service complete (emailService.js, emailScheduler.js)
+- ✅ HTML email templates ready
+- ✅ Database migration ready
+- ✅ User preferences API updated
+- ❌ SMTP provider authentication incomplete
+- ⚠️ Feature shelved until simpler SMTP solution found
+
+**If Reconsidered:**
+Will require either:
+1. Paid SMTP service with simpler setup
+2. Self-hosted SMTP server (complex to maintain)
+3. Alternative free tier email service
 
 ---
 
