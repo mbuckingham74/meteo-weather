@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import './WeatherTwinsModal.css';
 
@@ -9,13 +9,7 @@ const WeatherTwinsModal = ({ isOpen, onClose, locationId, locationName, currentW
   const [scope, setScope] = useState('us');
   const [selectedTwin, setSelectedTwin] = useState(null);
 
-  useEffect(() => {
-    if (isOpen && locationId) {
-      fetchWeatherTwins();
-    }
-  }, [isOpen, locationId, scope]);
-
-  const fetchWeatherTwins = async () => {
+  const fetchWeatherTwins = useCallback(async () => {
     setLoading(true);
     setError(null);
 
@@ -41,7 +35,13 @@ const WeatherTwinsModal = ({ isOpen, onClose, locationId, locationName, currentW
     } finally {
       setLoading(false);
     }
-  };
+  }, [locationId, scope]);
+
+  useEffect(() => {
+    if (isOpen && locationId) {
+      fetchWeatherTwins();
+    }
+  }, [isOpen, locationId, fetchWeatherTwins]);
 
   const formatLocationName = (twin) => {
     const parts = [twin.location.name];
