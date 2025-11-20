@@ -72,7 +72,7 @@ export function useCurrentWeatherQuery(lat, lng, options = {}) {
  */
 export function useForecastQuery(lat, lng, days = 7, options = {}) {
   return useQuery({
-    queryKey: queryKeys.weather.forecast(lat, lng),
+    queryKey: queryKeys.weather.forecast(lat, lng, days),
     queryFn: async () => {
       const location = `${lat},${lng}`;
       return getWeatherForecast(location, days);
@@ -142,91 +142,18 @@ export function useHistoricalWeatherQuery(lat, lng, startDate, endDate, options 
 }
 
 /**
- * Legacy compatibility exports
- * These maintain the same API as the old useWeatherData hook
- * for easier gradual migration
+ * NOTE: Legacy hook exports removed
+ *
+ * The old hooks (useCurrentWeather, useForecast, etc.) accepted location strings
+ * like "Seattle, WA" or "lat,lng" which would need complex parsing logic.
+ *
+ * Instead of providing broken "compatibility" wrappers, components should:
+ * 1. Continue using the old hooks from useWeatherData.js during migration
+ * 2. Migrate to the new query hooks when ready (they require lat/lng)
+ *
+ * Migration path:
+ * - Old: useCurrentWeather("Seattle, WA")
+ * - New: useCurrentWeatherQuery(lat, lng) // Get lat/lng from LocationContext
+ *
+ * This ensures a clean migration without runtime bugs from NaN coordinates.
  */
-
-/**
- * @deprecated Use useCurrentWeatherQuery instead
- * Provided for backward compatibility during migration
- */
-export function useCurrentWeather(location) {
-  // Parse location string to lat/lng if needed
-  // This is a simplified version - in production, you'd need proper parsing
-  console.warn(
-    'useCurrentWeather (string location) is deprecated. Use useCurrentWeatherQuery(lat, lng) instead.'
-  );
-
-  const [lat, lng] = typeof location === 'string' ? location.split(',').map(Number) : [null, null];
-
-  const query = useCurrentWeatherQuery(lat, lng);
-
-  // Transform React Query result to match old hook API
-  return {
-    data: query.data,
-    loading: query.isLoading,
-    error: query.error,
-    refetch: query.refetch,
-  };
-}
-
-/**
- * @deprecated Use useForecastQuery instead
- */
-export function useForecast(location, days = 7) {
-  console.warn(
-    'useForecast (string location) is deprecated. Use useForecastQuery(lat, lng, days) instead.'
-  );
-
-  const [lat, lng] = typeof location === 'string' ? location.split(',').map(Number) : [null, null];
-
-  const query = useForecastQuery(lat, lng, days);
-
-  return {
-    data: query.data,
-    loading: query.isLoading,
-    error: query.error,
-    refetch: query.refetch,
-  };
-}
-
-/**
- * @deprecated Use useHourlyForecastQuery instead
- */
-export function useHourlyForecast(location, hours = 48) {
-  console.warn(
-    'useHourlyForecast (string location) is deprecated. Use useHourlyForecastQuery(lat, lng, hours) instead.'
-  );
-
-  const [lat, lng] = typeof location === 'string' ? location.split(',').map(Number) : [null, null];
-
-  const query = useHourlyForecastQuery(lat, lng, hours);
-
-  return {
-    data: query.data,
-    loading: query.isLoading,
-    error: query.error,
-    refetch: query.refetch,
-  };
-}
-
-/**
- * @deprecated Use useHistoricalWeatherQuery instead
- */
-export function useHistoricalWeather(location, startDate, endDate) {
-  console.warn(
-    'useHistoricalWeather (string location) is deprecated. Use useHistoricalWeatherQuery(lat, lng, startDate, endDate) instead.'
-  );
-
-  const [lat, lng] = typeof location === 'string' ? location.split(',').map(Number) : [null, null];
-
-  const query = useHistoricalWeatherQuery(lat, lng, startDate, endDate);
-
-  return {
-    data: query.data,
-    loading: query.isLoading,
-    error: query.error,
-    refetch: query.refetch,
-  };
-}

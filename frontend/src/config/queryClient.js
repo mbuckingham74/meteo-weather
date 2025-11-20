@@ -19,10 +19,12 @@ const defaultQueryOptions = {
     // Retry configuration
     retry: (failureCount, error) => {
       // Don't retry on 4xx errors (client errors)
-      if (error?.response?.status >= 400 && error?.response?.status < 500) {
+      // Our services throw ApiError/AppError with 'status' property (not response.status)
+      const errorStatus = error?.status || error?.response?.status;
+      if (errorStatus >= 400 && errorStatus < 500) {
         return false;
       }
-      // Retry up to 2 times for network errors
+      // Retry up to 2 times for network errors and 5xx errors
       return failureCount < 2;
     },
 
@@ -71,7 +73,7 @@ export const queryKeys = {
     all: ['weather'],
     // Use lat/lng tuple instead of location object for stable keys
     current: (lat, lng) => ['weather', 'current', lat, lng],
-    forecast: (lat, lng) => ['weather', 'forecast', lat, lng],
+    forecast: (lat, lng, days = 7) => ['weather', 'forecast', lat, lng, days],
     hourly: (lat, lng, hours = 48) => ['weather', 'hourly', lat, lng, hours],
     // Use ISO date strings instead of Date objects
     historical: (lat, lng, startDate, endDate) => [
@@ -158,8 +160,10 @@ export const queryKeys = {
 export const invalidateWeatherQueries = (client, lat, lng) => {
   return Promise.all([
     client.invalidateQueries({ queryKey: queryKeys.weather.current(lat, lng) }),
-    client.invalidateQueries({ queryKey: queryKeys.weather.forecast(lat, lng) }),
-    client.invalidateQueries({ queryKey: queryKeys.weather.hourly(lat, lng) }),
+    // Invalidate all forecast queries for this location (any day count)
+    client.invalidateQueries({ queryKey: ['weather', 'forecast', lat, lng] }),
+    // Invalidate all hourly queries for this location (any hour count)
+    client.invalidateQueries({ queryKey: ['weather', 'hourly', lat, lng] }),
   ]);
 };
 
@@ -168,8 +172,14 @@ export const invalidateWeatherQueries = (client, lat, lng) => {
  * Example: invalidateClimateQueries(queryClient, lat, lng)
  */
 export const invalidateClimateQueries = (client, lat, lng) => {
-  // Invalidate all climate queries for this location
-  return client.invalidateQueries({ queryKey: ['climate', 'lat', lng] });
+  // Invalidate all climate queries for this location using predicate
+  return client.invalidateQueries({
+    predicate: (query) => {
+      const key = query.queryKey;
+      // Match any climate query with matching lat/lng at positions [2] and [3]
+      return key[0] === 'climate' && key[2] === lat && key[3] === lng;
+    },
+  });
 };
 
 export default queryClient;
