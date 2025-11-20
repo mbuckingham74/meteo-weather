@@ -19,10 +19,18 @@ const defaultQueryOptions = {
     // Retry configuration
     retry: (failureCount, error) => {
       // Don't retry on 4xx errors (client errors)
-      if (error?.response?.status >= 400 && error?.response?.status < 500) {
+      // Handle different error shapes:
+      // - ApiError: error.status
+      // - AppError: error.context.status
+      // - Axios errors: error.response.status
+      const errorStatus = error?.status || error?.context?.status || error?.response?.status;
+
+      // Don't retry client errors (4xx)
+      if (errorStatus >= 400 && errorStatus < 500) {
         return false;
       }
-      // Retry up to 2 times for network errors
+
+      // Retry up to 2 times for network errors and 5xx errors
       return failureCount < 2;
     },
 
@@ -71,7 +79,8 @@ export const queryKeys = {
     all: ['weather'],
     // Use lat/lng tuple instead of location object for stable keys
     current: (lat, lng) => ['weather', 'current', lat, lng],
-    forecast: (lat, lng) => ['weather', 'forecast', lat, lng],
+    forecast: (lat, lng, days = 7) => ['weather', 'forecast', lat, lng, days],
+    hourly: (lat, lng, hours = 48) => ['weather', 'hourly', lat, lng, hours],
     // Use ISO date strings instead of Date objects
     historical: (lat, lng, startDate, endDate) => [
       'weather',
@@ -80,6 +89,39 @@ export const queryKeys = {
       lng,
       startDate,
       endDate,
+    ],
+  },
+
+  // Climate-related queries
+  climate: {
+    all: ['climate'],
+    normals: (lat, lng, date, years = 10) => ['climate', 'normals', lat, lng, date, years],
+    records: (lat, lng, startDate, endDate, years = 10) => [
+      'climate',
+      'records',
+      lat,
+      lng,
+      startDate,
+      endDate,
+      years,
+    ],
+    forecastComparison: (lat, lng, startDate, endDate, years = 10) => [
+      'climate',
+      'forecast-comparison',
+      lat,
+      lng,
+      startDate,
+      endDate,
+      years,
+    ],
+    thisDayInHistory: (lat, lng, date, years = 10) => ['climate', 'history', lat, lng, date, years],
+    temperatureProbability: (lat, lng, startDate, years = 10) => [
+      'climate',
+      'temp-probability',
+      lat,
+      lng,
+      startDate,
+      years,
     ],
   },
 
@@ -124,8 +166,26 @@ export const queryKeys = {
 export const invalidateWeatherQueries = (client, lat, lng) => {
   return Promise.all([
     client.invalidateQueries({ queryKey: queryKeys.weather.current(lat, lng) }),
-    client.invalidateQueries({ queryKey: queryKeys.weather.forecast(lat, lng) }),
+    // Invalidate all forecast queries for this location (any day count)
+    client.invalidateQueries({ queryKey: ['weather', 'forecast', lat, lng] }),
+    // Invalidate all hourly queries for this location (any hour count)
+    client.invalidateQueries({ queryKey: ['weather', 'hourly', lat, lng] }),
   ]);
+};
+
+/**
+ * Helper to invalidate climate-related queries
+ * Example: invalidateClimateQueries(queryClient, lat, lng)
+ */
+export const invalidateClimateQueries = (client, lat, lng) => {
+  // Invalidate all climate queries for this location using predicate
+  return client.invalidateQueries({
+    predicate: (query) => {
+      const key = query.queryKey;
+      // Match any climate query with matching lat/lng at positions [2] and [3]
+      return key[0] === 'climate' && key[2] === lat && key[3] === lng;
+    },
+  });
 };
 
 export default queryClient;
