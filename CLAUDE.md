@@ -82,6 +82,17 @@
 - [docs/admin/QUICK_REFERENCE.md](docs/admin/QUICK_REFERENCE.md) - One-page cheat sheet (340 lines)
 - [docs/admin/IMPLEMENTATION_SUMMARY.md](docs/admin/IMPLEMENTATION_SUMMARY.md) - Technical details (890 lines)
 ### Recent Work (Nov 2025)
+- ✅ **Error Recovery UX Enhancement (PR #55)** (Nov 20, 2025)
+  - **Smart Location Suggestions:** Nearby city recommendations for failed location searches (40+ major cities)
+  - **Date Range Hints:** Context-aware date availability messages for forecast/historical data
+  - **Context-Aware Errors:** ErrorMessage component now accepts context prop for intelligent suggestions
+  - **Implementation:** Created nearbyCitySuggestions.js (145 lines), dateRangeHints.js (178 lines)
+  - **Test Coverage:** 43 comprehensive tests (21 city suggestions, 22 date hints) - all passing ✅
+  - **Bug Fixes:** Fixed 4 issues from PR review (context passing, date type handling, blank input, test coverage)
+  - **Files Changed:** 7 files (ErrorMessage.jsx, errorSuggestions.js, dateRangeHints.js, nearbyCitySuggestions.js + tests)
+  - **Impact:** Better user experience with actionable error recovery suggestions
+  - **Documentation:** [ERROR_RECOVERY_UX.md](docs/ui-ux/ERROR_RECOVERY_UX.md) (318 lines with integration examples)
+  - **Status:** Complete, merged to main ✅
 - ✅ **TanStack Query Migration Complete (P0-4)** (Nov 20, 2025)
   - **Phase 1 (PR #50):** Set up TanStack Query infrastructure with queryClient and query keys
   - **Phase 2 (PR #51):** Migrated WeatherDashboard to React Query hooks
@@ -89,13 +100,13 @@
   - **Phase 4 (PR #53):** Added deprecation warnings to 11 legacy hook functions
   - **Impact:** Modern data fetching with automatic caching, deduplication, retries, and DevTools
   - **Status:** Complete, all 589 tests passing ✅
-- ✅ **Legacy Hook Cleanup (P0-5)** (Nov 20, 2025)
+- ✅ **Legacy Hook Cleanup (P0-5, PR #54)** (Nov 20, 2025)
   - **Complete Removal:** Deleted 4 deprecated files (useWeatherData.js, useClimateData.js, tests, backup)
   - **Hooks Removed:** 11 deprecated hook functions (useWeatherData, useCurrentWeather, useForecast, useHistoricalWeather, useHourlyForecast, useClimateNormals, useRecordTemperatures, useForecastComparison, useThisDayInHistory, useTemperatureProbability, and module-level deprecation flag)
   - **Verification:** Zero remaining imports in components (all using React Query hooks)
   - **Impact:** Single source of truth for data fetching, reduced codebase complexity, cleaner architecture
   - **Documentation:** Updated CLAUDE.md and API_ARCHITECTURE_IMPROVEMENTS.md
-  - **Status:** Complete, ready for PR review ✅
+  - **Status:** Complete, merged to main ✅
 - ✅ **API Architecture Improvements (P0-P3A)** (Nov 14, 2025)
   - **Complete Refactoring:** Centralized API client with retry, deduplication, and unified error handling
   - **P0:** Fixed backend database imports (db → pool), added ESLint rule to prevent regression

@@ -38,11 +38,15 @@
 - [x] **Loading State Enhancement** (Est: 4 hours)
   - Added AI answer skeletons, chart placeholders, and location search result skeletons so users see informative layouts instead of spinners.
 
-- [ ] **Error Recovery UX** (Est: 3 hours)
-  - Add retry buttons for timeout errors
-  - Suggest nearby cities for "Location not found"
-  - Show available date ranges for "No data available"
-  - Files: Error boundary, API error handlers
+- [x] **Error Recovery UX** (Est: 3 hours) - **✅ COMPLETED Nov 20, 2025 (PR #55)**
+  - ✅ Smart nearby city suggestions for "Location not found" (40+ major cities)
+  - ✅ Context-aware date range hints for "No data available"
+  - ✅ ErrorMessage component accepts context prop for intelligent suggestions
+  - ✅ 43 comprehensive tests (all passing)
+  - **Implementation:** nearbyCitySuggestions.js (145 lines), dateRangeHints.js (178 lines)
+  - **Files Changed:** 7 files (ErrorMessage.jsx, errorSuggestions.js, utilities + tests)
+  - **Documentation:** docs/ui-ux/ERROR_RECOVERY_UX.md (318 lines)
+  - **Status:** Merged to main ✅
 
 ### Feature Enhancements
 - [ ] **Email Notifications** (Est: 8-10 hours)
