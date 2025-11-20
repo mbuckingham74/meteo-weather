@@ -190,12 +190,13 @@ describe('LocationSearchBar Component', () => {
     });
 
     it('does not search for queries shorter than 2 characters', async () => {
-      render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
+      await act(async () => {
+        render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
+      });
 
       const input = screen.getByPlaceholderText(/search for a city/i);
-      fireEvent.change(input, { target: { value: 'S' } });
-
-      act(() => {
+      await act(async () => {
+        fireEvent.change(input, { target: { value: 'S' } });
         vi.advanceTimersByTime(300);
       });
 
@@ -205,18 +206,25 @@ describe('LocationSearchBar Component', () => {
     it('clears previous debounce timer when typing again', async () => {
       vi.useRealTimers();
 
-      render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
+      await act(async () => {
+        render(<LocationSearchBar onLocationSelect={mockOnLocationSelect} />);
+      });
 
       const input = screen.getByPlaceholderText(/search for a city/i);
 
-      fireEvent.change(input, { target: { value: 'Sea' } });
-      // Wait less than debounce time
+      await act(async () => {
+        fireEvent.change(input, { target: { value: 'Sea' } });
+      });
       await new Promise((resolve) => setTimeout(resolve, 100));
 
-      fireEvent.change(input, { target: { value: 'Seat' } });
+      await act(async () => {
+        fireEvent.change(input, { target: { value: 'Seat' } });
+      });
       await new Promise((resolve) => setTimeout(resolve, 100));
 
-      fireEvent.change(input, { target: { value: 'Seatt' } });
+      await act(async () => {
+        fireEvent.change(input, { target: { value: 'Seatt' } });
+      });
 
       // Wait for debounce + async call
       await waitFor(

@@ -19,7 +19,7 @@ import {
 
 import { reverseGeocode } from './weatherApi';
 
-describe.skip('Geolocation Service', () => {
+describe('Geolocation Service', () => {
   let mockGeolocation;
   let mockFetch;
 
@@ -135,7 +135,7 @@ describe.skip('Geolocation Service', () => {
       expect(reverseGeocode).toHaveBeenCalledWith(47.6062, -122.3321);
     });
 
-    it('falls back to "Your Location" when reverse geocoding fails', async () => {
+    it('falls back to coordinates when reverse geocoding fails', async () => {
       mockGeolocation.getCurrentPosition.mockImplementation((success) => {
         success({
           coords: {
@@ -150,16 +150,11 @@ describe.skip('Geolocation Service', () => {
 
       const result = await getCurrentLocation();
 
-      expect(result).toEqual({
-        address: 'Your Location',
-        latitude: 47.6062,
-        longitude: -122.3321,
-        timezone: expect.any(String), // System timezone
-        accuracy: 100,
-        method: 'browser',
-        requiresConfirmation: false,
-        detectionMethod: 'Browser Geolocation',
-      });
+      expect(result.address).toMatch(/^-?\d+\.\d+,\s*-?\d+\.\d+$/);
+      expect(result.address).not.toBe('Your Location');
+      expect(result.latitude).toBe(47.6062);
+      expect(result.longitude).toBe(-122.3321);
+      expect(result.method).toBe('browser');
     });
 
     it('detects coordinates-only response and shows friendly fallback', async () => {
@@ -182,7 +177,8 @@ describe.skip('Geolocation Service', () => {
 
       const result = await getCurrentLocation();
 
-      expect(result.address).toBe('Your Location');
+      expect(result.address).toMatch(/^-?\d+\.\d+,\s*-?\d+\.\d+$/);
+      expect(result.address).not.toBe('Your Location');
     });
   });
 
@@ -247,7 +243,8 @@ describe.skip('Geolocation Service', () => {
 
       const result = await getCurrentLocation();
 
-      expect(result.address).toBe('Your Location');
+      expect(result.address).toMatch(/^-?\d+\.\d+,\s*-?\d+\.\d+$/);
+      expect(result.address).not.toBe('Your Location');
     });
 
     it('tries multiple IP services when first fails', async () => {

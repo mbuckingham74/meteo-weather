@@ -1,9 +1,6 @@
 /**
  * Tests for LocationContext
  * Testing location state management and localStorage persistence
- *
- * TODO: These tests are currently skipped due to localStorage mock issues
- * The component uses a real default location instead of mocked localStorage
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
@@ -45,25 +42,32 @@ function TestComponent() {
   );
 }
 
-describe.skip('LocationContext', () => {
-  let getItemSpy, setItemSpy, removeItemSpy;
+describe('LocationContext', () => {
+  const originalLocalStorage = globalThis.localStorage;
+  let mockLocalStorage;
 
   beforeEach(() => {
-    // Mock localStorage
-    getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockReturnValue(null);
-    setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {});
-    removeItemSpy = vi.spyOn(Storage.prototype, 'removeItem').mockImplementation(() => {});
+    vi.clearAllMocks();
+    mockLocalStorage = {
+      getItem: vi.fn().mockReturnValue(null),
+      setItem: vi.fn(),
+      removeItem: vi.fn(),
+      clear: vi.fn(),
+    };
+    Object.defineProperty(globalThis, 'localStorage', {
+      value: mockLocalStorage,
+      configurable: true,
+    });
 
     // Mock console.error
     vi.spyOn(console, 'error').mockImplementation(() => {});
-
-    vi.clearAllMocks();
   });
 
   afterEach(() => {
-    getItemSpy.mockRestore();
-    setItemSpy.mockRestore();
-    removeItemSpy.mockRestore();
+    Object.defineProperty(globalThis, 'localStorage', {
+      value: originalLocalStorage,
+      configurable: true,
+    });
     vi.restoreAllMocks();
   });
 
@@ -86,7 +90,7 @@ describe.skip('LocationContext', () => {
         longitude: -0.1278,
       };
 
-      getItemSpy.mockReturnValue(JSON.stringify(savedLocation));
+      mockLocalStorage.getItem.mockReturnValue(JSON.stringify(savedLocation));
 
       render(
         <LocationProvider>
@@ -105,7 +109,7 @@ describe.skip('LocationContext', () => {
         longitude: 2.3522,
       };
 
-      getItemSpy.mockReturnValue(JSON.stringify(savedLocation));
+      mockLocalStorage.getItem.mockReturnValue(JSON.stringify(savedLocation));
 
       render(
         <LocationProvider>
@@ -117,7 +121,7 @@ describe.skip('LocationContext', () => {
     });
 
     it('handles localStorage load errors gracefully', () => {
-      getItemSpy.mockImplementation(() => {
+      mockLocalStorage.getItem.mockImplementation(() => {
         throw new Error('localStorage unavailable');
       });
 
@@ -137,7 +141,7 @@ describe.skip('LocationContext', () => {
     });
 
     it('handles invalid JSON gracefully', () => {
-      getItemSpy.mockReturnValue('invalid json{');
+      mockLocalStorage.getItem.mockReturnValue('invalid json{');
 
       render(
         <LocationProvider>
@@ -209,12 +213,12 @@ describe.skip('LocationContext', () => {
         screen.getByText('Select London').click();
       });
 
-      expect(setItemSpy).toHaveBeenCalledWith(
+      expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
         'meteo_current_location',
         expect.stringContaining('London')
       );
 
-      const savedData = JSON.parse(setItemSpy.mock.calls[0][1]);
+      const savedData = JSON.parse(mockLocalStorage.setItem.mock.calls[0][1]);
       expect(savedData).toMatchObject({
         address: 'London, UK',
         latitude: 51.5074,
@@ -223,7 +227,7 @@ describe.skip('LocationContext', () => {
     });
 
     it('handles localStorage save errors gracefully', () => {
-      setItemSpy.mockImplementation(() => {
+      mockLocalStorage.setItem.mockImplementation(() => {
         throw new Error('QuotaExceededError');
       });
 
@@ -256,7 +260,7 @@ describe.skip('LocationContext', () => {
         longitude: -0.1278,
       };
 
-      getItemSpy.mockReturnValue(JSON.stringify(savedLocation));
+      mockLocalStorage.getItem.mockReturnValue(JSON.stringify(savedLocation));
 
       render(
         <LocationProvider>
@@ -280,7 +284,7 @@ describe.skip('LocationContext', () => {
         longitude: -0.1278,
       };
 
-      getItemSpy.mockReturnValue(JSON.stringify(savedLocation));
+      mockLocalStorage.getItem.mockReturnValue(JSON.stringify(savedLocation));
 
       render(
         <LocationProvider>
@@ -306,11 +310,11 @@ describe.skip('LocationContext', () => {
         screen.getByText('Clear Location').click();
       });
 
-      expect(removeItemSpy).toHaveBeenCalledWith('meteo_current_location');
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('meteo_current_location');
     });
 
     it('handles localStorage remove errors gracefully', () => {
-      removeItemSpy.mockImplementation(() => {
+      mockLocalStorage.removeItem.mockImplementation(() => {
         throw new Error('localStorage error');
       });
 
@@ -345,7 +349,7 @@ describe.skip('LocationContext', () => {
         }
       };
 
-      const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
       render(<TestWithoutProvider />);
 

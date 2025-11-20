@@ -90,6 +90,8 @@
   },
   "overrides": {
     "nth-check": "^2.1.1",
-    "webpack-dev-server": "^4.15.2"
+    "webpack-dev-server": "^4.15.2",
+    "glob": "^10.4.6",
+    "js-yaml": "^4.1.1"
   }
 }

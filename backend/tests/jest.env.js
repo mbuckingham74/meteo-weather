@@ -5,19 +5,35 @@ const fs = require('fs');
 const path = require('path');
 const dotenv = require('dotenv');
 
+// Toggle noisy logging during tests (defaults to quiet)
+const quietLogs = process.env.QUIET_TEST_LOGS !== '0';
+let originalLog;
+
+// Mute dotenv's noisy logs before it runs
+if (quietLogs) {
+  originalLog = console.log;
+  console.log = (...args) => {
+    const first = args[0];
+    if (typeof first === 'string' && first.toLowerCase().includes('dotenv')) {
+      return;
+    }
+    return originalLog(...args);
+  };
+}
+
 // Load environment variables in order of preference
 const envTestPath = path.join(__dirname, '..', '.env.test');
 const envRootPath = path.join(__dirname, '..', '.env');
 
 if (fs.existsSync(envTestPath)) {
   dotenv.config({ path: envTestPath });
-  console.log('📝 Loaded environment from .env.test');
+  if (!quietLogs) console.log('📝 Loaded environment from .env.test');
 } else if (fs.existsSync(envRootPath)) {
   dotenv.config({ path: envRootPath });
-  console.log('📝 Loaded environment from backend/.env');
+  if (!quietLogs) console.log('📝 Loaded environment from backend/.env');
 } else {
   dotenv.config();
-  console.log('📝 Loaded environment from default .env');
+  if (!quietLogs) console.log('📝 Loaded environment from default .env');
 }
 
 // Ensure NODE_ENV is set to test
@@ -26,4 +42,18 @@ process.env.NODE_ENV = 'test';
 // Provide default test API key if not set
 process.env.VISUAL_CROSSING_API_KEY = process.env.VISUAL_CROSSING_API_KEY || 'test-api-key';
 
-console.log(`📊 Database config: ${process.env.DB_HOST}:${process.env.DB_PORT}`);
+if (!quietLogs) {
+  console.log(`📊 Database config: ${process.env.DB_HOST}:${process.env.DB_PORT}`);
+}
+
+// Silence expected noisy errors (e.g., intentional Visual Crossing failures) when quiet mode is on
+if (quietLogs) {
+  const originalError = console.error;
+  console.error = (...args) => {
+    const first = args[0];
+    if (typeof first === 'string' && first.includes('Visual Crossing API Error')) {
+      return;
+    }
+    return originalError(...args);
+  };
+}

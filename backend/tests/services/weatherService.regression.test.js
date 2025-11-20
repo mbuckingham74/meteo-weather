@@ -16,24 +16,90 @@ jest.mock('../../services/geocodingService', () => ({
   reverseGeocodeNominatim: jest.fn(),
 }));
 
+// Inline mocks to keep tests deterministic and fast
+jest.mock('axios');
+jest.mock('../../utils/retryHelper', () => ({
+  retryWithBackoff: async (fn) => fn(),
+}));
+jest.mock('../../services/cacheService', () => ({
+  withCache: jest.fn(async (_source, _params, fn) => fn()),
+  CACHE_TTL: {
+    CURRENT_WEATHER: 60,
+    FORECAST: 60,
+    HOURLY_FORECAST: 60,
+  },
+}));
+
+const axios = require('axios');
+const cacheService = require('../../services/cacheService');
+
 describe('🚨 REGRESSION PREVENTION: Backend "Old Location" Bug', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   describe('CRITICAL: Visual Crossing Returns Placeholder', () => {
-    it.todo('MUST call Nominatim when VC returns "Old Location"');
-    it.todo('MUST call Nominatim when VC returns raw coordinates');
+    it('MUST call Nominatim when VC returns "Old Location"', async () => {
+      axios.get.mockResolvedValue({
+        data: {
+          resolvedAddress: 'Old Location',
+          latitude: 47.9062,
+          longitude: -124.5745,
+          timezone: 'America/Los_Angeles',
+          currentConditions: {},
+        },
+      });
+      reverseGeocodeNominatim.mockResolvedValue({
+        address: 'Clallam County, Washington, United States of America',
+      });
+
+      // Clear cache wrapper to just call through
+      cacheService.withCache.mockImplementation(async (_source, _params, fn) => fn());
+
+      const weatherService = require('../../services/weatherService');
+      const result = await weatherService.getCurrentWeather('47.9062,-124.5745');
+
+      expect(reverseGeocodeNominatim).toHaveBeenCalledWith(47.9062, -124.5745);
+      expect(result.location.address).toBe(
+        'Clallam County, Washington, United States of America'
+      );
+      expect(result.location.address).not.toBe('Old Location');
+    });
+
+    it('MUST call Nominatim when VC returns raw coordinates', async () => {
+      axios.get.mockResolvedValue({
+        data: {
+          resolvedAddress: '47.9062,-124.5745',
+          latitude: 47.9062,
+          longitude: -124.5745,
+          timezone: 'America/Los_Angeles',
+          currentConditions: {},
+        },
+      });
+      reverseGeocodeNominatim.mockResolvedValue({
+        address: 'Clallam County, Washington, United States of America',
+      });
+
+      cacheService.withCache.mockImplementation(async (_source, _params, fn) => fn());
+
+      const weatherService = require('../../services/weatherService');
+      const result = await weatherService.getCurrentWeather('47.9062,-124.5745');
+
+      expect(reverseGeocodeNominatim).toHaveBeenCalledWith(47.9062, -124.5745);
+      expect(result.location.address).toBe(
+        'Clallam County, Washington, United States of America'
+      );
+      expect(result.location.address).not.toMatch(/^\d+\.\d+,\s*-?\d+\.\d+$/);
+    });
   });
 
   describe('INTEGRATION: getCurrentWeather with Placeholders', () => {
-    it.skip('returns real city name when Visual Crossing returns placeholder', async () => {
+    it('returns real city name when Visual Crossing returns placeholder', async () => {
       // This would be a full integration test with mocked axios
       // Testing that the entire flow works correctly
 
       // Mock axios to return placeholder from Visual Crossing
-      const axios = require('axios');
-      jest.spyOn(axios, 'get').mockResolvedValue({
+      axios.get.mockResolvedValue({
         data: {
           resolvedAddress: 'Old Location', // ← The bug
           latitude: 47.9062,
@@ -66,10 +132,7 @@ describe('🚨 REGRESSION PREVENTION: Backend "Old Location" Bug', () => {
       const weatherService = require('../../services/weatherService');
 
       // Clear cache to ensure fresh request
-      const cacheService = require('../../services/cacheService');
-      jest.spyOn(cacheService, 'withCache').mockImplementation(async (source, key, fn) => {
-        return await fn();
-      });
+      cacheService.withCache.mockImplementation(async (_source, _key, fn) => fn());
 
       const result = await weatherService.getCurrentWeather('47.9062,-124.5745');
 
@@ -83,9 +146,8 @@ describe('🚨 REGRESSION PREVENTION: Backend "Old Location" Bug', () => {
       expect(reverseGeocodeNominatim).toHaveBeenCalledWith(47.9062, -124.5745);
     });
 
-    it.skip('returns real city name when Visual Crossing returns coordinates', async () => {
-      const axios = require('axios');
-      jest.spyOn(axios, 'get').mockResolvedValue({
+    it('returns real city name when Visual Crossing returns coordinates', async () => {
+      axios.get.mockResolvedValue({
         data: {
           resolvedAddress: '47.9062,-124.5745', // ← Raw coordinates (also a bug)
           latitude: 47.9062,
@@ -116,10 +178,7 @@ describe('🚨 REGRESSION PREVENTION: Backend "Old Location" Bug', () => {
 
       const weatherService = require('../../services/weatherService');
 
-      const cacheService = require('../../services/cacheService');
-      jest.spyOn(cacheService, 'withCache').mockImplementation(async (source, key, fn) => {
-        return await fn();
-      });
+      cacheService.withCache.mockImplementation(async (_source, _key, fn) => fn());
 
       const result = await weatherService.getCurrentWeather('47.9062,-124.5745');
 
@@ -129,9 +188,8 @@ describe('🚨 REGRESSION PREVENTION: Backend "Old Location" Bug', () => {
       expect(reverseGeocodeNominatim).toHaveBeenCalledWith(47.9062, -124.5745);
     });
 
-    it.skip('falls back to coordinates when Nominatim fails', async () => {
-      const axios = require('axios');
-      jest.spyOn(axios, 'get').mockResolvedValue({
+    it('falls back to coordinates when Nominatim fails', async () => {
+      axios.get.mockResolvedValue({
         data: {
           resolvedAddress: 'Old Location',
           latitude: 47.9062,
@@ -161,10 +219,7 @@ describe('🚨 REGRESSION PREVENTION: Backend "Old Location" Bug', () => {
 
       const weatherService = require('../../services/weatherService');
 
-      const cacheService = require('../../services/cacheService');
-      jest.spyOn(cacheService, 'withCache').mockImplementation(async (source, key, fn) => {
-        return await fn();
-      });
+      cacheService.withCache.mockImplementation(async (_source, _key, fn) => fn());
 
       const result = await weatherService.getCurrentWeather('47.9062,-124.5745');
 
