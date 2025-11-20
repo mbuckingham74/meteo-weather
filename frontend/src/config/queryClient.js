@@ -19,11 +19,17 @@ const defaultQueryOptions = {
     // Retry configuration
     retry: (failureCount, error) => {
       // Don't retry on 4xx errors (client errors)
-      // Our services throw ApiError/AppError with 'status' property (not response.status)
-      const errorStatus = error?.status || error?.response?.status;
+      // Handle different error shapes:
+      // - ApiError: error.status
+      // - AppError: error.context.status
+      // - Axios errors: error.response.status
+      const errorStatus = error?.status || error?.context?.status || error?.response?.status;
+
+      // Don't retry client errors (4xx)
       if (errorStatus >= 400 && errorStatus < 500) {
         return false;
       }
+
       // Retry up to 2 times for network errors and 5xx errors
       return failureCount < 2;
     },
