@@ -52,19 +52,30 @@ This document provides a comprehensive audit of hardcoded values, magic numbers,
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
 ```
 
-**Affected Files:**
-- `frontend/src/services/weatherApi.js`
-- `frontend/src/services/authApi.js`
-- `frontend/src/services/locationFinderService.js`
-- `frontend/src/hooks/useClimateData.js`
-- `frontend/src/components/ai/AIWeatherPage.jsx`
-- `frontend/src/components/ai/UniversalSearchBar.jsx`
-- `frontend/src/components/ai/SharedAnswerPage.jsx`
-- `frontend/src/components/weather/HistoricalRainTable.jsx`
-- `frontend/src/components/cards/AirQualityCard.jsx`
-- `frontend/src/components/settings/UserPreferencesPage.jsx` (2 occurrences)
-- `frontend/src/services/authApi.test.js`
-- `frontend/src/services/weatherApi.test.js`
+**Status:** ✅ COMPLETE (P0-P3A, Nov 14 2025)
+
+All API calls now use centralized `apiClient.js` with:
+- Automatic retry with exponential backoff
+- Request deduplication
+- Unified error handling
+- Auth header injection
+
+**Previously Affected Files (now migrated):**
+- ✅ `frontend/src/services/weatherApi.js` - Uses apiClient
+- ✅ `frontend/src/services/authApi.js` - Uses apiClient
+- ✅ `frontend/src/services/locationFinderService.js` - Uses apiClient
+- ✅ `frontend/src/hooks/useWeatherQueries.js` - React Query (replaces useWeatherData.js)
+- ✅ `frontend/src/hooks/useClimateQueries.js` - React Query (replaces useClimateData.js)
+- ✅ `frontend/src/components/ai/AIWeatherPage.jsx` - Uses apiClient
+- ✅ `frontend/src/components/ai/UniversalSearchBar.jsx` - Uses apiClient
+- ✅ `frontend/src/components/ai/SharedAnswerPage.jsx` - Uses apiClient
+- ✅ `frontend/src/components/weather/HistoricalRainTable.jsx` - Uses apiClient
+- ✅ `frontend/src/components/cards/AirQualityCard.jsx` - Uses apiClient
+- ✅ `frontend/src/components/settings/UserPreferencesPage.jsx` - Uses apiClient
+
+**Legacy hooks removed (P0-5, Nov 20 2025):**
+- ❌ `useWeatherData.js` - Deleted, replaced by `useWeatherQueries.js`
+- ❌ `useClimateData.js` - Deleted, replaced by `useClimateQueries.js`
 
 **Risk Level:** 🔴 **HIGH**
 
