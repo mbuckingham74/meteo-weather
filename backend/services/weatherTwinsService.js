@@ -95,6 +95,7 @@ async function findWeatherTwins(locationId, options = {}) {
 
   try {
     // Get the reference location's current weather
+    // TEMPORARY: Using 2025-11-01 instead of CURDATE() for testing
     const [referenceWeather] = await pool.query(
       `SELECT
         l.id, l.city_name, l.state, l.country, l.country_code,
@@ -109,7 +110,7 @@ async function findWeatherTwins(locationId, options = {}) {
       FROM locations l
       JOIN weather_data w ON l.id = w.location_id
       WHERE l.id = ?
-        AND w.observation_date = CURDATE()
+        AND w.observation_date = '2025-11-01'
       ORDER BY w.observation_date DESC, w.created_at DESC
       LIMIT 1`,
       [locationId]
@@ -141,6 +142,7 @@ async function findWeatherTwins(locationId, options = {}) {
     // We use temperature range as the primary filter for performance
     const tempTolerance = 10; // ±10°F initial filter
 
+    // TEMPORARY: Using 2025-11-01 instead of CURDATE() for testing
     const [candidates] = await pool.query(
       `SELECT
         l.id, l.city_name, l.state, l.country, l.country_code,
@@ -156,7 +158,7 @@ async function findWeatherTwins(locationId, options = {}) {
       FROM locations l
       JOIN weather_data w ON l.id = w.location_id
       WHERE l.id != ?
-        AND w.observation_date = CURDATE()
+        AND w.observation_date = '2025-11-01'
         AND w.temperature_avg BETWEEN ? AND ?
         ${countryFilter}
       ORDER BY w.created_at DESC`,

@@ -204,27 +204,67 @@ function WeatherDashboard() {
     }
   };
 
-  // Fetch location ID from database when we have coordinates
+  // Fetch location ID for Weather Twins feature
+  // Uses coordinates (preferred) or falls back to city name search
+  // Following patterns from docs/troubleshooting/OLD_LOCATION_BUG_FIX.md
   useEffect(() => {
     const fetchLocationId = async () => {
-      if (data?.location?.latitude && data?.location?.longitude) {
-        try {
+      try {
+        // First priority: Use coordinates from weather data (most reliable)
+        const lat = data?.location?.latitude || locationData?.latitude;
+        const lon = data?.location?.longitude || locationData?.longitude;
+
+        if (lat && lon) {
+          // Try coordinate-based lookup first (within 10km radius)
           const response = await fetch(
-            `${import.meta.env.VITE_API_URL}/api/locations/search?` +
-              `lat=${data.location.latitude}&lon=${data.location.longitude}&limit=1`
+            `${import.meta.env.VITE_API_URL}/api/locations/by-coordinates?lat=${lat}&lon=${lon}&radius=10000`
           );
-          const result = await response.json();
-          if (result.success && result.locations && result.locations.length > 0) {
-            setLocationId(result.locations[0].id);
+
+          if (response.ok) {
+            const result = await response.json();
+            if (result.success && result.location) {
+              setLocationId(result.location.id);
+              return; // Success - exit early
+            }
           }
-        } catch (error) {
-          console.error('Failed to fetch location ID:', error);
+          // If coordinate lookup fails, fall through to city name search
         }
+
+        // Fallback: Try city name search (less reliable due to naming variations)
+        const locationName = data?.location?.address || locationData?.address;
+        if (locationName && locationName !== 'Your Location') {
+          const cityName = locationName.split(',')[0].trim();
+
+          const response = await fetch(
+            `${import.meta.env.VITE_API_URL}/api/locations/search?q=${encodeURIComponent(cityName)}&limit=1`
+          );
+
+          if (response.ok) {
+            const result = await response.json();
+            if (result.success && result.locations && result.locations.length > 0) {
+              setLocationId(result.locations[0].id);
+              return; // Success - exit early
+            }
+          }
+        }
+
+        // If both methods fail, set to null (Weather Twins button will be disabled)
+        setLocationId(null);
+      } catch (error) {
+        console.error('Failed to fetch location ID:', error);
+        setLocationId(null);
       }
     };
 
     fetchLocationId();
-  }, [data?.location?.latitude, data?.location?.longitude]);
+  }, [
+    data?.location?.latitude,
+    data?.location?.longitude,
+    data?.location?.address,
+    locationData?.latitude,
+    locationData?.longitude,
+    locationData?.address,
+  ]);
 
   // Handle Weather Twins button click
   const handleWeatherTwinsClick = () => {

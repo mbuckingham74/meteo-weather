@@ -22,30 +22,28 @@ async function findLocationById(id) {
 }
 
 /**
- * Find location by coordinates using spatial index
+ * Find location by coordinates using Haversine formula
  * @param {number} latitude - Latitude
  * @param {number} longitude - Longitude
- * @param {number} radiusMeters - Search radius in meters (default: 1000m = ~0.01 degrees)
+ * @param {number} radiusMeters - Search radius in meters (default: 10000m = 10km)
  * @returns {Promise<object|null>} Location data or null
  */
-async function findLocationByCoordinates(latitude, longitude, radiusMeters = 1000) {
+async function findLocationByCoordinates(latitude, longitude, radiusMeters = 10000) {
   try {
-    // Use spatial index for fast coordinate lookup (50x faster than ABS())
-    // IMPORTANT: POINT takes (longitude, latitude) - X, Y coordinate system
+    // Use Haversine formula for distance calculation
+    // Converts degrees to radians and calculates great-circle distance
     const [rows] = await pool.query(
       `SELECT *,
-        ST_Distance_Sphere(
-          coordinates,
-          ST_SRID(POINT(?, ?), 4326)
-        ) as distance_meters
+        (6371000 * acos(
+          cos(radians(?)) * cos(radians(latitude)) *
+          cos(radians(longitude) - radians(?)) +
+          sin(radians(?)) * sin(radians(latitude))
+        )) as distance_meters
        FROM locations
-       WHERE ST_Distance_Sphere(
-         coordinates,
-         ST_SRID(POINT(?, ?), 4326)
-       ) < ?
+       HAVING distance_meters < ?
        ORDER BY distance_meters
        LIMIT 1`,
-      [longitude, latitude, longitude, latitude, radiusMeters]
+      [latitude, longitude, latitude, radiusMeters]
     );
 
     return rows.length > 0 ? rows[0] : null;

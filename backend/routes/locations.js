@@ -38,6 +38,61 @@ router.get('/geocode', async (req, res) => {
 });
 
 /**
+ * Find database location by coordinates
+ * GET /api/locations/by-coordinates?lat=51.5074&lon=-0.1278&radius=10000
+ * Returns the nearest database location within the search radius
+ */
+router.get('/by-coordinates', async (req, res) => {
+  try {
+    const { lat, lon, radius } = req.query;
+
+    if (!lat || !lon) {
+      return res.status(400).json({
+        success: false,
+        error: 'Latitude (lat) and longitude (lon) query parameters are required',
+      });
+    }
+
+    const latitude = parseFloat(lat);
+    const longitude = parseFloat(lon);
+    const searchRadius = radius ? parseFloat(radius) : 10000; // Default 10km radius
+
+    if (isNaN(latitude) || isNaN(longitude)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid latitude or longitude',
+      });
+    }
+
+    if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
+      return res.status(400).json({
+        success: false,
+        error: 'Coordinates out of range',
+      });
+    }
+
+    const location = await locationService.findLocationByCoordinates(latitude, longitude, searchRadius);
+
+    if (location) {
+      res.json({
+        success: true,
+        location,
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        error: `No location found within ${searchRadius}m of coordinates`,
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+/**
  * Reverse geocode coordinates
  * GET /api/locations/reverse?lat=51.5074&lon=-0.1278
  */
