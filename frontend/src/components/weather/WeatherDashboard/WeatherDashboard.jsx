@@ -95,8 +95,12 @@ function WeatherDashboard() {
   });
 
   // Extract lat/lng from locationData for React Query hooks
+  // FALLBACK: If locationData doesn't have coords (e.g., fresh load with "Seattle, WA" string),
+  // the queries will be disabled and we'll show the "no location" state.
+  // This is intentional - we want users to select a location with coordinates.
   const lat = locationData?.latitude;
   const lng = locationData?.longitude;
+  const hasCoordinates = lat != null && lng != null;
 
   // Fetch weather data using React Query hooks
   const {
@@ -104,21 +108,27 @@ function WeatherDashboard() {
     isLoading: loading,
     error,
     refetch: refetchForecast,
-  } = useForecastQuery(lat, lng, days);
+  } = useForecastQuery(lat, lng, days, {
+    enabled: hasCoordinates,
+  });
 
   // Destructure hourly data query result
   const {
     data: hourlyDataResult,
     isLoading: hourlyLoading,
     error: hourlyError,
-  } = useHourlyForecastQuery(lat, lng, 48);
+  } = useHourlyForecastQuery(lat, lng, 48, {
+    enabled: hasCoordinates,
+  });
 
   // Destructure current weather query result
   const {
     data: currentWeatherResult,
     isLoading: currentWeatherLoading,
     error: currentWeatherError,
-  } = useCurrentWeatherQuery(lat, lng);
+  } = useCurrentWeatherQuery(lat, lng, {
+    enabled: hasCoordinates,
+  });
 
   // Create compatibility objects to match old hook API shape
   const hourlyData = {
@@ -200,24 +210,49 @@ function WeatherDashboard() {
 
   // Fetch climate/historical data ONLY if charts are visible
   // React Query hooks use lat/lng and enabled option for conditional fetching
-  const thisDayHistory = useThisDayInHistoryQuery(lat, lng, null, 10, {
-    enabled: visibleCharts.thisDayHistory && lat != null && lng != null,
+  // Map React Query's isLoading to .loading for ChartsGrid compatibility
+  const thisDayHistoryQuery = useThisDayInHistoryQuery(lat, lng, null, 10, {
+    enabled: visibleCharts.thisDayHistory && hasCoordinates,
   });
-  const forecastComparison = useForecastComparisonQuery(
+  const thisDayHistory = {
+    data: thisDayHistoryQuery.data,
+    loading: thisDayHistoryQuery.isLoading,
+    error: thisDayHistoryQuery.error,
+  };
+
+  const forecastComparisonQuery = useForecastComparisonQuery(
     lat,
     lng,
     visibleCharts.historicalComparison ? data?.forecast || [] : [],
     10,
     {
-      enabled: visibleCharts.historicalComparison && lat != null && lng != null,
+      // Only enable when coords exist AND forecast data is loaded
+      enabled: visibleCharts.historicalComparison && hasCoordinates && data?.forecast != null,
     }
   );
-  const recordTemps = useRecordTemperaturesQuery(lat, lng, startDate, endDate, 10, {
-    enabled: visibleCharts.recordTemps && lat != null && lng != null,
+  const forecastComparison = {
+    data: forecastComparisonQuery.data,
+    loading: forecastComparisonQuery.isLoading,
+    error: forecastComparisonQuery.error,
+  };
+
+  const recordTempsQuery = useRecordTemperaturesQuery(lat, lng, startDate, endDate, 10, {
+    enabled: visibleCharts.recordTemps && hasCoordinates,
   });
-  const tempProbability = useTemperatureProbabilityQuery(lat, lng, startDate, 10, {
-    enabled: visibleCharts.tempProbability && lat != null && lng != null,
+  const recordTemps = {
+    data: recordTempsQuery.data,
+    loading: recordTempsQuery.isLoading,
+    error: recordTempsQuery.error,
+  };
+
+  const tempProbabilityQuery = useTemperatureProbabilityQuery(lat, lng, startDate, 10, {
+    enabled: visibleCharts.tempProbability && hasCoordinates,
   });
+  const tempProbability = {
+    data: tempProbabilityQuery.data,
+    loading: tempProbabilityQuery.isLoading,
+    error: tempProbabilityQuery.error,
+  };
 
   // Handle current location detection
   const handleDetectLocation = async () => {
@@ -378,8 +413,8 @@ function WeatherDashboard() {
         {!loading && !error && data && 'Weather data loaded'}
       </div>
 
-      {/* No Location State - Show search when no location is set */}
-      {!location && !detectingLocation && !loading && (
+      {/* No Location State - Show search when no location is set OR no coordinates */}
+      {(!location || !hasCoordinates) && !detectingLocation && !loading && (
         <div className="no-location-state">
           <Surface
             as="section"
