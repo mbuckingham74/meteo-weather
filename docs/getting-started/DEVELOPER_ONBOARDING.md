@@ -171,14 +171,21 @@ export function updateLocationUrl(location) {
 **Request Flow** (Frontend → Backend → API):
 
 ```
-1. Component calls custom hook
-   └─ useWeatherData.js: useForecast(location, days)
+1. Component calls React Query hook
+   └─ useWeatherQueries.js: useForecastQuery(lat, lng, days)
+        ├─ TanStack Query manages cache & state
+        ├─ Automatic deduplication of duplicate requests
+        └─ Built-in retry with exponential backoff
 
-2. Hook calls service layer
-   └─ weatherApi.js: fetchForecast(location, days)
+2. Query hook calls API client
+   └─ apiClient.js: apiRequest('/api/weather/forecast/...')
+        ├─ Automatic auth header injection
+        ├─ Request deduplication (prevents duplicate in-flight requests)
+        └─ Automatic retry for transient failures (5xx, network errors)
 
-3. Service makes HTTP request
-   └─ fetch(`${API_URL}/api/weather/forecast/${location}?days=${days}`)
+3. Service layer handles business logic
+   └─ weatherApi.js: getWeatherForecast(location, days)
+        └─ Constructs API endpoint with query params
 
 4. Backend route handler
    └─ routes/weather.js: GET /forecast/:location
@@ -190,13 +197,21 @@ export function updateLocationUrl(location) {
         └─ Store result in database cache
 
 6. Response bubbles back up
-   └─ Hook stores in state → Component re-renders
+   └─ React Query updates cache → Component auto re-renders
+        ├─ 5min stale time (fresh data for 5 min)
+        ├─ 30min GC time (cached for 30 min)
+        └─ Automatic background refetch on reconnect
 ```
 
 **Why this complexity?**
 - **Separation of concerns**: Components don't know about APIs
-- **Reusability**: Multiple components can use same hook
-- **Caching**: 99% of requests served from cache (cost savings)
+- **Reusability**: Multiple components can use same query hook
+- **Multi-layer caching**:
+  - React Query (client-side, 5-30min)
+  - Backend cache (30min TTL)
+  - 99% cache hit rate = massive cost savings
+- **Reliability**: Automatic retry, deduplication, error handling
+- **Developer Experience**: Built-in loading/error states, DevTools
 - **Error handling**: Centralized retry logic and fallbacks
 
 ---
@@ -1919,12 +1934,17 @@ src/
 │   ├── charts/                        # 13 chart components
 │   └── common/ErrorBoundary.jsx       # Error handling
 ├── services/
-│   ├── weatherApi.js             # Backend API client
+│   ├── apiClient.js              # Centralized API client (retry, deduplication, auth)
+│   ├── weatherApi.js             # Weather API service layer
+│   ├── climateApi.js             # Climate API service layer
 │   ├── radarService.js           # RainViewer client
 │   └── geolocationService.js     # Location detection
 ├── hooks/
-│   ├── useWeatherData.js         # Weather data hooks
+│   ├── useWeatherQueries.js      # React Query weather hooks
+│   ├── useClimateQueries.js      # React Query climate hooks
 │   └── useKeyboardShortcuts.js   # Accessibility
+├── config/
+│   └── queryClient.js            # TanStack Query configuration
 └── utils/
     ├── weatherHelpers.js         # Temperature conversion, aggregation
     └── urlHelpers.js             # URL slug generation

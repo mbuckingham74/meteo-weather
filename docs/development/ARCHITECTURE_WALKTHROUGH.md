@@ -124,34 +124,61 @@ export const fetchWeatherData = async (location) => {
 - `authService.js` - User authentication
 
 #### 4. **Hooks** (`/hooks`)
-Custom React hooks for reusable logic.
+Custom React hooks for reusable logic, powered by TanStack Query.
 
-**Example: useWeatherData**
+**Example: React Query Weather Hook**
 ```javascript
-// frontend/src/hooks/useWeatherData.js
-export const useWeatherData = (location) => {
-  const [weather, setWeather] = useState(null);
-  const [loading, setLoading] = useState(true);
+// frontend/src/hooks/useWeatherQueries.js
+import { useQuery } from '@tanstack/react-query';
+import { queryKeys } from '../config/queryClient';
+import { getWeatherForecast } from '../services/weatherApi';
 
-  useEffect(() => {
-    const loadWeather = async () => {
-      setLoading(true);
-      const data = await fetchWeatherData(location);
-      setWeather(data);
-      setLoading(false);
-    };
-    loadWeather();
-  }, [location]);
+export const useForecastQuery = (lat, lng, days = 7) => {
+  return useQuery({
+    // Stable cache key using primitives (not objects)
+    queryKey: queryKeys.weather.forecast(lat, lng, days),
 
-  return { weather, loading };
+    // Data fetching function
+    queryFn: async () => {
+      const locationString = `${lat},${lng}`;
+      return getWeatherForecast(locationString, days);
+    },
+
+    // Only run if we have coordinates
+    enabled: !!lat && !!lng,
+
+    // Configuration (inherited from queryClient defaults)
+    // - 5min stale time (fresh data)
+    // - 30min GC time (cache retention)
+    // - Automatic retry with exponential backoff
+    // - Request deduplication
+  });
 };
 ```
 
-**Available Hooks:**
-- `useWeatherData` - Fetch weather data
+**Available Data Fetching Hooks:**
+- `useCurrentWeatherQuery()` - Current weather data
+- `useForecastQuery()` - 7-day forecast
+- `useHourlyForecastQuery()` - 48-hour forecast
+- `useHistoricalWeatherQuery()` - Historical weather data
+- `useClimateNormalsQuery()` - Climate normals
+- `useRecordTemperaturesQuery()` - Temperature records
+- `useForecastComparisonQuery()` - Forecast vs historical comparison
+- `useThisDayInHistoryQuery()` - Historical data for specific date
+- `useTemperatureProbabilityQuery()` - Temperature probability distribution
+
+**Utility Hooks:**
 - `useOnlineStatus` - Network connectivity
 - `useRetryHandler` - Retry failed requests
 - `useLocationConfirmation` - Location selection flow
+
+**Why React Query?**
+- ✅ Automatic caching (5min stale, 30min GC)
+- ✅ Request deduplication (prevents duplicate in-flight requests)
+- ✅ Automatic retries with exponential backoff
+- ✅ Built-in loading/error/success states
+- ✅ DevTools for debugging cache and queries
+- ✅ Background refetch on reconnect/window focus
 
 #### 5. **Utils** (`/utils`)
 Shared utility functions.

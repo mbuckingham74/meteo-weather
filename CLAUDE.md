@@ -82,6 +82,20 @@
 - [docs/admin/QUICK_REFERENCE.md](docs/admin/QUICK_REFERENCE.md) - One-page cheat sheet (340 lines)
 - [docs/admin/IMPLEMENTATION_SUMMARY.md](docs/admin/IMPLEMENTATION_SUMMARY.md) - Technical details (890 lines)
 ### Recent Work (Nov 2025)
+- ✅ **TanStack Query Migration Complete (P0-4)** (Nov 20, 2025)
+  - **Phase 1 (PR #50):** Set up TanStack Query infrastructure with queryClient and query keys
+  - **Phase 2 (PR #51):** Migrated WeatherDashboard to React Query hooks
+  - **Phase 3 (PR #52):** Migrated LocationComparisonView to React Query hooks
+  - **Phase 4 (PR #53):** Added deprecation warnings to 11 legacy hook functions
+  - **Impact:** Modern data fetching with automatic caching, deduplication, retries, and DevTools
+  - **Status:** Complete, all 589 tests passing ✅
+- ✅ **Legacy Hook Cleanup (P0-5)** (Nov 20, 2025)
+  - **Complete Removal:** Deleted 4 deprecated files (useWeatherData.js, useClimateData.js, tests, backup)
+  - **Hooks Removed:** 11 deprecated hook functions (useWeatherData, useCurrentWeather, useForecast, useHistoricalWeather, useHourlyForecast, useClimateNormals, useRecordTemperatures, useForecastComparison, useThisDayInHistory, useTemperatureProbability, and module-level deprecation flag)
+  - **Verification:** Zero remaining imports in components (all using React Query hooks)
+  - **Impact:** Single source of truth for data fetching, reduced codebase complexity, cleaner architecture
+  - **Documentation:** Updated CLAUDE.md and API_ARCHITECTURE_IMPROVEMENTS.md
+  - **Status:** Complete, ready for PR review ✅
 - ✅ **API Architecture Improvements (P0-P3A)** (Nov 14, 2025)
   - **Complete Refactoring:** Centralized API client with retry, deduplication, and unified error handling
   - **P0:** Fixed backend database imports (db → pool), added ESLint rule to prevent regression
