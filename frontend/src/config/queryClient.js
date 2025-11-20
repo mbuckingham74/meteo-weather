@@ -72,6 +72,7 @@ export const queryKeys = {
     // Use lat/lng tuple instead of location object for stable keys
     current: (lat, lng) => ['weather', 'current', lat, lng],
     forecast: (lat, lng) => ['weather', 'forecast', lat, lng],
+    hourly: (lat, lng, hours = 48) => ['weather', 'hourly', lat, lng, hours],
     // Use ISO date strings instead of Date objects
     historical: (lat, lng, startDate, endDate) => [
       'weather',
@@ -80,6 +81,39 @@ export const queryKeys = {
       lng,
       startDate,
       endDate,
+    ],
+  },
+
+  // Climate-related queries
+  climate: {
+    all: ['climate'],
+    normals: (lat, lng, date, years = 10) => ['climate', 'normals', lat, lng, date, years],
+    records: (lat, lng, startDate, endDate, years = 10) => [
+      'climate',
+      'records',
+      lat,
+      lng,
+      startDate,
+      endDate,
+      years,
+    ],
+    forecastComparison: (lat, lng, startDate, endDate, years = 10) => [
+      'climate',
+      'forecast-comparison',
+      lat,
+      lng,
+      startDate,
+      endDate,
+      years,
+    ],
+    thisDayInHistory: (lat, lng, date, years = 10) => ['climate', 'history', lat, lng, date, years],
+    temperatureProbability: (lat, lng, startDate, years = 10) => [
+      'climate',
+      'temp-probability',
+      lat,
+      lng,
+      startDate,
+      years,
     ],
   },
 
@@ -125,7 +159,17 @@ export const invalidateWeatherQueries = (client, lat, lng) => {
   return Promise.all([
     client.invalidateQueries({ queryKey: queryKeys.weather.current(lat, lng) }),
     client.invalidateQueries({ queryKey: queryKeys.weather.forecast(lat, lng) }),
+    client.invalidateQueries({ queryKey: queryKeys.weather.hourly(lat, lng) }),
   ]);
+};
+
+/**
+ * Helper to invalidate climate-related queries
+ * Example: invalidateClimateQueries(queryClient, lat, lng)
+ */
+export const invalidateClimateQueries = (client, lat, lng) => {
+  // Invalidate all climate queries for this location
+  return client.invalidateQueries({ queryKey: ['climate', 'lat', lng] });
 };
 
 export default queryClient;
