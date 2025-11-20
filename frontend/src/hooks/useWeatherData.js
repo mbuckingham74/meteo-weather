@@ -6,6 +6,10 @@ import {
   getHistoricalWeather,
 } from '../services/weatherApi';
 
+// Module-level flag to track if deprecation warning has been shown
+// This prevents console spam from multiple renders/instances
+let hasWarnedWeatherData = false;
+
 /**
  * @deprecated This hook is deprecated and will be removed in a future version.
  * Use the new React Query hooks instead:
@@ -29,8 +33,9 @@ import {
  * @returns {Object} { data, loading, error, refetch }
  */
 export function useWeatherData(location, type = 'current', options = {}) {
-  // Deprecation warning (only in development)
-  if (process.env.NODE_ENV === 'development') {
+  // Deprecation warning (only in development, only once per session)
+  if (process.env.NODE_ENV === 'development' && !hasWarnedWeatherData) {
+    hasWarnedWeatherData = true;
     console.warn(
       `[DEPRECATED] useWeatherData() is deprecated. Use React Query hooks from useWeatherQueries.js instead. See migration guide for details.`
     );
