@@ -15,7 +15,7 @@
 }
 
 .weather-twins-modal {
-  background: var(--surface-color, #fff);
+  background: var(--bg-secondary);
   border-radius: 12px;
   max-width: 700px;
   width: 100%;
@@ -30,24 +30,24 @@
   justify-content: space-between;
   align-items: center;
   padding: 24px;
-  border-bottom: 1px solid var(--border-color, #e0e0e0);
+  border-bottom: 1px solid var(--border-color);
   position: sticky;
   top: 0;
-  background: var(--surface-color, #fff);
+  background: var(--bg-secondary);
   z-index: 10;
 }
 
 .weather-twins-modal-header h2 {
   margin: 0;
   font-size: 24px;
-  color: var(--text-color, #333);
+  color: var(--text-primary);
 }
 
 .weather-twins-modal-close {
   background: none;
   border: none;
   font-size: 28px;
-  color: var(--text-secondary, #666);
+  color: var(--text-secondary);
   cursor: pointer;
   padding: 0;
   width: 32px;
@@ -60,18 +60,18 @@
 }
 
 .weather-twins-modal-close:hover {
-  background-color: var(--hover-color, #f5f5f5);
+  background-color: var(--bg-tertiary);
 }
 
 .weather-twins-current {
   padding: 16px 24px;
-  background: var(--info-bg, #e3f2fd);
-  border-bottom: 1px solid var(--border-color, #e0e0e0);
+  background: var(--info-bg);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .weather-twins-current p {
   margin: 0;
-  color: var(--text-color, #333);
+  color: var(--text-primary);
   font-size: 14px;
 }
 
@@ -80,23 +80,23 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  border-bottom: 1px solid var(--border-color, #e0e0e0);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .weather-twins-scope-selector label {
   font-size: 14px;
   font-weight: 500;
-  color: var(--text-color, #333);
+  color: var(--text-primary);
 }
 
 .weather-twins-scope-select {
   flex: 1;
   padding: 8px 12px;
-  border: 1px solid var(--border-color, #ddd);
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   font-size: 14px;
-  background: var(--input-bg, #fff);
-  color: var(--text-color, #333);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
   cursor: pointer;
 }
 
@@ -118,8 +118,8 @@
 .weather-twins-spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid var(--border-color, #e0e0e0);
-  border-top-color: var(--primary-color, #1976d2);
+  border: 4px solid var(--border-color);
+  border-top-color: var(--accent-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -131,7 +131,7 @@
 }
 
 .weather-twins-loading p {
-  color: var(--text-secondary, #666);
+  color: var(--text-secondary);
   font-size: 14px;
 }
 
@@ -142,7 +142,7 @@
 }
 
 .weather-twins-error p {
-  color: var(--error-color, #d32f2f);
+  color: var(--error-text);
   font-size: 14px;
 }
 
@@ -153,14 +153,14 @@
 }
 
 .weather-twins-empty p {
-  color: var(--text-secondary, #666);
+  color: var(--text-secondary);
   font-size: 14px;
   margin: 8px 0;
 }
 
 .weather-twins-empty-hint {
   font-size: 13px;
-  color: var(--text-tertiary, #999);
+  color: var(--text-tertiary);
 }
 
 /* Twins List */
@@ -172,15 +172,15 @@
 
 .weather-twins-count {
   font-size: 14px;
-  color: var(--text-secondary, #666);
+  color: var(--text-secondary);
   margin: 0 0 8px 0;
 }
 
 .weather-twin-card {
-  border: 1px solid var(--border-color, #e0e0e0);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 16px;
-  background: var(--card-bg, #fff);
+  background: var(--bg-secondary);
   transition:
     box-shadow 0.2s,
     transform 0.2s;
@@ -199,8 +199,8 @@
 }
 
 .weather-twin-rank {
-  background: var(--primary-color, #1976d2);
-  color: white;
+  background: var(--accent-primary);
+  color: var(--text-on-accent);
   width: 28px;
   height: 28px;
   border-radius: 50%;
@@ -214,7 +214,7 @@
 .weather-twin-header h3 {
   margin: 0;
   font-size: 18px;
-  color: var(--text-color, #333);
+  color: var(--text-primary);
 }
 
 .weather-twin-conditions {
@@ -227,13 +227,13 @@
 .weather-twin-temp {
   font-size: 32px;
   font-weight: 600;
-  color: var(--primary-color, #1976d2);
+  color: var(--accent-primary);
   margin: 0;
 }
 
 .weather-twin-desc {
   font-size: 16px;
-  color: var(--text-secondary, #666);
+  color: var(--text-secondary);
   margin: 0;
 }
 
@@ -251,17 +251,17 @@
 .similarity-percentage {
   font-size: 24px;
   font-weight: 600;
-  color: var(--text-color, #333);
+  color: var(--text-primary);
 }
 
 .similarity-label {
   font-size: 14px;
-  color: var(--text-secondary, #666);
+  color: var(--text-secondary);
 }
 
 .similarity-bar {
   height: 8px;
-  background: var(--border-color, #e0e0e0);
+  background: var(--border-color);
   border-radius: 4px;
   overflow: hidden;
   margin-bottom: 8px;
@@ -269,21 +269,21 @@
 
 .similarity-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #4caf50, #8bc34a);
+  background: linear-gradient(90deg, var(--success-text), var(--success-border));
   transition: width 0.3s ease;
 }
 
 .similarity-quality {
   font-size: 13px;
-  color: var(--text-secondary, #666);
+  color: var(--text-secondary);
   margin: 0;
 }
 
 .weather-twin-compare-btn {
   width: 100%;
   padding: 10px;
-  background: var(--primary-color, #1976d2);
-  color: white;
+  background: var(--accent-primary);
+  color: var(--text-on-accent);
   border: none;
   border-radius: 6px;
   font-size: 14px;
@@ -293,7 +293,7 @@
 }
 
 .weather-twin-compare-btn:hover {
-  background: var(--primary-dark, #1565c0);
+  background: var(--accent-hover);
 }
 
 /* Comparison View */
@@ -312,23 +312,23 @@
 
 .weather-twin-back-btn {
   background: none;
-  border: 1px solid var(--border-color, #ddd);
+  border: 1px solid var(--border-color);
   padding: 8px 16px;
   border-radius: 6px;
   font-size: 14px;
-  color: var(--text-color, #333);
+  color: var(--text-primary);
   cursor: pointer;
   margin-bottom: 20px;
   transition: background-color 0.2s;
 }
 
 .weather-twin-back-btn:hover {
-  background: var(--hover-color, #f5f5f5);
+  background: var(--bg-tertiary);
 }
 
 .weather-twin-comparison h3 {
   font-size: 20px;
-  color: var(--text-color, #333);
+  color: var(--text-primary);
   margin: 0 0 20px 0;
 }
 
@@ -340,7 +340,7 @@
 }
 
 .comparison-column {
-  background: var(--card-bg, #fafafa);
+  background: var(--bg-tertiary);
   border-radius: 8px;
   padding: 20px;
 }
@@ -348,14 +348,14 @@
 .comparison-column h4 {
   margin: 0 0 16px 0;
   font-size: 16px;
-  color: var(--text-color, #333);
+  color: var(--text-primary);
 }
 
 .comparison-stat {
   display: flex;
   justify-content: space-between;
   padding: 10px 0;
-  border-bottom: 1px solid var(--border-color, #e0e0e0);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .comparison-stat:last-child {
@@ -364,13 +364,13 @@
 
 .stat-label {
   font-size: 14px;
-  color: var(--text-secondary, #666);
+  color: var(--text-secondary);
 }
 
 .stat-value {
   font-size: 14px;
   font-weight: 600;
-  color: var(--text-color, #333);
+  color: var(--text-primary);
 }
 
 .comparison-divider {
@@ -380,8 +380,8 @@
 }
 
 .comparison-vs {
-  background: var(--primary-color, #1976d2);
-  color: white;
+  background: var(--accent-primary);
+  color: var(--text-on-accent);
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -393,7 +393,7 @@
 }
 
 .similarity-breakdown {
-  background: var(--card-bg, #fafafa);
+  background: var(--bg-tertiary);
   border-radius: 8px;
   padding: 20px;
 }
@@ -401,7 +401,7 @@
 .similarity-breakdown h4 {
   margin: 0 0 16px 0;
   font-size: 16px;
-  color: var(--text-color, #333);
+  color: var(--text-primary);
 }
 
 .breakdown-bars {
@@ -419,45 +419,31 @@
 
 .breakdown-label {
   font-size: 13px;
-  color: var(--text-secondary, #666);
+  color: var(--text-secondary);
   text-transform: capitalize;
 }
 
 .breakdown-bar {
   height: 8px;
-  background: var(--border-color, #e0e0e0);
+  background: var(--border-color);
   border-radius: 4px;
   overflow: hidden;
 }
 
 .breakdown-bar-fill {
   height: 100%;
-  background: var(--primary-color, #1976d2);
+  background: var(--accent-primary);
   transition: width 0.3s ease;
 }
 
 .breakdown-value {
   font-size: 13px;
   font-weight: 600;
-  color: var(--text-color, #333);
+  color: var(--text-primary);
   text-align: right;
 }
 
-/* Dark theme support */
-[data-theme='dark'] .weather-twins-modal {
-  background: var(--surface-color);
-  color: var(--text-color);
-}
-
-[data-theme='dark'] .weather-twin-card {
-  background: var(--card-bg);
-  border-color: var(--border-color);
-}
-
-[data-theme='dark'] .comparison-column,
-[data-theme='dark'] .similarity-breakdown {
-  background: var(--card-bg);
-}
+/* Dark theme support - CSS variables automatically handle theme switching */
 
 /* Responsive Design */
 @media (max-width: 600px) {
