@@ -198,18 +198,21 @@ async function withCache(apiSource, params, apiFunction, ttlMinutes = 60, locati
   };
 }
 
-// Schedule automatic cleanup of expired cache entries every hour
-setInterval(
-  () => {
-    clearExpiredCache().then(() => {
-      // Only log if significant cleanup occurred (disabled to reduce log volume)
-      // if (count > 0) {
-      //   console.log(`🧹 Auto cleanup: Removed ${count} expired cache entries`);
-      // }
-    });
-  },
-  60 * 60 * 1000
-); // 1 hour
+// Schedule automatic cleanup of expired cache entries every hour (skip during tests)
+let cacheCleanupInterval = null;
+if (process.env.NODE_ENV !== 'test') {
+  cacheCleanupInterval = setInterval(
+    () => {
+      clearExpiredCache().then(() => {
+        // Only log if significant cleanup occurred (disabled to reduce log volume)
+        // if (count > 0) {
+        //   console.log(`🧹 Auto cleanup: Removed ${count} expired cache entries`);
+        // }
+      });
+    },
+    60 * 60 * 1000
+  ); // 1 hour
+}
 
 module.exports = {
   generateCacheKey,
@@ -220,4 +223,5 @@ module.exports = {
   getCacheStats,
   withCache,
   CACHE_TTL,
+  cacheCleanupInterval,
 };
