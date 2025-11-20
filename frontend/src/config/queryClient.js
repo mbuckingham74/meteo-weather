@@ -35,8 +35,9 @@ const defaultQueryOptions = {
     // Refetch on reconnect
     refetchOnReconnect: 'always',
 
-    // Keep previous data while fetching new data (smooth UX)
-    placeholderData: (previousData) => previousData,
+    // Note: placeholderData removed from global defaults to prevent showing
+    // stale data when query keys change (e.g., switching locations).
+    // Opt-in per query where appropriate using placeholderData: keepPreviousData
   },
 
   mutations: {
@@ -59,14 +60,27 @@ export const queryClient = new QueryClient({
 /**
  * Query key factory for consistent key generation
  * Prevents typos and makes refactoring easier
+ *
+ * IMPORTANT: Keys use stable primitives (strings, numbers) rather than objects
+ * to prevent cache misses from referential inequality. Pass location IDs or
+ * coordinate tuples, not full location objects.
  */
 export const queryKeys = {
   // Weather-related queries
   weather: {
     all: ['weather'],
-    current: (location) => ['weather', 'current', location],
-    forecast: (location) => ['weather', 'forecast', location],
-    historical: (location, dateRange) => ['weather', 'historical', location, dateRange],
+    // Use lat/lng tuple instead of location object for stable keys
+    current: (lat, lng) => ['weather', 'current', lat, lng],
+    forecast: (lat, lng) => ['weather', 'forecast', lat, lng],
+    // Use ISO date strings instead of Date objects
+    historical: (lat, lng, startDate, endDate) => [
+      'weather',
+      'historical',
+      lat,
+      lng,
+      startDate,
+      endDate,
+    ],
   },
 
   // Location-related queries
@@ -81,7 +95,8 @@ export const queryKeys = {
   // AI-related queries
   ai: {
     all: ['ai'],
-    analysis: (query, weatherData) => ['ai', 'analysis', query, weatherData],
+    // Use query string and stable weather identifiers, not full weatherData object
+    analysis: (query, lat, lng) => ['ai', 'analysis', query, lat, lng],
     shared: (shareId) => ['ai', 'shared', shareId],
   },
 
@@ -97,18 +112,19 @@ export const queryKeys = {
   admin: {
     all: ['admin'],
     users: () => ['admin', 'users'],
-    analytics: (timeRange) => ['admin', 'analytics', timeRange],
+    // Use ISO string instead of timeRange object
+    analytics: (startDate, endDate) => ['admin', 'analytics', startDate, endDate],
   },
 };
 
 /**
  * Helper to invalidate multiple related queries at once
- * Example: invalidateWeatherQueries(queryClient, location)
+ * Example: invalidateWeatherQueries(queryClient, lat, lng)
  */
-export const invalidateWeatherQueries = (client, location) => {
+export const invalidateWeatherQueries = (client, lat, lng) => {
   return Promise.all([
-    client.invalidateQueries({ queryKey: queryKeys.weather.current(location) }),
-    client.invalidateQueries({ queryKey: queryKeys.weather.forecast(location) }),
+    client.invalidateQueries({ queryKey: queryKeys.weather.current(lat, lng) }),
+    client.invalidateQueries({ queryKey: queryKeys.weather.forecast(lat, lng) }),
   ]);
 };
 

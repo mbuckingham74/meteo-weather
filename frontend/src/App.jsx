@@ -153,7 +153,9 @@ function App() {
           </AuthProvider>
         </ToastProvider>
         {/* React Query Devtools - only shown in development */}
-        <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+        {import.meta.env.DEV && (
+          <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+        )}
       </QueryClientProvider>
     </ErrorBoundary>
   );
