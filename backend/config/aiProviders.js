@@ -107,7 +107,7 @@ const PROVIDERS = {
     maxTokens: 500,
     validationMaxTokens: 200,
 
-    async call({ apiKey, systemPrompt, userMessage, maxTokens }) {
+    async call({ apiKey, systemPrompt, userMessage, maxTokens: _maxTokens }) {
       const { GoogleGenerativeAI } = require('@google/generative-ai');
       const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({ model: this.model });
