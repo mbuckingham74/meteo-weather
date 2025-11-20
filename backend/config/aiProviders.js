@@ -244,12 +244,18 @@ async function callProvider(providerName, apiKey, systemPrompt, userMessage, opt
   const maxTokens = options.maxTokens || provider.maxTokens;
 
   try {
-    logger.info(`Calling ${provider.name} API (model: ${provider.model})`);
+    logger.info('AI Provider', `Calling ${provider.name} API`, {
+      model: provider.model,
+      maxTokens
+    });
     const result = await provider.call({ apiKey, systemPrompt, userMessage, maxTokens });
-    logger.info(`${provider.name} API call successful (${result.tokensUsed} tokens)`);
+    logger.info('AI Provider', `${provider.name} API call successful`, {
+      tokensUsed: result.tokensUsed,
+      model: result.model
+    });
     return result;
   } catch (error) {
-    logger.error(`${provider.name} API error:`, error);
+    logger.error('AI Provider', `${provider.name} API call failed`, error);
     throw new Error(`${provider.name} API error: ${error.message}`);
   }
 }
