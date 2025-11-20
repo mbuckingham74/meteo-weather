@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const weatherService = require('../services/weatherService');
 const climateService = require('../services/climateService');
+const weatherTwinsService = require('../services/weatherTwinsService');
 
 /**
  * Test Visual Crossing API connection
@@ -525,6 +526,79 @@ router.get('/historical-date', async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching historical date data:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * Find weather twins for a location
+ * GET /api/weather/twins/:locationId
+ * Query params: scope (us|north-america|worldwide), limit (default 5), minSimilarity (default 80)
+ *
+ * Example: /api/weather/twins/123?scope=us&limit=5
+ * Returns: Cities with similar current weather conditions
+ */
+router.get('/twins/:locationId', async (req, res) => {
+  try {
+    const { locationId } = req.params;
+    const { scope = 'us', limit = 5, minSimilarity = 80 } = req.query;
+
+    if (!locationId) {
+      return res.status(400).json({
+        success: false,
+        error: 'Location ID parameter is required'
+      });
+    }
+
+    // Validate scope
+    const validScopes = ['us', 'north-america', 'worldwide'];
+    if (!validScopes.includes(scope)) {
+      return res.status(400).json({
+        success: false,
+        error: `Invalid scope. Must be one of: ${validScopes.join(', ')}`
+      });
+    }
+
+    // Validate limit
+    const limitNum = parseInt(limit);
+    if (isNaN(limitNum) || limitNum < 1 || limitNum > 20) {
+      return res.status(400).json({
+        success: false,
+        error: 'Limit must be between 1 and 20'
+      });
+    }
+
+    // Validate minSimilarity
+    const minSimilarityNum = parseInt(minSimilarity);
+    if (isNaN(minSimilarityNum) || minSimilarityNum < 0 || minSimilarityNum > 100) {
+      return res.status(400).json({
+        success: false,
+        error: 'Minimum similarity must be between 0 and 100'
+      });
+    }
+
+    const result = await weatherTwinsService.findWeatherTwins(
+      parseInt(locationId),
+      {
+        scope,
+        limit: limitNum,
+        minSimilarity: minSimilarityNum
+      }
+    );
+
+    if (result.success) {
+      res.json(result);
+    } else {
+      res.status(500).json({
+        success: false,
+        error: result.error
+      });
+    }
+  } catch (error) {
+    console.error('Error finding weather twins:', error);
     res.status(500).json({
       success: false,
       error: error.message

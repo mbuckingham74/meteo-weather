@@ -29,6 +29,7 @@ import { Button, Grid, Stack, Surface } from '@components/ui/primitives';
 import ErrorMessage from '../../common/ErrorMessage';
 import '../WeatherDashboard.css';
 import HeroControls from './HeroControls';
+import WeatherTwinsModal from '../WeatherTwinsModal';
 
 /**
  * Weather Dashboard Component
@@ -47,6 +48,8 @@ function WeatherDashboard() {
   const [detectingLocation, setDetectingLocation] = useState(false);
   const [locationError, setLocationError] = useState(null);
   const [activeTab, setActiveTab] = useState('forecast');
+  const [weatherTwinsModalOpen, setWeatherTwinsModalOpen] = useState(false);
+  const [locationId, setLocationId] = useState(null);
 
   // Location confirmation hook (VPN/IP detection)
   const locationConfirmation = useLocationConfirmation(selectLocation);
@@ -199,6 +202,33 @@ function WeatherDashboard() {
     } finally {
       setDetectingLocation(false);
     }
+  };
+
+  // Fetch location ID from database when we have coordinates
+  useEffect(() => {
+    const fetchLocationId = async () => {
+      if (data?.location?.latitude && data?.location?.longitude) {
+        try {
+          const response = await fetch(
+            `${import.meta.env.VITE_API_URL}/api/locations/search?` +
+              `lat=${data.location.latitude}&lon=${data.location.longitude}&limit=1`
+          );
+          const result = await response.json();
+          if (result.success && result.locations && result.locations.length > 0) {
+            setLocationId(result.locations[0].id);
+          }
+        } catch (error) {
+          console.error('Failed to fetch location ID:', error);
+        }
+      }
+    };
+
+    fetchLocationId();
+  }, [data?.location?.latitude, data?.location?.longitude]);
+
+  // Handle Weather Twins button click
+  const handleWeatherTwinsClick = () => {
+    setWeatherTwinsModalOpen(true);
   };
 
   // Helper to convert temperature from API (Celsius) to selected unit
@@ -490,6 +520,7 @@ function WeatherDashboard() {
                   detectingLocation={detectingLocation}
                   handleDetectLocation={handleDetectLocation}
                   locationError={locationError}
+                  onWeatherTwinsClick={handleWeatherTwinsClick}
                 />
               </Stack>
 
@@ -610,6 +641,24 @@ function WeatherDashboard() {
           onClose={() => locationConfirmation.handleClose(true, locationData?.latitude != null)}
         />
       )}
+
+      {/* Weather Twins Modal */}
+      <WeatherTwinsModal
+        isOpen={weatherTwinsModalOpen}
+        onClose={() => setWeatherTwinsModalOpen(false)}
+        locationId={locationId}
+        locationName={getFormattedLocationName()}
+        currentWeather={
+          currentWeather?.data?.current
+            ? {
+                temperature: currentWeather.data.current.temperature,
+                conditions: currentWeather.data.current.conditions,
+                humidity: currentWeather.data.current.humidity,
+                windSpeed: currentWeather.data.current.windSpeed,
+              }
+            : null
+        }
+      />
     </div>
   );
 }
