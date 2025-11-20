@@ -24,6 +24,8 @@ paths = [
   '''^docs/.*\.md$''',
   '''REPOSITORY_AUDIT_REPORT\.md$''',  # Audit report contains example weak secrets for documentation
   '''AUDIT_FINDINGS_SUMMARY\.md$''',  # Audit summary may reference weak patterns
+  '''backend/tests/jest\.env\.js$''',  # Test environment setup with non-production defaults
+  '''\.github/workflows/ci\.yml$''',  # CI workflow with dynamically generated test secrets
 ]
 
 # Allow specific patterns that look like secrets but aren't
@@ -36,6 +38,15 @@ regexes = [
 
   # Allow short hex strings (build hashes, not secrets) - max 8 chars
   '''[a-f0-9]{8}''',
+]
+
+# Allow specific stopwords that indicate test/dummy values
+stopwords = [
+  '''test_password''',
+  '''test_jwt_secret_min_32_chars_long''',
+  '''test_jwt_refresh_secret_min_32_chars''',
+  '''test_jwt_secret_min_32_chars_long_for_validation''',
+  '''test_jwt_refresh_secret_min_32_chars_for_validation''',
 ]
 
 # Allow specific commits (if needed for historical reasons)
