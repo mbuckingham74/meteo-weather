@@ -4,8 +4,21 @@ const { testConnection } = require('./config/database');
 
 const PORT = process.env.PORT || 5001;
 
+// Critical secrets required for a safe boot
+const REQUIRED_ENV_VARS = ['JWT_SECRET', 'JWT_REFRESH_SECRET', 'API_KEY_ENCRYPTION_SECRET'];
+
+function validateRequiredEnv() {
+  const missing = REQUIRED_ENV_VARS.filter((name) => !process.env[name]);
+  if (missing.length > 0) {
+    const message = `Missing required environment variables: ${missing.join(', ')}`;
+    console.error(`\n❌ Server startup aborted: ${message}\n`);
+    throw new Error(message);
+  }
+}
+
 async function startServer() {
   try {
+    validateRequiredEnv();
     await testConnection();
 
     if (!process.env.VISUAL_CROSSING_API_KEY) {

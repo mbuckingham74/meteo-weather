@@ -127,7 +127,7 @@ export async function searchLocations(query, limit = 10) {
     debugInfo('Weather API', `Searching locations: "${query}" (limit: ${limit})`);
 
     const params = new URLSearchParams({ q: query, limit: limit.toString() });
-    const endpoint = `${API_CONFIG.LOCATIONS}/search?${params}`;
+    const endpoint = `${API_CONFIG.ENDPOINTS.LOCATIONS}/search?${params}`;
     const response = await apiRequest(endpoint, { method: 'GET' });
 
     const locations = response.locations || [];
