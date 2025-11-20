@@ -1,22 +1,11 @@
 /**
  * AI Weather Analysis Service
- * Supports multiple AI providers: Anthropic Claude, OpenAI, Grok, Google, Mistral, Cohere
+ * Supports multiple AI providers via centralized provider registry
  * Uses user-provided API keys when available, falls back to system keys
  */
 
-const Anthropic = require('@anthropic-ai/sdk');
+const { callProvider } = require('../config/aiProviders');
 const { getApiKeyForProvider, updateApiKeyUsage } = require('./userApiKeyService');
-
-// Model configurations for each provider
-const MODELS = {
-  anthropic: 'claude-sonnet-4-5-20250929',
-  openai: 'gpt-4-turbo-preview',
-  grok: 'grok-beta', // xAI's model name
-  google: 'gemini-pro',
-  mistral: 'mistral-large-latest',
-  cohere: 'command',
-  ollama: process.env.OLLAMA_MODEL || 'llama3.2:3b', // Self-hosted via Ollama
-};
 
 /**
  * Detect query intent and suggest relevant visualizations
@@ -146,169 +135,8 @@ function generateFollowUpQuestions(query, _visualizations, _weatherData) {
 }
 
 /**
- * Call Anthropic API
- */
-async function callAnthropicAPI(apiKey, systemPrompt, userMessage, maxTokens = 500) {
-  const client = new Anthropic({ apiKey });
-  const message = await client.messages.create({
-    model: MODELS.anthropic,
-    max_tokens: maxTokens,
-    system: systemPrompt,
-    messages: [{ role: 'user', content: userMessage }],
-  });
-
-  return {
-    text: message.content[0].text.trim(),
-    tokensUsed: message.usage.input_tokens + message.usage.output_tokens,
-    model: MODELS.anthropic,
-  };
-}
-
-/**
- * Call OpenAI API
- */
-async function callOpenAIAPI(apiKey, systemPrompt, userMessage, maxTokens = 500) {
-  const OpenAI = require('openai');
-  const client = new OpenAI({ apiKey });
-
-  const completion = await client.chat.completions.create({
-    model: MODELS.openai,
-    max_tokens: maxTokens,
-    messages: [
-      { role: 'system', content: systemPrompt },
-      { role: 'user', content: userMessage },
-    ],
-  });
-
-  return {
-    text: completion.choices[0].message.content.trim(),
-    tokensUsed: completion.usage.prompt_tokens + completion.usage.completion_tokens,
-    model: MODELS.openai,
-  };
-}
-
-/**
- * Call Grok API (xAI) - OpenAI-compatible
- */
-async function callGrokAPI(apiKey, systemPrompt, userMessage, maxTokens = 500) {
-  const OpenAI = require('openai');
-  const client = new OpenAI({
-    apiKey,
-    baseURL: 'https://api.x.ai/v1', // Grok uses OpenAI-compatible API
-  });
-
-  const completion = await client.chat.completions.create({
-    model: MODELS.grok,
-    max_tokens: maxTokens,
-    messages: [
-      { role: 'system', content: systemPrompt },
-      { role: 'user', content: userMessage },
-    ],
-  });
-
-  return {
-    text: completion.choices[0].message.content.trim(),
-    tokensUsed: completion.usage.prompt_tokens + completion.usage.completion_tokens,
-    model: MODELS.grok,
-  };
-}
-
-/**
- * Call Google AI (Gemini) API
- */
-async function callGoogleAIAPI(apiKey, systemPrompt, userMessage, _maxTokens = 500) {
-  const { GoogleGenerativeAI } = require('@google/generative-ai');
-  const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: MODELS.google });
-
-  const prompt = `${systemPrompt}\n\nUser: ${userMessage}`;
-  const result = await model.generateContent(prompt);
-  const response = await result.response;
-  const text = response.text();
-
-  return {
-    text: text.trim(),
-    tokensUsed: response.usageMetadata
-      ? response.usageMetadata.promptTokenCount + response.usageMetadata.candidatesTokenCount
-      : 0,
-    model: MODELS.google,
-  };
-}
-
-/**
- * Call Mistral AI API
- */
-async function callMistralAPI(apiKey, systemPrompt, userMessage, maxTokens = 500) {
-  const MistralClient = require('@mistralai/mistralai').default;
-  const client = new MistralClient(apiKey);
-
-  const response = await client.chat({
-    model: MODELS.mistral,
-    maxTokens: maxTokens,
-    messages: [
-      { role: 'system', content: systemPrompt },
-      { role: 'user', content: userMessage },
-    ],
-  });
-
-  return {
-    text: response.choices[0].message.content.trim(),
-    tokensUsed: response.usage.prompt_tokens + response.usage.completion_tokens,
-    model: MODELS.mistral,
-  };
-}
-
-/**
- * Call Cohere API
- */
-async function callCohereAPI(apiKey, systemPrompt, userMessage, maxTokens = 500) {
-  const { CohereClient } = require('cohere-ai');
-  const cohere = new CohereClient({ token: apiKey });
-
-  const response = await cohere.chat({
-    model: MODELS.cohere,
-    message: userMessage,
-    preamble: systemPrompt,
-    maxTokens: maxTokens,
-  });
-
-  return {
-    text: response.text.trim(),
-    tokensUsed: response.meta?.tokens
-      ? response.meta.tokens.inputTokens + response.meta.tokens.outputTokens
-      : 0,
-    model: MODELS.cohere,
-  };
-}
-
-/**
- * Call Ollama API (Self-hosted) - OpenAI-compatible
- */
-async function callOllamaAPI(apiKey, systemPrompt, userMessage, maxTokens = 500) {
-  const OpenAI = require('openai');
-  const client = new OpenAI({
-    apiKey: apiKey || 'ollama', // Ollama doesn't require real API key
-    baseURL: process.env.OLLAMA_BASE_URL || 'http://localhost:11434/v1',
-  });
-
-  const completion = await client.chat.completions.create({
-    model: MODELS.ollama,
-    max_tokens: maxTokens,
-    messages: [
-      { role: 'system', content: systemPrompt },
-      { role: 'user', content: userMessage },
-    ],
-  });
-
-  return {
-    text: completion.choices[0].message.content.trim(),
-    tokensUsed: completion.usage.prompt_tokens + completion.usage.completion_tokens,
-    model: MODELS.ollama,
-  };
-}
-
-/**
- * Generic AI API caller that routes to the appropriate provider
+ * Call AI provider using the centralized registry
+ * This replaces 7 individual provider functions with a single call
  * @param {string} provider - AI provider (anthropic, openai, grok, google, mistral, cohere, ollama)
  * @param {string} apiKey - API key for the provider
  * @param {string} systemPrompt - System prompt/instructions
@@ -317,31 +145,7 @@ async function callOllamaAPI(apiKey, systemPrompt, userMessage, maxTokens = 500)
  * @returns {Promise<{text: string, tokensUsed: number, model: string}>}
  */
 async function callAIProvider(provider, apiKey, systemPrompt, userMessage, maxTokens = 500) {
-  switch (provider.toLowerCase()) {
-    case 'anthropic':
-      return await callAnthropicAPI(apiKey, systemPrompt, userMessage, maxTokens);
-
-    case 'openai':
-      return await callOpenAIAPI(apiKey, systemPrompt, userMessage, maxTokens);
-
-    case 'grok':
-      return await callGrokAPI(apiKey, systemPrompt, userMessage, maxTokens);
-
-    case 'google':
-      return await callGoogleAIAPI(apiKey, systemPrompt, userMessage, maxTokens);
-
-    case 'mistral':
-      return await callMistralAPI(apiKey, systemPrompt, userMessage, maxTokens);
-
-    case 'cohere':
-      return await callCohereAPI(apiKey, systemPrompt, userMessage, maxTokens);
-
-    case 'ollama':
-      return await callOllamaAPI(apiKey, systemPrompt, userMessage, maxTokens);
-
-    default:
-      throw new Error(`Unsupported AI provider: ${provider}`);
-  }
+  return await callProvider(provider, apiKey, systemPrompt, userMessage, { maxTokens });
 }
 
 /**
