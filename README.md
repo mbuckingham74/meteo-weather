@@ -108,6 +108,7 @@ docker-compose up
 - 🔍 **Smart Universal Search** - One input for locations AND AI questions
 - 📈 **10-year climate analysis** - Historical trends and statistical insights
 - 🌍 **Location comparison** - Compare weather across 2-4 cities side-by-side
+- 🌍 **Weather Twins** - Find cities worldwide with similar current weather (NEW!)
 - 🤖 **AI location finder** - Describe your ideal climate, get recommendations
 
 ### User Experience
