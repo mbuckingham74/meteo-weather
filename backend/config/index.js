@@ -243,12 +243,14 @@ function loadConfig() {
       console.error('');
       console.error('💡 Check your .env file and ensure all required variables are set.');
       console.error('   See .env.example for reference.');
+      // eslint-disable-next-line no-process-exit
       process.exit(1);
     } else {
       if (process.env.NODE_ENV === 'test') {
         throw error;
       }
       console.error('❌ Configuration error:', error);
+      // eslint-disable-next-line no-process-exit
       process.exit(1);
     }
   }
