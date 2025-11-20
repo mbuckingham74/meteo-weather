@@ -2,17 +2,25 @@
  * Error Suggestions Utility
  * Provides actionable suggestions for error messages
  * Phase 2 Accessibility Enhancement - WCAG 3.3.3 Error Suggestion (Level AA)
+ * Enhanced with contextual recovery options (Error Recovery UX Initiative)
  */
 
 import { ERROR_CODES } from './errorHandler';
+import { getNearbyCitySuggestions, isGenericQuery } from './nearbyCitySuggestions';
+import { getNoDataSuggestion, formatDateRange, getAvailableDateRange } from './dateRangeHints';
 
 /**
  * Get actionable suggestions for common errors
+ * Enhanced with contextual suggestions based on error details
  * @param {string} errorCode - Error code from ERROR_CODES
- * @param {Object} _context - Additional context about the error (reserved for future use)
+ * @param {Object} context - Additional context about the error
+ * @param {string} context.searchQuery - Location search query that failed
+ * @param {Date} context.requestedDate - Date that was requested
+ * @param {string} context.dataType - Type of data (forecast, historical, etc.)
  * @returns {Array<string>} - Array of suggestion strings
  */
-export function getErrorSuggestions(errorCode, _context = {}) {
+export function getErrorSuggestions(errorCode, context = {}) {
+  const { searchQuery, requestedDate, dataType } = context;
   const suggestions = {
     // Network errors
     [ERROR_CODES.NETWORK_ERROR]: [
@@ -63,12 +71,29 @@ export function getErrorSuggestions(errorCode, _context = {}) {
       'Try a nearby larger city',
     ],
 
-    [ERROR_CODES.LOCATION_NOT_FOUND]: [
-      'Try a different spelling (e.g., "New York" vs "New York City")',
-      'Add the country name (e.g., "London, UK")',
-      'Try coordinates (latitude, longitude)',
-      'Use a ZIP/postal code',
-    ],
+    [ERROR_CODES.LOCATION_NOT_FOUND]: (() => {
+      // Enhanced with nearby city suggestions
+      if (searchQuery) {
+        const nearbyCities = getNearbyCitySuggestions(searchQuery);
+        if (nearbyCities.length > 0) {
+          return [
+            `Try nearby cities: ${nearbyCities.slice(0, 3).join(', ')}`,
+            'Add the country name (e.g., "London, UK")',
+            isGenericQuery(searchQuery)
+              ? 'Be more specific with state or country'
+              : 'Try a different spelling',
+            'Use coordinates (latitude, longitude)',
+          ];
+        }
+      }
+      // Fallback suggestions
+      return [
+        'Try a different spelling (e.g., "New York" vs "New York City")',
+        'Add the country name (e.g., "London, UK")',
+        'Try coordinates (latitude, longitude)',
+        'Use a ZIP/postal code',
+      ];
+    })(),
 
     [ERROR_CODES.GEOLOCATION_DENIED]: [
       'Click the location icon in your address bar',
@@ -116,12 +141,27 @@ export function getErrorSuggestions(errorCode, _context = {}) {
       'Contact support if this persists',
     ],
 
-    [ERROR_CODES.DATA_NOT_FOUND]: [
-      'Try a different date range',
-      'Check that the location name is correct',
-      'Some historical data may not be available',
-      'Try a nearby location',
-    ],
+    [ERROR_CODES.DATA_NOT_FOUND]: (() => {
+      // Enhanced with date range suggestions
+      if (dataType && requestedDate) {
+        const dateHint = getNoDataSuggestion(dataType, requestedDate);
+        const range = getAvailableDateRange(dataType);
+        if (range && range.start && range.end) {
+          return [
+            dateHint,
+            `Available dates: ${formatDateRange(range.start, range.end)}`,
+            'Try a nearby location if this area has limited data',
+          ];
+        }
+      }
+      // Fallback suggestions
+      return [
+        'Try a different date range',
+        'Check that the location name is correct',
+        'Historical data is limited to the past 5 years',
+        'Try a nearby larger city',
+      ];
+    })(),
 
     // Generic errors
     [ERROR_CODES.UNKNOWN_ERROR]: [
@@ -162,11 +202,15 @@ export function formatErrorWithSuggestions(errorMessage, errorCode, context = {}
 
 /**
  * Get contextual help text for specific error scenarios
+ * Enhanced with smart, context-aware help messages
  * @param {string} errorCode - Error code
- * @param {Object} _context - Additional context (reserved for future use)
+ * @param {Object} context - Additional context
+ * @param {string} context.dataType - Type of data requested
  * @returns {string|null} - Helpful context-specific text
  */
-export function getContextualHelp(errorCode, _context = {}) {
+export function getContextualHelp(errorCode, context = {}) {
+  const { dataType } = context;
+
   const helpText = {
     [ERROR_CODES.GEOLOCATION_DENIED]:
       'Your browser blocks location access by default for privacy. You can change this in browser settings or search manually.',
@@ -174,11 +218,27 @@ export function getContextualHelp(errorCode, _context = {}) {
     [ERROR_CODES.RATE_LIMITED]:
       'We limit requests to protect our servers and ensure fair access for all users.',
 
-    [ERROR_CODES.DATA_NOT_FOUND]:
-      'Weather data may not be available for all locations and time periods. Historical data is limited to the past 5 days.',
+    [ERROR_CODES.DATA_NOT_FOUND]: (() => {
+      if (dataType === 'historical') {
+        return 'Historical weather data is limited to the past 5 years. Some remote locations may have limited data coverage.';
+      }
+      if (dataType === 'forecast') {
+        return 'Weather forecasts are only available for the next 7 days. For long-term planning, check climate normals instead.';
+      }
+      if (dataType === 'climateNormals') {
+        return 'Climate normals require at least 10 years of historical data. Some locations may not have enough data available.';
+      }
+      return 'Weather data may not be available for all locations and time periods.';
+    })(),
+
+    [ERROR_CODES.LOCATION_NOT_FOUND]:
+      'Our location database includes 195 countries and 100,000+ cities. Try adding the country or state for better results.',
 
     [ERROR_CODES.TOKEN_EXPIRED]:
       'For your security, login sessions expire after 24 hours of inactivity.',
+
+    [ERROR_CODES.TIMEOUT_ERROR]:
+      'Slow connections or high server load can cause timeouts. The request will retry automatically.',
   };
 
   return helpText[errorCode] || null;
