@@ -218,6 +218,7 @@ function WeatherDashboard() {
     data: thisDayHistoryQuery.data,
     loading: thisDayHistoryQuery.isLoading,
     error: thisDayHistoryQuery.error,
+    refetch: thisDayHistoryQuery.refetch,
   };
 
   const forecastComparisonQuery = useForecastComparisonQuery(
@@ -234,6 +235,7 @@ function WeatherDashboard() {
     data: forecastComparisonQuery.data,
     loading: forecastComparisonQuery.isLoading,
     error: forecastComparisonQuery.error,
+    refetch: forecastComparisonQuery.refetch,
   };
 
   const recordTempsQuery = useRecordTemperaturesQuery(lat, lng, startDate, endDate, 10, {
@@ -243,6 +245,7 @@ function WeatherDashboard() {
     data: recordTempsQuery.data,
     loading: recordTempsQuery.isLoading,
     error: recordTempsQuery.error,
+    refetch: recordTempsQuery.refetch,
   };
 
   const tempProbabilityQuery = useTemperatureProbabilityQuery(lat, lng, startDate, 10, {
@@ -252,6 +255,7 @@ function WeatherDashboard() {
     data: tempProbabilityQuery.data,
     loading: tempProbabilityQuery.isLoading,
     error: tempProbabilityQuery.error,
+    refetch: tempProbabilityQuery.refetch,
   };
 
   // Handle current location detection
