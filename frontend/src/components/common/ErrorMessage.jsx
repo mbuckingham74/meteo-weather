@@ -55,6 +55,7 @@ const ErrorMessage = ({
   className = '',
   retryLabel = 'Retry',
   dismissLabel = '✕',
+  context = {}, // NEW: context for smart suggestions
 }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [isExiting, setIsExiting] = useState(false);
@@ -65,13 +66,13 @@ const ErrorMessage = ({
   const errorMessage = typeof error === 'string' ? error : error?.message || 'An error occurred';
   const errorCode = error?.code || null;
 
-  // Get error suggestions and contextual help
+  // Get error suggestions and contextual help with context
   const errorWithSuggestions = errorCode
-    ? formatErrorWithSuggestions(errorMessage, errorCode)
+    ? formatErrorWithSuggestions(errorMessage, errorCode, context)
     : { message: errorMessage, suggestions: [] };
 
-  const contextualHelp = errorCode ? getContextualHelp(errorCode) : null;
-  const prioritySuggestion = errorCode ? getPrioritySuggestion(errorCode) : null;
+  const contextualHelp = errorCode ? getContextualHelp(errorCode, context) : null;
+  const prioritySuggestion = errorCode ? getPrioritySuggestion(errorCode, context) : null;
 
   // Determine which suggestions to show based on mode
   const suggestionsToShow =
@@ -307,6 +308,13 @@ ErrorMessage.propTypes = {
 
   /** Label for dismiss button */
   dismissLabel: PropTypes.string,
+
+  /** Context for smart error suggestions */
+  context: PropTypes.shape({
+    searchQuery: PropTypes.string,
+    requestedDate: PropTypes.instanceOf(Date),
+    dataType: PropTypes.oneOf(['current', 'forecast', 'historical', 'climateNormals']),
+  }),
 };
 
 export default ErrorMessage;

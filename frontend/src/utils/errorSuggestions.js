@@ -286,10 +286,11 @@ export function detectBrowser() {
 /**
  * Get priority suggestion (most likely to help)
  * @param {string} errorCode - Error code
+ * @param {Object} context - Additional context
  * @returns {string|null} - Top suggestion
  */
-export function getPrioritySuggestion(errorCode) {
-  const suggestions = getErrorSuggestions(errorCode);
+export function getPrioritySuggestion(errorCode, context = {}) {
+  const suggestions = getErrorSuggestions(errorCode, context);
   return suggestions && suggestions.length > 0 ? suggestions[0] : null;
 }
 

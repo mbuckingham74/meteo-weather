@@ -74,7 +74,16 @@ export function getAvailableDateRange(dataType) {
       };
 
     default:
-      return null;
+      // Default to historical range for unknown types
+      return {
+        start: new Date(
+          today.getTime() - DATA_AVAILABILITY.historical.maxDaysAgo * 24 * 60 * 60 * 1000
+        ),
+        end: new Date(
+          today.getTime() - DATA_AVAILABILITY.historical.minDaysAgo * 24 * 60 * 60 * 1000
+        ),
+        description: DATA_AVAILABILITY.historical.description,
+      };
   }
 }
 
@@ -124,14 +133,25 @@ export function getNoDataSuggestion(dataType = 'historical', requestedDate = nul
     const reqDate = new Date(requestedDate);
 
     if (reqDate > range.end) {
+      // Date is in the future - provide data-type-specific message
+      if (dataType === 'forecast') {
+        return `Forecast data is only available for the next 7 days. Try dates between ${formatDateRange(range.start, range.end)}.`;
+      }
       return `Data not available for future dates. Try dates between ${formatDateRange(range.start, range.end)}.`;
     }
 
     if (reqDate < range.start) {
-      const yearsAgo = Math.floor(
-        (Date.now() - reqDate.getTime()) / (365.25 * 24 * 60 * 60 * 1000)
-      );
-      return `Historical data only available for the past 5 years. Your date is ${yearsAgo} years ago. Try a more recent date.`;
+      // Date is in the past - provide data-type-specific message
+      if (dataType === 'forecast') {
+        return `Forecast data is only available for future dates. Your date is in the past. Try dates between ${formatDateRange(range.start, range.end)}.`;
+      }
+      if (dataType === 'historical') {
+        const yearsAgo = Math.floor(
+          (Date.now() - reqDate.getTime()) / (365.25 * 24 * 60 * 60 * 1000)
+        );
+        return `Historical data only available for the past 5 years. Your date is ${yearsAgo} years ago. Try a more recent date.`;
+      }
+      return `Data not available for this date. Try dates between ${formatDateRange(range.start, range.end)}.`;
     }
   }
 

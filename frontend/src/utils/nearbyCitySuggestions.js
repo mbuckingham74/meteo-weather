@@ -69,18 +69,26 @@ function normalizeSearchQuery(searchQuery) {
 export function getNearbyCitySuggestions(failedQuery) {
   const normalized = normalizeSearchQuery(failedQuery);
 
+  // Return empty array if query is blank/whitespace after normalization
+  if (!normalized || normalized.length === 0) {
+    return [];
+  }
+
   // Direct match
   if (NEARBY_CITIES_DATABASE[normalized]) {
     return NEARBY_CITIES_DATABASE[normalized].slice(0, 4);
   }
 
   // Partial match (e.g., "york" matches "new york")
-  const partialMatches = Object.keys(NEARBY_CITIES_DATABASE).filter(
-    (city) => city.includes(normalized) || normalized.includes(city)
-  );
+  // Only match if normalized has at least 3 characters to avoid false positives
+  if (normalized.length >= 3) {
+    const partialMatches = Object.keys(NEARBY_CITIES_DATABASE).filter(
+      (city) => city.includes(normalized) || normalized.includes(city)
+    );
 
-  if (partialMatches.length > 0) {
-    return NEARBY_CITIES_DATABASE[partialMatches[0]].slice(0, 4);
+    if (partialMatches.length > 0) {
+      return NEARBY_CITIES_DATABASE[partialMatches[0]].slice(0, 4);
+    }
   }
 
   // Return generic suggestions based on region hints
@@ -119,6 +127,11 @@ export function formatLocationNotFoundMessage(failedQuery) {
  */
 export function isGenericQuery(query) {
   const normalized = query?.toLowerCase().trim() || '';
+
+  // Return false for empty/null input
+  if (!normalized || normalized.length === 0) {
+    return false;
+  }
 
   // Single word queries often need context
   if (!/\s/.test(normalized) && !/^\d+$/.test(normalized)) {

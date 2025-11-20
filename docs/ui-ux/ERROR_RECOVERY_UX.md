@@ -116,6 +116,8 @@ getErrorSuggestions(ERROR_CODES.LOCATION_NOT_FOUND, { searchQuery: 'new york' })
 
 ### Location Search Errors
 
+**Updated ErrorMessage Component** (accepts `context` prop):
+
 ```javascript
 <ErrorMessage
   error={{
@@ -124,15 +126,16 @@ getErrorSuggestions(ERROR_CODES.LOCATION_NOT_FOUND, { searchQuery: 'new york' })
   }}
   mode="inline"
   onRetry={refetchLocation}
-  // Pass search query for smart suggestions
-  context={{ searchQuery: userInput }}
+  context={{ searchQuery: userInput }} // NEW: Pass search query for smart suggestions
 />
 ```
 
-**User sees**:
+**What the user sees**:
 - ❌ Location not found
 - 💡 **Try nearby cities**: Newark, NJ, Jersey City, NJ, Yonkers, NY
 - 🔄 Retry button (uses React Query's `refetch`)
+
+**Implementation Note**: The context prop is now wired to ErrorMessage component (lines 58, 70-75 in ErrorMessage.jsx). Pass `searchQuery` in the context object to get nearby city suggestions.
 
 ---
 
@@ -146,19 +149,47 @@ getErrorSuggestions(ERROR_CODES.LOCATION_NOT_FOUND, { searchQuery: 'new york' })
   }}
   mode="inline"
   onRetry={refetchHistorical}
-  // Pass date and data type for smart hints
-  context={{
+  context={{                              // NEW: Pass date and data type for smart hints
     requestedDate: new Date('2015-01-01'),
     dataType: 'historical'
   }}
 />
 ```
 
-**User sees**:
+**What the user sees**:
 - ❌ No data available
 - 💡 **Historical data only available for the past 5 years**. Your date is 10 years ago. Try a more recent date.
 - 📅 **Available dates**: Nov 20, 2020 - Nov 20, 2025
 - 🔄 Retry button
+
+---
+
+### Example Implementation in WeatherDashboard
+
+```javascript
+// When location search fails
+{locationError && (
+  <ErrorMessage
+    error={{ message: locationError, code: ERROR_CODES.LOCATION_NOT_FOUND }}
+    mode="inline"
+    onRetry={() => handleLocationSearch()}
+    context={{ searchQuery: searchInput }}  // Pass user's search query
+  />
+)}
+
+// When forecast data fails
+{forecastQuery.isError && (
+  <ErrorMessage
+    error={{ message: forecastQuery.error.message, code: ERROR_CODES.DATA_NOT_FOUND }}
+    mode="inline"
+    onRetry={forecastQuery.refetch}
+    context={{
+      requestedDate: requestedDate,  // Date user requested
+      dataType: 'forecast'           // Type of data
+    }}
+  />
+)}
+```
 
 ---
 
