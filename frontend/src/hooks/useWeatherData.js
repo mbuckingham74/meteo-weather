@@ -3,17 +3,38 @@ import {
   getCurrentWeather,
   getWeatherForecast,
   getHourlyForecast,
-  getHistoricalWeather
+  getHistoricalWeather,
 } from '../services/weatherApi';
 
 /**
- * Custom hook for fetching weather data
+ * @deprecated This hook is deprecated and will be removed in a future version.
+ * Use the new React Query hooks instead:
+ * - useCurrentWeatherQuery() from '../hooks/useWeatherQueries'
+ * - useForecastQuery() from '../hooks/useWeatherQueries'
+ * - useHourlyForecastQuery() from '../hooks/useWeatherQueries'
+ * - useHistoricalWeatherQuery() from '../hooks/useWeatherQueries'
+ *
+ * Benefits of React Query hooks:
+ * - Automatic caching (5 min stale time, 30 min GC)
+ * - Request deduplication
+ * - Automatic retries with exponential backoff
+ * - Better error handling
+ * - DevTools integration
+ *
+ * Migration guide: See frontend/src/hooks/useWeatherQueries.js
+ *
  * @param {string} location - Location to fetch weather for
  * @param {string} type - Type of data: 'current', 'forecast', 'historical'
  * @param {Object} options - Additional options (days for forecast, date range for historical)
  * @returns {Object} { data, loading, error, refetch }
  */
 export function useWeatherData(location, type = 'current', options = {}) {
+  // Deprecation warning (only in development)
+  if (process.env.NODE_ENV === 'development') {
+    console.warn(
+      `[DEPRECATED] useWeatherData() is deprecated. Use React Query hooks from useWeatherQueries.js instead. See migration guide for details.`
+    );
+  }
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -74,11 +95,12 @@ export function useWeatherData(location, type = 'current', options = {}) {
     data,
     loading,
     error,
-    refetch: fetchData
+    refetch: fetchData,
   };
 }
 
 /**
+ * @deprecated Use useCurrentWeatherQuery() from '../hooks/useWeatherQueries' instead
  * Hook for fetching current weather
  */
 export function useCurrentWeather(location) {
@@ -86,6 +108,7 @@ export function useCurrentWeather(location) {
 }
 
 /**
+ * @deprecated Use useForecastQuery() from '../hooks/useWeatherQueries' instead
  * Hook for fetching forecast
  */
 export function useForecast(location, days = 7) {
@@ -93,6 +116,7 @@ export function useForecast(location, days = 7) {
 }
 
 /**
+ * @deprecated Use useHistoricalWeatherQuery() from '../hooks/useWeatherQueries' instead
  * Hook for fetching historical weather
  */
 export function useHistoricalWeather(location, startDate, endDate) {
@@ -100,6 +124,7 @@ export function useHistoricalWeather(location, startDate, endDate) {
 }
 
 /**
+ * @deprecated Use useHourlyForecastQuery() from '../hooks/useWeatherQueries' instead
  * Hook for fetching hourly forecast
  */
 export function useHourlyForecast(location, hours = 48) {
