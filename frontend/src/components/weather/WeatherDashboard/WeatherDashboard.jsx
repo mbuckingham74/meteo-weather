@@ -2,13 +2,17 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation as useRouterLocation } from 'react-router-dom';
 import { useLocation } from '../../../contexts/LocationContext';
 import { useTemperatureUnit } from '../../../contexts/TemperatureUnitContext';
-import { useForecast, useHourlyForecast, useCurrentWeather } from '../../../hooks/useWeatherData';
 import {
-  useThisDayInHistory,
-  useForecastComparison,
-  useRecordTemperatures,
-  useTemperatureProbability,
-} from '../../../hooks/useClimateData';
+  useForecastQuery,
+  useHourlyForecastQuery,
+  useCurrentWeatherQuery,
+} from '../../../hooks/useWeatherQueries';
+import {
+  useThisDayInHistoryQuery,
+  useForecastComparisonQuery,
+  useRecordTemperaturesQuery,
+  useTemperatureProbabilityQuery,
+} from '../../../hooks/useClimateQueries';
 import { getCurrentLocation } from '../../../services/geolocationService';
 import { celsiusToFahrenheit } from '../../../utils/weatherHelpers';
 import { createLocationSlug } from '../../../utils/urlHelpers';
@@ -90,10 +94,44 @@ function WeatherDashboard() {
     },
   });
 
-  // Fetch weather data
-  const { data, loading, error, refetch: refetchForecast } = useForecast(location, days);
-  const hourlyData = useHourlyForecast(location, 48);
-  const currentWeather = useCurrentWeather(location);
+  // Extract lat/lng from locationData for React Query hooks
+  const lat = locationData?.latitude;
+  const lng = locationData?.longitude;
+
+  // Fetch weather data using React Query hooks
+  const {
+    data,
+    isLoading: loading,
+    error,
+    refetch: refetchForecast,
+  } = useForecastQuery(lat, lng, days);
+
+  // Destructure hourly data query result
+  const {
+    data: hourlyDataResult,
+    isLoading: hourlyLoading,
+    error: hourlyError,
+  } = useHourlyForecastQuery(lat, lng, 48);
+
+  // Destructure current weather query result
+  const {
+    data: currentWeatherResult,
+    isLoading: currentWeatherLoading,
+    error: currentWeatherError,
+  } = useCurrentWeatherQuery(lat, lng);
+
+  // Create compatibility objects to match old hook API shape
+  const hourlyData = {
+    data: hourlyDataResult,
+    loading: hourlyLoading,
+    error: hourlyError,
+  };
+
+  const currentWeather = {
+    data: currentWeatherResult,
+    loading: currentWeatherLoading,
+    error: currentWeatherError,
+  };
 
   // Announce location changes to screen readers
   useEffect(() => {
@@ -161,28 +199,25 @@ function WeatherDashboard() {
   const endDate = `${String(endDateObj.getMonth() + 1).padStart(2, '0')}-${String(endDateObj.getDate()).padStart(2, '0')}`;
 
   // Fetch climate/historical data ONLY if charts are visible
-  const thisDayHistory = useThisDayInHistory(
-    visibleCharts.thisDayHistory ? location : null,
-    null,
-    10
-  );
-  const forecastComparison = useForecastComparison(
-    visibleCharts.historicalComparison ? location : null,
+  // React Query hooks use lat/lng and enabled option for conditional fetching
+  const thisDayHistory = useThisDayInHistoryQuery(lat, lng, null, 10, {
+    enabled: visibleCharts.thisDayHistory && lat != null && lng != null,
+  });
+  const forecastComparison = useForecastComparisonQuery(
+    lat,
+    lng,
     visibleCharts.historicalComparison ? data?.forecast || [] : [],
-    10
+    10,
+    {
+      enabled: visibleCharts.historicalComparison && lat != null && lng != null,
+    }
   );
-  const recordTemps = useRecordTemperatures(
-    visibleCharts.recordTemps ? location : null,
-    startDate,
-    endDate,
-    10
-  );
-  const tempProbability = useTemperatureProbability(
-    visibleCharts.tempProbability ? location : null,
-    startDate,
-    endDate,
-    10
-  );
+  const recordTemps = useRecordTemperaturesQuery(lat, lng, startDate, endDate, 10, {
+    enabled: visibleCharts.recordTemps && lat != null && lng != null,
+  });
+  const tempProbability = useTemperatureProbabilityQuery(lat, lng, startDate, 10, {
+    enabled: visibleCharts.tempProbability && lat != null && lng != null,
+  });
 
   // Handle current location detection
   const handleDetectLocation = async () => {
