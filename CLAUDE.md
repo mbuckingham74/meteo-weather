@@ -99,7 +99,7 @@
   - **Phase 3 (PR #52):** Migrated LocationComparisonView to React Query hooks
   - **Phase 4 (PR #53):** Added deprecation warnings to 11 legacy hook functions
   - **Impact:** Modern data fetching with automatic caching, deduplication, retries, and DevTools
-  - **Status:** Complete, all 589 tests passing ✅
+  - **Status:** Complete, all 610 tests passing ✅
 - ✅ **Legacy Hook Cleanup (P0-5, PR #54)** (Nov 20, 2025)
   - **Complete Removal:** Deleted 4 deprecated files (useWeatherData.js, useClimateData.js, tests, backup)
   - **Hooks Removed:** 11 deprecated hook functions (useWeatherData, useCurrentWeather, useForecast, useHistoricalWeather, useHourlyForecast, useClimateNormals, useRecordTemperatures, useForecastComparison, useThisDayInHistory, useTemperatureProbability, and module-level deprecation flag)
