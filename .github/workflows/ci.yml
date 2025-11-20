@@ -89,7 +89,7 @@ jobs:
       - name: Create test environment file
         run: |
           cd backend
-          cat > .env.test << EOF
+          cat > .env.test << 'EOF'
           NODE_ENV=test
           DB_HOST=127.0.0.1
           DB_PORT=3307
@@ -97,10 +97,11 @@ jobs:
           DB_USER=root
           DB_PASSWORD=test_password
           VISUAL_CROSSING_API_KEY=test_key
-          OPENWEATHER_API_KEY=test_openweather_key
-          JWT_SECRET=test_jwt_secret_min_32_chars_long_for_validation
-          JWT_REFRESH_SECRET=test_jwt_refresh_secret_min_32_chars_for_validation
+          OPENWEATHER_API_KEY=test_key
           EOF
+          # Generate JWT secrets dynamically to avoid secret scanner false positives
+          echo "JWT_SECRET=$(openssl rand -base64 32)" >> .env.test
+          echo "JWT_REFRESH_SECRET=$(openssl rand -base64 32)" >> .env.test
 
       - name: Run tests
         run: |
