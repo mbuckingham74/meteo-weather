@@ -2,13 +2,17 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation as useRouterLocation } from 'react-router-dom';
 import { useLocation } from '../../../contexts/LocationContext';
 import { useTemperatureUnit } from '../../../contexts/TemperatureUnitContext';
-import { useForecast, useHourlyForecast, useCurrentWeather } from '../../../hooks/useWeatherData';
 import {
-  useThisDayInHistory,
-  useForecastComparison,
-  useRecordTemperatures,
-  useTemperatureProbability,
-} from '../../../hooks/useClimateData';
+  useForecastQuery,
+  useHourlyForecastQuery,
+  useCurrentWeatherQuery,
+} from '../../../hooks/useWeatherQueries';
+import {
+  useThisDayInHistoryQuery,
+  useForecastComparisonQuery,
+  useRecordTemperaturesQuery,
+  useTemperatureProbabilityQuery,
+} from '../../../hooks/useClimateQueries';
 import { getCurrentLocation } from '../../../services/geolocationService';
 import { celsiusToFahrenheit } from '../../../utils/weatherHelpers';
 import { createLocationSlug } from '../../../utils/urlHelpers';
@@ -90,10 +94,54 @@ function WeatherDashboard() {
     },
   });
 
-  // Fetch weather data
-  const { data, loading, error, refetch: refetchForecast } = useForecast(location, days);
-  const hourlyData = useHourlyForecast(location, 48);
-  const currentWeather = useCurrentWeather(location);
+  // Extract lat/lng from locationData for React Query hooks
+  // FALLBACK: If locationData doesn't have coords (e.g., fresh load with "Seattle, WA" string),
+  // the queries will be disabled and we'll show the "no location" state.
+  // This is intentional - we want users to select a location with coordinates.
+  const lat = locationData?.latitude;
+  const lng = locationData?.longitude;
+  const hasCoordinates = lat != null && lng != null;
+
+  // Fetch weather data using React Query hooks
+  const {
+    data,
+    isLoading: loading,
+    error,
+    refetch: refetchForecast,
+  } = useForecastQuery(lat, lng, days, {
+    enabled: hasCoordinates,
+  });
+
+  // Destructure hourly data query result
+  const {
+    data: hourlyDataResult,
+    isLoading: hourlyLoading,
+    error: hourlyError,
+  } = useHourlyForecastQuery(lat, lng, 48, {
+    enabled: hasCoordinates,
+  });
+
+  // Destructure current weather query result
+  const {
+    data: currentWeatherResult,
+    isLoading: currentWeatherLoading,
+    error: currentWeatherError,
+  } = useCurrentWeatherQuery(lat, lng, {
+    enabled: hasCoordinates,
+  });
+
+  // Create compatibility objects to match old hook API shape
+  const hourlyData = {
+    data: hourlyDataResult,
+    loading: hourlyLoading,
+    error: hourlyError,
+  };
+
+  const currentWeather = {
+    data: currentWeatherResult,
+    loading: currentWeatherLoading,
+    error: currentWeatherError,
+  };
 
   // Announce location changes to screen readers
   useEffect(() => {
@@ -161,28 +209,54 @@ function WeatherDashboard() {
   const endDate = `${String(endDateObj.getMonth() + 1).padStart(2, '0')}-${String(endDateObj.getDate()).padStart(2, '0')}`;
 
   // Fetch climate/historical data ONLY if charts are visible
-  const thisDayHistory = useThisDayInHistory(
-    visibleCharts.thisDayHistory ? location : null,
-    null,
-    10
-  );
-  const forecastComparison = useForecastComparison(
-    visibleCharts.historicalComparison ? location : null,
+  // React Query hooks use lat/lng and enabled option for conditional fetching
+  // Map React Query's isLoading to .loading for ChartsGrid compatibility
+  const thisDayHistoryQuery = useThisDayInHistoryQuery(lat, lng, null, 10, {
+    enabled: visibleCharts.thisDayHistory && hasCoordinates,
+  });
+  const thisDayHistory = {
+    data: thisDayHistoryQuery.data,
+    loading: thisDayHistoryQuery.isLoading,
+    error: thisDayHistoryQuery.error,
+    refetch: thisDayHistoryQuery.refetch,
+  };
+
+  const forecastComparisonQuery = useForecastComparisonQuery(
+    lat,
+    lng,
     visibleCharts.historicalComparison ? data?.forecast || [] : [],
-    10
+    10,
+    {
+      // Only enable when coords exist AND forecast data is loaded
+      enabled: visibleCharts.historicalComparison && hasCoordinates && data?.forecast != null,
+    }
   );
-  const recordTemps = useRecordTemperatures(
-    visibleCharts.recordTemps ? location : null,
-    startDate,
-    endDate,
-    10
-  );
-  const tempProbability = useTemperatureProbability(
-    visibleCharts.tempProbability ? location : null,
-    startDate,
-    endDate,
-    10
-  );
+  const forecastComparison = {
+    data: forecastComparisonQuery.data,
+    loading: forecastComparisonQuery.isLoading,
+    error: forecastComparisonQuery.error,
+    refetch: forecastComparisonQuery.refetch,
+  };
+
+  const recordTempsQuery = useRecordTemperaturesQuery(lat, lng, startDate, endDate, 10, {
+    enabled: visibleCharts.recordTemps && hasCoordinates,
+  });
+  const recordTemps = {
+    data: recordTempsQuery.data,
+    loading: recordTempsQuery.isLoading,
+    error: recordTempsQuery.error,
+    refetch: recordTempsQuery.refetch,
+  };
+
+  const tempProbabilityQuery = useTemperatureProbabilityQuery(lat, lng, startDate, 10, {
+    enabled: visibleCharts.tempProbability && hasCoordinates,
+  });
+  const tempProbability = {
+    data: tempProbabilityQuery.data,
+    loading: tempProbabilityQuery.isLoading,
+    error: tempProbabilityQuery.error,
+    refetch: tempProbabilityQuery.refetch,
+  };
 
   // Handle current location detection
   const handleDetectLocation = async () => {
@@ -343,8 +417,8 @@ function WeatherDashboard() {
         {!loading && !error && data && 'Weather data loaded'}
       </div>
 
-      {/* No Location State - Show search when no location is set */}
-      {!location && !detectingLocation && !loading && (
+      {/* No Location State - Show search when no location is set OR no coordinates */}
+      {(!location || !hasCoordinates) && !detectingLocation && !loading && (
         <div className="no-location-state">
           <Surface
             as="section"
