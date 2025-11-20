@@ -1,15 +1,27 @@
 /**
- * Climate Data Hooks
- * Custom React hooks for fetching climate and historical weather data
+ * Climate Data Hooks (DEPRECATED)
  *
- * Migration: Part of P0-P3A API Architecture Improvements
- * Now uses centralized climateApi service instead of direct axios calls
+ * @deprecated These hooks are deprecated and will be removed in a future version.
+ * Use the new React Query hooks from '../hooks/useClimateQueries' instead:
+ * - useClimateNormalsQuery()
+ * - useRecordTemperaturesQuery()
+ * - useForecastComparisonQuery()
+ * - useThisDayInHistoryQuery()
+ * - useTemperatureProbabilityQuery()
  *
- * Benefits:
- * - Automatic retry with exponential backoff
+ * Benefits of React Query hooks:
+ * - Automatic caching (5 min stale time, 30 min GC)
  * - Request deduplication (prevents duplicate in-flight requests)
- * - Unified error handling via ApiError
- * - Consistent timeout configuration
+ * - Automatic retries with exponential backoff
+ * - Better error handling
+ * - DevTools integration
+ *
+ * Migration guide: See frontend/src/hooks/useClimateQueries.js
+ *
+ * Legacy implementation details:
+ * - Uses centralized climateApi service (from P0-P3A)
+ * - Manual cancellation token management
+ * - Manual retry logic via retryToken
  */
 
 import { useState, useEffect } from 'react';
@@ -23,6 +35,7 @@ import {
 import { ApiError } from '../services/apiClient';
 
 /**
+ * @deprecated Use useClimateNormalsQuery() from '../hooks/useClimateQueries' instead
  * Hook to fetch climate normals for a specific date
  * @param {string} location - Location identifier
  * @param {string} date - Date string (YYYY-MM-DD)
@@ -82,6 +95,7 @@ export function useClimateNormals(location, date, years = 10) {
 }
 
 /**
+ * @deprecated Use useRecordTemperaturesQuery() from '../hooks/useClimateQueries' instead
  * Hook to fetch record temperatures for a date range
  * @param {string} location - Location identifier
  * @param {string} startDate - Start date (YYYY-MM-DD)
@@ -143,6 +157,7 @@ export function useRecordTemperatures(location, startDate, endDate, years = 10) 
 }
 
 /**
+ * @deprecated Use useForecastComparisonQuery() from '../hooks/useClimateQueries' instead
  * Hook to compare forecast with historical climate data
  * @param {string} location - Location identifier
  * @param {Array} forecastData - Forecast data array
@@ -208,6 +223,7 @@ export function useForecastComparison(location, forecastData, years = 10) {
 }
 
 /**
+ * @deprecated Use useThisDayInHistoryQuery() from '../hooks/useClimateQueries' instead
  * Hook to fetch "This Day in History" weather data
  * @param {string} location - Location identifier
  * @param {string|null} date - Date string (MM-DD format), null for today
@@ -271,6 +287,7 @@ export function useThisDayInHistory(location, date = null, years = 10) {
 }
 
 /**
+ * @deprecated Use useTemperatureProbabilityQuery() from '../hooks/useClimateQueries' instead
  * Hook to fetch temperature probability distribution
  * @param {string} location - Location identifier
  * @param {string} startDate - Start date (YYYY-MM-DD)
