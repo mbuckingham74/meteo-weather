@@ -97,7 +97,9 @@ jobs:
           DB_USER=root
           DB_PASSWORD=test_password
           VISUAL_CROSSING_API_KEY=test_key
-          JWT_SECRET=test_secret
+          OPENWEATHER_API_KEY=test_openweather_key
+          JWT_SECRET=test_jwt_secret_min_32_chars_long_for_validation
+          JWT_REFRESH_SECRET=test_jwt_refresh_secret_min_32_chars_for_validation
           EOF
 
       - name: Run tests
