@@ -33,9 +33,10 @@ The Weather Twins feature allows users to find cities worldwide with similar cur
    - Returns nearest database location within radius
    - **Tested and working via curl** ✅
 
-4. **Database Fix**
-   - Restored FULLTEXT index on locations table (was missing after DB restore)
-   - Query: `ALTER TABLE locations ADD FULLTEXT INDEX idx_location_search (city_name, state, country);`
+4. **Database Setup**
+   - FULLTEXT index already exists in production: `idx_location_search (city_name, state, country)`
+   - Spatial index already exists from migration 004: `idx_coordinates (latitude, longitude)`
+   - No manual SQL commands required
 
 ### Frontend Implementation (100%)
 
@@ -273,11 +274,10 @@ Adds Weather Twins feature allowing users to find cities worldwide with similar 
 **Fix:** Either populate current weather data OR document this limitation
 **Files:** `backend/services/weatherTwinsService.js` (lines 113, 160)
 
-### FULLTEXT Index Not in Migration
-**Issue:** FULLTEXT index created manually via SQL
-**Risk:** Will be missing on fresh deployments
-**Fix:** Create proper migration file
-**SQL:** `ALTER TABLE locations ADD FULLTEXT INDEX idx_location_search (city_name, state, country);`
+### FULLTEXT Index Status
+**Status:** Already exists in production database as `idx_location_search`
+**Migration:** Originally created by migration 001 (`idx_fulltext_search`)
+**No Action Needed:** Index is present and functional
 
 ### Location Display Bug (Pre-Existing)
 **Issue:** Location name not showing on dashboard
@@ -301,15 +301,12 @@ curl -s "http://localhost:5001/api/locations/by-coordinates?lat=40.7128&lon=-74.
 curl -s "http://localhost:5001/api/weather/twins/1?scope=worldwide&limit=10&minSimilarity=85" | python3 -m json.tool
 ```
 
-### Restore FULLTEXT Index (if needed)
+### Verify FULLTEXT Index (already exists)
 ```sql
 -- Connect to database
 docker exec -i -e MYSQL_PWD=meteo_root_pass meteo-mysql mysql -u root meteo_app
 
--- Add FULLTEXT index
-ALTER TABLE locations ADD FULLTEXT INDEX idx_location_search (city_name, state, country);
-
--- Verify index exists
+-- Verify index exists (should return idx_location_search)
 SHOW INDEX FROM locations WHERE Index_type = 'FULLTEXT';
 ```
 
