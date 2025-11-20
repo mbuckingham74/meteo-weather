@@ -4,18 +4,15 @@
  */
 
 describe('Configuration', () => {
-  let originalEnv;
-
-  beforeAll(() => {
-    // Save original environment
-    originalEnv = { ...process.env };
-  });
-
-  afterEach(() => {
-    // Restore original environment after each test
-    process.env = { ...originalEnv };
-    // Clear require cache for config module
-    delete require.cache[require.resolve('../../config')];
+  describe('Configuration Loading', () => {
+    it('should load successfully with test defaults', () => {
+      // jest.env.js sets test defaults, so config should load
+      const config = require('../../config');
+      expect(config).toBeDefined();
+      expect(config.app).toBeDefined();
+      expect(config.database).toBeDefined();
+      expect(config.weather).toBeDefined();
+    });
   });
 
   describe('App Configuration', () => {

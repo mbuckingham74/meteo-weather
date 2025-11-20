@@ -23,11 +23,11 @@ const ConfigSchema = z.object({
   }),
 
   database: z.object({
-    host: z.string().min(1).default('localhost'),
+    host: z.string().min(1),
     port: z.number().int().positive().default(3306),
-    user: z.string().min(1).default('meteo_user'),
-    password: z.string().min(1).default('secure_password_123'),
-    name: z.string().min(1).default('meteo_app'),
+    user: z.string().min(1),
+    password: z.string().min(1),
+    name: z.string().min(1),
     rootPassword: z.string().optional(), // Only needed for Docker initialization
     connectionLimit: z.number().int().positive().default(10),
   }),
@@ -214,27 +214,44 @@ function parseConfig() {
  * Validate and export configuration
  * Fails fast if required variables are missing
  */
-let config;
-try {
-  const rawConfig = parseConfig();
-  config = ConfigSchema.parse(rawConfig);
-} catch (error) {
-  if (error?.issues) {
-    // Zod validation error
-    console.error('❌ Configuration validation failed:');
-    console.error('');
-    error.issues.forEach((err) => {
-      const path = err.path.join('.');
-      console.error(`  ❌ ${path}: ${err.message}`);
-    });
-    console.error('');
-    console.error('💡 Check your .env file and ensure all required variables are set.');
-    console.error('   See .env.example for reference.');
-    process.exit(1);
-  } else {
-    console.error('❌ Configuration error:', error);
-    process.exit(1);
+function loadConfig() {
+  try {
+    const rawConfig = parseConfig();
+    return ConfigSchema.parse(rawConfig);
+  } catch (error) {
+    if (error?.issues) {
+      // Zod validation error
+      const errorMessage = error.issues
+        .map((err) => `  ❌ ${err.path.join('.')}: ${err.message}`)
+        .join('\n');
+
+      const fullError = new Error(
+        `Configuration validation failed:\n\n${errorMessage}\n\n💡 Check your .env file and ensure all required variables are set.\n   See .env.example for reference.`
+      );
+      fullError.name = 'ConfigValidationError';
+      fullError.details = error.issues;
+
+      // In test environment, throw the error so tests can catch it
+      if (process.env.NODE_ENV === 'test') {
+        throw fullError;
+      }
+
+      // In production/development, log and exit
+      console.error('❌ Configuration validation failed:');
+      console.error('');
+      console.error(errorMessage);
+      console.error('');
+      console.error('💡 Check your .env file and ensure all required variables are set.');
+      console.error('   See .env.example for reference.');
+      process.exit(1);
+    } else {
+      if (process.env.NODE_ENV === 'test') {
+        throw error;
+      }
+      console.error('❌ Configuration error:', error);
+      process.exit(1);
+    }
   }
 }
 
-module.exports = config;
+module.exports = loadConfig();
