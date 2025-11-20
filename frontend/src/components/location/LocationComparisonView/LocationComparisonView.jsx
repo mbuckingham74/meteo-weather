@@ -1,6 +1,9 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { useForecast, useHistoricalWeather } from '../../../hooks/useWeatherData';
-import { useForecastComparison, useThisDayInHistory } from '../../../hooks/useClimateData';
+import { useForecastQuery, useHistoricalWeatherQuery } from '../../../hooks/useWeatherQueries';
+import {
+  useForecastComparisonQuery,
+  useThisDayInHistoryQuery,
+} from '../../../hooks/useClimateQueries';
 import { aggregateWeatherData } from '../../../utils/weatherHelpers';
 import { useTemperatureUnit } from '../../../contexts/TemperatureUnitContext';
 import { validateQuery, parseLocationQuery } from '../../../services/locationFinderService';
@@ -139,45 +142,187 @@ function LocationComparisonView() {
 
   const dateRange = getDateRange();
 
-  // Fetch forecast data (always call hooks - pass null if not needed)
-  const location1Forecast = useForecast(
-    dateRange.type === 'forecast' ? locations[0] || null : null,
-    dateRange.days || 7
+  // Helper: Convert location string to query key (normalize for cache)
+  // LocationComparisonView uses location strings (e.g., "Seattle,WA") instead of coordinates
+  // We use the string directly as the query key since the backend handles geocoding
+  const locationKey = (loc) => loc || null;
+
+  // Fetch forecast data - React Query parallel execution
+  // NOTE: Using location STRINGS (not coordinates) since this component is string-based
+  // Backend handles geocoding, and we normalize strings for stable cache keys
+  const location1ForecastQuery = useForecastQuery(
+    null, // lat
+    null, // lng
+    dateRange.days || 7,
+    {
+      enabled: dateRange.type === 'forecast' && Boolean(locations[0]),
+      // Override queryKey to use location string instead of coords
+      // This is a temporary approach until we refactor to coordinate-based system
+      queryKey: ['weather', 'forecast-by-string', locationKey(locations[0]), dateRange.days],
+      queryFn: async () => {
+        const { getWeatherForecast } = await import('../../../services/weatherApi');
+        return getWeatherForecast(locations[0], dateRange.days || 7);
+      },
+    }
   );
-  const location2Forecast = useForecast(
-    dateRange.type === 'forecast' ? locations[1] || null : null,
-    dateRange.days || 7
+  const location2ForecastQuery = useForecastQuery(null, null, dateRange.days || 7, {
+    enabled: dateRange.type === 'forecast' && Boolean(locations[1]),
+    queryKey: ['weather', 'forecast-by-string', locationKey(locations[1]), dateRange.days],
+    queryFn: async () => {
+      const { getWeatherForecast } = await import('../../../services/weatherApi');
+      return getWeatherForecast(locations[1], dateRange.days || 7);
+    },
+  });
+  const location3ForecastQuery = useForecastQuery(null, null, dateRange.days || 7, {
+    enabled: dateRange.type === 'forecast' && Boolean(locations[2]),
+    queryKey: ['weather', 'forecast-by-string', locationKey(locations[2]), dateRange.days],
+    queryFn: async () => {
+      const { getWeatherForecast } = await import('../../../services/weatherApi');
+      return getWeatherForecast(locations[2], dateRange.days || 7);
+    },
+  });
+  const location4ForecastQuery = useForecastQuery(null, null, dateRange.days || 7, {
+    enabled: dateRange.type === 'forecast' && Boolean(locations[3]),
+    queryKey: ['weather', 'forecast-by-string', locationKey(locations[3]), dateRange.days],
+    queryFn: async () => {
+      const { getWeatherForecast } = await import('../../../services/weatherApi');
+      return getWeatherForecast(locations[3], dateRange.days || 7);
+    },
+  });
+
+  // Create compatibility objects (map isLoading → loading)
+  const location1Forecast = {
+    data: location1ForecastQuery.data,
+    loading: location1ForecastQuery.isLoading,
+    error: location1ForecastQuery.error,
+    refetch: location1ForecastQuery.refetch,
+  };
+  const location2Forecast = {
+    data: location2ForecastQuery.data,
+    loading: location2ForecastQuery.isLoading,
+    error: location2ForecastQuery.error,
+    refetch: location2ForecastQuery.refetch,
+  };
+  const location3Forecast = {
+    data: location3ForecastQuery.data,
+    loading: location3ForecastQuery.isLoading,
+    error: location3ForecastQuery.error,
+    refetch: location3ForecastQuery.refetch,
+  };
+  const location4Forecast = {
+    data: location4ForecastQuery.data,
+    loading: location4ForecastQuery.isLoading,
+    error: location4ForecastQuery.error,
+    refetch: location4ForecastQuery.refetch,
+  };
+
+  // Fetch historical data - React Query parallel execution
+  const location1HistoricalQuery = useHistoricalWeatherQuery(
+    null,
+    null,
+    dateRange.startDate,
+    dateRange.endDate,
+    {
+      enabled: dateRange.type === 'historical' && Boolean(locations[0]),
+      queryKey: [
+        'weather',
+        'historical-by-string',
+        locationKey(locations[0]),
+        dateRange.startDate,
+        dateRange.endDate,
+      ],
+      queryFn: async () => {
+        const { getHistoricalWeather } = await import('../../../services/weatherApi');
+        return getHistoricalWeather(locations[0], dateRange.startDate, dateRange.endDate);
+      },
+    }
   );
-  const location3Forecast = useForecast(
-    dateRange.type === 'forecast' ? locations[2] || null : null,
-    dateRange.days || 7
+  const location2HistoricalQuery = useHistoricalWeatherQuery(
+    null,
+    null,
+    dateRange.startDate,
+    dateRange.endDate,
+    {
+      enabled: dateRange.type === 'historical' && Boolean(locations[1]),
+      queryKey: [
+        'weather',
+        'historical-by-string',
+        locationKey(locations[1]),
+        dateRange.startDate,
+        dateRange.endDate,
+      ],
+      queryFn: async () => {
+        const { getHistoricalWeather } = await import('../../../services/weatherApi');
+        return getHistoricalWeather(locations[1], dateRange.startDate, dateRange.endDate);
+      },
+    }
   );
-  const location4Forecast = useForecast(
-    dateRange.type === 'forecast' ? locations[3] || null : null,
-    dateRange.days || 7
+  const location3HistoricalQuery = useHistoricalWeatherQuery(
+    null,
+    null,
+    dateRange.startDate,
+    dateRange.endDate,
+    {
+      enabled: dateRange.type === 'historical' && Boolean(locations[2]),
+      queryKey: [
+        'weather',
+        'historical-by-string',
+        locationKey(locations[2]),
+        dateRange.startDate,
+        dateRange.endDate,
+      ],
+      queryFn: async () => {
+        const { getHistoricalWeather } = await import('../../../services/weatherApi');
+        return getHistoricalWeather(locations[2], dateRange.startDate, dateRange.endDate);
+      },
+    }
+  );
+  const location4HistoricalQuery = useHistoricalWeatherQuery(
+    null,
+    null,
+    dateRange.startDate,
+    dateRange.endDate,
+    {
+      enabled: dateRange.type === 'historical' && Boolean(locations[3]),
+      queryKey: [
+        'weather',
+        'historical-by-string',
+        locationKey(locations[3]),
+        dateRange.startDate,
+        dateRange.endDate,
+      ],
+      queryFn: async () => {
+        const { getHistoricalWeather } = await import('../../../services/weatherApi');
+        return getHistoricalWeather(locations[3], dateRange.startDate, dateRange.endDate);
+      },
+    }
   );
 
-  // Fetch historical data
-  const location1Historical = useHistoricalWeather(
-    dateRange.type === 'historical' ? locations[0] || null : null,
-    dateRange.startDate,
-    dateRange.endDate
-  );
-  const location2Historical = useHistoricalWeather(
-    dateRange.type === 'historical' ? locations[1] || null : null,
-    dateRange.startDate,
-    dateRange.endDate
-  );
-  const location3Historical = useHistoricalWeather(
-    dateRange.type === 'historical' ? locations[2] || null : null,
-    dateRange.startDate,
-    dateRange.endDate
-  );
-  const location4Historical = useHistoricalWeather(
-    dateRange.type === 'historical' ? locations[3] || null : null,
-    dateRange.startDate,
-    dateRange.endDate
-  );
+  // Create compatibility objects
+  const location1Historical = {
+    data: location1HistoricalQuery.data,
+    loading: location1HistoricalQuery.isLoading,
+    error: location1HistoricalQuery.error,
+    refetch: location1HistoricalQuery.refetch,
+  };
+  const location2Historical = {
+    data: location2HistoricalQuery.data,
+    loading: location2HistoricalQuery.isLoading,
+    error: location2HistoricalQuery.error,
+    refetch: location2HistoricalQuery.refetch,
+  };
+  const location3Historical = {
+    data: location3HistoricalQuery.data,
+    loading: location3HistoricalQuery.isLoading,
+    error: location3HistoricalQuery.error,
+    refetch: location3HistoricalQuery.refetch,
+  };
+  const location4Historical = {
+    data: location4HistoricalQuery.data,
+    loading: location4HistoricalQuery.isLoading,
+    error: location4HistoricalQuery.error,
+    refetch: location4HistoricalQuery.refetch,
+  };
 
   // Combine data based on current mode
   const location1Data = dateRange.type === 'forecast' ? location1Forecast : location1Historical;
@@ -186,48 +331,276 @@ function LocationComparisonView() {
   const location4Data = dateRange.type === 'forecast' ? location4Forecast : location4Historical;
 
   // Fetch historical comparison data for each location (only for forecast mode)
-  const location1Comparison = useForecastComparison(
-    dateRange.type === 'forecast' ? locations[0] || null : null,
+  const location1ComparisonQuery = useForecastComparisonQuery(
+    null,
+    null,
     location1Data?.data?.forecast || [],
-    10
+    10,
+    {
+      enabled:
+        dateRange.type === 'forecast' &&
+        Boolean(locations[0]) &&
+        location1Data?.data?.forecast != null,
+      queryKey: [
+        'climate',
+        'forecast-comparison-by-string',
+        locationKey(locations[0]),
+        location1Data?.data?.forecast?.[0]?.date,
+        location1Data?.data?.forecast?.[location1Data?.data?.forecast.length - 1]?.date,
+        10,
+      ],
+      queryFn: async () => {
+        const { compareForecastWithNormals } = await import('../../../services/climateApi');
+        const forecastData = location1Data?.data?.forecast || [];
+        if (forecastData.length === 0) throw new Error('No forecast data available');
+
+        const dates = forecastData.map((d) => d.date).sort();
+        const startDate = dates[0];
+        const endDate = dates[dates.length - 1];
+
+        const response = await compareForecastWithNormals(locations[0], startDate, endDate, 10);
+        if (!response.success) {
+          throw new Error(response.error || 'Failed to compare with historical data');
+        }
+        return response.comparisons;
+      },
+    }
   );
-  const location2Comparison = useForecastComparison(
-    dateRange.type === 'forecast' ? locations[1] || null : null,
+  const location2ComparisonQuery = useForecastComparisonQuery(
+    null,
+    null,
     location2Data?.data?.forecast || [],
-    10
+    10,
+    {
+      enabled:
+        dateRange.type === 'forecast' &&
+        Boolean(locations[1]) &&
+        location2Data?.data?.forecast != null,
+      queryKey: [
+        'climate',
+        'forecast-comparison-by-string',
+        locationKey(locations[1]),
+        location2Data?.data?.forecast?.[0]?.date,
+        location2Data?.data?.forecast?.[location2Data?.data?.forecast.length - 1]?.date,
+        10,
+      ],
+      queryFn: async () => {
+        const { compareForecastWithNormals } = await import('../../../services/climateApi');
+        const forecastData = location2Data?.data?.forecast || [];
+        if (forecastData.length === 0) throw new Error('No forecast data available');
+
+        const dates = forecastData.map((d) => d.date).sort();
+        const startDate = dates[0];
+        const endDate = dates[dates.length - 1];
+
+        const response = await compareForecastWithNormals(locations[1], startDate, endDate, 10);
+        if (!response.success) {
+          throw new Error(response.error || 'Failed to compare with historical data');
+        }
+        return response.comparisons;
+      },
+    }
   );
-  const location3Comparison = useForecastComparison(
-    dateRange.type === 'forecast' ? locations[2] || null : null,
+  const location3ComparisonQuery = useForecastComparisonQuery(
+    null,
+    null,
     location3Data?.data?.forecast || [],
-    10
+    10,
+    {
+      enabled:
+        dateRange.type === 'forecast' &&
+        Boolean(locations[2]) &&
+        location3Data?.data?.forecast != null,
+      queryKey: [
+        'climate',
+        'forecast-comparison-by-string',
+        locationKey(locations[2]),
+        location3Data?.data?.forecast?.[0]?.date,
+        location3Data?.data?.forecast?.[location3Data?.data?.forecast.length - 1]?.date,
+        10,
+      ],
+      queryFn: async () => {
+        const { compareForecastWithNormals } = await import('../../../services/climateApi');
+        const forecastData = location3Data?.data?.forecast || [];
+        if (forecastData.length === 0) throw new Error('No forecast data available');
+
+        const dates = forecastData.map((d) => d.date).sort();
+        const startDate = dates[0];
+        const endDate = dates[dates.length - 1];
+
+        const response = await compareForecastWithNormals(locations[2], startDate, endDate, 10);
+        if (!response.success) {
+          throw new Error(response.error || 'Failed to compare with historical data');
+        }
+        return response.comparisons;
+      },
+    }
   );
-  const location4Comparison = useForecastComparison(
-    dateRange.type === 'forecast' ? locations[3] || null : null,
+  const location4ComparisonQuery = useForecastComparisonQuery(
+    null,
+    null,
     location4Data?.data?.forecast || [],
-    10
+    10,
+    {
+      enabled:
+        dateRange.type === 'forecast' &&
+        Boolean(locations[3]) &&
+        location4Data?.data?.forecast != null,
+      queryKey: [
+        'climate',
+        'forecast-comparison-by-string',
+        locationKey(locations[3]),
+        location4Data?.data?.forecast?.[0]?.date,
+        location4Data?.data?.forecast?.[location4Data?.data?.forecast.length - 1]?.date,
+        10,
+      ],
+      queryFn: async () => {
+        const { compareForecastWithNormals } = await import('../../../services/climateApi');
+        const forecastData = location4Data?.data?.forecast || [];
+        if (forecastData.length === 0) throw new Error('No forecast data available');
+
+        const dates = forecastData.map((d) => d.date).sort();
+        const startDate = dates[0];
+        const endDate = dates[dates.length - 1];
+
+        const response = await compareForecastWithNormals(locations[3], startDate, endDate, 10);
+        if (!response.success) {
+          throw new Error(response.error || 'Failed to compare with historical data');
+        }
+        return response.comparisons;
+      },
+    }
   );
 
+  // Create compatibility objects
+  const location1Comparison = {
+    data: location1ComparisonQuery.data,
+    loading: location1ComparisonQuery.isLoading,
+    error: location1ComparisonQuery.error,
+    refetch: location1ComparisonQuery.refetch,
+  };
+  const location2Comparison = {
+    data: location2ComparisonQuery.data,
+    loading: location2ComparisonQuery.isLoading,
+    error: location2ComparisonQuery.error,
+    refetch: location2ComparisonQuery.refetch,
+  };
+  const location3Comparison = {
+    data: location3ComparisonQuery.data,
+    loading: location3ComparisonQuery.isLoading,
+    error: location3ComparisonQuery.error,
+    refetch: location3ComparisonQuery.refetch,
+  };
+  const location4Comparison = {
+    data: location4ComparisonQuery.data,
+    loading: location4ComparisonQuery.isLoading,
+    error: location4ComparisonQuery.error,
+    refetch: location4ComparisonQuery.refetch,
+  };
+
   // Fetch "This Day in History" for each location (only for forecast mode)
-  const location1History = useThisDayInHistory(
-    dateRange.type === 'forecast' ? locations[0] || null : null,
-    null,
-    10
-  );
-  const location2History = useThisDayInHistory(
-    dateRange.type === 'forecast' ? locations[1] || null : null,
-    null,
-    10
-  );
-  const location3History = useThisDayInHistory(
-    dateRange.type === 'forecast' ? locations[2] || null : null,
-    null,
-    10
-  );
-  const location4History = useThisDayInHistory(
-    dateRange.type === 'forecast' ? locations[3] || null : null,
-    null,
-    10
-  );
+  const location1HistoryQuery = useThisDayInHistoryQuery(null, null, null, 10, {
+    enabled: dateRange.type === 'forecast' && Boolean(locations[0]),
+    queryKey: [
+      'climate',
+      'history-by-string',
+      locationKey(locations[0]),
+      new Date().toISOString().split('T')[0].substring(5),
+      10,
+    ],
+    queryFn: async () => {
+      const { getThisDayInHistory } = await import('../../../services/climateApi');
+      const queryDate = new Date().toISOString().split('T')[0].substring(5);
+      const response = await getThisDayInHistory(locations[0], queryDate, 10);
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to fetch historical data');
+      }
+      return response;
+    },
+  });
+  const location2HistoryQuery = useThisDayInHistoryQuery(null, null, null, 10, {
+    enabled: dateRange.type === 'forecast' && Boolean(locations[1]),
+    queryKey: [
+      'climate',
+      'history-by-string',
+      locationKey(locations[1]),
+      new Date().toISOString().split('T')[0].substring(5),
+      10,
+    ],
+    queryFn: async () => {
+      const { getThisDayInHistory } = await import('../../../services/climateApi');
+      const queryDate = new Date().toISOString().split('T')[0].substring(5);
+      const response = await getThisDayInHistory(locations[1], queryDate, 10);
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to fetch historical data');
+      }
+      return response;
+    },
+  });
+  const location3HistoryQuery = useThisDayInHistoryQuery(null, null, null, 10, {
+    enabled: dateRange.type === 'forecast' && Boolean(locations[2]),
+    queryKey: [
+      'climate',
+      'history-by-string',
+      locationKey(locations[2]),
+      new Date().toISOString().split('T')[0].substring(5),
+      10,
+    ],
+    queryFn: async () => {
+      const { getThisDayInHistory } = await import('../../../services/climateApi');
+      const queryDate = new Date().toISOString().split('T')[0].substring(5);
+      const response = await getThisDayInHistory(locations[2], queryDate, 10);
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to fetch historical data');
+      }
+      return response;
+    },
+  });
+  const location4HistoryQuery = useThisDayInHistoryQuery(null, null, null, 10, {
+    enabled: dateRange.type === 'forecast' && Boolean(locations[3]),
+    queryKey: [
+      'climate',
+      'history-by-string',
+      locationKey(locations[3]),
+      new Date().toISOString().split('T')[0].substring(5),
+      10,
+    ],
+    queryFn: async () => {
+      const { getThisDayInHistory } = await import('../../../services/climateApi');
+      const queryDate = new Date().toISOString().split('T')[0].substring(5);
+      const response = await getThisDayInHistory(locations[3], queryDate, 10);
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to fetch historical data');
+      }
+      return response;
+    },
+  });
+
+  // Create compatibility objects
+  const location1History = {
+    data: location1HistoryQuery.data,
+    loading: location1HistoryQuery.isLoading,
+    error: location1HistoryQuery.error,
+    refetch: location1HistoryQuery.refetch,
+  };
+  const location2History = {
+    data: location2HistoryQuery.data,
+    loading: location2HistoryQuery.isLoading,
+    error: location2HistoryQuery.error,
+    refetch: location2HistoryQuery.refetch,
+  };
+  const location3History = {
+    data: location3HistoryQuery.data,
+    loading: location3HistoryQuery.isLoading,
+    error: location3HistoryQuery.error,
+    refetch: location3HistoryQuery.refetch,
+  };
+  const location4History = {
+    data: location4HistoryQuery.data,
+    loading: location4HistoryQuery.isLoading,
+    error: location4HistoryQuery.error,
+    refetch: location4HistoryQuery.refetch,
+  };
 
   // Pre-aggregate all location data
   const aggregatedDataSets = useMemo(() => {
