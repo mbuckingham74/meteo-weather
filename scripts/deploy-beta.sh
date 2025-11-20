@@ -46,8 +46,14 @@ echo ""
 
 # Stop all services first to ensure clean restart
 echo "🛑 Stopping all services..."
-docker compose -f docker-compose.prod.yml down
-echo "✅ Services stopped"
+docker compose -f docker-compose.prod.yml down --remove-orphans
+echo "✅ Services stopped and orphan containers removed"
+echo ""
+
+# Clean up any dangling resources to prevent conflicts
+echo "🧹 Cleaning up dangling resources..."
+docker system prune -f > /dev/null 2>&1
+echo "✅ Cleanup complete"
 echo ""
 
 # Start all services with newly built images

@@ -1,12 +1,17 @@
 import { Button, Grid, Stack } from '@components/ui/primitives';
 import TemperatureUnitToggle from '../../units/TemperatureUnitToggle';
 
-function HeroControls({ detectingLocation, handleDetectLocation, locationError }) {
+function HeroControls({
+  detectingLocation,
+  handleDetectLocation,
+  locationError,
+  onWeatherTwinsClick,
+}) {
   return (
     <Stack as="div" gap="sm" className="hero-actions-section">
       <Grid
         as="div"
-        columns={{ base: 2, md: 4 }}
+        columns={{ base: 2, md: 5 }}
         gap="sm"
         align="center"
         className="hero-action-buttons"
@@ -20,6 +25,15 @@ function HeroControls({ detectingLocation, handleDetectLocation, locationError }
           fullWidth
         >
           {detectingLocation ? 'Detecting…' : 'Use My Location'}
+        </Button>
+        <Button
+          variant="ghost"
+          icon="🌍"
+          onClick={onWeatherTwinsClick}
+          aria-label="Find weather twins"
+          fullWidth
+        >
+          Weather Twins
         </Button>
         <Button
           as="a"

@@ -29,6 +29,7 @@ import { Button, Grid, Stack, Surface } from '@components/ui/primitives';
 import ErrorMessage from '../../common/ErrorMessage';
 import '../WeatherDashboard.css';
 import HeroControls from './HeroControls';
+import WeatherTwinsModal from '../WeatherTwinsModal';
 
 /**
  * Weather Dashboard Component
@@ -47,6 +48,8 @@ function WeatherDashboard() {
   const [detectingLocation, setDetectingLocation] = useState(false);
   const [locationError, setLocationError] = useState(null);
   const [activeTab, setActiveTab] = useState('forecast');
+  const [weatherTwinsModalOpen, setWeatherTwinsModalOpen] = useState(false);
+  const [locationId, setLocationId] = useState(null);
 
   // Location confirmation hook (VPN/IP detection)
   const locationConfirmation = useLocationConfirmation(selectLocation);
@@ -199,6 +202,73 @@ function WeatherDashboard() {
     } finally {
       setDetectingLocation(false);
     }
+  };
+
+  // Fetch location ID for Weather Twins feature
+  // Uses coordinates (preferred) or falls back to city name search
+  // Following patterns from docs/troubleshooting/OLD_LOCATION_BUG_FIX.md
+  useEffect(() => {
+    const fetchLocationId = async () => {
+      try {
+        // First priority: Use coordinates from weather data (most reliable)
+        const lat = data?.location?.latitude || locationData?.latitude;
+        const lon = data?.location?.longitude || locationData?.longitude;
+
+        if (lat && lon) {
+          // Try coordinate-based lookup first (within 10km radius)
+          const response = await fetch(
+            `${import.meta.env.VITE_API_URL}/api/locations/by-coordinates?lat=${lat}&lon=${lon}&radius=10000`
+          );
+
+          if (response.ok) {
+            const result = await response.json();
+            if (result.success && result.location) {
+              setLocationId(result.location.id);
+              return; // Success - exit early
+            }
+          }
+          // If coordinate lookup fails, fall through to city name search
+        }
+
+        // Fallback: Try city name search (less reliable due to naming variations)
+        const locationName = data?.location?.address || locationData?.address;
+        if (locationName && locationName !== 'Your Location') {
+          const cityName = locationName.split(',')[0].trim();
+
+          const response = await fetch(
+            `${import.meta.env.VITE_API_URL}/api/locations/search?q=${encodeURIComponent(cityName)}&limit=1`
+          );
+
+          if (response.ok) {
+            const result = await response.json();
+            if (result.success && result.locations && result.locations.length > 0) {
+              setLocationId(result.locations[0].id);
+              return; // Success - exit early
+            }
+          }
+        }
+
+        // If both methods fail, set to null (Weather Twins button will be disabled)
+        setLocationId(null);
+      } catch (error) {
+        console.error('Failed to fetch location ID:', error);
+        setLocationId(null);
+      }
+    };
+
+    fetchLocationId();
+  }, [
+    data?.location?.latitude,
+    data?.location?.longitude,
+    data?.location?.address,
+    locationData?.latitude,
+    locationData?.longitude,
+    locationData?.address,
+  ]);
+
+  // Handle Weather Twins button click
+  const handleWeatherTwinsClick = () => {
+    setWeatherTwinsModalOpen(true);
   };
 
   // Helper to convert temperature from API (Celsius) to selected unit
@@ -490,6 +560,7 @@ function WeatherDashboard() {
                   detectingLocation={detectingLocation}
                   handleDetectLocation={handleDetectLocation}
                   locationError={locationError}
+                  onWeatherTwinsClick={handleWeatherTwinsClick}
                 />
               </Stack>
 
@@ -610,6 +681,24 @@ function WeatherDashboard() {
           onClose={() => locationConfirmation.handleClose(true, locationData?.latitude != null)}
         />
       )}
+
+      {/* Weather Twins Modal */}
+      <WeatherTwinsModal
+        isOpen={weatherTwinsModalOpen}
+        onClose={() => setWeatherTwinsModalOpen(false)}
+        locationId={locationId}
+        locationName={getFormattedLocationName()}
+        currentWeather={
+          currentWeather?.data?.current
+            ? {
+                temperature: currentWeather.data.current.temperature,
+                conditions: currentWeather.data.current.conditions,
+                humidity: currentWeather.data.current.humidity,
+                windSpeed: currentWeather.data.current.windSpeed,
+              }
+            : null
+        }
+      />
     </div>
   );
 }
