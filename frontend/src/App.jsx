@@ -7,6 +7,9 @@ import {
   Link,
   useLocation as useRouterLocation,
 } from 'react-router-dom';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { queryClient } from './config/queryClient';
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { LocationProvider, useLocation as useLocationContext } from './contexts/LocationContext';
@@ -135,19 +138,25 @@ function AppShell() {
 function App() {
   return (
     <ErrorBoundary>
-      <ToastProvider>
-        <AuthProvider>
-          <ThemeProvider>
-            <TemperatureUnitProvider>
-              <LocationProvider>
-                <BrowserRouter>
-                  <AppShell />
-                </BrowserRouter>
-              </LocationProvider>
-            </TemperatureUnitProvider>
-          </ThemeProvider>
-        </AuthProvider>
-      </ToastProvider>
+      <QueryClientProvider client={queryClient}>
+        <ToastProvider>
+          <AuthProvider>
+            <ThemeProvider>
+              <TemperatureUnitProvider>
+                <LocationProvider>
+                  <BrowserRouter>
+                    <AppShell />
+                  </BrowserRouter>
+                </LocationProvider>
+              </TemperatureUnitProvider>
+            </ThemeProvider>
+          </AuthProvider>
+        </ToastProvider>
+        {/* React Query Devtools - only shown in development */}
+        {import.meta.env.DEV && (
+          <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+        )}
+      </QueryClientProvider>
     </ErrorBoundary>
   );
 }

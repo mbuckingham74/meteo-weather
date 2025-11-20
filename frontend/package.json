@@ -4,6 +4,8 @@
   "private": true,
   "type": "module",
   "dependencies": {
+    "@tanstack/react-query": "^5.90.10",
+    "@tanstack/react-query-devtools": "^5.90.2",
     "axios": "^1.13.2",
     "clsx": "^2.1.1",
     "html2canvas": "^1.4.1",
