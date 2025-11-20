@@ -1053,13 +1053,105 @@ export function getApiMetrics() {
 
 ---
 
+---
+
+### Phase P0-4: TanStack Query Migration (November 20, 2025)
+
+**Problem**: Still using manual hook implementations with setState/useEffect patterns
+
+**Solution**: Migrate to TanStack Query (React Query) for modern data fetching
+
+**Implementation Phases**:
+
+**Phase 1 (PR #50): Infrastructure Setup**
+- Created `frontend/src/config/queryClient.js` with centralized query configuration
+- Defined `queryKeys` factory for consistent cache key generation
+- Set up QueryClientProvider in App.jsx
+- Configured default options: 5min stale time, 30min GC time, exponential backoff retry
+
+**Phase 2 (PR #51): WeatherDashboard Migration**
+- Created `frontend/src/hooks/useWeatherQueries.js` with 4 React Query hooks
+- Migrated WeatherDashboard to use new hooks
+- Benefits: Automatic caching, request deduplication, built-in loading/error states
+
+**Phase 3 (PR #52): LocationComparisonView Migration**
+- Created `frontend/src/hooks/useClimateQueries.js` with 5 climate data hooks
+- Migrated LocationComparisonView to use new hooks
+- Fixed cache invalidation and loading state issues
+
+**Phase 4 (PR #53): Deprecation Warnings**
+- Added `@deprecated` JSDoc tags to 11 legacy hook functions
+- Implemented module-level warning guard (warns once per session)
+- Prepared codebase for P0-5 cleanup
+
+**Files Created**:
+- `frontend/src/config/queryClient.js` (192 lines)
+- `frontend/src/hooks/useWeatherQueries.js`
+- `frontend/src/hooks/useClimateQueries.js`
+
+**Impact**:
+- ✅ Modern data fetching with automatic caching and deduplication
+- ✅ Built-in retry logic with exponential backoff
+- ✅ DevTools integration for debugging
+- ✅ Better loading and error state management
+- ✅ Reduced boilerplate in components
+- ✅ Foundation for P0-5 legacy hook cleanup
+
+---
+
+### Phase P0-5: Legacy Hook Cleanup (November 20, 2025)
+
+**Problem**: Deprecated hooks still in codebase causing confusion and maintenance burden
+
+**Solution**: Complete removal of all deprecated hooks after TanStack Query migration
+
+**Files Removed**:
+1. `frontend/src/hooks/useWeatherData.js` (138 lines) - 5 deprecated weather hooks
+2. `frontend/src/hooks/useClimateData.js` (350 lines) - 5 deprecated climate hooks
+3. `frontend/src/hooks/useWeatherData.test.js` - Legacy hook tests
+4. `frontend/src/components/location/LocationComparisonView.jsx.backup` - Old backup file
+
+**Hooks Deleted** (11 total):
+- `useWeatherData()` - Main weather data hook
+- `useCurrentWeather()` - Current weather wrapper
+- `useForecast()` - Forecast wrapper
+- `useHistoricalWeather()` - Historical data wrapper
+- `useHourlyForecast()` - Hourly forecast wrapper
+- `useClimateNormals()` - Climate normals hook
+- `useRecordTemperatures()` - Record temps hook
+- `useForecastComparison()` - Forecast vs normals comparison
+- `useThisDayInHistory()` - Historical data for specific date
+- `useTemperatureProbability()` - Temperature probability distribution
+- Module-level deprecation warning flag
+
+**Verification**:
+- ✅ Zero remaining imports in components (verified via grep)
+- ✅ All components using React Query hooks
+- ✅ All 589 tests passing
+- ✅ No breaking changes
+
+**Impact**:
+- ✅ Single source of truth for data fetching (React Query only)
+- ✅ Reduced codebase complexity (-488 lines)
+- ✅ Cleaner architecture with no deprecated code
+- ✅ Easier onboarding for new developers
+- ✅ Eliminates confusion about which hooks to use
+
+**Migration Complete**: The app now has a fully modern data fetching layer:
+1. **P0-P3A**: Centralized API client with retry and deduplication
+2. **P0-4**: TanStack Query for caching and state management
+3. **P0-5**: All legacy hooks removed
+
+---
+
 ## Conclusion
 
-The API architecture improvements (P0-P3A) have transformed the frontend API layer from a fragmented, error-prone system into a robust, production-ready foundation. The centralized `apiClient.js` with automatic retry, request deduplication, and consistent error handling provides:
+The API architecture improvements (P0-P5) have transformed the frontend API layer from a fragmented, error-prone system into a robust, production-ready foundation. The centralized `apiClient.js` with automatic retry, request deduplication, and consistent error handling, combined with TanStack Query for data fetching, provides:
 
 ✅ **Better Developer Experience**: Single API to learn, 80% less boilerplate
 ✅ **Improved Reliability**: Automatic retry handles transient failures
 ✅ **Enhanced Performance**: Request deduplication reduces backend load
+✅ **Modern Data Fetching**: TanStack Query with caching, retries, and DevTools
 ✅ **Easier Maintenance**: Single source of truth for all API logic
 ✅ **Future-Proof**: Foundation for caching, metrics, TypeScript migration
 
@@ -1072,12 +1164,15 @@ The system is now production-ready and ready for scale.
 - [apiClient.js](../../frontend/src/services/apiClient.js) - Core API client implementation
 - [useApi.js](../../frontend/src/hooks/useApi.js) - React hook integration
 - [authApi.js](../../frontend/src/services/authApi.js) - Auth service layer
+- [queryClient.js](../../frontend/src/config/queryClient.js) - TanStack Query configuration
+- [useWeatherQueries.js](../../frontend/src/hooks/useWeatherQueries.js) - Weather data React Query hooks
+- [useClimateQueries.js](../../frontend/src/hooks/useClimateQueries.js) - Climate data React Query hooks
 - [Backend Database Fixes](.eslintrc.json) - ESLint rule for pool import
 - [API Configuration](../../frontend/src/config/api.js) - Centralized config
 
 ---
 
-**Document Version**: 1.0
-**Last Updated**: November 14, 2025
+**Document Version**: 2.0
+**Last Updated**: November 20, 2025
 **Author**: Claude Code (assisted by Michael Buckingham)
-**Status**: Complete (P0-P3A)
+**Status**: Complete (P0-P5)
