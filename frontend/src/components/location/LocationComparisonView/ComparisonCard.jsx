@@ -1,5 +1,6 @@
 import React from 'react';
 import { formatTemperature } from '../../../utils/weatherHelpers';
+import { getUserMessage } from '../../../utils/errorHandler';
 import LocationSearchBar from '../LocationSearchBar';
 import TemperatureBandChart from '../../charts/TemperatureBandChart';
 import PrecipitationChart from '../../charts/PrecipitationChart';
@@ -56,7 +57,7 @@ function ComparisonCard({
 
       {error && (
         <div className="card-error">
-          <p>⚠️ {error}</p>
+          <p>⚠️ {getUserMessage(error)}</p>
         </div>
       )}
 

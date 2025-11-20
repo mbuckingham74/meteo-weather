@@ -142,10 +142,18 @@ function LocationComparisonView() {
 
   const dateRange = getDateRange();
 
-  // Helper: Convert location string to query key (normalize for cache)
+  // Helper: Normalize location string for stable cache keys
   // LocationComparisonView uses location strings (e.g., "Seattle,WA") instead of coordinates
-  // We use the string directly as the query key since the backend handles geocoding
-  const locationKey = (loc) => loc || null;
+  // CRITICAL: Normalize to prevent duplicate caches for same city
+  // "Seattle,WA" vs "Seattle, WA" vs "seattle,wa" should all use the same cache
+  const locationKey = (loc) => {
+    if (!loc) return null;
+    // Normalize: trim, lowercase, remove extra spaces around comma
+    return loc
+      .trim()
+      .toLowerCase()
+      .replace(/\s*,\s*/g, ',');
+  };
 
   // Fetch forecast data - React Query parallel execution
   // NOTE: Using location STRINGS (not coordinates) since this component is string-based
