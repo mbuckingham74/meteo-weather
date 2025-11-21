@@ -37,7 +37,7 @@ function UniversalSearchBar() {
   });
 
   // Get current city for dynamic queries
-  const currentCity = location?.address?.split(',')[0] || 'Seattle';
+  const currentCity = location?.address?.split(',')[0] || 'your location';
 
   /**
    * Smart detection: Is this a simple location or a complex AI query?

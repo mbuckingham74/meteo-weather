@@ -8,7 +8,6 @@ import React, { createContext, useContext, useState, useCallback } from 'react';
 
 const LocationContext = createContext();
 const CURRENT_LOCATION_KEY = 'meteo_current_location';
-const DEFAULT_LOCATION = 'Seattle, WA'; // More neutral default location
 
 /**
  * Check if an address is a placeholder value that should be replaced
@@ -78,13 +77,13 @@ export function LocationProvider({ children }) {
         const parsed = JSON.parse(saved);
         const sanitized = sanitizeLocationData(parsed);
         if (sanitized) {
-          return sanitized.address || sanitized.location_name || DEFAULT_LOCATION;
+          return sanitized.address || sanitized.location_name;
         }
       }
     } catch (error) {
       console.error('Error loading saved location:', error);
     }
-    return DEFAULT_LOCATION;
+    return null;
   });
 
   const [locationData, setLocationData] = useState(() => {
@@ -116,7 +115,7 @@ export function LocationProvider({ children }) {
   }, []);
 
   const clearLocation = useCallback(() => {
-    setLocation(DEFAULT_LOCATION);
+    setLocation(null);
     setLocationData(null);
 
     // Clear from localStorage

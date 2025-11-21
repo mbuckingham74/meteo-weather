@@ -26,8 +26,8 @@ import '../LocationComparisonView.css';
  * REFACTORED: Split into focused sub-components for better maintainability
  */
 function LocationComparisonView() {
-  // Start with an interesting comparison pre-loaded
-  const [locations, setLocations] = useState(['Seattle,WA', 'New Smyrna Beach,FL']);
+  // Start with empty locations - user must add their own
+  const [locations, setLocations] = useState([]);
 
   const [timeRange, setTimeRange] = useState('3months'); // Default to 3 months
 
