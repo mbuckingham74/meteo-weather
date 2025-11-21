@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useLocation as useRouterLocation } from 'react-router-dom';
 import { useLocation } from '../../../contexts/LocationContext';
 import { useTemperatureUnit } from '../../../contexts/TemperatureUnitContext';
@@ -49,9 +49,7 @@ function WeatherDashboard() {
   const routerLocation = useRouterLocation();
 
   const days = 7; // Default forecast days for charts
-  // Initialize detectingLocation to true if we'll need to auto-detect
-  // This prevents blank screen flash while geolocation is starting
-  const [detectingLocation, setDetectingLocation] = useState(!locationData?.latitude);
+  const [detectingLocation, setDetectingLocation] = useState(false);
   const [locationError, setLocationError] = useState(null);
   const [activeTab, setActiveTab] = useState('forecast');
   const [weatherTwinsModalOpen, setWeatherTwinsModalOpen] = useState(false);
@@ -164,12 +162,16 @@ function WeatherDashboard() {
     }
   }, [loading, error, data, announce]);
 
-  // Auto-detect location on first load (if no saved location)
-  useEffect(() => {
+  // Check if we should auto-detect (for initial loading state)
+  const shouldAutoDetect = useMemo(() => {
     const isHomePage = routerLocation.pathname === '/';
     const hasNoSavedLocation = !locationData || !locationData.latitude;
+    return isHomePage && hasNoSavedLocation && !hasAttemptedGeolocation;
+  }, [routerLocation.pathname, locationData, hasAttemptedGeolocation]);
 
-    if (isHomePage && hasNoSavedLocation && !hasAttemptedGeolocation) {
+  // Auto-detect location on first load (if no saved location)
+  useEffect(() => {
+    if (shouldAutoDetect) {
       setHasAttemptedGeolocation(true);
       setDetectingLocation(true);
       setLocationError(null);
@@ -189,13 +191,7 @@ function WeatherDashboard() {
           setDetectingLocation(false);
         });
     }
-  }, [
-    routerLocation.pathname,
-    locationData,
-    hasAttemptedGeolocation,
-    locationConfirmation,
-    selectLocation,
-  ]);
+  }, [shouldAutoDetect, locationConfirmation, selectLocation]);
 
   // Manual location detection handler (called by button click)
   const handleUseMyLocation = () => {
@@ -450,7 +446,7 @@ function WeatherDashboard() {
       </div>
 
       {/* No Location State - Show search when no location is set OR no coordinates */}
-      {(!location || !hasCoordinates) && !detectingLocation && !loading && (
+      {(!location || !hasCoordinates) && !detectingLocation && !loading && !shouldAutoDetect && (
         <div className="no-location-state">
           <Surface
             as="section"
@@ -478,8 +474,8 @@ function WeatherDashboard() {
         </div>
       )}
 
-      {/* Detecting Location State */}
-      {detectingLocation && (
+      {/* Detecting Location State - Show skeleton immediately if we should auto-detect */}
+      {(detectingLocation || shouldAutoDetect) && (
         <div className="detecting-location-state">
           <WeatherDashboardSkeleton />
           <p
