@@ -49,7 +49,9 @@ function WeatherDashboard() {
   const routerLocation = useRouterLocation();
 
   const days = 7; // Default forecast days for charts
-  const [detectingLocation, setDetectingLocation] = useState(false);
+  // Initialize detectingLocation to true if we'll need to auto-detect
+  // This prevents blank screen flash while geolocation is starting
+  const [detectingLocation, setDetectingLocation] = useState(!locationData?.latitude);
   const [locationError, setLocationError] = useState(null);
   const [activeTab, setActiveTab] = useState('forecast');
   const [weatherTwinsModalOpen, setWeatherTwinsModalOpen] = useState(false);
