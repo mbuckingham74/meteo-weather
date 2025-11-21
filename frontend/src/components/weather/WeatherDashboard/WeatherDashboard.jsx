@@ -54,6 +54,7 @@ function WeatherDashboard() {
   const [activeTab, setActiveTab] = useState('forecast');
   const [weatherTwinsModalOpen, setWeatherTwinsModalOpen] = useState(false);
   const [locationId, setLocationId] = useState(null);
+  const [hasAttemptedGeolocation, setHasAttemptedGeolocation] = useState(false);
 
   // Location confirmation hook (VPN/IP detection)
   const locationConfirmation = useLocationConfirmation(selectLocation);
@@ -161,9 +162,38 @@ function WeatherDashboard() {
     }
   }, [loading, error, data, announce]);
 
-  // REMOVED: Auto-detect location useEffect
-  // NEW APPROACH: User clicks "Use My Location" button explicitly
-  // This prevents infinite loops, race conditions, and gives user control
+  // Auto-detect location on first load (if no saved location)
+  useEffect(() => {
+    const isHomePage = routerLocation.pathname === '/';
+    const hasNoSavedLocation = !locationData || !locationData.latitude;
+
+    if (isHomePage && hasNoSavedLocation && !hasAttemptedGeolocation) {
+      setHasAttemptedGeolocation(true);
+      setDetectingLocation(true);
+      setLocationError(null);
+
+      getCurrentLocation()
+        .then((currentLoc) => {
+          if (currentLoc.requiresConfirmation) {
+            locationConfirmation.requestConfirmation(currentLoc);
+          } else {
+            selectLocation(currentLoc);
+          }
+        })
+        .catch((error) => {
+          setLocationError(error.message);
+        })
+        .finally(() => {
+          setDetectingLocation(false);
+        });
+    }
+  }, [
+    routerLocation.pathname,
+    locationData,
+    hasAttemptedGeolocation,
+    locationConfirmation,
+    selectLocation,
+  ]);
 
   // Manual location detection handler (called by button click)
   const handleUseMyLocation = () => {
