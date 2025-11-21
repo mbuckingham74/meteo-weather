@@ -18,7 +18,7 @@ import { ToastProvider } from './components/common/ToastContainer';
 import ErrorBoundary from './components/common/ErrorBoundary';
 import SkipToContent from './components/common/SkipToContent';
 import AuthHeader from './components/auth/AuthHeader';
-import WeatherDashboard from './components/weather/WeatherDashboard';
+import WeatherDashboard from './components/weather/WeatherDashboard/WeatherDashboard';
 import PrivacyPolicy from './components/legal/PrivacyPolicy';
 import { parseLocationSlug } from './utils/urlHelpers';
 import { geocodeLocation } from './services/weatherApi';
