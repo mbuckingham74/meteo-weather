@@ -25,8 +25,6 @@
 
 ---
 
-## 📸 Screenshots
-
 <div align="center">
 
 **Coming Soon - Full UI/UX redesign and refactor in progress.**
