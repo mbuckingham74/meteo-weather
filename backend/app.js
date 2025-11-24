@@ -4,24 +4,15 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const { testConnection } = require('./config/database');
 
-// Rate limit defaults - used if config module fails to load (e.g., missing env vars)
-// This allows /api/health to work even during incomplete deployments
-const RATE_LIMIT_DEFAULTS = {
-  global: { windowMs: 15 * 60 * 1000, max: 100 },
-  auth: { windowMs: 15 * 60 * 1000, max: 5 },
-  ai: { windowMs: 60 * 60 * 1000, max: 10 },
+// Rate limit configuration
+// These values match the defaults in config/index.js but are defined here
+// to avoid requiring the full config module (which calls process.exit on
+// validation failure). This allows /api/health to work during incomplete deployments.
+const RATE_LIMITS = {
+  global: { windowMs: 15 * 60 * 1000, max: 100 },   // 15 min, 100 requests
+  auth: { windowMs: 15 * 60 * 1000, max: 5 },       // 15 min, 5 attempts
+  ai: { windowMs: 60 * 60 * 1000, max: 10 },        // 1 hour, 10 queries
 };
-
-// Try to load config, fall back to defaults if it fails
-let rateLimits = RATE_LIMIT_DEFAULTS;
-let appEnv = process.env.NODE_ENV || 'development';
-try {
-  const config = require('./config');
-  rateLimits = config.security?.rateLimits || RATE_LIMIT_DEFAULTS;
-  appEnv = config.app?.env || appEnv;
-} catch (error) {
-  console.warn('⚠️  Config loading failed, using rate limit defaults:', error.message);
-}
 
 // API route modules
 const weatherRoutes = require('./routes/weather');
@@ -134,10 +125,9 @@ app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 
 // 4. Rate limiting - Global API protection
-// Uses centralized config with fallback defaults to prevent startup crashes
 const apiLimiter = rateLimit({
-  windowMs: rateLimits.global.windowMs,
-  max: appEnv === 'production' ? rateLimits.global.max : 1000, // Higher limit for local dev testing
+  windowMs: RATE_LIMITS.global.windowMs,
+  max: process.env.NODE_ENV === 'production' ? RATE_LIMITS.global.max : 1000, // Higher limit for local dev testing
   standardHeaders: true, // Return rate limit info in `RateLimit-*` headers
   legacyHeaders: false, // Disable `X-RateLimit-*` headers
   message: {
@@ -153,10 +143,9 @@ const apiLimiter = rateLimit({
 app.use('/api/', apiLimiter);
 
 // 5. Rate limiting - Auth endpoints (strict)
-// Uses centralized config with fallback defaults to prevent startup crashes
 const authLimiter = rateLimit({
-  windowMs: rateLimits.auth.windowMs,
-  max: rateLimits.auth.max,
+  windowMs: RATE_LIMITS.auth.windowMs,
+  max: RATE_LIMITS.auth.max,
   skipSuccessfulRequests: true, // Don't count successful logins
   message: {
     success: false,
@@ -168,13 +157,12 @@ app.use('/api/auth/login', authLimiter);
 app.use('/api/auth/register', authLimiter);
 
 // 6. Rate limiting - AI endpoints (cost protection)
-// Uses centralized config with fallback defaults to prevent startup crashes
 const aiLimiter = rateLimit({
-  windowMs: rateLimits.ai.windowMs,
-  max: rateLimits.ai.max,
+  windowMs: RATE_LIMITS.ai.windowMs,
+  max: RATE_LIMITS.ai.max,
   message: {
     success: false,
-    error: `AI query limit reached (${rateLimits.ai.max} per hour). Please try again later.`,
+    error: `AI query limit reached (${RATE_LIMITS.ai.max} per hour). Please try again later.`,
     retryAfter: '1 hour',
   },
 });
