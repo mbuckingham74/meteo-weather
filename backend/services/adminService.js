@@ -1,8 +1,11 @@
 const { pool } = require('../config/database');
+const cacheService = require('./cacheService');
 
 /**
  * Admin Service
  * Provides statistics and management functions for the admin panel
+ *
+ * Note: Cache operations delegate to cacheService.js as single source of truth
  */
 
 class AdminService {
@@ -175,29 +178,27 @@ class AdminService {
 
   /**
    * Get cache statistics
+   * Delegates to cacheService for basic stats, adds admin-specific metrics
    */
   async getCacheStats() {
     try {
-      const [cacheStats] = await pool.query(`
+      // Get basic stats from cacheService (single source of truth)
+      const basicStats = await cacheService.getCacheStats();
+
+      // Add admin-specific metrics (by-source breakdown, hit rate, oldest entry)
+      const [cacheBySource] = await pool.query(`
         SELECT
-          COUNT(*) as total_entries,
-          SUM(CASE WHEN expires_at > NOW() THEN 1 ELSE 0 END) as valid_entries,
-          SUM(CASE WHEN expires_at <= NOW() THEN 1 ELSE 0 END) as expired_entries,
           api_source,
-          COUNT(*) as source_count
+          COUNT(*) as source_count,
+          SUM(CASE WHEN expires_at > NOW() THEN 1 ELSE 0 END) as valid_entries,
+          SUM(CASE WHEN expires_at <= NOW() THEN 1 ELSE 0 END) as expired_entries
         FROM api_cache
         GROUP BY api_source
       `);
 
-      const [totalCache] = await pool.query('SELECT COUNT(*) as count FROM api_cache');
-
-      const [validCache] = await pool.query(`
-        SELECT COUNT(*) as count FROM api_cache WHERE expires_at > NOW()
-      `);
-
       const [cacheHitRate] = await pool.query(`
         SELECT
-          SUM(CASE WHEN expires_at > NOW() THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as hit_rate
+          SUM(CASE WHEN expires_at > NOW() THEN 1 ELSE 0 END) * 100.0 / NULLIF(COUNT(*), 0) as hit_rate
         FROM api_cache
         WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
       `);
@@ -211,11 +212,13 @@ class AdminService {
       `);
 
       return {
-        totalEntries: totalCache[0].count,
-        validEntries: validCache[0].count,
-        expiredEntries: totalCache[0].count - validCache[0].count,
+        // Use cacheService stats as base (single source of truth)
+        totalEntries: basicStats.total_entries || 0,
+        validEntries: basicStats.active_entries || 0,
+        expiredEntries: basicStats.expired_entries || 0,
+        // Admin-specific additions
         hitRate: Math.round((cacheHitRate[0]?.hit_rate || 0) * 10) / 10,
-        bySource: cacheStats,
+        bySource: cacheBySource,
         oldestEntry: oldestCache[0] || null
       };
     } catch (error) {
@@ -359,13 +362,14 @@ class AdminService {
 
   /**
    * Clear expired cache entries
+   * Delegates to cacheService (single source of truth)
    */
   async clearExpiredCache() {
     try {
-      const [result] = await pool.query('DELETE FROM api_cache WHERE expires_at <= NOW()');
+      const deletedCount = await cacheService.clearExpiredCache();
       return {
         success: true,
-        deletedCount: result.affectedRows
+        deletedCount
       };
     } catch (error) {
       console.error('Error clearing expired cache:', error);
@@ -385,6 +389,23 @@ class AdminService {
       };
     } catch (error) {
       console.error('Error clearing all cache:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Clear cache for specific location
+   * Delegates to cacheService (single source of truth)
+   */
+  async clearCacheByLocation(locationId) {
+    try {
+      const deletedCount = await cacheService.clearLocationCache(locationId);
+      return {
+        success: true,
+        deletedCount
+      };
+    } catch (error) {
+      console.error('Error clearing cache by location:', error);
       throw error;
     }
   }

@@ -3,6 +3,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const { testConnection } = require('./config/database');
+const config = require('./config');
 
 // API route modules
 const weatherRoutes = require('./routes/weather');
@@ -115,9 +116,10 @@ app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 
 // 4. Rate limiting - Global API protection
+// Uses centralized config from config/index.js to prevent drift
 const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: process.env.NODE_ENV === 'production' ? 100 : 1000, // Higher limit for local dev testing
+  windowMs: config.security.rateLimits.global.windowMs,
+  max: config.app.env === 'production' ? config.security.rateLimits.global.max : 1000, // Higher limit for local dev testing
   standardHeaders: true, // Return rate limit info in `RateLimit-*` headers
   legacyHeaders: false, // Disable `X-RateLimit-*` headers
   message: {
@@ -133,9 +135,10 @@ const apiLimiter = rateLimit({
 app.use('/api/', apiLimiter);
 
 // 5. Rate limiting - Auth endpoints (strict)
+// Uses centralized config from config/index.js to prevent drift
 const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // Limit to 5 login/register attempts
+  windowMs: config.security.rateLimits.auth.windowMs,
+  max: config.security.rateLimits.auth.max,
   skipSuccessfulRequests: true, // Don't count successful logins
   message: {
     success: false,
@@ -147,12 +150,13 @@ app.use('/api/auth/login', authLimiter);
 app.use('/api/auth/register', authLimiter);
 
 // 6. Rate limiting - AI endpoints (cost protection)
+// Uses centralized config from config/index.js to prevent drift
 const aiLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour
-  max: 10, // Limit to 10 AI queries per hour (~$0.05 max cost)
+  windowMs: config.security.rateLimits.ai.windowMs,
+  max: config.security.rateLimits.ai.max,
   message: {
     success: false,
-    error: 'AI query limit reached (10 per hour). Please try again later.',
+    error: `AI query limit reached (${config.security.rateLimits.ai.max} per hour). Please try again later.`,
     retryAfter: '1 hour',
   },
 });
