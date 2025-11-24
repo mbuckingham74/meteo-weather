@@ -1,12 +1,17 @@
 const { getHistoricalWeather } = require('./weatherService');
+const { fetchMultipleYears } = require('../utils/multiYearFetcher');
 
 /**
  * Climate Statistics Service
  * Analyzes historical weather data to compute climate normals, records, and statistics
+ *
+ * Note: Uses shared multiYearFetcher utility for consistent batching/backoff behavior
  */
 
 /**
  * Get multi-year historical data for a specific date range
+ * Uses shared multiYearFetcher utility for consistent behavior with weatherService
+ *
  * @param {string} location - City name, address, or coordinates
  * @param {string} startDate - Start date (MM-DD format)
  * @param {string} endDate - End date (MM-DD format)
@@ -14,41 +19,33 @@ const { getHistoricalWeather } = require('./weatherService');
  * @returns {Promise<object>} Multi-year historical data
  */
 async function getMultiYearHistorical(location, startDate, endDate, years = 10) {
-  const currentYear = new Date().getFullYear();
-  const allData = [];
-  const errors = [];
+  const result = await fetchMultipleYears({
+    years,
+    batchSize: 3, // Match weatherService's MAX_CONCURRENT_REQUESTS
+    batchDelayMs: 200, // Consistent with weatherService batching
+    fetchYear: async (year) => {
+      const start = `${year}-${startDate}`;
+      const end = `${year}-${endDate}`;
 
-  // Fetch data for each year
-  for (let i = 0; i < years; i++) {
-    const year = currentYear - i - 1; // Start from last year
-    const start = `${year}-${startDate}`;
-    const end = `${year}-${endDate}`;
-
-    try {
-      const result = await getHistoricalWeather(location, start, end);
-      if (result.success) {
-        allData.push({
+      const weatherResult = await getHistoricalWeather(location, start, end);
+      if (weatherResult.success) {
+        return {
           year,
-          data: result.historical,
-          location: result.location
-        });
-      } else {
-        errors.push({ year, error: result.error });
+          data: weatherResult.historical,
+          location: weatherResult.location
+        };
       }
-    } catch (error) {
-      errors.push({ year, error: error.message });
+      // Throw to be caught by fetchMultipleYears error handling
+      throw new Error(weatherResult.error || 'Failed to fetch weather data');
     }
-
-    // Small delay to avoid rate limiting
-    await new Promise(resolve => setTimeout(resolve, 100));
-  }
+  });
 
   return {
-    success: allData.length > 0,
-    location: allData[0]?.location,
-    years: allData.map(d => d.year),
-    data: allData,
-    errors: errors.length > 0 ? errors : undefined
+    success: result.data.length > 0,
+    location: result.data[0]?.location,
+    years: result.data.map(d => d.year),
+    data: result.data,
+    errors: result.errors
   };
 }
 

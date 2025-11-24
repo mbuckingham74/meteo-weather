@@ -4,6 +4,16 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const { testConnection } = require('./config/database');
 
+// Rate limit configuration
+// These values match the defaults in config/index.js but are defined here
+// to avoid requiring the full config module (which calls process.exit on
+// validation failure). This allows /api/health to work during incomplete deployments.
+const RATE_LIMITS = {
+  global: { windowMs: 15 * 60 * 1000, max: 100 },   // 15 min, 100 requests
+  auth: { windowMs: 15 * 60 * 1000, max: 5 },       // 15 min, 5 attempts
+  ai: { windowMs: 60 * 60 * 1000, max: 10 },        // 1 hour, 10 queries
+};
+
 // API route modules
 const weatherRoutes = require('./routes/weather');
 const locationRoutes = require('./routes/locations');
@@ -116,8 +126,8 @@ app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 
 // 4. Rate limiting - Global API protection
 const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: process.env.NODE_ENV === 'production' ? 100 : 1000, // Higher limit for local dev testing
+  windowMs: RATE_LIMITS.global.windowMs,
+  max: process.env.NODE_ENV === 'production' ? RATE_LIMITS.global.max : 1000, // Higher limit for local dev testing
   standardHeaders: true, // Return rate limit info in `RateLimit-*` headers
   legacyHeaders: false, // Disable `X-RateLimit-*` headers
   message: {
@@ -134,8 +144,8 @@ app.use('/api/', apiLimiter);
 
 // 5. Rate limiting - Auth endpoints (strict)
 const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // Limit to 5 login/register attempts
+  windowMs: RATE_LIMITS.auth.windowMs,
+  max: RATE_LIMITS.auth.max,
   skipSuccessfulRequests: true, // Don't count successful logins
   message: {
     success: false,
@@ -148,11 +158,11 @@ app.use('/api/auth/register', authLimiter);
 
 // 6. Rate limiting - AI endpoints (cost protection)
 const aiLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour
-  max: 10, // Limit to 10 AI queries per hour (~$0.05 max cost)
+  windowMs: RATE_LIMITS.ai.windowMs,
+  max: RATE_LIMITS.ai.max,
   message: {
     success: false,
-    error: 'AI query limit reached (10 per hour). Please try again later.',
+    error: `AI query limit reached (${RATE_LIMITS.ai.max} per hour). Please try again later.`,
     retryAfter: '1 hour',
   },
 });
