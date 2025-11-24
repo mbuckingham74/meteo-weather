@@ -113,7 +113,13 @@ export function isDateAvailable(date, dataType) {
   const range = getAvailableDateRange(dataType);
   if (!range || !range.start || !range.end) return false;
 
-  return date >= range.start && date <= range.end;
+  // Normalize dates to midnight for day-based comparison
+  const normalizeDate = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const normalizedDate = normalizeDate(date);
+  const normalizedStart = normalizeDate(range.start);
+  const normalizedEnd = normalizeDate(range.end);
+
+  return normalizedDate >= normalizedStart && normalizedDate <= normalizedEnd;
 }
 
 /**
