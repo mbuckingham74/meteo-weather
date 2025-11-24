@@ -33,7 +33,10 @@ jobs:
       - name: Add server to known hosts
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan -H tachyonfuture.com >> ~/.ssh/known_hosts
+          # Use IP address instead of hostname to avoid Cloudflare/DNS issues
+          ssh-keyscan -H 62.72.5.248 >> ~/.ssh/known_hosts
+          # Also add hostname entry for SSH config
+          echo "62.72.5.248 tachyonfuture.com" | sudo tee -a /etc/hosts
 
       - name: Deploy to server
         id: deploy
