@@ -3,7 +3,25 @@ const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const { testConnection } = require('./config/database');
-const config = require('./config');
+
+// Rate limit defaults - used if config module fails to load (e.g., missing env vars)
+// This allows /api/health to work even during incomplete deployments
+const RATE_LIMIT_DEFAULTS = {
+  global: { windowMs: 15 * 60 * 1000, max: 100 },
+  auth: { windowMs: 15 * 60 * 1000, max: 5 },
+  ai: { windowMs: 60 * 60 * 1000, max: 10 },
+};
+
+// Try to load config, fall back to defaults if it fails
+let rateLimits = RATE_LIMIT_DEFAULTS;
+let appEnv = process.env.NODE_ENV || 'development';
+try {
+  const config = require('./config');
+  rateLimits = config.security?.rateLimits || RATE_LIMIT_DEFAULTS;
+  appEnv = config.app?.env || appEnv;
+} catch (error) {
+  console.warn('⚠️  Config loading failed, using rate limit defaults:', error.message);
+}
 
 // API route modules
 const weatherRoutes = require('./routes/weather');
@@ -116,10 +134,10 @@ app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 
 // 4. Rate limiting - Global API protection
-// Uses centralized config from config/index.js to prevent drift
+// Uses centralized config with fallback defaults to prevent startup crashes
 const apiLimiter = rateLimit({
-  windowMs: config.security.rateLimits.global.windowMs,
-  max: config.app.env === 'production' ? config.security.rateLimits.global.max : 1000, // Higher limit for local dev testing
+  windowMs: rateLimits.global.windowMs,
+  max: appEnv === 'production' ? rateLimits.global.max : 1000, // Higher limit for local dev testing
   standardHeaders: true, // Return rate limit info in `RateLimit-*` headers
   legacyHeaders: false, // Disable `X-RateLimit-*` headers
   message: {
@@ -135,10 +153,10 @@ const apiLimiter = rateLimit({
 app.use('/api/', apiLimiter);
 
 // 5. Rate limiting - Auth endpoints (strict)
-// Uses centralized config from config/index.js to prevent drift
+// Uses centralized config with fallback defaults to prevent startup crashes
 const authLimiter = rateLimit({
-  windowMs: config.security.rateLimits.auth.windowMs,
-  max: config.security.rateLimits.auth.max,
+  windowMs: rateLimits.auth.windowMs,
+  max: rateLimits.auth.max,
   skipSuccessfulRequests: true, // Don't count successful logins
   message: {
     success: false,
@@ -150,13 +168,13 @@ app.use('/api/auth/login', authLimiter);
 app.use('/api/auth/register', authLimiter);
 
 // 6. Rate limiting - AI endpoints (cost protection)
-// Uses centralized config from config/index.js to prevent drift
+// Uses centralized config with fallback defaults to prevent startup crashes
 const aiLimiter = rateLimit({
-  windowMs: config.security.rateLimits.ai.windowMs,
-  max: config.security.rateLimits.ai.max,
+  windowMs: rateLimits.ai.windowMs,
+  max: rateLimits.ai.max,
   message: {
     success: false,
-    error: `AI query limit reached (${config.security.rateLimits.ai.max} per hour). Please try again later.`,
+    error: `AI query limit reached (${rateLimits.ai.max} per hour). Please try again later.`,
     retryAfter: '1 hour',
   },
 });

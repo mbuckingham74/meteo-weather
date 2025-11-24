@@ -94,8 +94,8 @@ async function findWeatherTwins(locationId, options = {}) {
   } = options;
 
   try {
-    // Get the reference location's current weather
-    const [referenceWeather] = await pool.query(
+    // Get the reference location's current weather (prefer today, fall back to most recent)
+    let [referenceWeather] = await pool.query(
       `SELECT
         l.id, l.city_name, l.state, l.country, l.country_code,
         l.latitude, l.longitude,
@@ -115,14 +115,39 @@ async function findWeatherTwins(locationId, options = {}) {
       [locationId]
     );
 
+    // Fallback: if no data for today, get most recent data (for historical/seeded data)
+    let usingFallbackDate = false;
+    if (!referenceWeather || referenceWeather.length === 0) {
+      [referenceWeather] = await pool.query(
+        `SELECT
+          l.id, l.city_name, l.state, l.country, l.country_code,
+          l.latitude, l.longitude,
+          w.temperature_avg as temperature,
+          w.humidity,
+          w.precipitation,
+          w.wind_speed,
+          w.weather_condition,
+          w.weather_description,
+          w.observation_date
+        FROM locations l
+        JOIN weather_data w ON l.id = w.location_id
+        WHERE l.id = ?
+        ORDER BY w.observation_date DESC, w.created_at DESC
+        LIMIT 1`,
+        [locationId]
+      );
+      usingFallbackDate = true;
+    }
+
     if (!referenceWeather || referenceWeather.length === 0) {
       return {
         success: false,
-        error: 'No current weather data found for this location'
+        error: 'No weather data found for this location'
       };
     }
 
     const refWeather = referenceWeather[0];
+    const targetDate = refWeather.observation_date;
 
     // Build country filter based on scope
     let countryFilter = '';
@@ -139,6 +164,7 @@ async function findWeatherTwins(locationId, options = {}) {
 
     // Find similar weather conditions
     // We use temperature range as the primary filter for performance
+    // Uses the same date as the reference location (today or fallback date)
     const tempTolerance = 10; // ±10°F initial filter
 
     const [candidates] = await pool.query(
@@ -156,12 +182,13 @@ async function findWeatherTwins(locationId, options = {}) {
       FROM locations l
       JOIN weather_data w ON l.id = w.location_id
       WHERE l.id != ?
-        AND w.observation_date = CURDATE()
+        AND w.observation_date = ?
         AND w.temperature_avg BETWEEN ? AND ?
         ${countryFilter}
       ORDER BY w.created_at DESC`,
       [
         locationId,
+        targetDate,
         refWeather.temperature - tempTolerance,
         refWeather.temperature + tempTolerance,
         ...countryParams
@@ -222,7 +249,8 @@ async function findWeatherTwins(locationId, options = {}) {
           weatherCondition: refWeather.weather_condition,
           weatherDescription: refWeather.weather_description
         },
-        date: refWeather.observation_date
+        date: refWeather.observation_date,
+        usingHistoricalData: usingFallbackDate
       },
       twins: filteredTwins,
       searchParams: {
