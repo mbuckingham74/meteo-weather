@@ -21,7 +21,7 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.69.0",
+    "@anthropic-ai/sdk": "^0.70.1",
     "@google/generative-ai": "^0.21.0",
     "@mistralai/mistralai": "^1.10.0",
     "axios": "^1.7.7",
