@@ -72,14 +72,14 @@ describe('LocationContext', () => {
   });
 
   describe('Provider', () => {
-    it('provides default location', () => {
+    it('provides default location (null when no saved location)', () => {
       render(
         <LocationProvider>
           <TestComponent />
         </LocationProvider>
       );
 
-      expect(screen.getByTestId('location')).toHaveTextContent('Seattle, WA');
+      expect(screen.getByTestId('location')).toHaveTextContent('');
       expect(screen.getByTestId('location-data')).toHaveTextContent('null');
     });
 
@@ -136,8 +136,8 @@ describe('LocationContext', () => {
         expect.any(Error)
       );
 
-      // Should fall back to default
-      expect(screen.getByTestId('location')).toHaveTextContent('Seattle, WA');
+      // Should fall back to null
+      expect(screen.getByTestId('location')).toHaveTextContent('');
     });
 
     it('handles invalid JSON gracefully', () => {
@@ -150,7 +150,7 @@ describe('LocationContext', () => {
       );
 
       expect(console.error).toHaveBeenCalled();
-      expect(screen.getByTestId('location')).toHaveTextContent('Seattle, WA');
+      expect(screen.getByTestId('location')).toHaveTextContent('');
     });
   });
 
@@ -274,7 +274,7 @@ describe('LocationContext', () => {
         screen.getByText('Clear Location').click();
       });
 
-      expect(screen.getByTestId('location')).toHaveTextContent('Seattle, WA');
+      expect(screen.getByTestId('location')).toHaveTextContent('');
     });
 
     it('clears locationData', () => {
@@ -334,7 +334,7 @@ describe('LocationContext', () => {
       );
 
       // Location should still be cleared in state
-      expect(screen.getByTestId('location')).toHaveTextContent('Seattle, WA');
+      expect(screen.getByTestId('location')).toHaveTextContent('');
     });
   });
 
@@ -369,8 +369,8 @@ describe('LocationContext', () => {
         </LocationProvider>
       );
 
-      // Start with default
-      expect(screen.getByTestId('location')).toHaveTextContent('Seattle, WA');
+      // Start with no location (null)
+      expect(screen.getByTestId('location')).toHaveTextContent('');
 
       // Select London
       act(() => {
@@ -382,7 +382,7 @@ describe('LocationContext', () => {
       act(() => {
         screen.getByText('Clear Location').click();
       });
-      expect(screen.getByTestId('location')).toHaveTextContent('Seattle, WA');
+      expect(screen.getByTestId('location')).toHaveTextContent('');
 
       // Select Paris
       act(() => {
@@ -421,7 +421,7 @@ describe('LocationContext', () => {
         </LocationProvider>
       );
 
-      expect(screen.getByTestId('component-a')).toHaveTextContent('Seattle, WA');
+      expect(screen.getByTestId('component-a')).toHaveTextContent('');
 
       act(() => {
         screen.getByText('Select Tokyo').click();
