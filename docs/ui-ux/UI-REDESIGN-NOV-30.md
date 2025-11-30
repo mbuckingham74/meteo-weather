@@ -137,17 +137,16 @@ Breaking changes into logical, reviewable chunks:
 - [x] Login/Register modal with form validation
 - [x] Admin link conditional on user.isAdmin
 - [x] Click outside closes dropdown, Escape closes modal
+- [x] Toast notifications (visual UI, auto-dismiss, queue)
+- [x] Skip links accessibility (main content, search)
+- [x] URL sync for deep-linking/sharing (/location/:slug)
 - **PR:** https://github.com/mbuckingham74/meteo-weather/pull/73
 
-### PR 7: User Preferences Page
-- [ ] Preferences page with settings cards
-- [ ] Theme toggle (dark/light)
-- [ ] Notification preferences
-
-### PR 8: Additional Pages
+### PR 7: Additional Pages (IN PROGRESS)
 - [ ] AI Weather page
 - [ ] Location comparison
 - [ ] Admin panel (restyled)
+- [ ] User Preferences page
 
 ---
 
@@ -219,10 +218,18 @@ Breaking changes into logical, reviewable chunks:
   - User dropdown menu with Preferences, Admin, Sign Out
   - Mobile hamburger menu
   - Login/Register modal with validation
+  - Toast notifications (visual UI with auto-dismiss)
+  - Skip links accessibility restored
+  - URL sync for location deep-linking
+
+**Code Review Fixes Applied (PR 73):**
+- [x] **BLOCKER:** Toast notifications - full visual UI restored
+- [x] **HIGH:** URL sync - LocationSearch now navigates to /location/:slug
+- [x] **MEDIUM:** Duplicate id="main-content" fixed (removed from WeatherDashboard)
+- [x] **MEDIUM:** Skip links - multiple targets with proper focus styling
 
 **Up Next:**
-- [ ] PR 7: User Preferences Page
-- [ ] PR 8: Additional Pages
+- [ ] PR 7: Additional Pages (AI Weather, Compare, Admin, Preferences)
 
 ---
 
@@ -322,4 +329,4 @@ src/
 ---
 
 *Last Updated: November 30, 2025*
-*Current Session: 3*
+*Current Session: 3 (continuing)*
