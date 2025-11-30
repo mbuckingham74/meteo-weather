@@ -2,9 +2,11 @@
  * LocationSearch - Search input for finding locations
  */
 import { useState, useCallback, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Search, MapPin, Loader2 } from 'lucide-react';
 import { geocodeLocation } from '../../services/weatherApi';
 import { useLocation } from '../../contexts/LocationContext';
+import { createLocationSlug } from '../../utils/urlHelpers';
 
 function LocationSearch() {
   const [query, setQuery] = useState('');
@@ -12,6 +14,7 @@ function LocationSearch() {
   const [isSearching, setIsSearching] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const { selectLocation } = useLocation();
+  const navigate = useNavigate();
   const debounceRef = useRef(null);
   const isMountedRef = useRef(true);
 
@@ -76,6 +79,13 @@ function LocationSearch() {
     setQuery('');
     setResults([]);
     setShowResults(false);
+
+    // Navigate to URL slug for deep-linking/sharing
+    const address = location.address || location.location_name;
+    if (address) {
+      const slug = createLocationSlug(address);
+      navigate(`/location/${slug}`, { state: { location } });
+    }
   };
 
   const handleKeyDown = (e) => {
