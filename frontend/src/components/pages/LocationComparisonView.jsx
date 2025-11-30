@@ -1,7 +1,7 @@
 /**
  * Location Comparison View - Compare weather between multiple locations
  */
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -27,6 +27,7 @@ function LocationComparisonView() {
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const { formatTemperature } = useTemperatureUnit();
+  const debounceRef = useRef(null);
 
   // Fetch weather for all selected locations using parallel queries
   const weatherQueries = useQueries({
@@ -63,9 +64,15 @@ function LocationComparisonView() {
     const value = e.target.value;
     setSearchQuery(value);
 
+    // Clear previous timeout
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+
     // Debounce search
-    const timeoutId = setTimeout(() => handleSearch(value), 300);
-    return () => clearTimeout(timeoutId);
+    debounceRef.current = setTimeout(() => {
+      handleSearch(value);
+    }, 300);
   };
 
   const addLocation = (location) => {

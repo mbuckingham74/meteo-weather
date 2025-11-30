@@ -2,9 +2,10 @@
  * User Preferences Page - Settings and preferences management
  */
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Thermometer, Moon, Bell, User, Shield } from 'lucide-react';
+import { ArrowLeft, Thermometer, Moon, Bell, User, Shield, Sun, Monitor } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTemperatureUnit } from '../../contexts/TemperatureUnitContext';
+import { useTheme } from '../../contexts/ThemeContext';
 
 function SettingCard({ icon: Icon, title, description, children }) {
   return (
@@ -41,6 +42,7 @@ function ToggleButton({ active, onClick, children }) {
 function UserPreferencesPage() {
   const { user, isAuthenticated } = useAuth();
   const { unit, setUnit } = useTemperatureUnit();
+  const { themePreference, setTheme } = useTheme();
 
   return (
     <div className="min-h-screen bg-bg-primary p-4 md:p-6">
@@ -77,14 +79,24 @@ function UserPreferencesPage() {
           {/* Theme */}
           <SettingCard icon={Moon} title="Theme" description="Customize the app appearance">
             <div className="flex gap-2">
-              <ToggleButton active={true} onClick={() => {}}>
+              <ToggleButton active={themePreference === 'dark'} onClick={() => setTheme('dark')}>
+                <Moon size={14} className="inline mr-1" />
                 Dark
               </ToggleButton>
-              <ToggleButton active={false} onClick={() => {}}>
-                Light (coming soon)
+              <ToggleButton active={themePreference === 'auto'} onClick={() => setTheme('auto')}>
+                <Monitor size={14} className="inline mr-1" />
+                Auto
+              </ToggleButton>
+              <ToggleButton active={themePreference === 'light'} onClick={() => setTheme('light')}>
+                <Sun size={14} className="inline mr-1" />
+                Light
               </ToggleButton>
             </div>
-            <p className="text-xs text-text-muted mt-2">Light mode coming in a future update</p>
+            <p className="text-xs text-text-muted mt-2">
+              {themePreference === 'auto'
+                ? 'Theme follows your system preference'
+                : `${themePreference === 'dark' ? 'Dark' : 'Light'} mode active`}
+            </p>
           </SettingCard>
 
           {/* Notifications - Only show if authenticated */}
