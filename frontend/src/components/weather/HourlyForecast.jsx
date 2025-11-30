@@ -36,7 +36,16 @@ function HourlyForecast({ hours, isLoading }) {
       <h2 className="text-lg font-semibold text-text-primary mb-4">Hourly Forecast</h2>
       <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-thin">
         {next24Hours.map((hour, index) => {
-          const time = new Date(`2000-01-01T${hour.datetime}`);
+          // Handle both time-only (HH:MM:SS) and ISO timestamp formats
+          const datetime = hour.datetime;
+          let time;
+          if (datetime.includes('T') || datetime.includes('-')) {
+            // ISO format: 2025-11-30T14:00:00
+            time = new Date(datetime);
+          } else {
+            // Time-only format: 14:00:00
+            time = new Date(`2000-01-01T${datetime}`);
+          }
           const timeStr =
             index === 0
               ? 'Now'

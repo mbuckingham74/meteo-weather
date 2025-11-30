@@ -16,8 +16,9 @@ import Card from '../ui/Card';
 import { useTemperatureUnit } from '../../contexts/TemperatureUnitContext';
 
 function TemperatureChart({ forecast, isLoading }) {
-  const { unit, formatTemperature } = useTemperatureUnit();
+  const { unit, formatTemperature, convertTemperature } = useTemperatureUnit();
 
+  // Convert temperatures when building chart data so chart reacts to unit changes
   const chartData = useMemo(() => {
     if (!forecast?.days) return [];
 
@@ -25,12 +26,11 @@ function TemperatureChart({ forecast, isLoading }) {
       const date = new Date(day.datetime);
       return {
         name: date.toLocaleDateString('en-US', { weekday: 'short' }),
-        high: Math.round(day.tempmax),
-        low: Math.round(day.tempmin),
-        avg: Math.round((day.tempmax + day.tempmin) / 2),
+        high: Math.round(convertTemperature(day.tempmax)),
+        low: Math.round(convertTemperature(day.tempmin)),
       };
     });
-  }, [forecast]);
+  }, [forecast, convertTemperature]);
 
   if (isLoading) {
     return (
@@ -84,7 +84,7 @@ function TemperatureChart({ forecast, isLoading }) {
               }}
               labelStyle={{ color: '#BDDDFC' }}
               formatter={(value, name) => [
-                formatTemperature(value),
+                `${Math.round(value)}°${unit}`,
                 name === 'high' ? 'High' : 'Low',
               ]}
             />

@@ -3,6 +3,7 @@
  */
 import { Wind, Droplets, Sun, Gauge, Thermometer, Eye } from 'lucide-react';
 import { useLocation } from '../../contexts/LocationContext';
+import { useTemperatureUnit } from '../../contexts/TemperatureUnitContext';
 import {
   useCurrentWeatherQuery,
   useForecastQuery,
@@ -17,6 +18,7 @@ import Card from '../ui/Card';
 
 function WeatherDashboard() {
   const { locationData } = useLocation();
+  const { formatTemperature } = useTemperatureUnit();
   const lat = locationData?.latitude;
   const lng = locationData?.longitude;
 
@@ -67,8 +69,8 @@ function WeatherDashboard() {
             <StatCard
               icon={Thermometer}
               label="Dew Point"
-              value={Math.round(weather.dew || 0)}
-              unit="°"
+              value={formatTemperature(weather.dew)}
+              unit=""
             />
             <StatCard icon={Eye} label="Visibility" value={weather.visibility || 0} unit="mi" />
           </div>
@@ -99,8 +101,10 @@ function WeatherDashboard() {
                   >
                     <p className="text-text-muted text-sm mb-2">{dayName}</p>
                     <div className="text-2xl mb-2">{getWeatherEmoji(day.conditions)}</div>
-                    <p className="text-text-primary font-semibold">{Math.round(day.tempmax)}°</p>
-                    <p className="text-text-muted text-sm">{Math.round(day.tempmin)}°</p>
+                    <p className="text-text-primary font-semibold">
+                      {formatTemperature(day.tempmax)}
+                    </p>
+                    <p className="text-text-muted text-sm">{formatTemperature(day.tempmin)}</p>
                   </div>
                 );
               })}
