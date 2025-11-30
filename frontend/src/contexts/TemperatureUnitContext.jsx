@@ -72,11 +72,26 @@ export function TemperatureUnitProvider({ children }) {
     setUnit(newUnit);
   };
 
+  /**
+   * Format a temperature value with the current unit
+   * @param {number} temp - Temperature in Fahrenheit (API default)
+   * @returns {string} Formatted temperature with unit symbol
+   */
+  const formatTemperature = useCallback(
+    (temp) => {
+      if (temp == null || isNaN(temp)) return '--°';
+      const value = unit === 'C' ? ((temp - 32) * 5) / 9 : temp;
+      return `${Math.round(value)}°${unit}`;
+    },
+    [unit]
+  );
+
   const value = {
     unit,
     setUnit,
     toggleUnit,
     loading,
+    formatTemperature,
   };
 
   return (

@@ -1,7 +1,7 @@
 /**
  * LocationSearch - Search input for finding locations
  */
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { Search, MapPin, Loader2 } from 'lucide-react';
 import { geocodeLocation } from '../../services/weatherApi';
 import { useLocation } from '../../contexts/LocationContext';
@@ -12,33 +12,63 @@ function LocationSearch() {
   const [isSearching, setIsSearching] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const { selectLocation } = useLocation();
+  const debounceRef = useRef(null);
+  const isMountedRef = useRef(true);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+    };
+  }, []);
 
   const handleSearch = useCallback(async (searchQuery) => {
     if (!searchQuery || searchQuery.length < 2) {
-      setResults([]);
-      setShowResults(false);
+      if (isMountedRef.current) {
+        setResults([]);
+        setShowResults(false);
+      }
       return;
     }
 
-    setIsSearching(true);
+    if (isMountedRef.current) {
+      setIsSearching(true);
+    }
     try {
       const locations = await geocodeLocation(searchQuery, 5);
-      setResults(locations || []);
-      setShowResults(true);
+      if (isMountedRef.current) {
+        setResults(locations || []);
+        setShowResults(true);
+      }
     } catch (error) {
       console.error('Search error:', error);
-      setResults([]);
+      if (isMountedRef.current) {
+        setResults([]);
+      }
     } finally {
-      setIsSearching(false);
+      if (isMountedRef.current) {
+        setIsSearching(false);
+      }
     }
   }, []);
 
   const handleInputChange = (e) => {
     const value = e.target.value;
     setQuery(value);
-    // Debounce search
-    const timeoutId = setTimeout(() => handleSearch(value), 300);
-    return () => clearTimeout(timeoutId);
+
+    // Clear previous timeout
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+
+    // Set new debounced search
+    debounceRef.current = setTimeout(() => {
+      handleSearch(value);
+    }, 300);
   };
 
   const handleSelectLocation = (location) => {

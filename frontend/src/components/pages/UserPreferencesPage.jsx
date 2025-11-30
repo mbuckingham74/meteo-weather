@@ -17,15 +17,15 @@ function UserPreferencesPage() {
             <div>
               <label className="block text-text-secondary mb-2">Temperature Unit</label>
               <div className="flex gap-4">
-                <button className="btn-primary">Fahrenheit</button>
-                <button className="btn-secondary">Celsius</button>
+                <button className="btn btn-primary">Fahrenheit</button>
+                <button className="btn btn-secondary">Celsius</button>
               </div>
             </div>
             <div>
               <label className="block text-text-secondary mb-2">Theme</label>
               <div className="flex gap-4">
-                <button className="btn-secondary">Light</button>
-                <button className="btn-primary">Dark</button>
+                <button className="btn btn-secondary">Light</button>
+                <button className="btn btn-primary">Dark</button>
               </div>
             </div>
           </div>
