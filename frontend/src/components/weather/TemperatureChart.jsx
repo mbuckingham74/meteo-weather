@@ -2,21 +2,12 @@
  * TemperatureChart - Line chart showing temperature over time
  */
 import { useMemo } from 'react';
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  Area,
-  AreaChart,
-} from 'recharts';
+import { Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
 import Card from '../ui/Card';
 import { useTemperatureUnit } from '../../contexts/TemperatureUnitContext';
 
 function TemperatureChart({ forecast, isLoading }) {
-  const { unit, formatTemperature, convertTemperature } = useTemperatureUnit();
+  const { unit, convertTemperature } = useTemperatureUnit();
 
   // Convert temperatures when building chart data so chart reacts to unit changes
   const chartData = useMemo(() => {
