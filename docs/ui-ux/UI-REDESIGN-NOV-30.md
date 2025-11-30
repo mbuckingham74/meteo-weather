@@ -265,6 +265,11 @@ Breaking changes into logical, reviewable chunks:
   - Cache management actions
   - Admin-only access guards
 
+**Code Review Fixes Applied (PR 75/76):**
+- [x] **CRITICAL:** Auth token key mismatch - apiClient now reads 'accessToken' (not 'token')
+- [x] **HIGH:** Theme controls - wired to ThemeContext with Dark/Auto/Light options
+- [x] **HIGH:** Debounce fix - LocationComparisonView uses ref to clear previous timeouts
+
 **Notes:**
 - All secondary pages now rebuilt with Tailwind CSS v4
 - Consistent design language across all pages
@@ -370,4 +375,4 @@ src/
 ---
 
 *Last Updated: November 30, 2025*
-*Current Session: 4 (PR 7 complete)*
+*Current Session: 4 (PR 7 complete, code review fixes applied)*
