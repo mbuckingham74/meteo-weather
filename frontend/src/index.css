@@ -1,61 +1,173 @@
-body {
-  margin: 0;
-  font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
-    'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@import 'tailwindcss';
+
+/* ========================================
+   THEME CONFIGURATION - Custom Color Palette
+   Based on: AQI Navigator Weather Dashboard
+   ======================================== */
+
+@theme {
+  /* Primary palette */
+  --color-slate-dark: #384959;
+  --color-steel-blue: #6a89a7;
+  --color-sky-light: #bdddfc;
+  --color-primary-blue: #88bdf2;
+
+  /* Background colors */
+  --color-bg-primary: #384959;
+  --color-bg-card: #3d5166;
+  --color-bg-card-hover: #455d75;
+  --color-bg-elevated: #4a6278;
+
+  /* Text colors */
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #bdddfc;
+  --color-text-muted: #6a89a7;
+
+  /* Accent colors */
+  --color-accent: #88bdf2;
+  --color-accent-hover: #9dcbf7;
+  --color-accent-muted: #6a89a7;
+
+  /* Border radius */
+  --radius-card: 16px;
+  --radius-button: 12px;
+
+  /* Shadows */
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+  --shadow-card-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.15);
+  --shadow-elevated: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+
+  /* Font family */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+/* ========================================
+   BASE LAYER
+   ======================================== */
+
+@layer base {
+  body {
+    background-color: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+  }
+
+  code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  }
 }
 
-/* Accessibility utility - Screen reader only content */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
+/* ========================================
+   COMPONENT LAYER
+   ======================================== */
+
+@layer components {
+  /* Card component */
+  .card {
+    background-color: var(--color-bg-card);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    padding: 1.5rem;
+  }
+
+  .card-hover {
+    background-color: var(--color-bg-card);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    padding: 1.5rem;
+    transition: all 0.2s ease;
+  }
+
+  .card-hover:hover {
+    background-color: var(--color-bg-card-hover);
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  /* Button variants */
+  .btn {
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-button);
+    font-weight: 500;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease,
+      border-color 0.2s ease;
+    cursor: pointer;
+    border: none;
+  }
+
+  .btn-primary {
+    background-color: var(--color-accent);
+    color: var(--color-slate-dark);
+  }
+
+  .btn-primary:hover {
+    background-color: var(--color-accent-hover);
+  }
+
+  .btn-secondary {
+    background-color: var(--color-bg-card);
+    color: var(--color-text-primary);
+    border: 1px solid rgba(106, 137, 167, 0.3);
+  }
+
+  .btn-secondary:hover {
+    background-color: var(--color-bg-card-hover);
+  }
+
+  /* Input styling */
+  .input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-button);
+    background-color: var(--color-bg-card);
+    border: 1px solid rgba(106, 137, 167, 0.3);
+    color: var(--color-text-primary);
+    transition: all 0.2s ease;
+  }
+
+  .input::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  .input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 2px rgba(136, 189, 242, 0.2);
+  }
 }
 
-/* Global focus indicators for accessibility */
-/* Based on WCAG 2.4.7 - Focus Visible */
-:focus {
-  outline: 3px solid var(--accent-primary);
-  outline-offset: 2px;
+/* ========================================
+   UTILITY LAYER
+   ======================================== */
+
+@layer utilities {
+  /* Accessibility - Screen reader only */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
 }
 
-/* Remove outline for mouse users but keep for keyboard users */
-:focus:not(:focus-visible) {
+/* ========================================
+   GLOBAL FOCUS INDICATORS (WCAG 2.4.7)
+   ======================================== */
+
+:focus-visible {
   outline: none;
-}
-
-/* Ensure all interactive elements have visible focus */
-button:focus-visible,
-a:focus-visible,
-input:focus-visible,
-textarea:focus-visible,
-select:focus-visible,
-[role='button']:focus-visible,
-[role='tab']:focus-visible,
-[tabindex]:focus-visible {
-  outline: 3px solid var(--accent-primary);
-  outline-offset: 2px;
-}
-
-/* Special focus style for inputs */
-input:focus-visible,
-textarea:focus-visible,
-select:focus-visible {
-  outline: 2px solid var(--accent-primary);
-  outline-offset: 0;
-  border-color: var(--accent-primary);
+  box-shadow:
+    0 0 0 2px var(--color-bg-primary),
+    0 0 0 4px var(--color-accent);
 }
 
 /* High contrast mode support */

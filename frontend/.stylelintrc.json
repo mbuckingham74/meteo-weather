@@ -1,10 +1,13 @@
 {
   "extends": "stylelint-config-standard",
   "rules": {
-    "declaration-property-value-disallowed-list": {
-      "transition": ["/^all/"],
-      "/^animation/": ["/^all/"]
-    },
+    "at-rule-no-unknown": [
+      true,
+      {
+        "ignoreAtRules": ["theme", "tailwind", "apply", "layer", "config", "import"]
+      }
+    ],
+    "declaration-property-value-disallowed-list": null,
     "selector-class-pattern": null,
     "custom-property-pattern": null,
     "keyframes-name-pattern": null,

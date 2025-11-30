@@ -1,48 +1,17 @@
-import React from 'react';
-import styles from './SkipToContent.module.css';
-
 /**
- * SkipToContent Component
- * Provides skip links for keyboard users to bypass repetitive navigation
- * Only visible when focused (Tab key)
- * CSS Modules Migration: Phase 1.1
+ * Skip to Content - Accessibility feature for keyboard navigation
+ * Allows users to skip navigation and jump to main content
  */
-const SkipToContent = () => {
-  const handleSkip = (e, targetId) => {
-    e.preventDefault();
-    const target = document.getElementById(targetId);
-    if (target) {
-      target.tabIndex = -1; // Make focusable
-      target.focus();
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
 
+function SkipToContent() {
   return (
-    <nav className={styles.container} aria-label="Skip links">
-      <a
-        href="#main-content"
-        className={styles.link}
-        onClick={(e) => handleSkip(e, 'main-content')}
-      >
-        Skip to main content
-      </a>
-      <a
-        href="#location-search"
-        className={styles.link}
-        onClick={(e) => handleSkip(e, 'location-search')}
-      >
-        Skip to location search
-      </a>
-      <a
-        href="#weather-charts"
-        className={styles.link}
-        onClick={(e) => handleSkip(e, 'weather-charts')}
-      >
-        Skip to weather charts
-      </a>
-    </nav>
+    <a
+      href="#main-content"
+      className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-accent focus:text-slate-dark focus:rounded-button"
+    >
+      Skip to main content
+    </a>
   );
-};
+}
 
 export default SkipToContent;
