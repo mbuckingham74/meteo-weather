@@ -3,9 +3,15 @@
  */
 import { Wind, Droplets, Sun, Gauge, Thermometer, Eye } from 'lucide-react';
 import { useLocation } from '../../contexts/LocationContext';
-import { useCurrentWeatherQuery, useForecastQuery } from '../../hooks/useWeatherQueries';
+import {
+  useCurrentWeatherQuery,
+  useForecastQuery,
+  useHourlyForecastQuery,
+} from '../../hooks/useWeatherQueries';
 import CurrentConditions from './CurrentConditions';
 import LocationSearch from './LocationSearch';
+import HourlyForecast from './HourlyForecast';
+import TemperatureChart from './TemperatureChart';
 import StatCard from '../ui/StatCard';
 import Card from '../ui/Card';
 
@@ -24,7 +30,12 @@ function WeatherDashboard() {
   // Fetch 7-day forecast
   const { data: forecast, isLoading: isLoadingForecast } = useForecastQuery(lat, lng, 7);
 
+  // Fetch hourly forecast
+  const { data: hourlyData, isLoading: isLoadingHourly } = useHourlyForecastQuery(lat, lng, 48);
+
   const weather = currentWeather?.currentConditions;
+  // Get hourly data from the forecast days (each day has hours array)
+  const hours = forecast?.days?.[0]?.hours || hourlyData?.hours || [];
   const locationName = locationData?.address || locationData?.location_name;
 
   return (
@@ -63,7 +74,15 @@ function WeatherDashboard() {
           </div>
         )}
 
-        {/* 7-Day Forecast Preview */}
+        {/* Hourly Forecast */}
+        {locationData && (
+          <HourlyForecast hours={hours} isLoading={isLoadingForecast || isLoadingHourly} />
+        )}
+
+        {/* Temperature Chart */}
+        {locationData && <TemperatureChart forecast={forecast} isLoading={isLoadingForecast} />}
+
+        {/* 7-Day Forecast */}
         {forecast?.days && forecast.days.length > 0 && (
           <Card>
             <h2 className="text-lg font-semibold text-text-primary mb-4">7-Day Forecast</h2>
@@ -90,7 +109,7 @@ function WeatherDashboard() {
         )}
 
         {/* Loading state for forecast */}
-        {isLoadingForecast && locationData && (
+        {isLoadingForecast && locationData && !forecast && (
           <Card>
             <div className="animate-pulse">
               <div className="h-6 w-32 bg-bg-elevated rounded mb-4" />
