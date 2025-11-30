@@ -81,12 +81,16 @@ Breaking changes into logical, reviewable chunks:
 - [x] Verify build works (910 modules, 2.45s)
 - **PR:** https://github.com/mbuckingham74/meteo-weather/pull/69
 
-### PR 2: Remove Old UI Code
-- [ ] Delete `src/components/` directory
-- [ ] Delete `src/styles/` directory
-- [ ] Delete all scattered `.module.css` files
-- [ ] Clean up unused imports in App.jsx
-- [ ] Minimal placeholder components to prevent build errors
+### PR 2: Remove Old UI Code ✅ COMPLETE
+- [x] Delete `src/components/` directory (72 JSX, 38 CSS files)
+- [x] Delete `src/styles/` directory (ITCSS architecture)
+- [x] Delete all scattered `.module.css` files
+- [x] Delete old scripts (color linting, token validation)
+- [x] Clean up unused imports in App.jsx
+- [x] Create minimal placeholder components (10 files)
+- [x] Remove postcss-custom-media dependency
+- **Results:** CSS 230kB→17kB (-93%), JS 673kB→237kB (-65%), Build 2.45s→1.03s
+- **PR:** https://github.com/mbuckingham74/meteo-weather/pull/69 (same branch)
 
 ### PR 3: Dashboard Shell
 - [ ] Create new `src/components/layout/` structure
@@ -128,7 +132,7 @@ Breaking changes into logical, reviewable chunks:
 
 ### Session 1 - November 30, 2025
 
-**Status:** 🟢 PR 1 Complete
+**Status:** 🟢 PR 1 & 2 Complete
 
 **Completed:**
 - [x] Cleaned up uncommitted changes
@@ -136,15 +140,20 @@ Breaking changes into logical, reviewable chunks:
 - [x] Created feature branch: `feature/ui-redesign-v2`
 - [x] Created this tracking document
 - [x] **PR 1: Tailwind Setup** - https://github.com/mbuckingham74/meteo-weather/pull/69
+- [x] **PR 2: Remove Old UI** - 144 files deleted, 34,006 lines removed
 
 **Up Next:**
-- [ ] PR 2: Remove old components and styles
+- [ ] PR 3: Dashboard shell with real weather data
 
 **Notes:**
 - Starting from clean main branch (commit 8a8162d)
 - Backup pushed to remote for safety
 - Tailwind v4 uses CSS-based config (@theme block), not JS config file
 - Build verified working with new setup
+- Massive bundle size reduction achieved:
+  - CSS: 230 kB → 17 kB (-93%)
+  - JS: 673 kB → 237 kB (-65%)
+  - Modules: 910 → 129 (-86%)
 
 ---
 
