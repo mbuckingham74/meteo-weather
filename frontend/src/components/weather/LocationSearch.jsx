@@ -88,6 +88,7 @@ function LocationSearch() {
     <div className="relative">
       <div className="relative">
         <input
+          id="search"
           type="text"
           value={query}
           onChange={handleInputChange}
