@@ -31,7 +31,7 @@ function WeatherDashboard() {
   const locationName = locationData?.address || locationData?.location_name;
 
   return (
-    <div className="min-h-screen bg-bg-primary p-4 md:p-6">
+    <main id="main-content" className="min-h-screen bg-bg-primary p-4 md:p-6">
       <div className="max-w-5xl mx-auto space-y-6">
         {/* Header with Search and Settings */}
         <div className="flex items-center gap-4">
@@ -116,7 +116,7 @@ function WeatherDashboard() {
           </Card>
         )}
       </div>
-    </div>
+    </main>
   );
 }
 
