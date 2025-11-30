@@ -27,7 +27,7 @@ class ErrorBoundary extends Component {
             <p className="text-text-secondary mb-6">
               {this.state.error?.message || 'An unexpected error occurred'}
             </p>
-            <button onClick={() => window.location.reload()} className="btn-primary">
+            <button onClick={() => window.location.reload()} className="btn btn-primary">
               Reload Page
             </button>
           </div>
