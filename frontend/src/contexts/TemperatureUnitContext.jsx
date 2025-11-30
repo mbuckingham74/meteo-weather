@@ -72,11 +72,43 @@ export function TemperatureUnitProvider({ children }) {
     setUnit(newUnit);
   };
 
+  /**
+   * Format a temperature value with the current unit
+   * API returns temperatures in Celsius (metric), so we convert to F when needed
+   * @param {number} temp - Temperature in Celsius (API default: metric)
+   * @returns {string} Formatted temperature with unit symbol
+   */
+  const formatTemperature = useCallback(
+    (temp) => {
+      if (temp == null || isNaN(temp)) return '--°';
+      // API returns Celsius, convert to Fahrenheit if unit is F
+      const value = unit === 'F' ? (temp * 9) / 5 + 32 : temp;
+      return `${Math.round(value)}°${unit}`;
+    },
+    [unit]
+  );
+
+  /**
+   * Convert a temperature value to the current unit (returns number, not string)
+   * Useful for charts where we need numeric values
+   * @param {number} temp - Temperature in Celsius (API default: metric)
+   * @returns {number} Temperature in current unit
+   */
+  const convertTemperature = useCallback(
+    (temp) => {
+      if (temp == null || isNaN(temp)) return null;
+      return unit === 'F' ? (temp * 9) / 5 + 32 : temp;
+    },
+    [unit]
+  );
+
   const value = {
     unit,
     setUnit,
     toggleUnit,
     loading,
+    formatTemperature,
+    convertTemperature,
   };
 
   return (
