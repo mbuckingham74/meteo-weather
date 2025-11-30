@@ -43,7 +43,7 @@ Complete frontend UI redesign for Meteo Weather App. Trashing the existing UI af
 
 ## Tech Stack
 
-- **CSS Framework:** Tailwind CSS v3.x
+- **CSS Framework:** Tailwind CSS v4.1.17 (with @tailwindcss/postcss)
 - **Icons:** Lucide React (line style)
 - **Charts:** Recharts (existing, restyle only)
 - **Animations:** Tailwind + CSS transitions (minimal)
@@ -72,12 +72,14 @@ Complete removal:
 
 Breaking changes into logical, reviewable chunks:
 
-### PR 1: Tailwind Setup
-- [ ] Install Tailwind CSS, PostCSS, Autoprefixer
-- [ ] Configure tailwind.config.js with custom color palette
-- [ ] Update vite.config.js if needed
-- [ ] Add base Tailwind directives to index.css
-- [ ] Verify build works
+### PR 1: Tailwind Setup ✅ COMPLETE
+- [x] Install Tailwind CSS v4, @tailwindcss/postcss, Autoprefixer
+- [x] Configure CSS-based theme in index.css (Tailwind v4 uses CSS, not JS config)
+- [x] Add custom color palette to @theme block
+- [x] Add base component classes (.card, .btn-*, .input)
+- [x] Update stylelint for Tailwind v4 compatibility
+- [x] Verify build works (910 modules, 2.45s)
+- **PR:** https://github.com/mbuckingham74/meteo-weather/pull/69
 
 ### PR 2: Remove Old UI Code
 - [ ] Delete `src/components/` directory
@@ -126,20 +128,23 @@ Breaking changes into logical, reviewable chunks:
 
 ### Session 1 - November 30, 2025
 
-**Status:** 🟡 In Progress
+**Status:** 🟢 PR 1 Complete
 
 **Completed:**
 - [x] Cleaned up uncommitted changes
 - [x] Created backup branch: `backup/ui-before-redesign-nov30`
 - [x] Created feature branch: `feature/ui-redesign-v2`
 - [x] Created this tracking document
+- [x] **PR 1: Tailwind Setup** - https://github.com/mbuckingham74/meteo-weather/pull/69
 
-**In Progress:**
-- [ ] PR 1: Tailwind Setup
+**Up Next:**
+- [ ] PR 2: Remove old components and styles
 
 **Notes:**
 - Starting from clean main branch (commit 8a8162d)
 - Backup pushed to remote for safety
+- Tailwind v4 uses CSS-based config (@theme block), not JS config file
+- Build verified working with new setup
 
 ---
 
