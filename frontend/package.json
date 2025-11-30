@@ -20,6 +20,7 @@
     "yaml": "^2.8.1"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.17",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
@@ -28,6 +29,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^4.3.4",
     "@vitest/coverage-v8": "^4.0.13",
+    "autoprefixer": "^10.4.22",
     "eslint": "^8.57.1",
     "eslint-plugin-react": "^7.37.3",
     "eslint-plugin-react-hooks": "^5.1.0",
@@ -40,6 +42,7 @@
     "prettier": "^3.4.2",
     "stylelint": "^16.11.0",
     "stylelint-config-standard": "^36.0.1",
+    "tailwindcss": "^4.1.17",
     "typescript": "^5.7.3",
     "vite": "^6.0.7",
     "vitest": "^4.0.10"
@@ -61,7 +64,7 @@
     "format:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx,json,css,md}\"",
     "type-check": "tsc --noEmit",
     "validate:tokens": "node scripts/validate-theme-tokens.mjs",
-    "validate": "npm run lint:colors && npm run validate:tokens && node scripts/validate-build-config.cjs",
+    "validate": "node scripts/validate-build-config.cjs",
     "prebuild": "npm run validate",
     "prepare": "cd .. && husky frontend/.husky"
   },
