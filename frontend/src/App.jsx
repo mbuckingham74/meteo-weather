@@ -18,24 +18,27 @@ import { ToastProvider } from './components/common/ToastContainer';
 import ErrorBoundary from './components/common/ErrorBoundary';
 import SkipToContent from './components/common/SkipToContent';
 import AuthHeader from './components/auth/AuthHeader';
-import WeatherDashboard from './components/weather/WeatherDashboard/WeatherDashboard';
-import PrivacyPolicy from './components/legal/PrivacyPolicy';
+import WeatherDashboard from './components/weather/WeatherDashboard';
+import PrivacyPolicy from './components/pages/PrivacyPolicy';
 import { parseLocationSlug } from './utils/urlHelpers';
 import { geocodeLocation } from './services/weatherApi';
-import './styles/main.css'; // ITCSS architecture - imports all base styles
-import './App.css'; // App-specific styles
+import './index.css'; // Tailwind CSS with custom theme
 
 // Code-split heavy components that aren't needed on initial load
-const LocationComparisonView = lazy(() => import('./components/location/LocationComparisonView'));
-const AIWeatherPage = lazy(() => import('./components/ai/AIWeatherPage'));
-const SharedAnswerPage = lazy(() => import('./components/ai/SharedAnswerPage'));
-const UserPreferencesPage = lazy(() => import('./components/settings/UserPreferencesPage'));
-const AboutPage = lazy(() => import('./components/about/AboutPage'));
-const AdminPanel = lazy(() => import('./components/admin/AdminPanel'));
+const LocationComparisonView = lazy(() => import('./components/pages/LocationComparisonView'));
+const AIWeatherPage = lazy(() => import('./components/pages/AIWeatherPage'));
+const SharedAnswerPage = lazy(() => import('./components/pages/SharedAnswerPage'));
+const UserPreferencesPage = lazy(() => import('./components/pages/UserPreferencesPage'));
+const AboutPage = lazy(() => import('./components/pages/AboutPage'));
+const AdminPanel = lazy(() => import('./components/pages/AdminPanel'));
 
 // Loading fallback component
 function PageLoader() {
-  return <div className="page-loader">Loading...</div>;
+  return (
+    <div className="min-h-screen bg-bg-primary flex items-center justify-center">
+      <div className="text-text-secondary text-lg">Loading...</div>
+    </div>
+  );
 }
 
 function RouteAwareLocationManager() {
@@ -99,8 +102,8 @@ function RouteAwareLocationManager() {
 function ComparePage() {
   return (
     <>
-      <div className="compare-page-wrapper">
-        <Link to="/" className="compare-back-link">
+      <div className="max-w-6xl mx-auto px-4 pt-4">
+        <Link to="/" className="text-accent hover:text-accent-hover">
           ← Back to Dashboard
         </Link>
       </div>
