@@ -1,7 +1,7 @@
 /**
  * WeatherDashboard - Main weather dashboard with real data
  */
-import { Wind, Droplets, Sun, Gauge, Thermometer, Eye } from 'lucide-react';
+import { Wind, Droplets, Sun, Gauge, Thermometer, Eye, AlertCircle } from 'lucide-react';
 import { useLocation } from '../../contexts/LocationContext';
 import {
   useCurrentWeatherQuery,
@@ -9,6 +9,7 @@ import {
   useHourlyForecastQuery,
 } from '../../hooks/useWeatherQueries';
 import { useTemperatureUnit } from '../../contexts/TemperatureUnitContext';
+import { getWeatherEmoji } from '../../utils/weatherHelpers';
 import CurrentConditions from './CurrentConditions';
 import LocationSearch from './LocationSearch';
 import HourlyForecast from './HourlyForecast';
@@ -31,25 +32,40 @@ function WeatherDashboard() {
   } = useCurrentWeatherQuery(lat, lng);
 
   // Fetch 7-day forecast
-  const { data: forecast, isLoading: isLoadingForecast } = useForecastQuery(lat, lng, 7);
+  const {
+    data: forecast,
+    isLoading: isLoadingForecast,
+    error: forecastError,
+  } = useForecastQuery(lat, lng, 7);
 
   // Fetch hourly forecast
-  const { data: hourlyData, isLoading: isLoadingHourly } = useHourlyForecastQuery(lat, lng);
+  const {
+    data: hourlyData,
+    isLoading: isLoadingHourly,
+    error: hourlyError,
+  } = useHourlyForecastQuery(lat, lng);
 
   // Support both old format (currentConditions) and new API format (current)
   const weather = currentWeather?.currentConditions || currentWeather?.current;
   const locationName = locationData?.address || locationData?.location_name;
 
+  // Determine if we should show loading/error states for secondary sections
+  const hasLocation = Boolean(lat && lng);
+
   return (
     <div className="min-h-screen bg-bg-primary p-4 md:p-6">
       <div className="max-w-5xl mx-auto space-y-6">
         {/* Header with Search and Settings */}
-        <div className="flex items-center gap-4">
+        <header
+          className="flex items-center gap-4"
+          role="search"
+          aria-label="Weather search and settings"
+        >
           <div className="flex-1">
             <LocationSearch />
           </div>
           <TemperatureToggle />
-        </div>
+        </header>
 
         {/* Hero - Current Conditions */}
         <CurrentConditions
@@ -86,76 +102,100 @@ function WeatherDashboard() {
         )}
 
         {/* Hourly Forecast */}
-        {locationData && <HourlyForecast hours={hourlyData?.hourly} isLoading={isLoadingHourly} />}
+        {hasLocation && (
+          <>
+            {hourlyError ? (
+              <Card>
+                <div className="flex items-center gap-3 text-text-muted">
+                  <AlertCircle size={20} className="text-secondary" />
+                  <span>Unable to load hourly forecast</span>
+                </div>
+              </Card>
+            ) : (
+              <HourlyForecast hours={hourlyData?.hourly} isLoading={isLoadingHourly} />
+            )}
+          </>
+        )}
 
         {/* Temperature Chart */}
-        {locationData && <TemperatureChart forecast={forecast} isLoading={isLoadingForecast} />}
+        {hasLocation && (
+          <>
+            {forecastError && !forecast ? (
+              <Card>
+                <div className="flex items-center gap-3 text-text-muted">
+                  <AlertCircle size={20} className="text-secondary" />
+                  <span>Unable to load temperature chart</span>
+                </div>
+              </Card>
+            ) : (
+              <TemperatureChart forecast={forecast} isLoading={isLoadingForecast} />
+            )}
+          </>
+        )}
 
         {/* 7-Day Forecast Preview */}
-        {(forecast?.days || forecast?.forecast) &&
-          (forecast.days || forecast.forecast).length > 0 && (
-            <Card>
-              <h2 className="text-lg font-semibold text-text-primary mb-4">7-Day Forecast</h2>
-              <div className="grid grid-cols-7 gap-2">
-                {(forecast.days || forecast.forecast).slice(0, 7).map((day, index) => {
-                  const date = new Date(day.datetime || day.date);
-                  const dayName =
-                    index === 0 ? 'Today' : date.toLocaleDateString('en-US', { weekday: 'short' });
-
-                  return (
-                    <div
-                      key={day.datetime || day.date}
-                      className="text-center p-3 rounded-xl hover:bg-bg-card-hover transition-colors"
-                    >
-                      <p className="text-text-muted text-sm mb-2">{dayName}</p>
-                      <div className="text-2xl mb-2">{getWeatherEmoji(day.conditions)}</div>
-                      <p className="text-text-primary font-semibold">
-                        {formatTemperature(day.tempmax ?? day.tempMax)}
-                      </p>
-                      <p className="text-text-muted text-sm">
-                        {formatTemperature(day.tempmin ?? day.tempMin)}
-                      </p>
-                    </div>
-                  );
-                })}
-              </div>
-            </Card>
-          )}
-
-        {/* Loading state for forecast */}
-        {isLoadingForecast && locationData && (
-          <Card>
-            <div className="animate-pulse">
-              <div className="h-6 w-32 bg-bg-elevated rounded mb-4" />
-              <div className="grid grid-cols-7 gap-2">
-                {[...Array(7)].map((_, i) => (
-                  <div key={i} className="text-center p-3">
-                    <div className="h-4 w-8 bg-bg-elevated rounded mx-auto mb-2" />
-                    <div className="h-8 w-8 bg-bg-elevated rounded mx-auto mb-2" />
-                    <div className="h-4 w-6 bg-bg-elevated rounded mx-auto" />
+        {hasLocation && (
+          <>
+            {forecastError && !forecast ? (
+              <Card>
+                <h2 className="text-lg font-semibold text-text-primary mb-4">7-Day Forecast</h2>
+                <div className="flex items-center gap-3 text-text-muted">
+                  <AlertCircle size={20} className="text-secondary" />
+                  <span>Unable to load forecast data</span>
+                </div>
+              </Card>
+            ) : isLoadingForecast ? (
+              <Card>
+                <div className="animate-pulse">
+                  <div className="h-6 w-32 bg-bg-elevated rounded mb-4" />
+                  <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin md:grid md:grid-cols-7 md:overflow-visible">
+                    {[...Array(7)].map((_, i) => (
+                      <div key={i} className="flex-shrink-0 w-20 md:w-auto text-center p-3">
+                        <div className="h-4 w-8 bg-bg-elevated rounded mx-auto mb-2" />
+                        <div className="h-8 w-8 bg-bg-elevated rounded mx-auto mb-2" />
+                        <div className="h-4 w-10 bg-bg-elevated rounded mx-auto mb-1" />
+                        <div className="h-4 w-8 bg-bg-elevated rounded mx-auto" />
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </div>
-          </Card>
+                </div>
+              </Card>
+            ) : (forecast?.days || forecast?.forecast) &&
+              (forecast.days || forecast.forecast).length > 0 ? (
+              <Card>
+                <h2 className="text-lg font-semibold text-text-primary mb-4">7-Day Forecast</h2>
+                <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin md:grid md:grid-cols-7 md:overflow-visible">
+                  {(forecast.days || forecast.forecast).slice(0, 7).map((day, index) => {
+                    const date = new Date(day.datetime || day.date);
+                    const dayName =
+                      index === 0
+                        ? 'Today'
+                        : date.toLocaleDateString('en-US', { weekday: 'short' });
+
+                    return (
+                      <div
+                        key={day.datetime || day.date}
+                        className="flex-shrink-0 w-20 md:w-auto text-center p-3 rounded-xl hover:bg-bg-card-hover transition-colors"
+                      >
+                        <p className="text-text-muted text-sm mb-2">{dayName}</p>
+                        <div className="text-2xl mb-2">{getWeatherEmoji(day.conditions)}</div>
+                        <p className="text-text-primary font-semibold">
+                          {formatTemperature(day.tempmax ?? day.tempMax)}
+                        </p>
+                        <p className="text-text-muted text-sm">
+                          {formatTemperature(day.tempmin ?? day.tempMin)}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </Card>
+            ) : null}
+          </>
         )}
       </div>
     </div>
   );
-}
-
-// Helper function to get weather emoji
-function getWeatherEmoji(condition) {
-  if (!condition) return '☀️';
-  const c = condition.toLowerCase();
-  if (c.includes('rain') || c.includes('shower')) return '🌧️';
-  if (c.includes('snow')) return '❄️';
-  if (c.includes('thunder') || c.includes('storm')) return '⛈️';
-  if (c.includes('cloud') || c.includes('overcast')) return '☁️';
-  if (c.includes('partly')) return '⛅';
-  if (c.includes('fog') || c.includes('mist')) return '🌫️';
-  if (c.includes('wind')) return '💨';
-  return '☀️';
 }
 
 export default WeatherDashboard;

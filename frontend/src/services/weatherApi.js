@@ -134,9 +134,9 @@ export async function searchLocations(query, limit = 10) {
     debugInfo('Weather API', `Found ${locations.length} locations for: "${query}"`);
     return locations;
   } catch (error) {
-    // Don't throw errors for search - return empty array
+    // Don't throw errors for search - return empty array (like geocodeLocation)
     debugError('Weather API', `Search failed for "${query}"`, error);
-    throw handleAPIError(error, `Searching for "${query}"`);
+    return [];
   }
 }
 

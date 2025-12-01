@@ -3,6 +3,7 @@
  */
 import Card from '../ui/Card';
 import { useTemperatureUnit } from '../../contexts/TemperatureUnitContext';
+import { getWeatherEmoji } from '../../utils/weatherHelpers';
 
 function HourlyForecast({ hours, isLoading }) {
   const { formatTemperature } = useTemperatureUnit();
@@ -28,8 +29,19 @@ function HourlyForecast({ hours, isLoading }) {
     return null;
   }
 
-  // Get next 24 hours
-  const next24Hours = hours.slice(0, 24);
+  // Get next 24 hours, filtering out invalid entries
+  const next24Hours = hours
+    .filter((hour) => {
+      // Skip entries without datetime/time or temperature
+      const hasTime = hour.datetime || hour.time;
+      const hasTemp = hour.temp != null || hour.temperature != null;
+      return hasTime && hasTemp;
+    })
+    .slice(0, 24);
+
+  if (next24Hours.length === 0) {
+    return null;
+  }
 
   return (
     <Card>
@@ -40,12 +52,20 @@ function HourlyForecast({ hours, isLoading }) {
           // Support both datetime and time fields
           const datetime = hour.datetime || hour.time;
           let time;
-          if (datetime.includes('T') || datetime.includes('-')) {
-            // ISO format: 2025-11-30T14:00:00
-            time = new Date(datetime);
-          } else {
-            // Time-only format: 14:00:00
-            time = new Date(`2000-01-01T${datetime}`);
+          try {
+            if (datetime.includes('T') || datetime.includes('-')) {
+              // ISO format: 2025-11-30T14:00:00
+              time = new Date(datetime);
+            } else {
+              // Time-only format: 14:00:00
+              time = new Date(`2000-01-01T${datetime}`);
+            }
+            // Validate the date is valid
+            if (isNaN(time.getTime())) {
+              time = new Date();
+            }
+          } catch {
+            time = new Date();
           }
           const timeStr =
             index === 0
@@ -58,7 +78,7 @@ function HourlyForecast({ hours, isLoading }) {
 
           return (
             <div
-              key={hour.datetime || hour.time}
+              key={hour.datetime || hour.time || index}
               className="flex-shrink-0 w-16 text-center p-2 rounded-xl hover:bg-bg-card-hover transition-colors"
             >
               <p className="text-text-muted text-sm mb-2">{timeStr}</p>
@@ -73,19 +93,6 @@ function HourlyForecast({ hours, isLoading }) {
       </div>
     </Card>
   );
-}
-
-function getWeatherEmoji(condition) {
-  if (!condition) return '☀️';
-  const c = condition.toLowerCase();
-  if (c.includes('rain') || c.includes('shower')) return '🌧️';
-  if (c.includes('snow')) return '❄️';
-  if (c.includes('thunder') || c.includes('storm')) return '⛈️';
-  if (c.includes('cloud') || c.includes('overcast')) return '☁️';
-  if (c.includes('partly')) return '⛅';
-  if (c.includes('fog') || c.includes('mist')) return '🌫️';
-  if (c.includes('wind')) return '💨';
-  return '☀️';
 }
 
 export default HourlyForecast;

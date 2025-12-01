@@ -8,7 +8,7 @@
  * @returns {number} Temperature in Fahrenheit
  */
 export function celsiusToFahrenheit(celsius) {
-  return (celsius * 9/5) + 32;
+  return (celsius * 9) / 5 + 32;
 }
 
 /**
@@ -17,7 +17,7 @@ export function celsiusToFahrenheit(celsius) {
  * @returns {number} Temperature in Celsius
  */
 export function fahrenheitToCelsius(fahrenheit) {
-  return (fahrenheit - 32) * 5/9;
+  return ((fahrenheit - 32) * 5) / 9;
 }
 
 /**
@@ -43,7 +43,7 @@ export function formatDate(dateString) {
   return date.toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',
-    year: 'numeric'
+    year: 'numeric',
   });
 }
 
@@ -57,7 +57,7 @@ export function formatDateShort(dateString) {
   return date.toLocaleDateString('en-US', {
     weekday: 'short',
     month: 'short',
-    day: 'numeric'
+    day: 'numeric',
   });
 }
 
@@ -99,8 +99,24 @@ export function formatWindSpeed(speed) {
 export function getWindDirection(degrees) {
   if (degrees === null || degrees === undefined) return '--';
 
-  const directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE',
-                      'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
+  const directions = [
+    'N',
+    'NNE',
+    'NE',
+    'ENE',
+    'E',
+    'ESE',
+    'SE',
+    'SSE',
+    'S',
+    'SSW',
+    'SW',
+    'WSW',
+    'W',
+    'WNW',
+    'NW',
+    'NNW',
+  ];
   const index = Math.round(degrees / 22.5) % 16;
   return directions[index];
 }
@@ -126,22 +142,27 @@ export function formatPressure(pressure) {
 }
 
 /**
- * Get weather icon emoji
+ * Get weather icon emoji based on condition string
+ * Centralized implementation - all components should use this
  * @param {string} conditions - Weather condition string
  * @returns {string} Weather emoji
  */
 export function getWeatherEmoji(conditions) {
-  if (!conditions) return '☁️';
+  if (!conditions) return '☀️';
 
-  const lower = conditions.toLowerCase();
-  if (lower.includes('clear') || lower.includes('sunny')) return '☀️';
-  if (lower.includes('partly cloudy')) return '⛅';
-  if (lower.includes('cloudy') || lower.includes('overcast')) return '☁️';
-  if (lower.includes('rain') || lower.includes('drizzle')) return '🌧️';
-  if (lower.includes('snow')) return '❄️';
-  if (lower.includes('thunder') || lower.includes('storm')) return '⛈️';
-  if (lower.includes('fog') || lower.includes('mist')) return '🌫️';
-  return '☁️';
+  const c = conditions.toLowerCase();
+
+  // Check most specific conditions first
+  if (c.includes('thunder') || c.includes('storm')) return '⛈️';
+  if (c.includes('rain') || c.includes('shower') || c.includes('drizzle')) return '🌧️';
+  if (c.includes('snow') || c.includes('sleet') || c.includes('ice')) return '❄️';
+  if (c.includes('fog') || c.includes('mist') || c.includes('haze')) return '🌫️';
+  if (c.includes('wind') || c.includes('breezy') || c.includes('gust')) return '💨';
+  if (c.includes('partly') || c.includes('partial')) return '⛅';
+  if (c.includes('cloud') || c.includes('overcast')) return '☁️';
+  if (c.includes('clear') || c.includes('sunny') || c.includes('fair')) return '☀️';
+
+  return '☀️';
 }
 
 /**
@@ -156,7 +177,7 @@ export function getDateRange(days) {
 
   return {
     startDate: start.toISOString().split('T')[0],
-    endDate: end.toISOString().split('T')[0]
+    endDate: end.toISOString().split('T')[0],
   };
 }
 
@@ -172,7 +193,7 @@ export function getMonthRange(year, month) {
 
   return {
     startDate: start.toISOString().split('T')[0],
-    endDate: end.toISOString().split('T')[0]
+    endDate: end.toISOString().split('T')[0],
   };
 }
 
@@ -207,7 +228,7 @@ export function aggregateWeatherData(data, timeRange) {
   // Group data by period
   const groups = {};
 
-  data.forEach(day => {
+  data.forEach((day) => {
     const date = new Date(day.date);
     let key;
 
@@ -228,49 +249,59 @@ export function aggregateWeatherData(data, timeRange) {
   });
 
   // Calculate averages for each group
-  const aggregatedData = Object.keys(groups).sort().map(key => {
-    const groupData = groups[key];
-    const firstDate = new Date(groupData[0].date);
+  const aggregatedData = Object.keys(groups)
+    .sort()
+    .map((key) => {
+      const groupData = groups[key];
+      const firstDate = new Date(groupData[0].date);
 
-    // Calculate averages for all metrics
-    const avgTemp = groupData.reduce((sum, d) => sum + (d.tempAvg || d.temp || 0), 0) / groupData.length;
-    const avgTempMax = groupData.reduce((sum, d) => sum + (d.tempMax || d.tempHigh || 0), 0) / groupData.length;
-    const avgTempMin = groupData.reduce((sum, d) => sum + (d.tempMin || d.tempLow || 0), 0) / groupData.length;
-    const totalPrecip = groupData.reduce((sum, d) => sum + (d.precipitation || d.precip || 0), 0);
-    const avgHumidity = groupData.reduce((sum, d) => sum + (d.humidity || 0), 0) / groupData.length;
-    const avgWindSpeed = groupData.reduce((sum, d) => sum + (d.windSpeed || 0), 0) / groupData.length;
-    const avgWindDirection = groupData.reduce((sum, d) => sum + (d.windDirection || 0), 0) / groupData.length;
-    const avgPrecipProb = groupData.reduce((sum, d) => sum + (d.precipProbability || d.precipProb || 0), 0) / groupData.length;
+      // Calculate averages for all metrics
+      const avgTemp =
+        groupData.reduce((sum, d) => sum + (d.tempAvg || d.temp || 0), 0) / groupData.length;
+      const avgTempMax =
+        groupData.reduce((sum, d) => sum + (d.tempMax || d.tempHigh || 0), 0) / groupData.length;
+      const avgTempMin =
+        groupData.reduce((sum, d) => sum + (d.tempMin || d.tempLow || 0), 0) / groupData.length;
+      const totalPrecip = groupData.reduce((sum, d) => sum + (d.precipitation || d.precip || 0), 0);
+      const avgHumidity =
+        groupData.reduce((sum, d) => sum + (d.humidity || 0), 0) / groupData.length;
+      const avgWindSpeed =
+        groupData.reduce((sum, d) => sum + (d.windSpeed || 0), 0) / groupData.length;
+      const avgWindDirection =
+        groupData.reduce((sum, d) => sum + (d.windDirection || 0), 0) / groupData.length;
+      const avgPrecipProb =
+        groupData.reduce((sum, d) => sum + (d.precipProbability || d.precipProb || 0), 0) /
+        groupData.length;
 
-    // Create display label
-    let displayLabel;
-    if (aggregationType === 'weekly') {
-      displayLabel = `Week of ${firstDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
-    } else {
-      displayLabel = firstDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-    }
+      // Create display label
+      let displayLabel;
+      if (aggregationType === 'weekly') {
+        displayLabel = `Week of ${firstDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+      } else {
+        displayLabel = firstDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+      }
 
-    return {
-      date: groupData[0].date, // Use first date as representative
-      displayLabel,
-      temp: avgTemp,
-      tempAvg: avgTemp,
-      tempMax: avgTempMax,
-      tempMin: avgTempMin,
-      tempHigh: avgTempMax,
-      tempLow: avgTempMin,
-      precipitation: totalPrecip,
-      precip: totalPrecip,
-      humidity: avgHumidity,
-      windSpeed: avgWindSpeed,
-      windDirection: avgWindDirection,
-      precipProbability: avgPrecipProb,
-      precipProb: avgPrecipProb,
-      conditions: groupData[0].conditions, // Take first day's conditions
-      snow: groupData.reduce((sum, d) => sum + (d.snow || 0), 0),
-      aggregatedDays: groupData.length // Track how many days were aggregated
-    };
-  });
+      return {
+        date: groupData[0].date, // Use first date as representative
+        displayLabel,
+        temp: avgTemp,
+        tempAvg: avgTemp,
+        tempMax: avgTempMax,
+        tempMin: avgTempMin,
+        tempHigh: avgTempMax,
+        tempLow: avgTempMin,
+        precipitation: totalPrecip,
+        precip: totalPrecip,
+        humidity: avgHumidity,
+        windSpeed: avgWindSpeed,
+        windDirection: avgWindDirection,
+        precipProbability: avgPrecipProb,
+        precipProb: avgPrecipProb,
+        conditions: groupData[0].conditions, // Take first day's conditions
+        snow: groupData.reduce((sum, d) => sum + (d.snow || 0), 0),
+        aggregatedDays: groupData.length, // Track how many days were aggregated
+      };
+    });
 
   return { aggregatedData, aggregationLabel };
 }

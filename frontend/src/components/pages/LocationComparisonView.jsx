@@ -158,7 +158,8 @@ function LocationComparisonView() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {locations.map((location, index) => {
               const query = weatherQueries[index];
-              const weather = query?.data?.currentConditions;
+              // Support both old format (currentConditions) and new API format (current)
+              const weather = query?.data?.currentConditions || query?.data?.current;
               const isLoading = query?.isLoading;
               const error = query?.error;
 
@@ -246,20 +247,22 @@ function LocationCard({ location, weather, isLoading, error, onRemove, formatTem
         </div>
       ) : weather ? (
         <div className="space-y-4">
-          {/* Temperature */}
+          {/* Temperature - support both snake_case and camelCase */}
           <div className="text-center">
             <p className="text-4xl font-bold text-text-primary">
-              {formatTemperature(weather.temp)}
+              {formatTemperature(weather.temp ?? weather.temperature)}
             </p>
             <p className="text-text-muted text-sm mt-1">{weather.conditions}</p>
           </div>
 
-          {/* Stats */}
+          {/* Stats - support both snake_case and camelCase */}
           <div className="grid grid-cols-3 gap-2 pt-4 border-t border-steel-blue/20">
             <div className="text-center">
               <Thermometer size={16} className="mx-auto text-text-muted mb-1" />
               <p className="text-xs text-text-muted">Feels</p>
-              <p className="text-sm text-text-primary">{formatTemperature(weather.feelslike)}</p>
+              <p className="text-sm text-text-primary">
+                {formatTemperature(weather.feelslike ?? weather.feelsLike)}
+              </p>
             </div>
             <div className="text-center">
               <Droplets size={16} className="mx-auto text-text-muted mb-1" />
@@ -269,7 +272,9 @@ function LocationCard({ location, weather, isLoading, error, onRemove, formatTem
             <div className="text-center">
               <Wind size={16} className="mx-auto text-text-muted mb-1" />
               <p className="text-xs text-text-muted">Wind</p>
-              <p className="text-sm text-text-primary">{weather.windspeed} mph</p>
+              <p className="text-sm text-text-primary">
+                {weather.windspeed ?? weather.windSpeed} mph
+              </p>
             </div>
           </div>
         </div>
@@ -279,6 +284,18 @@ function LocationCard({ location, weather, isLoading, error, onRemove, formatTem
 }
 
 function ComparisonTable({ queries, locations, formatTemperature }) {
+  // Helper to get value supporting both snake_case and camelCase field names
+  const getValue = (weather, key) => {
+    if (!weather) return null;
+    const camelCaseMap = {
+      temp: 'temperature',
+      feelslike: 'feelsLike',
+      windspeed: 'windSpeed',
+      uvindex: 'uvIndex',
+    };
+    return weather[key] ?? weather[camelCaseMap[key]] ?? null;
+  };
+
   const metrics = [
     { key: 'temp', label: 'Temperature', format: (v) => formatTemperature(v) },
     { key: 'feelslike', label: 'Feels Like', format: (v) => formatTemperature(v) },
@@ -314,8 +331,9 @@ function ComparisonTable({ queries, locations, formatTemperature }) {
             <tr key={metric.key} className="border-t border-steel-blue/10">
               <td className="py-3 text-text-secondary text-sm">{metric.label}</td>
               {queries.map((query, index) => {
-                const weather = query?.data?.currentConditions;
-                const value = weather?.[metric.key];
+                // Support both old format (currentConditions) and new API format (current)
+                const weather = query?.data?.currentConditions || query?.data?.current;
+                const value = getValue(weather, metric.key);
 
                 return (
                   <td
