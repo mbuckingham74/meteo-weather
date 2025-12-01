@@ -123,15 +123,30 @@ Breaking changes into logical, reviewable chunks:
 - [x] Hourly forecast (24h)
 - [x] Temperature chart integration
 
-### PR 7: Secondary Features
-- [ ] Search/location input
-- [ ] Settings/preferences
-- [ ] Auth modal (restyled)
+### PR 5: Temperature Unit Toggle ✅ COMPLETE
+- [x] TemperatureToggle component (pill-style °F/°C switch)
+- [x] Integrated into dashboard header next to search
+- [x] 7-day forecast uses formatTemperature
+- [x] Dew Point uses proper temperature conversion
+- **PR:** https://github.com/mbuckingham74/meteo-weather/pull/72
 
-### PR 8: Additional Pages
+### PR 6: Auth Header & Login Modal ✅ COMPLETE
+- [x] Desktop navigation with active state highlighting
+- [x] User avatar dropdown menu (Preferences, Admin, Sign Out)
+- [x] Mobile hamburger menu with responsive navigation
+- [x] Login/Register modal with form validation
+- [x] Admin link conditional on user.isAdmin
+- [x] Click outside closes dropdown, Escape closes modal
+- [x] Toast notifications (visual UI, auto-dismiss, queue)
+- [x] Skip links accessibility (main content, search)
+- [x] URL sync for deep-linking/sharing (/location/:slug)
+- **PR:** https://github.com/mbuckingham74/meteo-weather/pull/73
+
+### PR 7: Additional Pages (IN PROGRESS)
 - [ ] AI Weather page
 - [ ] Location comparison
 - [ ] Admin panel (restyled)
+- [ ] User Preferences page
 
 ---
 
@@ -186,8 +201,35 @@ Breaking changes into logical, reviewable chunks:
 - [x] **MEDIUM:** Fixed button classes (added base .btn class)
 
 **Up Next:**
-- [ ] PR 7: Secondary Features (Settings/preferences with working temp toggle)
+- [ ] PR 7: User Preferences Page
 - [ ] PR 8: Additional Pages (AI Weather, Location comparison, Admin)
+
+### Session 3 - November 30, 2025
+
+**Status:** 🟢 PR 5 & 6 Complete
+
+**Completed:**
+- [x] **PR 5: Temperature Unit Toggle** - https://github.com/mbuckingham74/meteo-weather/pull/72
+  - TemperatureToggle component with pill-style switch
+  - Integrated into dashboard header
+  - 7-day forecast and Dew Point use formatTemperature
+- [x] **PR 6: Auth Header & Login Modal** - https://github.com/mbuckingham74/meteo-weather/pull/73
+  - Complete navigation header with auth integration
+  - User dropdown menu with Preferences, Admin, Sign Out
+  - Mobile hamburger menu
+  - Login/Register modal with validation
+  - Toast notifications (visual UI with auto-dismiss)
+  - Skip links accessibility restored
+  - URL sync for location deep-linking
+
+**Code Review Fixes Applied (PR 73):**
+- [x] **BLOCKER:** Toast notifications - full visual UI restored
+- [x] **HIGH:** URL sync - LocationSearch now navigates to /location/:slug
+- [x] **MEDIUM:** Duplicate id="main-content" fixed (removed from WeatherDashboard)
+- [x] **MEDIUM:** Skip links - multiple targets with proper focus styling
+
+**Up Next:**
+- [ ] PR 7: Additional Pages (AI Weather, Compare, Admin, Preferences)
 
 ---
 
@@ -205,6 +247,8 @@ When resuming in a new context window:
 - PR #69: `feature/ui-redesign-v2` → main (Tailwind + Remove Old UI)
 - PR #70: `feature/ui-redesign-pr3-dashboard` → PR #69 (Dashboard Shell)
 - PR #71: `feature/ui-redesign-pr4-charts` → PR #70 (Charts & Hourly)
+- PR #72: `feature/ui-redesign-pr5-temp-toggle` → PR #70 (Temperature Toggle)
+- PR #73: `feature/ui-redesign-pr6-auth-header` → PR #72 (Auth Header)
 
 **Backup Branch:** `backup/ui-before-redesign-nov30`
 
@@ -285,4 +329,4 @@ src/
 ---
 
 *Last Updated: November 30, 2025*
-*Current Session: 2*
+*Current Session: 3 (continuing)*
