@@ -94,8 +94,17 @@ function LocationSearch() {
     }
   };
 
+  const closeDropdown = () => {
+    setShowResults(false);
+  };
+
   return (
     <div className="relative">
+      {/* Backdrop to close dropdown when clicking outside */}
+      {showResults && (
+        <div className="fixed inset-0 z-40" onClick={closeDropdown} aria-hidden="true" />
+      )}
+
       <div className="relative">
         <input
           id="search"
@@ -107,6 +116,10 @@ function LocationSearch() {
           placeholder="Search for a city..."
           className="input pl-12"
           aria-label="Search for a location"
+          aria-expanded={showResults}
+          aria-controls="search-results"
+          role="combobox"
+          aria-autocomplete="list"
         />
         <div className="absolute left-4 top-1/2 -translate-y-1/2">
           {isSearching ? (
@@ -119,25 +132,34 @@ function LocationSearch() {
 
       {/* Search Results Dropdown */}
       {showResults && results.length > 0 && (
-        <div className="absolute z-50 w-full mt-2 bg-bg-card rounded-xl shadow-elevated overflow-hidden">
+        <ul
+          id="search-results"
+          role="listbox"
+          className="absolute z-50 w-full mt-2 bg-bg-card rounded-xl shadow-elevated overflow-hidden"
+        >
           {results.map((location, index) => (
-            <button
-              key={`${location.latitude}-${location.longitude}-${index}`}
-              onClick={() => handleSelectLocation(location)}
-              className="w-full px-4 py-3 flex items-center gap-3 hover:bg-bg-card-hover transition-colors text-left"
-            >
-              <MapPin size={18} className="text-accent flex-shrink-0" />
-              <span className="text-text-primary truncate">
-                {location.address || location.location_name}
-              </span>
-            </button>
+            <li key={`${location.latitude}-${location.longitude}-${index}`} role="option">
+              <button
+                onClick={() => handleSelectLocation(location)}
+                className="w-full px-4 py-3 flex items-center gap-3 hover:bg-bg-card-hover transition-colors text-left"
+              >
+                <MapPin size={18} className="text-accent flex-shrink-0" />
+                <span className="text-text-primary truncate">
+                  {location.address || location.location_name}
+                </span>
+              </button>
+            </li>
           ))}
-        </div>
+        </ul>
       )}
 
       {/* No Results */}
       {showResults && query.length >= 2 && !isSearching && results.length === 0 && (
-        <div className="absolute z-50 w-full mt-2 bg-bg-card rounded-xl shadow-elevated p-4">
+        <div
+          id="search-results"
+          role="listbox"
+          className="absolute z-50 w-full mt-2 bg-bg-card rounded-xl shadow-elevated p-4"
+        >
           <p className="text-text-muted text-center">No locations found</p>
         </div>
       )}
