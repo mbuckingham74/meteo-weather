@@ -157,8 +157,8 @@ export async function apiRequest(endpoint, options = {}) {
   // Build full URL using centralized config
   const url = `${API_CONFIG.BASE_URL}${normalizedEndpoint}`;
 
-  // Get auth token from localStorage
-  const token = localStorage.getItem('token');
+  // Get auth token from localStorage (AuthContext stores as 'accessToken')
+  const token = localStorage.getItem('accessToken');
 
   // Build headers
   const headers = {
