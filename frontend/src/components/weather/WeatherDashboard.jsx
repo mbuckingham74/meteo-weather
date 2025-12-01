@@ -3,10 +3,16 @@
  */
 import { Wind, Droplets, Sun, Gauge, Thermometer, Eye } from 'lucide-react';
 import { useLocation } from '../../contexts/LocationContext';
-import { useCurrentWeatherQuery, useForecastQuery } from '../../hooks/useWeatherQueries';
+import {
+  useCurrentWeatherQuery,
+  useForecastQuery,
+  useHourlyForecastQuery,
+} from '../../hooks/useWeatherQueries';
 import { useTemperatureUnit } from '../../contexts/TemperatureUnitContext';
 import CurrentConditions from './CurrentConditions';
 import LocationSearch from './LocationSearch';
+import HourlyForecast from './HourlyForecast';
+import TemperatureChart from './TemperatureChart';
 import StatCard from '../ui/StatCard';
 import Card from '../ui/Card';
 import TemperatureToggle from '../ui/TemperatureToggle';
@@ -26,6 +32,9 @@ function WeatherDashboard() {
 
   // Fetch 7-day forecast
   const { data: forecast, isLoading: isLoadingForecast } = useForecastQuery(lat, lng, 7);
+
+  // Fetch hourly forecast
+  const { data: hourlyData, isLoading: isLoadingHourly } = useHourlyForecastQuery(lat, lng);
 
   const weather = currentWeather?.currentConditions;
   const locationName = locationData?.address || locationData?.location_name;
@@ -69,6 +78,12 @@ function WeatherDashboard() {
             <StatCard icon={Eye} label="Visibility" value={weather.visibility || 0} unit="mi" />
           </div>
         )}
+
+        {/* Hourly Forecast */}
+        {locationData && <HourlyForecast hourlyData={hourlyData} isLoading={isLoadingHourly} />}
+
+        {/* Temperature Chart */}
+        {locationData && <TemperatureChart forecast={forecast} isLoading={isLoadingForecast} />}
 
         {/* 7-Day Forecast Preview */}
         {forecast?.days && forecast.days.length > 0 && (
