@@ -81,36 +81,47 @@ Breaking changes into logical, reviewable chunks:
 - [x] Verify build works (910 modules, 2.45s)
 - **PR:** https://github.com/mbuckingham74/meteo-weather/pull/69
 
-### PR 2: Remove Old UI Code
-- [ ] Delete `src/components/` directory
-- [ ] Delete `src/styles/` directory
-- [ ] Delete all scattered `.module.css` files
-- [ ] Clean up unused imports in App.jsx
-- [ ] Minimal placeholder components to prevent build errors
+### PR 2: Remove Old UI Code ✅ COMPLETE
+- [x] Delete `src/components/` directory (72 JSX, 38 CSS files)
+- [x] Delete `src/styles/` directory (ITCSS architecture)
+- [x] Delete all scattered `.module.css` files
+- [x] Delete old scripts (color linting, token validation)
+- [x] Clean up unused imports in App.jsx
+- [x] Create minimal placeholder components (10 files)
+- [x] Remove postcss-custom-media dependency
+- **Results:** CSS 230kB→17kB (-93%), JS 673kB→237kB (-65%), Build 2.45s→1.03s
+- **PR:** https://github.com/mbuckingham74/meteo-weather/pull/69 (same branch)
 
-### PR 3: Dashboard Shell
-- [ ] Create new `src/components/layout/` structure
-- [ ] Build minimal WeatherDashboard shell
-- [ ] Implement color palette as Tailwind theme
-- [ ] Basic responsive layout grid
+### PR 3: Dashboard Shell ✅ COMPLETE
+- [x] Create new `src/components/ui/` structure (Card, StatCard)
+- [x] Build WeatherDashboard with real weather data
+- [x] CurrentConditions hero component
+- [x] LocationSearch with debounced geocoding
+- [x] Stats grid (Wind, Humidity, UV, Pressure, Dew Point, Visibility)
+- [x] 7-day forecast cards
+- [x] Fix temperature unit conversion (API returns Celsius)
+- **PR:** https://github.com/mbuckingham74/meteo-weather/pull/70
 
-### PR 4: Core Weather Display
-- [ ] Current conditions hero section
-- [ ] Temperature display (large, prominent)
-- [ ] Location header
-- [ ] Basic weather icon
+### PR 4: Charts & Hourly Forecast ✅ COMPLETE
+- [x] HourlyForecast horizontal scrolling strip
+- [x] TemperatureChart with Recharts (high/low area chart)
+- [x] Unit-aware chart data (reacts to °F/°C toggle)
+- [x] Fix datetime parsing for ISO timestamps
+- [x] Loading skeletons for all components
+- **PR:** https://github.com/mbuckingham74/meteo-weather/pull/71
 
-### PR 5: Info Cards
-- [ ] Wind card
-- [ ] Humidity card
-- [ ] UV Index card
-- [ ] Pressure card
-- [ ] Feels like card
+### PR 5: Info Cards (MERGED INTO PR 3)
+- [x] Wind card
+- [x] Humidity card
+- [x] UV Index card
+- [x] Pressure card
+- [x] Dew Point card
+- [x] Visibility card
 
-### PR 6: Forecast Components
-- [ ] 7-day forecast strip
-- [ ] Hourly forecast (24h)
-- [ ] Temperature chart integration
+### PR 6: Forecast Components (MERGED INTO PR 3 & 4)
+- [x] 7-day forecast strip
+- [x] Hourly forecast (24h)
+- [x] Temperature chart integration
 
 ### PR 7: Secondary Features
 - [ ] Search/location input
@@ -128,7 +139,7 @@ Breaking changes into logical, reviewable chunks:
 
 ### Session 1 - November 30, 2025
 
-**Status:** 🟢 PR 1 Complete
+**Status:** 🟢 PR 1 & 2 Complete
 
 **Completed:**
 - [x] Cleaned up uncommitted changes
@@ -136,15 +147,47 @@ Breaking changes into logical, reviewable chunks:
 - [x] Created feature branch: `feature/ui-redesign-v2`
 - [x] Created this tracking document
 - [x] **PR 1: Tailwind Setup** - https://github.com/mbuckingham74/meteo-weather/pull/69
-
-**Up Next:**
-- [ ] PR 2: Remove old components and styles
+- [x] **PR 2: Remove Old UI** - 144 files deleted, 34,006 lines removed
 
 **Notes:**
 - Starting from clean main branch (commit 8a8162d)
 - Backup pushed to remote for safety
 - Tailwind v4 uses CSS-based config (@theme block), not JS config file
 - Build verified working with new setup
+- Massive bundle size reduction achieved:
+  - CSS: 230 kB → 17 kB (-93%)
+  - JS: 673 kB → 237 kB (-65%)
+  - Modules: 910 → 129 (-86%)
+
+### Session 2 - November 30, 2025
+
+**Status:** 🟢 PR 3 & 4 Complete (code review fixes applied)
+
+**Completed:**
+- [x] **PR 3: Dashboard Shell** - https://github.com/mbuckingham74/meteo-weather/pull/70
+  - WeatherDashboard with real data via React Query hooks
+  - CurrentConditions hero section
+  - LocationSearch with proper debouncing (useRef + isMountedRef pattern)
+  - Stats grid with 6 cards
+  - 7-day forecast cards
+- [x] **PR 4: Charts & Hourly** - https://github.com/mbuckingham74/meteo-weather/pull/71
+  - HourlyForecast horizontal scrolling strip
+  - TemperatureChart with Recharts
+  - Loading skeletons
+
+**Code Review Fixes Applied:**
+- [x] **BLOCKER:** Fixed formatTemperature - was converting wrong direction (API returns Celsius, not Fahrenheit)
+- [x] **HIGH:** Fixed LocationSearch debounce (useRef instead of broken return from onChange)
+- [x] **HIGH:** Added convertTemperature for numeric chart values
+- [x] **HIGH:** Chart data now reacts to unit toggle via useMemo dependency
+- [x] **HIGH:** 7-day forecast cards now use formatTemperature
+- [x] **HIGH:** Dew Point StatCard now uses temperature unit
+- [x] **MEDIUM:** HourlyForecast handles both time-only and ISO datetime formats
+- [x] **MEDIUM:** Fixed button classes (added base .btn class)
+
+**Up Next:**
+- [ ] PR 7: Secondary Features (Settings/preferences with working temp toggle)
+- [ ] PR 8: Additional Pages (AI Weather, Location comparison, Admin)
 
 ---
 
@@ -158,7 +201,11 @@ When resuming in a new context window:
 4. Check open PRs: `gh pr list --author @me`
 5. Continue from where we left off
 
-**Current Branch:** `feature/ui-redesign-v2`
+**PR Stack:**
+- PR #69: `feature/ui-redesign-v2` → main (Tailwind + Remove Old UI)
+- PR #70: `feature/ui-redesign-pr3-dashboard` → PR #69 (Dashboard Shell)
+- PR #71: `feature/ui-redesign-pr4-charts` → PR #70 (Charts & Hourly)
+
 **Backup Branch:** `backup/ui-before-redesign-nov30`
 
 ---
@@ -238,4 +285,4 @@ src/
 ---
 
 *Last Updated: November 30, 2025*
-*Current Session: 1*
+*Current Session: 2*

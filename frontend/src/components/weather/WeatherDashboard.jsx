@@ -1,66 +1,137 @@
 /**
- * Weather Dashboard - Main dashboard placeholder
- * TODO: Implement full dashboard in PR 3-6
+ * WeatherDashboard - Main weather dashboard with real data
  */
+import { Wind, Droplets, Sun, Gauge, Thermometer, Eye } from 'lucide-react';
 import { useLocation } from '../../contexts/LocationContext';
+import { useCurrentWeatherQuery, useForecastQuery } from '../../hooks/useWeatherQueries';
+import { useTemperatureUnit } from '../../contexts/TemperatureUnitContext';
+import CurrentConditions from './CurrentConditions';
+import LocationSearch from './LocationSearch';
+import StatCard from '../ui/StatCard';
+import Card from '../ui/Card';
+import TemperatureToggle from '../ui/TemperatureToggle';
 
 function WeatherDashboard() {
-  const { selectedLocation } = useLocation();
+  const { locationData } = useLocation();
+  const { formatTemperature } = useTemperatureUnit();
+  const lat = locationData?.latitude;
+  const lng = locationData?.longitude;
+
+  // Fetch current weather
+  const {
+    data: currentWeather,
+    isLoading: isLoadingCurrent,
+    error: currentError,
+  } = useCurrentWeatherQuery(lat, lng);
+
+  // Fetch 7-day forecast
+  const { data: forecast, isLoading: isLoadingForecast } = useForecastQuery(lat, lng, 7);
+
+  const weather = currentWeather?.currentConditions;
+  const locationName = locationData?.address || locationData?.location_name;
 
   return (
-    <div className="min-h-screen bg-bg-primary p-6">
-      <div className="max-w-6xl mx-auto">
-        {/* Hero Section Placeholder */}
-        <div className="card mb-6">
-          <div className="text-center py-12">
-            <h1 className="text-5xl font-bold text-text-primary mb-2">
-              {selectedLocation ? '72°F' : '--°F'}
-            </h1>
-            <p className="text-xl text-text-secondary">
-              {selectedLocation?.address || 'Search for a location to get started'}
-            </p>
-            {selectedLocation && (
-              <p className="text-text-muted mt-2">Partly Cloudy • Feels like 70°F</p>
-            )}
+    <div className="min-h-screen bg-bg-primary p-4 md:p-6">
+      <div className="max-w-5xl mx-auto space-y-6">
+        {/* Header with Search and Settings */}
+        <div className="flex items-center gap-4">
+          <div className="flex-1">
+            <LocationSearch />
           </div>
+          <TemperatureToggle />
         </div>
 
-        {/* Search Placeholder */}
-        <div className="card mb-6">
-          <input type="text" placeholder="Search for a city..." className="input" />
-        </div>
+        {/* Hero - Current Conditions */}
+        <CurrentConditions
+          weather={weather}
+          location={locationName}
+          isLoading={isLoadingCurrent}
+          error={currentError}
+        />
 
-        {/* Stats Grid Placeholder */}
-        {selectedLocation && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <div className="card-hover text-center">
-              <p className="text-text-muted text-sm">Wind</p>
-              <p className="text-2xl font-bold text-text-primary">12 mph</p>
-            </div>
-            <div className="card-hover text-center">
-              <p className="text-text-muted text-sm">Humidity</p>
-              <p className="text-2xl font-bold text-text-primary">65%</p>
-            </div>
-            <div className="card-hover text-center">
-              <p className="text-text-muted text-sm">UV Index</p>
-              <p className="text-2xl font-bold text-text-primary">6</p>
-            </div>
-            <div className="card-hover text-center">
-              <p className="text-text-muted text-sm">Pressure</p>
-              <p className="text-2xl font-bold text-text-primary">30.1 in</p>
-            </div>
+        {/* Stats Grid */}
+        {weather && (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <StatCard icon={Wind} label="Wind" value={weather.windspeed || 0} unit="mph" />
+            <StatCard icon={Droplets} label="Humidity" value={weather.humidity || 0} unit="%" />
+            <StatCard icon={Sun} label="UV Index" value={weather.uvindex || 0} />
+            <StatCard
+              icon={Gauge}
+              label="Pressure"
+              value={weather.pressure ? (weather.pressure * 0.02953).toFixed(2) : '0'}
+              unit="in"
+            />
+            <StatCard
+              icon={Thermometer}
+              label="Dew Point"
+              value={formatTemperature(weather.dew || 0)}
+            />
+            <StatCard icon={Eye} label="Visibility" value={weather.visibility || 0} unit="mi" />
           </div>
         )}
 
-        {/* Placeholder Message */}
-        <div className="card text-center py-8">
-          <p className="text-text-muted">
-            UI Redesign in Progress - Dashboard components coming in PR 3-6
-          </p>
-        </div>
+        {/* 7-Day Forecast Preview */}
+        {forecast?.days && forecast.days.length > 0 && (
+          <Card>
+            <h2 className="text-lg font-semibold text-text-primary mb-4">7-Day Forecast</h2>
+            <div className="grid grid-cols-7 gap-2">
+              {forecast.days.slice(0, 7).map((day, index) => {
+                const date = new Date(day.datetime);
+                const dayName =
+                  index === 0 ? 'Today' : date.toLocaleDateString('en-US', { weekday: 'short' });
+
+                return (
+                  <div
+                    key={day.datetime}
+                    className="text-center p-3 rounded-xl hover:bg-bg-card-hover transition-colors"
+                  >
+                    <p className="text-text-muted text-sm mb-2">{dayName}</p>
+                    <div className="text-2xl mb-2">{getWeatherEmoji(day.conditions)}</div>
+                    <p className="text-text-primary font-semibold">
+                      {formatTemperature(day.tempmax)}
+                    </p>
+                    <p className="text-text-muted text-sm">{formatTemperature(day.tempmin)}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
+        )}
+
+        {/* Loading state for forecast */}
+        {isLoadingForecast && locationData && (
+          <Card>
+            <div className="animate-pulse">
+              <div className="h-6 w-32 bg-bg-elevated rounded mb-4" />
+              <div className="grid grid-cols-7 gap-2">
+                {[...Array(7)].map((_, i) => (
+                  <div key={i} className="text-center p-3">
+                    <div className="h-4 w-8 bg-bg-elevated rounded mx-auto mb-2" />
+                    <div className="h-8 w-8 bg-bg-elevated rounded mx-auto mb-2" />
+                    <div className="h-4 w-6 bg-bg-elevated rounded mx-auto" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Card>
+        )}
       </div>
     </div>
   );
+}
+
+// Helper function to get weather emoji
+function getWeatherEmoji(condition) {
+  if (!condition) return '☀️';
+  const c = condition.toLowerCase();
+  if (c.includes('rain') || c.includes('shower')) return '🌧️';
+  if (c.includes('snow')) return '❄️';
+  if (c.includes('thunder') || c.includes('storm')) return '⛈️';
+  if (c.includes('cloud') || c.includes('overcast')) return '☁️';
+  if (c.includes('partly')) return '⛅';
+  if (c.includes('fog') || c.includes('mist')) return '🌫️';
+  if (c.includes('wind')) return '💨';
+  return '☀️';
 }
 
 export default WeatherDashboard;
