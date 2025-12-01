@@ -8,7 +8,7 @@
  * - Weather data: Stale-while-revalidate (show cached, update in background)
  */
 
-const CACHE_VERSION = 'meteo-v2.0.0';
+const CACHE_VERSION = 'meteo-v2.0.1';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const DYNAMIC_CACHE = `${CACHE_VERSION}-dynamic`;
 const API_CACHE = `${CACHE_VERSION}-api`;
@@ -128,7 +128,13 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Static assets: Cache-first
+  // Skip cross-origin requests for static assets (analytics, external scripts, etc.)
+  // Let the browser handle these directly without service worker intervention
+  if (url.origin !== self.location.origin) {
+    return;
+  }
+
+  // Static assets (same-origin only): Cache-first
   if (
     request.destination === 'style' ||
     request.destination === 'script' ||
