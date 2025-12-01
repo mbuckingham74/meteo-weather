@@ -12,10 +12,12 @@ root.render(
 );
 
 // Register service worker for PWA functionality
+// Use cache-busting query param to bypass proxy caching (NPM adds max-age headers)
+const SW_VERSION = '2.0.0';
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker
-      .register('/service-worker.js')
+      .register(`/service-worker.js?v=${SW_VERSION}`)
       .then((registration) => {
         console.log('✅ ServiceWorker registered:', registration);
 
