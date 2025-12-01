@@ -297,7 +297,7 @@ function ComparisonTable({ queries, locations, formatTemperature }) {
         <thead>
           <tr>
             <th className="text-left text-text-muted text-sm font-medium pb-3">Metric</th>
-            {locations.map((location, index) => (
+            {locations.map((location) => (
               <th
                 key={`${location.latitude}-${location.longitude}`}
                 className="text-center text-text-muted text-sm font-medium pb-3 px-2"
