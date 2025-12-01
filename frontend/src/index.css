@@ -6,36 +6,44 @@
    ======================================== */
 
 @theme {
-  /* Primary palette */
-  --color-slate-dark: #384959;
-  --color-steel-blue: #6a89a7;
-  --color-sky-light: #bdddfc;
-  --color-primary-blue: #88bdf2;
+  /* Primary palette - Burgundy/Pink/Green theme */
+  --color-burgundy: #660033;
+  --color-burgundy-light: #7a1a4a;
+  --color-pink: #e673ac;
+  --color-pink-light: #f09dc7;
+  --color-lime: #469110;
+  --color-lime-light: #5aab24;
+  --color-forest: #00520a;
+  --color-forest-light: #0a6a14;
 
-  /* Background colors */
-  --color-bg-primary: #384959;
-  --color-bg-card: #3d5166;
-  --color-bg-card-hover: #455d75;
-  --color-bg-elevated: #4a6278;
+  /* Background colors - Deep burgundy base */
+  --color-bg-primary: #660033;
+  --color-bg-card: #7a1a4a;
+  --color-bg-card-hover: #8f2a5a;
+  --color-bg-elevated: #a03a6a;
 
   /* Text colors */
   --color-text-primary: #ffffff;
-  --color-text-secondary: #bdddfc;
-  --color-text-muted: #6a89a7;
+  --color-text-secondary: #f09dc7;
+  --color-text-muted: #e673ac;
 
-  /* Accent colors */
-  --color-accent: #88bdf2;
-  --color-accent-hover: #9dcbf7;
-  --color-accent-muted: #6a89a7;
+  /* Accent colors - Lime green for contrast */
+  --color-accent: #469110;
+  --color-accent-hover: #5aab24;
+  --color-accent-muted: #00520a;
+
+  /* Secondary accent - Pink */
+  --color-secondary: #e673ac;
+  --color-secondary-hover: #f09dc7;
 
   /* Border radius */
   --radius-card: 16px;
   --radius-button: 12px;
 
   /* Shadows */
-  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
-  --shadow-card-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.15);
-  --shadow-elevated: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  --shadow-card-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.25);
+  --shadow-elevated: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
 
   /* Font family */
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
@@ -111,7 +119,7 @@
   .btn-secondary {
     background-color: var(--color-bg-card);
     color: var(--color-text-primary);
-    border: 1px solid rgba(106, 137, 167, 0.3);
+    border: 1px solid rgba(230, 115, 172, 0.3);
   }
 
   .btn-secondary:hover {
@@ -124,7 +132,7 @@
     padding: 0.75rem 1rem;
     border-radius: var(--radius-button);
     background-color: var(--color-bg-card);
-    border: 1px solid rgba(106, 137, 167, 0.3);
+    border: 1px solid rgba(230, 115, 172, 0.3);
     color: var(--color-text-primary);
     transition: all 0.2s ease;
   }

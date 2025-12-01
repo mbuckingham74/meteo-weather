@@ -51,31 +51,31 @@ function TemperatureChart({ forecast, isLoading }) {
           <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
             <defs>
               <linearGradient id="highGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#88BDF2" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#88BDF2" stopOpacity={0} />
+                <stop offset="5%" stopColor="#469110" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#469110" stopOpacity={0} />
               </linearGradient>
             </defs>
             <XAxis
               dataKey="name"
               axisLine={false}
               tickLine={false}
-              tick={{ fill: '#6A89A7', fontSize: 12 }}
+              tick={{ fill: '#E673AC', fontSize: 12 }}
             />
             <YAxis
               domain={[minTemp, maxTemp]}
               axisLine={false}
               tickLine={false}
-              tick={{ fill: '#6A89A7', fontSize: 12 }}
+              tick={{ fill: '#E673AC', fontSize: 12 }}
               tickFormatter={(value) => `${value}°`}
             />
             <Tooltip
               contentStyle={{
-                backgroundColor: '#3d5166',
+                backgroundColor: '#7a1a4a',
                 border: 'none',
                 borderRadius: '12px',
-                boxShadow: '0 4px 6px rgba(0,0,0,0.2)',
+                boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
               }}
-              labelStyle={{ color: '#BDDDFC' }}
+              labelStyle={{ color: '#f09dc7' }}
               formatter={(value, name) => [
                 `${Math.round(value)}°${unit}`,
                 name === 'high' ? 'High' : 'Low',
@@ -84,34 +84,31 @@ function TemperatureChart({ forecast, isLoading }) {
             <Area
               type="monotone"
               dataKey="high"
-              stroke="#88BDF2"
+              stroke="#469110"
               strokeWidth={2}
               fill="url(#highGradient)"
-              dot={{ fill: '#88BDF2', strokeWidth: 0, r: 4 }}
-              activeDot={{ fill: '#88BDF2', strokeWidth: 0, r: 6 }}
+              dot={{ fill: '#469110', strokeWidth: 0, r: 4 }}
+              activeDot={{ fill: '#5aab24', strokeWidth: 0, r: 6 }}
             />
             <Line
               type="monotone"
               dataKey="low"
-              stroke="#6A89A7"
+              stroke="#E673AC"
               strokeWidth={2}
               strokeDasharray="5 5"
-              dot={{ fill: '#6A89A7', strokeWidth: 0, r: 4 }}
-              activeDot={{ fill: '#6A89A7', strokeWidth: 0, r: 6 }}
+              dot={{ fill: '#E673AC', strokeWidth: 0, r: 4 }}
+              activeDot={{ fill: '#f09dc7', strokeWidth: 0, r: 6 }}
             />
           </AreaChart>
         </ResponsiveContainer>
       </div>
       <div className="flex justify-center gap-6 mt-4 text-sm">
         <div className="flex items-center gap-2">
-          <div className="w-4 h-0.5 bg-accent" />
+          <div className="w-4 h-0.5" style={{ backgroundColor: '#469110' }} />
           <span className="text-text-muted">High</span>
         </div>
         <div className="flex items-center gap-2">
-          <div
-            className="w-4 h-0.5 bg-text-muted border-dashed"
-            style={{ borderTop: '2px dashed #6A89A7' }}
-          />
+          <div className="w-4 h-0.5" style={{ borderTop: '2px dashed #E673AC' }} />
           <span className="text-text-muted">Low</span>
         </div>
       </div>
