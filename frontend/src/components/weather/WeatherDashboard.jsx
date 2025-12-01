@@ -36,7 +36,8 @@ function WeatherDashboard() {
   // Fetch hourly forecast
   const { data: hourlyData, isLoading: isLoadingHourly } = useHourlyForecastQuery(lat, lng);
 
-  const weather = currentWeather?.currentConditions;
+  // Support both old format (currentConditions) and new API format (current)
+  const weather = currentWeather?.currentConditions || currentWeather?.current;
   const locationName = locationData?.address || locationData?.location_name;
 
   return (
@@ -61,9 +62,14 @@ function WeatherDashboard() {
         {/* Stats Grid */}
         {weather && (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            <StatCard icon={Wind} label="Wind" value={weather.windspeed || 0} unit="mph" />
+            <StatCard
+              icon={Wind}
+              label="Wind"
+              value={weather.windspeed ?? weather.windSpeed ?? 0}
+              unit="mph"
+            />
             <StatCard icon={Droplets} label="Humidity" value={weather.humidity || 0} unit="%" />
-            <StatCard icon={Sun} label="UV Index" value={weather.uvindex || 0} />
+            <StatCard icon={Sun} label="UV Index" value={weather.uvindex ?? weather.uvIndex ?? 0} />
             <StatCard
               icon={Gauge}
               label="Pressure"
@@ -73,45 +79,48 @@ function WeatherDashboard() {
             <StatCard
               icon={Thermometer}
               label="Dew Point"
-              value={formatTemperature(weather.dew || 0)}
+              value={formatTemperature(weather.dew ?? weather.dewPoint ?? 0)}
             />
             <StatCard icon={Eye} label="Visibility" value={weather.visibility || 0} unit="mi" />
           </div>
         )}
 
         {/* Hourly Forecast */}
-        {locationData && <HourlyForecast hourlyData={hourlyData} isLoading={isLoadingHourly} />}
+        {locationData && <HourlyForecast hours={hourlyData?.hourly} isLoading={isLoadingHourly} />}
 
         {/* Temperature Chart */}
         {locationData && <TemperatureChart forecast={forecast} isLoading={isLoadingForecast} />}
 
         {/* 7-Day Forecast Preview */}
-        {forecast?.days && forecast.days.length > 0 && (
-          <Card>
-            <h2 className="text-lg font-semibold text-text-primary mb-4">7-Day Forecast</h2>
-            <div className="grid grid-cols-7 gap-2">
-              {forecast.days.slice(0, 7).map((day, index) => {
-                const date = new Date(day.datetime);
-                const dayName =
-                  index === 0 ? 'Today' : date.toLocaleDateString('en-US', { weekday: 'short' });
+        {(forecast?.days || forecast?.forecast) &&
+          (forecast.days || forecast.forecast).length > 0 && (
+            <Card>
+              <h2 className="text-lg font-semibold text-text-primary mb-4">7-Day Forecast</h2>
+              <div className="grid grid-cols-7 gap-2">
+                {(forecast.days || forecast.forecast).slice(0, 7).map((day, index) => {
+                  const date = new Date(day.datetime || day.date);
+                  const dayName =
+                    index === 0 ? 'Today' : date.toLocaleDateString('en-US', { weekday: 'short' });
 
-                return (
-                  <div
-                    key={day.datetime}
-                    className="text-center p-3 rounded-xl hover:bg-bg-card-hover transition-colors"
-                  >
-                    <p className="text-text-muted text-sm mb-2">{dayName}</p>
-                    <div className="text-2xl mb-2">{getWeatherEmoji(day.conditions)}</div>
-                    <p className="text-text-primary font-semibold">
-                      {formatTemperature(day.tempmax)}
-                    </p>
-                    <p className="text-text-muted text-sm">{formatTemperature(day.tempmin)}</p>
-                  </div>
-                );
-              })}
-            </div>
-          </Card>
-        )}
+                  return (
+                    <div
+                      key={day.datetime || day.date}
+                      className="text-center p-3 rounded-xl hover:bg-bg-card-hover transition-colors"
+                    >
+                      <p className="text-text-muted text-sm mb-2">{dayName}</p>
+                      <div className="text-2xl mb-2">{getWeatherEmoji(day.conditions)}</div>
+                      <p className="text-text-primary font-semibold">
+                        {formatTemperature(day.tempmax ?? day.tempMax)}
+                      </p>
+                      <p className="text-text-muted text-sm">
+                        {formatTemperature(day.tempmin ?? day.tempMin)}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            </Card>
+          )}
 
         {/* Loading state for forecast */}
         {isLoadingForecast && locationData && (

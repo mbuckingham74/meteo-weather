@@ -40,7 +40,12 @@ function CurrentConditions({ weather, location, isLoading, error }) {
     );
   }
 
-  const { temp, feelslike, conditions, humidity, windspeed } = weather;
+  // Support both old format (snake_case) and new API format (camelCase)
+  const temp = weather.temp ?? weather.temperature;
+  const feelslike = weather.feelslike ?? weather.feelsLike;
+  const conditions = weather.conditions;
+  const humidity = weather.humidity;
+  const windspeed = weather.windspeed ?? weather.windSpeed;
 
   return (
     <Card className="text-center py-8">

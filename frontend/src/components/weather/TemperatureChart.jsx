@@ -10,15 +10,17 @@ function TemperatureChart({ forecast, isLoading }) {
   const { unit, convertTemperature } = useTemperatureUnit();
 
   // Convert temperatures when building chart data so chart reacts to unit changes
+  // Support both old format (forecast.days with tempmax/tempmin) and new API format (forecast.forecast with tempMax/tempMin)
   const chartData = useMemo(() => {
-    if (!forecast?.days) return [];
+    const days = forecast?.days || forecast?.forecast;
+    if (!days || !Array.isArray(days)) return [];
 
-    return forecast.days.slice(0, 7).map((day) => {
-      const date = new Date(day.datetime);
+    return days.slice(0, 7).map((day) => {
+      const date = new Date(day.datetime || day.date);
       return {
         name: date.toLocaleDateString('en-US', { weekday: 'short' }),
-        high: Math.round(convertTemperature(day.tempmax)),
-        low: Math.round(convertTemperature(day.tempmin)),
+        high: Math.round(convertTemperature(day.tempmax ?? day.tempMax)),
+        low: Math.round(convertTemperature(day.tempmin ?? day.tempMin)),
       };
     });
   }, [forecast, convertTemperature]);
