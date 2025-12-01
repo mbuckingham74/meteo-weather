@@ -8,21 +8,21 @@
  * - Weather data: Stale-while-revalidate (show cached, update in background)
  */
 
-const CACHE_VERSION = 'meteo-v1.0.1';
+const CACHE_VERSION = 'meteo-v2.0.0';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const DYNAMIC_CACHE = `${CACHE_VERSION}-dynamic`;
 const API_CACHE = `${CACHE_VERSION}-api`;
 
 // Assets to cache on install
+// Note: JS/CSS files use hashed names from Vite build, so we only cache
+// predictable static assets here. Dynamic assets are cached on first request.
 const STATIC_ASSETS = [
   '/',
   '/index.html',
-  '/static/css/main.css',
   '/manifest.json',
   '/favicon.ico',
   '/logo192.png',
   '/logo512.png',
-  '/offline.html',
 ];
 
 // Maximum cache sizes
@@ -45,12 +45,10 @@ self.addEventListener('install', (event) => {
       .open(STATIC_CACHE)
       .then((cache) => {
         console.log('[SW] Caching static assets');
-        // Don't fail if some assets are missing
-        return cache
-          .addAll(STATIC_ASSETS.filter((url) => url !== '/offline.html'))
-          .catch((error) => {
-            console.warn('[SW] Failed to cache some static assets:', error);
-          });
+        // Don't fail if some assets are missing (graceful degradation)
+        return cache.addAll(STATIC_ASSETS).catch((error) => {
+          console.warn('[SW] Failed to cache some static assets:', error);
+        });
       })
       .then(() => {
         console.log('[SW] Service worker installed successfully');
@@ -174,11 +172,6 @@ async function cacheFirstStrategy(request) {
     return networkResponse;
   } catch (error) {
     console.warn('[SW] Cache-first failed:', error);
-    // Return offline fallback if available
-    const offlineResponse = await caches.match('/offline.html');
-    if (offlineResponse) {
-      return offlineResponse;
-    }
     throw error;
   }
 }
@@ -241,11 +234,11 @@ async function networkFirstStrategy(request, isNavigation = false) {
       return cachedResponse;
     }
 
-    // If navigation request and no cache, show offline page
+    // If navigation request and no cache, return index for SPA routing
     if (isNavigation) {
-      const offlineResponse = await caches.match('/offline.html');
-      if (offlineResponse) {
-        return offlineResponse;
+      const indexResponse = await caches.match('/index.html');
+      if (indexResponse) {
+        return indexResponse;
       }
     }
 
