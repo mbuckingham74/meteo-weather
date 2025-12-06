@@ -1,7 +1,7 @@
 # UI Redesign: Clean Slate Implementation
 
 **Date:** December 5, 2025
-**Status:** Phase 1 Complete - Clean slate established
+**Status:** Phase 2 In Progress - Bento grid layout deployed
 
 ---
 
@@ -15,117 +15,88 @@ We chose to delete all UI components and CSS, keeping only the data layer (servi
 
 ---
 
-## What Was Done
+## Phase History
 
 ### Phase 1: Clean Slate (Completed Dec 5, 2025)
 
-#### 1. Extracted ToastContext
-- **Before:** `useToast()` was in `/src/components/common/ToastContainer.jsx`
-- **After:** Moved to `/src/contexts/ToastContext.jsx`
-- **Updated:** `/src/hooks/useApi.js` import path
+- Deleted all UI components (`/src/components/` - 24 files)
+- Preserved all business logic (services, hooks, contexts, utils)
+- Extracted ToastContext to `/src/contexts/ToastContext.jsx`
+- Created placeholder pages in `/src/pages/`
+- Initially tried Tailwind v4
 
-#### 2. Deleted All UI Code
-```
-DELETED:
-├── /src/components/           # Entire directory (24 files)
-│   ├── auth/AuthHeader.jsx
-│   ├── common/ErrorBoundary.jsx
-│   ├── common/ToastContainer.jsx
-│   ├── common/SkipToContent.jsx
-│   ├── ui/WeatherIcon.jsx
-│   ├── ui/Card.jsx
-│   ├── ui/StatCard.jsx
-│   ├── ui/TemperatureToggle.jsx
-│   ├── weather/WeatherDashboard.jsx + .css
-│   ├── weather/CurrentConditions.jsx + .css
-│   ├── weather/CompactDashboard.jsx + .css
-│   ├── weather/HourlyForecast.jsx
-│   ├── weather/LocationSearch.jsx
-│   ├── weather/TemperatureChart.jsx
-│   ├── pages/AdminPanel.jsx
-│   ├── pages/AIWeatherPage.jsx
-│   ├── pages/LocationComparisonView.jsx
-│   ├── pages/SharedAnswerPage.jsx
-│   ├── pages/UserPreferencesPage.jsx
-│   ├── pages/AboutPage.jsx
-│   └── pages/PrivacyPolicy.jsx
-└── /src/index.css             # Old global styles
-```
+### Phase 2: Vanilla CSS Redesign (In Progress - Dec 5, 2025)
 
-#### 3. Preserved Business Logic
-```
-PRESERVED (untouched):
-├── /src/services/             # API layer (8 files)
-│   ├── apiClient.js           # Centralized API with retry, dedup
-│   ├── authApi.js             # Auth endpoints
-│   ├── weatherApi.js          # Weather data fetching
-│   ├── climateApi.js          # Climate data
-│   ├── favoritesService.js    # Saved locations
-│   ├── geolocationService.js  # Browser geolocation
-│   ├── locationFinderService.js
-│   └── radarService.js        # Radar map tiles
-│
-├── /src/hooks/                # React hooks (7 files)
-│   ├── useWeatherQueries.js   # React Query weather hooks
-│   ├── useClimateQueries.js   # React Query climate hooks
-│   ├── useApi.js              # API wrapper with toast
-│   ├── useKeyboardShortcuts.js
-│   ├── useLocationConfirmation.js
-│   ├── useOnlineStatus.js
-│   └── useRetryHandler.js
-│
-├── /src/contexts/             # State management (5 files)
-│   ├── AuthContext.jsx        # User authentication
-│   ├── ThemeContext.jsx       # Light/dark mode
-│   ├── LocationContext.jsx    # Selected location
-│   ├── TemperatureUnitContext.jsx  # °F/°C preference
-│   └── ToastContext.jsx       # NEW - extracted from component
-│
-├── /src/config/               # Configuration (3 files)
-│   ├── queryClient.js         # TanStack Query setup
-│   ├── api.js                 # API base URL
-│   ├── timeouts.js            # Timeout constants
-│   └── cache.js               # Cache configuration
-│
-├── /src/utils/                # Utilities (16 files)
-│   ├── errorHandler.js        # AppError class, error codes
-│   ├── debugLogger.js         # Environment-aware logging
-│   ├── inputSanitizer.js      # XSS prevention
-│   ├── weatherHelpers.js      # Data formatting
-│   ├── errorAnalytics.js      # Error tracking
-│   ├── errorSuggestions.js    # Recovery suggestions
-│   ├── aiHistoryStorage.js    # AI query history
-│   ├── dateRangeHints.js      # Date availability
-│   ├── nearbyCitySuggestions.js
-│   ├── csvExport.js
-│   ├── localStorageVersion.js
-│   ├── urlHelpers.js
-│   └── ... (+ test files)
-│
-├── /src/constants/            # Constants (4 files)
-│   ├── index.js
-│   ├── weather.js
-│   ├── storage.js
-│   └── themeColors.js
-│
-├── /src/index.jsx             # React entry point
-├── /src/setupTests.jsx        # Test configuration
-└── /src/reportWebVitals.js    # Performance metrics
-```
+**Key Decision:** Switched from Tailwind v4 to vanilla CSS with CSS custom properties.
 
-#### 4. Created New Tailwind v4 Design System
-**File:** `/src/index.css`
+**Reason:** Tailwind v4's `@theme` block caused variable collisions with our design tokens. Vanilla CSS gives us full control and simpler debugging.
 
+---
+
+## What's Working Now (Deployed to Production)
+
+### WeatherDashboard - Main Page ✅
+
+**Live at:** https://meteo-beta.tachyonfuture.com
+
+#### Features Implemented:
+- ✅ **12-column bento grid layout** - Apple-style responsive card system
+- ✅ **Location search with autocomplete** - Searches Visual Crossing API, shows dropdown with keyboard navigation
+- ✅ **Current conditions display** - Large temperature, feels-like, weather description with icon
+- ✅ **Today's Overview section** - 6 stat cards (Humidity, Wind, Visibility, UV Index, Pressure, Dew Point)
+- ✅ **Live radar map** - RainViewer iframe integration with real-time precipitation
+- ✅ **Welcome section** - Quick-access cards for 6 major US cities (NYC, LA, Chicago, Miami, Seattle, Denver)
+- ✅ **7-day forecast** - Daily cards with high/low temps, weather icons, precipitation chance
+- ✅ **Dark/light theme toggle** - Full theme support with CSS custom properties
+- ✅ **Temperature unit toggle** - °F/°C switching
+- ✅ **Responsive design** - Works on mobile, tablet, desktop
+
+#### Technical Implementation:
+- React Query hooks (`useCurrentWeatherQuery`, `useForecastQuery`, `useHourlyForecastQuery`)
+- Visual Crossing API for weather data
+- RainViewer API for radar maps
+- CSS Grid with `grid-template-columns: repeat(12, 1fr)`
+- CSS custom properties for theming
+
+### Header/Navigation ✅
+- Logo with cloud icon
+- Navigation links (Dashboard, AI Weather, Compare, About)
+- Temperature unit toggle (°F/°C)
+- Theme toggle (sun/moon icons)
+- User menu dropdown
+- Mobile hamburger menu
+
+### Other Pages (Placeholders)
+- ComparePage - UI placeholder
+- AIWeatherPage - UI placeholder
+- AdminPanel - UI placeholder (auth check working)
+- AboutPage - UI placeholder
+- PrivacyPage - UI placeholder
+- PreferencesPage - Functional with theme/unit toggles
+- SharedAnswerPage - UI placeholder
+
+---
+
+## Design System: Vanilla CSS
+
+**File:** `/src/index.css` (~650 lines)
+
+### Color Palette (CSS Custom Properties)
 ```css
-/* Key features of new design system */
-@theme {
-  /* Weather-appropriate color palette */
-  --color-primary: #3b82f6;      /* Blue */
-  --color-secondary: #64748b;    /* Slate */
-  --color-success: #22c55e;
-  --color-warning: #f59e0b;
-  --color-danger: #ef4444;
-  --color-info: #06b6d4;
+:root {
+  /* Primary colors */
+  --color-primary: #3b82f6;
+  --color-primary-hover: #2563eb;
+
+  /* Background layers */
+  --color-bg-primary: #0f172a;
+  --color-bg-secondary: #1e293b;
+  --color-bg-tertiary: #334155;
+
+  /* Text colors */
+  --color-text-primary: #f8fafc;
+  --color-text-secondary: #94a3b8;
+  --color-text-muted: #64748b;
 
   /* Weather condition colors */
   --color-sunny: #fbbf24;
@@ -142,178 +113,102 @@ PRESERVED (untouched):
   --color-temp-hot: #f87171;
 }
 
-/* Component classes */
-.card { ... }
-.btn, .btn-primary, .btn-secondary, .btn-ghost { ... }
-.input { ... }
-.sr-only { ... }
-
-/* Utilities */
-.weather-gradient-sunny { ... }
-.temp-display { ... }
-.animate-fade-in { ... }
+/* Light theme overrides */
+.light {
+  --color-bg-primary: #f8fafc;
+  --color-bg-secondary: #ffffff;
+  --color-bg-tertiary: #f1f5f9;
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #475569;
+  --color-text-muted: #94a3b8;
+}
 ```
 
-#### 5. Created New App Structure
-**File:** `/src/App.jsx`
-- Clean routing with React Router
-- All providers preserved (Query, Toast, Auth, Theme, Location, TempUnit)
-- Lazy-loaded pages for code splitting
-- Simple header with navigation
+### Component Classes
+- `.card` - Base card with glassmorphism effect
+- `.btn`, `.btn-primary`, `.btn-secondary`, `.btn-ghost` - Button variants
+- `.input` - Form input styling
+- `.sr-only` - Screen reader only utility
+- `.bento-grid` - 12-column grid container
 
-#### 6. Created Placeholder Pages
-**Directory:** `/src/pages/`
-
-| Page | File | Status |
-|------|------|--------|
-| Weather Dashboard | `WeatherDashboard.jsx` | Functional placeholder with React Query |
-| Compare Locations | `ComparePage.jsx` | UI placeholder |
-| AI Weather | `AIWeatherPage.jsx` | UI placeholder |
-| Admin Panel | `AdminPanel.jsx` | UI placeholder |
-| About | `AboutPage.jsx` | UI placeholder |
-| Privacy | `PrivacyPage.jsx` | UI placeholder |
-| Preferences | `PreferencesPage.jsx` | Functional with theme/unit toggles |
-| Shared Answer | `SharedAnswerPage.jsx` | UI placeholder |
+### Animations (kebab-case per stylelint)
+- `fade-in` - Fade in effect
+- `slide-down` - Dropdown animations
+- `slide-up` - Reverse slide
 
 ---
 
-## Current State
-
-### Working
-- ✅ Dev server starts (Vite ~83ms)
-- ✅ All routes accessible
-- ✅ React Query hooks connected
-- ✅ Contexts working (Auth, Theme, Location, TempUnit, Toast)
-- ✅ Tailwind v4 compiling
-- ✅ No compilation errors
-
-### Not Yet Implemented
-- ❌ Location search functionality
-- ❌ Weather data display (needs API connection)
-- ❌ Charts and graphs
-- ❌ Radar map
-- ❌ User authentication UI
-- ❌ Admin panel functionality
-- ❌ AI weather queries
-- ❌ Dark mode styling
-
----
-
-## Next Steps: Phase 2 - Design & Implementation
-
-### Recommended Approach
-
-Use the **UI/UX Pro Max skill** to research and design before implementing.
-
-```bash
-# Available in: /ui-ux-pro-max/SKILL.md
-# Search domains: product, style, typography, color, landing, chart, ux
-# Default stack: html-tailwind (already using Tailwind v4)
-```
-
-### Suggested Search Sequence
-
-```bash
-# 1. Get product recommendations for weather dashboards
-python3 ui-ux-pro-max/scripts/search.py "weather dashboard saas" --domain product
-
-# 2. Choose a style direction
-python3 ui-ux-pro-max/scripts/search.py "glassmorphism dark mode" --domain style
-# OR
-python3 ui-ux-pro-max/scripts/search.py "minimalism clean" --domain style
-
-# 3. Get typography recommendations
-python3 ui-ux-pro-max/scripts/search.py "professional modern" --domain typography
-
-# 4. Get chart recommendations (for weather data)
-python3 ui-ux-pro-max/scripts/search.py "trend temperature" --domain chart
-
-# 5. UX best practices
-python3 ui-ux-pro-max/scripts/search.py "dashboard" --domain ux
-```
-
-### Implementation Priority
-
-1. **WeatherDashboard** - Main page, most important
-   - Location search with autocomplete
-   - Current conditions display
-   - Temperature with feels-like
-   - Key stats (humidity, wind, precipitation)
-   - 7-day forecast
-   - Hourly forecast chart
-   - Temperature trend chart
-
-2. **Header/Navigation** - Global component
-   - Logo and app name
-   - Navigation links
-   - User auth (login/register)
-   - Theme toggle
-   - Temperature unit toggle
-
-3. **ComparePage** - Location comparison
-   - Multi-location selector
-   - Side-by-side weather display
-   - Comparison charts
-
-4. **AIWeatherPage** - AI assistant
-   - Query input
-   - AI response display
-   - Share functionality
-
-5. **AdminPanel** - System management
-   - Stats dashboard
-   - User management
-   - Cache management
-
----
-
-## File Structure After Clean Slate
+## File Structure
 
 ```
 frontend/src/
-├── App.jsx                    # NEW - Clean routing
-├── index.jsx                  # Preserved - Entry point
-├── index.css                  # NEW - Tailwind v4 design system
-├── reportWebVitals.js         # Preserved
-├── setupTests.jsx             # Preserved
+├── App.jsx                    # Routing + Header component
+├── App.css                    # Header/nav styles
+├── index.jsx                  # React entry point
+├── index.css                  # Global design system (vanilla CSS)
 │
-├── pages/                     # NEW - All pages
-│   ├── WeatherDashboard.jsx
-│   ├── ComparePage.jsx
-│   ├── AIWeatherPage.jsx
-│   ├── AdminPanel.jsx
-│   ├── AboutPage.jsx
-│   ├── PrivacyPage.jsx
-│   ├── PreferencesPage.jsx
-│   └── SharedAnswerPage.jsx
+├── pages/                     # All page components
+│   ├── WeatherDashboard.jsx   # ✅ Main dashboard (functional)
+│   ├── WeatherDashboard.css   # Dashboard-specific styles
+│   ├── ComparePage.jsx        # Placeholder
+│   ├── AIWeatherPage.jsx      # Placeholder
+│   ├── AdminPanel.jsx         # Placeholder (auth working)
+│   ├── AboutPage.jsx          # Placeholder
+│   ├── PrivacyPage.jsx        # Placeholder
+│   ├── PreferencesPage.jsx    # ✅ Functional
+│   └── SharedAnswerPage.jsx   # Placeholder
 │
-├── contexts/                  # Preserved + ToastContext
+├── contexts/                  # State management
 │   ├── AuthContext.jsx
 │   ├── ThemeContext.jsx
 │   ├── LocationContext.jsx
 │   ├── TemperatureUnitContext.jsx
-│   └── ToastContext.jsx       # NEW - Extracted
+│   └── ToastContext.jsx
 │
-├── hooks/                     # Preserved
-│   ├── useWeatherQueries.js
-│   ├── useClimateQueries.js
-│   ├── useApi.js              # Updated import
+├── hooks/                     # React hooks
+│   ├── useWeatherQueries.js   # React Query weather hooks
+│   ├── useClimateQueries.js   # React Query climate hooks
 │   └── ...
 │
-├── services/                  # Preserved
+├── services/                  # API layer
 │   ├── apiClient.js
 │   ├── weatherApi.js
 │   └── ...
 │
-├── config/                    # Preserved
+├── config/                    # Configuration
+│   └── queryClient.js
+│
+├── utils/                     # Utilities
 │   └── ...
 │
-├── utils/                     # Preserved
-│   └── ...
-│
-└── constants/                 # Preserved
+└── constants/                 # Constants
     └── ...
 ```
+
+---
+
+## Remaining Work (~90%)
+
+### High Priority
+1. **Hourly forecast display** - Data fetched but not displayed
+2. **Temperature charts** - Recharts integration needed
+3. **Geolocation** - "Use My Location" button
+4. **Error states** - Better error handling UI
+5. **Loading skeletons** - Proper loading states
+
+### Medium Priority
+6. **AIWeatherPage** - AI query interface
+7. **ComparePage** - Location comparison
+8. **AdminPanel** - Full admin functionality
+9. **Authentication UI** - Login/register modals
+10. **Toast notifications** - Toast system integration
+
+### Low Priority
+11. **AboutPage** - Content
+12. **PrivacyPage** - Content
+13. **Animations** - Micro-interactions
+14. **Accessibility** - WCAG compliance review
+15. **Performance** - Code splitting, lazy loading
 
 ---
 
@@ -322,9 +217,11 @@ frontend/src/
 ### Starting a New Session
 
 ```
-Read docs/ui-ux/UI_REDESIGN_CLEAN_SLATE.md to understand the current state
-of the UI redesign. We completed Phase 1 (clean slate) and are ready for
-Phase 2 (design and implementation).
+Read docs/ui-ux/UI_REDESIGN_CLEAN_SLATE.md for current UI redesign status.
+
+We're in Phase 2 - building out the bento grid dashboard with vanilla CSS.
+The main WeatherDashboard is functional with live weather data and radar.
+Next priorities: hourly forecast display, temperature charts, remaining pages.
 ```
 
 ### Quick Commands
@@ -335,74 +232,64 @@ cd frontend && npm run dev
 
 # App runs at http://localhost:3005
 
-# Run tests (service/utility tests still work)
-npm test
-
 # Build for production
 npm run build
+
+# Deploy to beta
+ssh michael@tachyonfuture.com
+cd /home/michael/meteo-app && bash scripts/deploy-beta.sh
 ```
 
-### Key Files to Know
+### Key Files
 
 | Purpose | File |
 |---------|------|
 | Design system | `/src/index.css` |
-| Main routing | `/src/App.jsx` |
-| Weather data hooks | `/src/hooks/useWeatherQueries.js` |
+| Main dashboard | `/src/pages/WeatherDashboard.jsx` |
+| Dashboard styles | `/src/pages/WeatherDashboard.css` |
+| App shell/header | `/src/App.jsx` + `/src/App.css` |
+| Weather hooks | `/src/hooks/useWeatherQueries.js` |
 | API client | `/src/services/apiClient.js` |
-| Weather API | `/src/services/weatherApi.js` |
-| UI/UX skill | `/ui-ux-pro-max/SKILL.md` |
-
----
-
-## Design Decisions to Make
-
-Before implementing, decide on:
-
-1. **Visual Style**
-   - Glassmorphism (frosted glass effects)
-   - Minimalism (clean, whitespace)
-   - Bento grid (Apple-style cards)
-   - Dark mode first vs light mode first
-
-2. **Color Palette**
-   - Current: Weather blues (#3b82f6)
-   - Alternative: Keep old burgundy/pink/green?
-   - Other options via UI/UX skill
-
-3. **Typography**
-   - Current: System fonts (Inter, system-ui)
-   - Consider: Google Fonts pairing
-
-4. **Layout Approach**
-   - Single column dashboard
-   - Multi-column with sidebar
-   - Bento grid layout
 
 ---
 
 ## Technical Notes
 
-### Tailwind v4 Setup
-- PostCSS config: `/frontend/postcss.config.cjs`
-- Uses `@tailwindcss/postcss` plugin
-- CSS-first configuration in `@theme` block
-- No tailwind.config.js needed (v4 feature)
+### Why Vanilla CSS over Tailwind v4
 
-### React Query Integration
-- Query client: `/src/config/queryClient.js`
-- Weather hooks: `/src/hooks/useWeatherQueries.js`
-- Climate hooks: `/src/hooks/useClimateQueries.js`
-- Already connected in WeatherDashboard placeholder
+1. **Variable collisions** - Tailwind v4's `@theme` block conflicted with our CSS custom properties
+2. **Simpler debugging** - No build-time class generation to trace through
+3. **Full control** - Direct CSS gives us exactly what we want
+4. **Smaller bundle** - No Tailwind runtime needed
+5. **Familiar patterns** - Standard CSS knowledge applies
 
-### Backend API
-- Base URL: `VITE_API_URL` env var
-- Default: `http://localhost:5001`
-- Production: `https://api.meteo-beta.tachyonfuture.com`
-- All endpoints working (backend unchanged)
+### CSS Architecture
+
+- **Design tokens** in `:root` (colors, spacing, typography)
+- **Theme switching** via `.light`/`.dark` class on `<html>`
+- **Component scoping** via page-specific CSS files
+- **BEM-lite naming** for component classes
+- **CSS Grid** for bento layout
+- **CSS custom properties** for dynamic theming
+
+### API Integration
+
+- **Visual Crossing API** - Weather data (current, forecast, hourly)
+- **RainViewer API** - Radar map iframe
+- **React Query** - Data fetching with caching
+- **Backend proxy** - All API calls go through our backend
+
+---
+
+## Commits
+
+- `d457a46` - feat: UI redesign with bento grid layout and vanilla CSS (Dec 5, 2025)
+  - 48 files changed, 3929 insertions, 3240 deletions
+  - Complete dashboard with live weather, radar, search, 7-day forecast
 
 ---
 
 **Last Updated:** December 5, 2025
 **Author:** Claude Code
-**Next Phase:** Design research with UI/UX Pro Max skill
+**Status:** Phase 2 in progress (~10% complete)
+**Production:** https://meteo-beta.tachyonfuture.com

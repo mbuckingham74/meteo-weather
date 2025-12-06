@@ -56,8 +56,8 @@
 - [docs/ui-ux/UI_REDESIGN_CLEAN_SLATE.md](docs/ui-ux/UI_REDESIGN_CLEAN_SLATE.md) - **CURRENT: Clean slate redesign status and plan**
 - [ui-ux-pro-max/SKILL.md](ui-ux-pro-max/SKILL.md) - **UI/UX design intelligence skill for implementation**
 - [docs/ui-ux/](docs/ui-ux/) - Historical UI/UX documentation
-**🎨 CSS Architecture (DEPRECATED - replaced by Tailwind v4):**
-- *The following docs are historical reference only. As of Dec 5, 2025, we use Tailwind CSS v4.*
+**🎨 CSS Architecture (DEPRECATED - replaced by Vanilla CSS):**
+- *The following docs are historical reference only. As of Dec 5, 2025, we use vanilla CSS with CSS custom properties.*
 - [frontend/ITCSS_ARCHITECTURE.md](frontend/ITCSS_ARCHITECTURE.md) - ~~ITCSS layer organization~~ (DEPRECATED)
 - [frontend/BEM_NAMING_CONVENTION.md](frontend/BEM_NAMING_CONVENTION.md) - ~~BEM standard~~ (DEPRECATED)
 - [frontend/BREAKPOINT_SYSTEM.md](frontend/BREAKPOINT_SYSTEM.md) - ~~Breakpoint system~~ (DEPRECATED)
@@ -79,20 +79,26 @@
 - [docs/admin/QUICK_REFERENCE.md](docs/admin/QUICK_REFERENCE.md) - One-page cheat sheet (340 lines)
 - [docs/admin/IMPLEMENTATION_SUMMARY.md](docs/admin/IMPLEMENTATION_SUMMARY.md) - Technical details (890 lines)
 ### Recent Work (Nov-Dec 2025)
-- 🔄 **UI Redesign: Clean Slate** (Dec 5, 2025) - **IN PROGRESS**
-  - **Decision:** Complete frontend UI rebuild with Tailwind CSS v4 (Option A: Nuclear Reset)
+- 🔄 **UI Redesign: Bento Grid Dashboard** (Dec 5, 2025) - **PHASE 2 IN PROGRESS**
+  - **Decision:** Complete frontend UI rebuild with vanilla CSS (Option A: Nuclear Reset)
   - **Reason:** 7 weeks of accumulated CSS debt (ITCSS, CSS modules, density systems, patches)
   - **Phase 1 Complete:** Clean slate established
     - Deleted all components (`/src/components/`) and old CSS
     - Preserved all business logic (services, hooks, contexts, utils, constants)
     - Extracted ToastContext to `/src/contexts/ToastContext.jsx`
-    - Created fresh Tailwind v4 design system in `/src/index.css`
-    - Created new `/src/pages/` directory with 8 placeholder pages
-    - Created clean `/src/App.jsx` with routing and all providers
-  - **Phase 2 Pending:** Design research and implementation
-  - **Documentation:** [docs/ui-ux/UI_REDESIGN_CLEAN_SLATE.md](docs/ui-ux/UI_REDESIGN_CLEAN_SLATE.md) - Complete status and plan
-  - **UI/UX Skill:** `/ui-ux-pro-max/SKILL.md` - Design intelligence for implementation
-  - **Status:** Phase 1 complete, ready for design phase 🔄
+  - **Phase 2 In Progress:** Bento grid layout with vanilla CSS
+    - Switched from Tailwind v4 to vanilla CSS (variable collision issues)
+    - Created design system with CSS custom properties in `/src/index.css`
+    - Built 12-column bento grid layout
+    - Implemented location search with autocomplete
+    - Added live RainViewer radar map
+    - Created 7-day forecast display
+    - Dark/light theme toggle working
+    - **Deployed to production:** https://meteo-beta.tachyonfuture.com
+  - **Remaining (~90%):** Hourly forecast, charts, other pages, polish
+  - **Documentation:** [docs/ui-ux/UI_REDESIGN_CLEAN_SLATE.md](docs/ui-ux/UI_REDESIGN_CLEAN_SLATE.md) - Current status
+  - **Commit:** `d457a46` - 48 files, +3929/-3240 lines
+  - **Status:** Phase 2 ~10% complete, deployed to beta 🔄
 
 - ✅ **Error Recovery UX Enhancement (PR #55)** (Nov 20, 2025)
   - **Smart Location Suggestions:** Nearby city recommendations for failed location searches (40+ major cities)
@@ -525,8 +531,8 @@ docker ps | grep meteo
   - Automated config validation (`npm run validate`)
   - Prevents Vite/CRA config drift
 ### 🔄 Current Tech Stack
-- **Frontend:** React 19.2.0, Vite 6.0.7, **Tailwind CSS v4.1.17**, Recharts 3.3.0, Leaflet 1.9.4
-- **Styling:** Tailwind CSS v4 (utility-first, CSS-based config in `@theme` block)
+- **Frontend:** React 19.2.0, Vite 6.0.7, Recharts 3.3.0, Leaflet 1.9.4
+- **Styling:** Vanilla CSS with CSS custom properties (design tokens in `/src/index.css`)
 - **Backend:** Node.js, Express 4.21.1, MySQL 8.0
 - **Security:** express-rate-limit 8.2.1, helmet 8.1.0
 - **Testing:** Jest/Vitest (service/utility tests - UI tests need rebuild)
