@@ -1,10 +1,6 @@
 /**
- * Toast notification system - Minimal placeholder
- * TODO: Implement full toast UI in PR 7
- *
- * Note: Provides both old API (success/error/warning/info) and new API
- * (showSuccess/showError/showWarning/showInfo) for compatibility with
- * existing hooks like useApi.
+ * Toast notification context
+ * Provides toast notification API throughout the app
  */
 import { createContext, useContext } from 'react';
 
@@ -27,7 +23,7 @@ export function useToast() {
 }
 
 export function ToastProvider({ children }) {
-  // Shared implementations
+  // Shared implementations - console placeholders until UI is built
   const showSuccess = (message) => console.log('[Toast Success]', message);
   const showError = (message) => console.error('[Toast Error]', message);
   const showWarning = (message) => console.warn('[Toast Warning]', message);

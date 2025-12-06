@@ -23,7 +23,7 @@ export default defineConfig({
 
   // Development server
   server: {
-    port: 3000,
+    port: 3005,
     host: true,
     headers: {
       'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
@@ -87,7 +87,7 @@ export default defineConfig({
 
   // Preview server (for production builds)
   preview: {
-    port: 3000,
+    port: 3005,
     host: true,
   },
 

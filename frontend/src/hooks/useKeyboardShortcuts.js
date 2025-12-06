@@ -12,51 +12,54 @@ import { useEffect, useCallback } from 'react';
  */
 
 const useKeyboardShortcuts = (handlers = {}) => {
-  const handleKeyDown = useCallback((event) => {
-    const { key, ctrlKey, metaKey, target } = event;
+  const handleKeyDown = useCallback(
+    (event) => {
+      const { key, ctrlKey, metaKey, target } = event;
 
-    // Don't trigger shortcuts when typing in input fields (except for Escape)
-    const isInputField = ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName);
-    if (isInputField && key !== 'Escape') {
-      return;
-    }
-
-    // Slash (/) - Focus search
-    if (key === '/' && handlers.onFocusSearch) {
-      event.preventDefault();
-      handlers.onFocusSearch();
-    }
-
-    // Escape - Close modals, unfocus search
-    if (key === 'Escape' && handlers.onEscape) {
-      event.preventDefault();
-      handlers.onEscape();
-    }
-
-    // Ctrl+K or Cmd+K - Quick search
-    if ((ctrlKey || metaKey) && key === 'k' && handlers.onQuickSearch) {
-      event.preventDefault();
-      handlers.onQuickSearch();
-    }
-
-    // Question mark (?) - Show help (future feature)
-    if (key === '?' && handlers.onShowHelp) {
-      event.preventDefault();
-      handlers.onShowHelp();
-    }
-
-    // Arrow keys for navigation (when not in input)
-    if (!isInputField) {
-      if (key === 'ArrowUp' && handlers.onArrowUp) {
-        event.preventDefault();
-        handlers.onArrowUp();
+      // Don't trigger shortcuts when typing in input fields (except for Escape)
+      const isInputField = ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName);
+      if (isInputField && key !== 'Escape') {
+        return;
       }
-      if (key === 'ArrowDown' && handlers.onArrowDown) {
+
+      // Slash (/) - Focus search
+      if (key === '/' && handlers.onFocusSearch) {
         event.preventDefault();
-        handlers.onArrowDown();
+        handlers.onFocusSearch();
       }
-    }
-  }, [handlers]);
+
+      // Escape - Close modals, unfocus search
+      if (key === 'Escape' && handlers.onEscape) {
+        event.preventDefault();
+        handlers.onEscape();
+      }
+
+      // Ctrl+K or Cmd+K - Quick search
+      if ((ctrlKey || metaKey) && key === 'k' && handlers.onQuickSearch) {
+        event.preventDefault();
+        handlers.onQuickSearch();
+      }
+
+      // Question mark (?) - Show help (future feature)
+      if (key === '?' && handlers.onShowHelp) {
+        event.preventDefault();
+        handlers.onShowHelp();
+      }
+
+      // Arrow keys for navigation (when not in input)
+      if (!isInputField) {
+        if (key === 'ArrowUp' && handlers.onArrowUp) {
+          event.preventDefault();
+          handlers.onArrowUp();
+        }
+        if (key === 'ArrowDown' && handlers.onArrowDown) {
+          event.preventDefault();
+          handlers.onArrowDown();
+        }
+      }
+    },
+    [handlers]
+  );
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);

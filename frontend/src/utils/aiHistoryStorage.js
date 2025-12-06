@@ -41,19 +41,21 @@ export const addToAIHistory = (item) => {
       tokensUsed: item.tokensUsed,
       timestamp: new Date().toISOString(),
       // Store lightweight summary of visualizations (just types, not full data)
-      visualizations: item.visualizations?.map(v => ({
-        type: v.type,
-        reason: v.reason
-      })) || [],
-      followUpQuestions: item.followUpQuestions || []
+      visualizations:
+        item.visualizations?.map((v) => ({
+          type: v.type,
+          reason: v.reason,
+        })) || [],
+      followUpQuestions: item.followUpQuestions || [],
     };
 
     // Remove duplicates (same question + location within last hour)
-    const oneHourAgo = Date.now() - (60 * 60 * 1000);
-    const filteredHistory = history.filter(h => {
-      const isDuplicate = h.question === item.question &&
-                         h.location === item.location &&
-                         new Date(h.timestamp).getTime() > oneHourAgo;
+    const oneHourAgo = Date.now() - 60 * 60 * 1000;
+    const filteredHistory = history.filter((h) => {
+      const isDuplicate =
+        h.question === item.question &&
+        h.location === item.location &&
+        new Date(h.timestamp).getTime() > oneHourAgo;
       return !isDuplicate;
     });
 
@@ -77,7 +79,7 @@ export const addToAIHistory = (item) => {
  */
 export const getHistoryItem = (id) => {
   const history = getAIHistory();
-  return history.find(item => item.id === id) || null;
+  return history.find((item) => item.id === id) || null;
 };
 
 /**
@@ -87,7 +89,7 @@ export const getHistoryItem = (id) => {
 export const deleteHistoryItem = (id) => {
   try {
     const history = getAIHistory();
-    const filteredHistory = history.filter(item => item.id !== id);
+    const filteredHistory = history.filter((item) => item.id !== id);
     localStorage.setItem(HISTORY_KEY, JSON.stringify(filteredHistory));
   } catch (error) {
     console.error('Error deleting history item:', error);

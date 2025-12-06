@@ -114,8 +114,15 @@ describe('Date Formatting', () => {
   describe('getDayOfWeek', () => {
     it('returns full day name', () => {
       const result = getDayOfWeek('2025-10-28');
-      expect(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'])
-        .toContain(result);
+      expect([
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+        'Sunday',
+      ]).toContain(result);
     });
   });
 
@@ -366,7 +373,7 @@ describe('Data Aggregation', () => {
     it('calculates correct averages for aggregated data', () => {
       const result = aggregateWeatherData(mockDailyData, '3months');
       // Each aggregated point should have averaged values
-      result.aggregatedData.forEach(point => {
+      result.aggregatedData.forEach((point) => {
         expect(point).toHaveProperty('tempMax');
         expect(point).toHaveProperty('tempMin');
         expect(point).toHaveProperty('precipitation');

@@ -100,6 +100,8 @@ app.use(
 const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS?.split(',') || [
   'http://localhost:3000',
   'http://localhost:3001',
+  'http://localhost:3005', // Vite dev server
+  'http://localhost:3006', // Vite fallback port
 ];
 
 app.use(

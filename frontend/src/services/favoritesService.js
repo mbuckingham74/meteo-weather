@@ -31,7 +31,7 @@ export function addFavorite(location) {
 
     // Check if already in favorites
     const exists = favorites.some(
-      fav => fav.latitude === location.latitude && fav.longitude === location.longitude
+      (fav) => fav.latitude === location.latitude && fav.longitude === location.longitude
     );
 
     if (exists) {
@@ -42,7 +42,7 @@ export function addFavorite(location) {
     const newFavorite = {
       ...location,
       addedAt: new Date().toISOString(),
-      id: `${location.latitude},${location.longitude}`
+      id: `${location.latitude},${location.longitude}`,
     };
 
     favorites.push(newFavorite);
@@ -63,7 +63,7 @@ export function addFavorite(location) {
 export function removeFavorite(locationId) {
   try {
     const favorites = getFavorites();
-    const filtered = favorites.filter(fav => fav.id !== locationId);
+    const filtered = favorites.filter((fav) => fav.id !== locationId);
 
     localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
     return true;
@@ -81,9 +81,7 @@ export function removeFavorite(locationId) {
  */
 export function isFavorite(latitude, longitude) {
   const favorites = getFavorites();
-  return favorites.some(
-    fav => fav.latitude === latitude && fav.longitude === longitude
-  );
+  return favorites.some((fav) => fav.latitude === latitude && fav.longitude === longitude);
 }
 
 /**

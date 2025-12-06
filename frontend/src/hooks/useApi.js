@@ -9,7 +9,7 @@
  */
 
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { useToast } from '../components/common/ToastContainer';
+import { useToast } from '../contexts/ToastContext';
 import { apiRequest, ApiError } from '../services/apiClient';
 
 /**

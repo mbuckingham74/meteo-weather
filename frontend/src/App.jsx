@@ -1,135 +1,273 @@
-import { useEffect, useRef, lazy, Suspense } from 'react';
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Navigate,
-  Link,
-  useLocation as useRouterLocation,
-} from 'react-router-dom';
+import { Suspense, lazy, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, NavLink } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { queryClient } from './config/queryClient';
-import { AuthProvider } from './contexts/AuthContext';
-import { ThemeProvider } from './contexts/ThemeContext';
-import { LocationProvider, useLocation as useLocationContext } from './contexts/LocationContext';
-import { TemperatureUnitProvider } from './contexts/TemperatureUnitContext';
-import { ToastProvider } from './components/common/ToastContainer';
-import ErrorBoundary from './components/common/ErrorBoundary';
-import SkipToContent from './components/common/SkipToContent';
-import AuthHeader from './components/auth/AuthHeader';
-import WeatherDashboard from './components/weather/WeatherDashboard';
-import PrivacyPolicy from './components/pages/PrivacyPolicy';
-import { parseLocationSlug } from './utils/urlHelpers';
-import { geocodeLocation } from './services/weatherApi';
-import './index.css'; // Tailwind CSS with custom theme
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { ThemeProvider, useTheme } from './contexts/ThemeContext';
+import { LocationProvider } from './contexts/LocationContext';
+import { TemperatureUnitProvider, useTemperatureUnit } from './contexts/TemperatureUnitContext';
+import { ToastProvider } from './contexts/ToastContext';
+import {
+  Cloud,
+  Sun,
+  Moon,
+  Menu,
+  X,
+  User,
+  Settings,
+  LogOut,
+  LayoutGrid,
+  Sparkles,
+  GitCompare,
+  Info,
+  Bell,
+  ChevronDown,
+} from 'lucide-react';
+import { useState } from 'react';
+import './index.css';
+import './App.css';
 
-// Code-split heavy components that aren't needed on initial load
-const LocationComparisonView = lazy(() => import('./components/pages/LocationComparisonView'));
-const AIWeatherPage = lazy(() => import('./components/pages/AIWeatherPage'));
-const SharedAnswerPage = lazy(() => import('./components/pages/SharedAnswerPage'));
-const UserPreferencesPage = lazy(() => import('./components/pages/UserPreferencesPage'));
-const AboutPage = lazy(() => import('./components/pages/AboutPage'));
-const AdminPanel = lazy(() => import('./components/pages/AdminPanel'));
+// Lazy loaded pages
+const WeatherDashboard = lazy(() => import('./pages/WeatherDashboard'));
+const ComparePage = lazy(() => import('./pages/ComparePage'));
+const AIWeatherPage = lazy(() => import('./pages/AIWeatherPage'));
+const AdminPanel = lazy(() => import('./pages/AdminPanel'));
+const AboutPage = lazy(() => import('./pages/AboutPage'));
+const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
+const PreferencesPage = lazy(() => import('./pages/PreferencesPage'));
+const SharedAnswerPage = lazy(() => import('./pages/SharedAnswerPage'));
 
-// Loading fallback component
+// Loading fallback
 function PageLoader() {
   return (
-    <div className="min-h-screen bg-bg-primary flex items-center justify-center">
-      <div className="text-text-secondary text-lg">Loading...</div>
+    <div className="page-loader">
+      <div className="page-loader-content">
+        <div className="page-loader-icon">
+          <Cloud size={48} />
+        </div>
+        <p className="page-loader-text">Loading...</p>
+      </div>
     </div>
   );
 }
 
-function RouteAwareLocationManager() {
-  const routerLocation = useRouterLocation();
-  const { selectLocation } = useLocationContext();
-  const lastSyncedRef = useRef(null);
+// Header component
+function Header() {
+  const { theme, toggleTheme } = useTheme();
+  const { unit, toggleUnit } = useTemperatureUnit();
+  const { user, logout } = useAuth();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
 
-  useEffect(() => {
-    // Skip location management for non-weather routes
-    const skipRoutes = ['/admin', '/compare', '/about', '/privacy', '/preferences', '/ai-weather'];
-    if (skipRoutes.some((route) => routerLocation.pathname.startsWith(route))) {
-      return;
-    }
+  const navLinks = [
+    { to: '/', label: 'Dashboard', icon: LayoutGrid },
+    { to: '/ai-weather', label: 'AI Weather', icon: Sparkles },
+    { to: '/compare', label: 'Compare', icon: GitCompare },
+    { to: '/about', label: 'About', icon: Info },
+  ];
 
-    const locationState = routerLocation.state?.location;
-    if (locationState && locationState.address) {
-      const key = `state:${locationState.latitude},${locationState.longitude}`;
-      if (lastSyncedRef.current !== key) {
-        lastSyncedRef.current = key;
-        selectLocation(locationState);
-      }
-      return;
-    }
-
-    const match = routerLocation.pathname.match(/^\/location\/([^/]+)$/);
-    if (!match) {
-      lastSyncedRef.current = null;
-      return;
-    }
-
-    const slug = match[1];
-    if (lastSyncedRef.current === slug) {
-      return;
-    }
-
-    let isCancelled = false;
-
-    (async () => {
-      try {
-        const searchQuery = parseLocationSlug(slug);
-        const results = await geocodeLocation(searchQuery, 1);
-        if (!isCancelled && results && results.length > 0) {
-          lastSyncedRef.current = slug;
-          selectLocation(results[0]);
-        }
-      } catch (error) {
-        if (!isCancelled) {
-          console.error('Error loading location from URL:', error);
-        }
-      }
-    })();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [routerLocation.pathname, routerLocation.state, selectLocation]);
-
-  return null;
-}
-
-function ComparePage() {
   return (
-    <>
-      <div className="max-w-6xl mx-auto px-4 pt-4">
-        <Link to="/" className="text-accent hover:text-accent-hover">
-          ← Back to Dashboard
-        </Link>
+    <header className="header">
+      <div className="header-container">
+        <div className="header-content">
+          {/* Logo */}
+          <NavLink to="/" className="logo">
+            <div className="logo-icon-wrapper">
+              <Cloud size={28} className="logo-icon" />
+              <Sun size={12} className="logo-accent" />
+            </div>
+            <span className="logo-text">Meteo</span>
+          </NavLink>
+
+          {/* Desktop Navigation */}
+          <nav className="desktop-nav">
+            {navLinks.map(({ to, label, icon: Icon }) => (
+              <NavLink
+                key={to}
+                to={to}
+                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+              >
+                <Icon size={16} />
+                {label}
+              </NavLink>
+            ))}
+          </nav>
+
+          {/* Right Side Actions */}
+          <div className="header-actions">
+            {/* Temperature Unit Toggle */}
+            <button
+              onClick={toggleUnit}
+              className="unit-toggle"
+              title={`Switch to °${unit === 'F' ? 'C' : 'F'}`}
+            >
+              °{unit}
+            </button>
+
+            {/* Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              className="icon-btn"
+              aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+            >
+              {theme === 'dark' ? (
+                <Sun size={18} className="theme-icon-sun" />
+              ) : (
+                <Moon size={18} className="theme-icon-moon" />
+              )}
+            </button>
+
+            {/* Notifications (placeholder) */}
+            <button className="icon-btn icon-btn-hidden-mobile" aria-label="Notifications">
+              <Bell size={18} />
+            </button>
+
+            {/* User Menu */}
+            {user ? (
+              <div className="user-menu">
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className="user-menu-trigger"
+                >
+                  <div className="user-avatar">
+                    <User size={14} />
+                  </div>
+                  <ChevronDown size={14} className="user-menu-chevron" />
+                </button>
+
+                {userMenuOpen && (
+                  <>
+                    <div className="user-menu-backdrop" onClick={() => setUserMenuOpen(false)} />
+                    <div className="user-menu-dropdown">
+                      <div className="user-menu-header">
+                        <p className="user-email">{user.email}</p>
+                      </div>
+                      <div className="user-menu-items">
+                        <NavLink
+                          to="/preferences"
+                          onClick={() => setUserMenuOpen(false)}
+                          className="user-menu-link"
+                        >
+                          <Settings size={16} />
+                          Preferences
+                        </NavLink>
+                        {user.isAdmin && (
+                          <NavLink
+                            to="/admin"
+                            onClick={() => setUserMenuOpen(false)}
+                            className="user-menu-link"
+                          >
+                            <LayoutGrid size={16} />
+                            Admin Panel
+                          </NavLink>
+                        )}
+                        <button
+                          onClick={() => {
+                            logout();
+                            setUserMenuOpen(false);
+                          }}
+                          className="user-menu-btn"
+                        >
+                          <LogOut size={16} />
+                          Sign Out
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            ) : (
+              <NavLink to="/preferences" className="sign-in-btn">
+                <User size={16} />
+                Sign In
+              </NavLink>
+            )}
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="mobile-menu-btn"
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Navigation */}
+        {mobileMenuOpen && (
+          <nav className="mobile-nav">
+            <div className="mobile-nav-links">
+              {navLinks.map(({ to, label, icon: Icon }) => (
+                <NavLink
+                  key={to}
+                  to={to}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={({ isActive }) => `mobile-nav-link ${isActive ? 'active' : ''}`}
+                >
+                  <Icon size={18} />
+                  {label}
+                </NavLink>
+              ))}
+
+              <div className="mobile-nav-actions">
+                <button onClick={toggleUnit} className="mobile-toggle-btn">
+                  °{unit}
+                </button>
+                <button onClick={toggleTheme} className="mobile-toggle-btn">
+                  {theme === 'dark' ? (
+                    <Sun size={18} className="theme-icon-sun" />
+                  ) : (
+                    <Moon size={18} className="theme-icon-moon" />
+                  )}
+                </button>
+              </div>
+
+              {!user && (
+                <NavLink
+                  to="/preferences"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="mobile-sign-in"
+                >
+                  <User size={16} />
+                  Sign In
+                </NavLink>
+              )}
+            </div>
+          </nav>
+        )}
       </div>
-      <LocationComparisonView />
-    </>
+    </header>
   );
 }
 
-function AppShell() {
+// Main layout
+function AppLayout() {
+  const { theme } = useTheme();
+
+  // Apply theme class to html element
+  useEffect(() => {
+    const html = document.documentElement;
+    html.classList.remove('light', 'dark');
+    html.classList.add(theme);
+  }, [theme]);
+
   return (
-    <div className="App">
-      <SkipToContent />
-      <AuthHeader />
-      <RouteAwareLocationManager />
-      <main id="main-content" tabIndex={-1}>
+    <div className="app-layout">
+      <Header />
+      <main id="main-content">
         <Suspense fallback={<PageLoader />}>
           <Routes>
             <Route path="/" element={<WeatherDashboard />} />
             <Route path="/location/:slug" element={<WeatherDashboard />} />
             <Route path="/compare" element={<ComparePage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/preferences" element={<UserPreferencesPage />} />
             <Route path="/ai-weather" element={<AIWeatherPage />} />
             <Route path="/ai-weather/shared/:shareId" element={<SharedAnswerPage />} />
             <Route path="/admin" element={<AdminPanel />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/preferences" element={<PreferencesPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>
@@ -140,27 +278,22 @@ function AppShell() {
 
 function App() {
   return (
-    <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <ToastProvider>
-          <AuthProvider>
-            <ThemeProvider>
-              <TemperatureUnitProvider>
-                <LocationProvider>
-                  <BrowserRouter>
-                    <AppShell />
-                  </BrowserRouter>
-                </LocationProvider>
-              </TemperatureUnitProvider>
-            </ThemeProvider>
-          </AuthProvider>
-        </ToastProvider>
-        {/* React Query Devtools - only shown in development */}
-        {import.meta.env.DEV && (
-          <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
-        )}
-      </QueryClientProvider>
-    </ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <ToastProvider>
+        <AuthProvider>
+          <ThemeProvider>
+            <TemperatureUnitProvider>
+              <LocationProvider>
+                <BrowserRouter>
+                  <AppLayout />
+                </BrowserRouter>
+              </LocationProvider>
+            </TemperatureUnitProvider>
+          </ThemeProvider>
+        </AuthProvider>
+      </ToastProvider>
+      {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />}
+    </QueryClientProvider>
   );
 }
 

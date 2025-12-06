@@ -7,30 +7,28 @@
         "ignoreAtRules": ["theme", "tailwind", "apply", "layer", "config", "import"]
       }
     ],
-    "declaration-property-value-disallowed-list": null,
-    "selector-class-pattern": null,
-    "custom-property-pattern": null,
-    "keyframes-name-pattern": null,
-    "no-descending-specificity": null,
-    "font-family-no-missing-generic-family-keyword": null,
-    "font-family-name-quotes": null,
-    "import-notation": null,
-    "media-feature-range-notation": null,
-    "property-no-deprecated": null,
-    "comment-empty-line-before": null,
-    "rule-empty-line-before": null,
-    "value-keyword-case": null,
-    "media-feature-name-value-no-unknown": null,
-    "color-hex-length": null,
-    "custom-property-empty-line-before": null,
-    "color-function-notation": null,
-    "alpha-value-notation": null,
-    "color-function-alias-notation": null,
-    "declaration-block-no-redundant-longhand-properties": null,
-    "shorthand-property-no-redundant-values": null,
-    "media-query-no-invalid": null,
-    "property-no-vendor-prefix": null,
-    "no-duplicate-selectors": null
+    "selector-class-pattern": [
+      "^(?:(?:o|c|u|t|s|is|has)-)?[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*(?:__[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*)?(?:--[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*)?$",
+      {
+        "message": "Selector should follow BEM naming convention"
+      }
+    ],
+    "custom-property-pattern": "^([a-z][a-z0-9]*)(-[a-z0-9]+)*$",
+    "keyframes-name-pattern": "^[a-z]([a-z0-9-]+)?$",
+    "no-descending-specificity": true,
+    "font-family-no-missing-generic-family-keyword": true,
+    "property-no-deprecated": true,
+    "comment-empty-line-before": "always",
+    "rule-empty-line-before": "always",
+    "value-keyword-case": "lower",
+    "color-hex-length": "short",
+    "custom-property-empty-line-before": "always",
+    "color-function-notation": "modern",
+    "alpha-value-notation": "number",
+    "declaration-block-no-redundant-longhand-properties": true,
+    "shorthand-property-no-redundant-values": true,
+    "property-no-vendor-prefix": true,
+    "no-duplicate-selectors": true
   },
   "ignoreFiles": ["node_modules/**", "build/**", "dist/**", "**/*.min.css"]
 }

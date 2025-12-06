@@ -1,0 +1,946 @@
+/* ===========================================
+   WEATHER DASHBOARD - Bento Grid Layout
+   =========================================== */
+
+.dashboard {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-4);
+}
+
+/* ===========================================
+   TOP BAR
+   =========================================== */
+
+.dashboard-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-6);
+}
+
+.location-display {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-secondary);
+}
+
+.location-display svg {
+  flex-shrink: 0;
+}
+
+.location-name {
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+/* Search Actions */
+
+.search-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.locate-btn {
+  padding: var(--space-2);
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Search */
+
+.search-container {
+  position: relative;
+}
+
+.search-input-wrapper {
+  position: relative;
+}
+
+.search-icon {
+  position: absolute;
+  left: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-tertiary);
+  pointer-events: none;
+}
+
+.search-input {
+  width: 256px;
+  padding-left: var(--space-10);
+}
+
+.search-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: var(--space-2);
+  background-color: var(--color-surface-200);
+  border: 1px solid var(--color-surface-300);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  z-index: 50;
+  animation: slide-down 200ms ease-out;
+}
+
+.search-result {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  background: none;
+  border: none;
+  color: var(--color-text-primary);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.search-result:hover {
+  background-color: var(--color-surface-300);
+}
+
+.search-result svg {
+  color: var(--color-text-tertiary);
+  flex-shrink: 0;
+}
+
+/* ===========================================
+   TIME TABS
+   =========================================== */
+
+.time-tabs {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  margin-bottom: var(--space-6);
+}
+
+.time-tab {
+  background: none;
+  border: none;
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.time-tab:hover {
+  color: var(--color-text-secondary);
+}
+
+.time-tab.active {
+  color: var(--color-text-primary);
+}
+
+.tab-spacer {
+  margin-left: auto;
+}
+
+/* ===========================================
+   BENTO GRID
+   =========================================== */
+
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--space-4);
+  animation: fade-in 300ms ease-out;
+}
+
+/* Grid spans */
+
+.col-3 {
+  grid-column: span 3;
+}
+
+.col-6 {
+  grid-column: span 6;
+}
+
+.col-12 {
+  grid-column: span 12;
+}
+
+@media (width <= 768px) {
+  .col-3,
+  .col-6 {
+    grid-column: span 12;
+  }
+}
+
+/* ===========================================
+   CURRENT WEATHER CARD
+   =========================================== */
+
+.current-weather {
+  display: flex;
+  flex-direction: column;
+  min-height: 320px;
+}
+
+.current-weather-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-1);
+}
+
+.current-day {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.current-time {
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+}
+
+.current-weather-main {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-top: var(--space-4);
+}
+
+.temperature-display {
+  font-family: var(--font-mono);
+  font-size: var(--text-6xl);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--color-text-primary);
+}
+
+.conditions-text {
+  margin-top: var(--space-2);
+  color: var(--color-text-secondary);
+}
+
+.weather-icon-large {
+  color: var(--color-accent-yellow);
+}
+
+.current-weather-details {
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-surface-300);
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+}
+
+.detail-label {
+  color: var(--color-text-tertiary);
+}
+
+.detail-value {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.sun-times {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--space-4);
+  font-size: var(--text-xs);
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.sun-time {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  white-space: nowrap;
+}
+
+.sun-time svg {
+  flex-shrink: 0;
+}
+
+.sun-time .detail-label {
+  display: none;
+}
+
+.sun-time .detail-value {
+  font-size: var(--text-xs);
+}
+
+/* ===========================================
+   FORECAST ROW
+   =========================================== */
+
+.forecast-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--space-3);
+}
+
+@media (width <= 640px) {
+  .forecast-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.forecast-card {
+  text-align: center;
+  padding: var(--space-4);
+  cursor: pointer;
+}
+
+.forecast-card.today {
+  background-color: var(--color-surface-300);
+  box-shadow: inset 0 0 0 1px rgb(59 130 246 / 0.3);
+}
+
+.forecast-day {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--space-2);
+}
+
+.forecast-icon {
+  display: flex;
+  justify-content: center;
+  margin: var(--space-3) 0;
+}
+
+.forecast-high {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.forecast-low {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+}
+
+.forecast-precip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  margin-top: var(--space-2);
+  font-size: 10px;
+  color: var(--color-accent-blue);
+}
+
+/* ===========================================
+   RADAR MAP CARD
+   =========================================== */
+
+.radar-card {
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  min-height: 320px;
+}
+
+.radar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+
+.radar-header h3 {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.radar-live {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--color-accent-green);
+  background-color: rgb(34 197 94 / 0.15);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.05em;
+}
+
+.radar-map-container {
+  flex: 1;
+  min-height: 280px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background-color: var(--color-surface-300);
+}
+
+/* ===========================================
+   PRECIPITATION CHART (legacy - can remove)
+   =========================================== */
+
+.precip-card h3 {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-4);
+}
+
+.precip-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--space-2);
+}
+
+.precip-bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 120px;
+  gap: var(--space-1);
+  padding-bottom: var(--space-6);
+}
+
+.precip-bar-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  position: relative;
+}
+
+.precip-bar-wrapper {
+  width: 100%;
+  height: 80px;
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: var(--space-2);
+}
+
+.precip-bar {
+  width: 100%;
+  background: linear-gradient(to top, var(--color-accent-blue), rgb(88 166 255 / 0.6));
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  transition: height 300ms ease;
+  min-height: 4px;
+}
+
+.precip-time {
+  font-size: 10px;
+  color: var(--color-text-tertiary);
+  white-space: nowrap;
+}
+
+.precip-legend {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  margin-top: var(--space-2);
+}
+
+/* ===========================================
+   SECTION HEADER
+   =========================================== */
+
+.section-header {
+  grid-column: span 12;
+  margin-top: var(--space-2);
+}
+
+.section-title {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-4);
+}
+
+/* ===========================================
+   STAT WIDGETS
+   =========================================== */
+
+.stat-card h3 {
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--space-4);
+}
+
+.stat-content {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.stat-value {
+  font-family: var(--font-mono);
+  font-size: var(--text-3xl);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.stat-unit {
+  font-size: var(--text-base);
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  margin-left: var(--space-1);
+}
+
+.stat-secondary {
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+  text-align: right;
+}
+
+.stat-bar {
+  height: 4px;
+  background-color: var(--color-surface-300);
+  border-radius: var(--radius-full);
+  margin-top: var(--space-4);
+  overflow: hidden;
+}
+
+.stat-bar-fill {
+  height: 100%;
+  background-color: var(--color-accent-blue);
+  border-radius: var(--radius-full);
+  transition: width 500ms ease;
+}
+
+/* UV Gauge */
+
+.uv-gauge {
+  display: flex;
+  justify-content: center;
+}
+
+.uv-gauge-container {
+  position: relative;
+  width: 128px;
+  height: 80px;
+}
+
+.uv-gauge-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.uv-gauge-value {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: var(--space-1);
+}
+
+.uv-number {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.uv-label {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+}
+
+/* Humidity */
+
+.humidity-content {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.humidity-icon {
+  color: var(--color-accent-blue);
+}
+
+.humidity-dew {
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+  margin-top: var(--space-1);
+}
+
+/* Visibility */
+
+.visibility-content {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.visibility-icon {
+  color: var(--color-text-secondary);
+}
+
+.visibility-warning {
+  font-size: var(--text-sm);
+  color: var(--color-accent-yellow);
+  margin-top: var(--space-1);
+}
+
+/* ===========================================
+   OTHER CITIES
+   =========================================== */
+
+.cities-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+}
+
+.cities-title {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.cities-see-all {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.cities-see-all:hover {
+  color: var(--color-primary);
+}
+
+.cities-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.city-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.city-country {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+}
+
+.city-name {
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.city-condition {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+/* ===========================================
+   PROMO CARD
+   =========================================== */
+
+.promo-card {
+  position: relative;
+  background: linear-gradient(135deg, var(--color-surface-300), var(--color-surface-200));
+  overflow: hidden;
+}
+
+.promo-content {
+  position: relative;
+  z-index: 1;
+}
+
+.promo-title {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.promo-text {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-4);
+}
+
+.promo-bg {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 192px;
+  height: 192px;
+  opacity: 0.2;
+  color: var(--color-text-secondary);
+}
+
+/* ===========================================
+   WELCOME STATE (No Location) - US Overview
+   =========================================== */
+
+.welcome-overview {
+  animation: fade-in 400ms ease-out;
+}
+
+.welcome-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-8) var(--space-6);
+  background: linear-gradient(135deg, var(--color-surface-200), var(--color-surface-300));
+  border-radius: var(--radius-2xl);
+  margin-bottom: var(--space-6);
+  position: relative;
+  overflow: hidden;
+}
+
+.welcome-hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 500px;
+}
+
+.welcome-title {
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.welcome-subtitle {
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-6);
+  line-height: 1.6;
+}
+
+.welcome-hero-graphic {
+  position: absolute;
+  right: var(--space-8);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.btn-lg {
+  padding: var(--space-3) var(--space-6);
+  font-size: var(--text-base);
+}
+
+/* City Overview Cards */
+
+.city-overview-card {
+  padding: var(--space-4);
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base);
+}
+
+.city-overview-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.city-overview-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);
+}
+
+.city-overview-name {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.city-overview-state {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.city-overview-temp {
+  font-family: var(--font-mono);
+  font-size: var(--text-4xl);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 1;
+  margin-bottom: var(--space-1);
+}
+
+.city-overview-condition {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+.city-overview-range {
+  display: flex;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+  font-family: var(--font-mono);
+}
+
+.city-high {
+  color: var(--color-text-secondary);
+}
+
+.city-low {
+  color: var(--color-text-tertiary);
+}
+
+/* Quick Tips */
+
+.welcome-tips {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+  margin-top: var(--space-8);
+}
+
+@media (width <= 768px) {
+  .welcome-tips {
+    grid-template-columns: 1fr;
+  }
+
+  .welcome-hero {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .welcome-hero-graphic {
+    position: relative;
+    right: auto;
+    top: auto;
+    transform: none;
+    margin-top: var(--space-4);
+  }
+}
+
+.tip-card {
+  text-align: center;
+  padding: var(--space-6);
+  background-color: var(--color-surface-200);
+  border-radius: var(--radius-xl);
+}
+
+.tip-card h3 {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: var(--space-3) 0 var(--space-2);
+}
+
+.tip-card p {
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+}
+
+/* ===========================================
+   LOADING STATE
+   =========================================== */
+
+.loading-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--space-4);
+}
+
+.loading-card {
+  background-color: var(--color-surface-200);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+}
+
+.skeleton-line {
+  height: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.skeleton-line.w-24 {
+  width: 96px;
+}
+
+.skeleton-line.w-32 {
+  width: 128px;
+}
+
+.skeleton-line.w-40 {
+  width: 160px;
+}
+
+.skeleton-line.h-8 {
+  height: 32px;
+}
+
+.skeleton-line.h-20 {
+  height: 80px;
+}
+
+.skeleton-line.h-40 {
+  height: 160px;
+}
+
+/* ===========================================
+   ERROR STATE
+   =========================================== */
+
+.error-card {
+  text-align: center;
+  padding: var(--space-12) var(--space-4);
+}
+
+.error-icon {
+  color: var(--color-text-tertiary);
+  margin: 0 auto var(--space-4);
+}
+
+.error-title {
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.error-text {
+  color: var(--color-text-secondary);
+}

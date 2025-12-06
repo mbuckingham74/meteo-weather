@@ -53,18 +53,15 @@
 - [docs/database/PERFORMANCE_FIX_NOV7.md](docs/database/PERFORMANCE_FIX_NOV7.md) - FULLTEXT index fix
 - [docs/database/OPTIMIZATION_COMPLETE.md](docs/database/OPTIMIZATION_COMPLETE.md) - All phases summary
 **🎨 UI/UX:**
-- [docs/ui-ux/](docs/ui-ux/) - Material Design 3 implementation (50-60% space reduction)
-- [docs/ui-ux/REDESIGN_SUMMARY.md](docs/ui-ux/REDESIGN_SUMMARY.md) - Unified Hero Card redesign
-- [docs/ui-ux/UI_OPTIMIZATION_SUMMARY.md](docs/ui-ux/UI_OPTIMIZATION_SUMMARY.md) - Material Design 3
-**🎨 CSS Architecture:**
-- [frontend/ITCSS_ARCHITECTURE.md](frontend/ITCSS_ARCHITECTURE.md) - ITCSS layer organization (Phases 2.1-2.3 complete)
-- [frontend/BEM_NAMING_CONVENTION.md](frontend/BEM_NAMING_CONVENTION.md) - BEM standard for new components (512 lines)
-- [frontend/BREAKPOINT_SYSTEM.md](frontend/BREAKPOINT_SYSTEM.md) - Responsive breakpoint system (600+ lines)
-- [frontend/DENSITY_SYSTEM.md](frontend/DENSITY_SYSTEM.md) - Density mode implementation
-- [frontend/CSS_PHASE1_COMPLETE.md](frontend/CSS_PHASE1_COMPLETE.md) - Phase 1 summary (CSS Modules, variables, scale)
-- [frontend/CSS_PHASE_2.2_COMPLETE.md](frontend/CSS_PHASE_2.2_COMPLETE.md) - BEM documentation phase
-- [frontend/CSS_PHASE_2.3_COMPLETE.md](frontend/CSS_PHASE_2.3_COMPLETE.md) - Breakpoint system phase
-- [frontend/CSS_PHASE_3.1_COMPLETE.md](frontend/CSS_PHASE_3.1_COMPLETE.md) - PurgeCSS integration phase (500+ lines)
+- [docs/ui-ux/UI_REDESIGN_CLEAN_SLATE.md](docs/ui-ux/UI_REDESIGN_CLEAN_SLATE.md) - **CURRENT: Clean slate redesign status and plan**
+- [ui-ux-pro-max/SKILL.md](ui-ux-pro-max/SKILL.md) - **UI/UX design intelligence skill for implementation**
+- [docs/ui-ux/](docs/ui-ux/) - Historical UI/UX documentation
+**🎨 CSS Architecture (DEPRECATED - replaced by Tailwind v4):**
+- *The following docs are historical reference only. As of Dec 5, 2025, we use Tailwind CSS v4.*
+- [frontend/ITCSS_ARCHITECTURE.md](frontend/ITCSS_ARCHITECTURE.md) - ~~ITCSS layer organization~~ (DEPRECATED)
+- [frontend/BEM_NAMING_CONVENTION.md](frontend/BEM_NAMING_CONVENTION.md) - ~~BEM standard~~ (DEPRECATED)
+- [frontend/BREAKPOINT_SYSTEM.md](frontend/BREAKPOINT_SYSTEM.md) - ~~Breakpoint system~~ (DEPRECATED)
+- [frontend/DENSITY_SYSTEM.md](frontend/DENSITY_SYSTEM.md) - ~~Density modes~~ (DEPRECATED)
 **⚠️ Troubleshooting:**
 - [docs/troubleshooting/](docs/troubleshooting/) - Common issues & solutions
 - [docs/troubleshooting/TROUBLESHOOTING.md](docs/troubleshooting/TROUBLESHOOTING.md) - Common issues and fixes
@@ -81,7 +78,22 @@
 - [docs/admin/ADMIN_PANEL.md](docs/admin/ADMIN_PANEL.md) - Comprehensive guide (570 lines)
 - [docs/admin/QUICK_REFERENCE.md](docs/admin/QUICK_REFERENCE.md) - One-page cheat sheet (340 lines)
 - [docs/admin/IMPLEMENTATION_SUMMARY.md](docs/admin/IMPLEMENTATION_SUMMARY.md) - Technical details (890 lines)
-### Recent Work (Nov 2025)
+### Recent Work (Nov-Dec 2025)
+- 🔄 **UI Redesign: Clean Slate** (Dec 5, 2025) - **IN PROGRESS**
+  - **Decision:** Complete frontend UI rebuild with Tailwind CSS v4 (Option A: Nuclear Reset)
+  - **Reason:** 7 weeks of accumulated CSS debt (ITCSS, CSS modules, density systems, patches)
+  - **Phase 1 Complete:** Clean slate established
+    - Deleted all components (`/src/components/`) and old CSS
+    - Preserved all business logic (services, hooks, contexts, utils, constants)
+    - Extracted ToastContext to `/src/contexts/ToastContext.jsx`
+    - Created fresh Tailwind v4 design system in `/src/index.css`
+    - Created new `/src/pages/` directory with 8 placeholder pages
+    - Created clean `/src/App.jsx` with routing and all providers
+  - **Phase 2 Pending:** Design research and implementation
+  - **Documentation:** [docs/ui-ux/UI_REDESIGN_CLEAN_SLATE.md](docs/ui-ux/UI_REDESIGN_CLEAN_SLATE.md) - Complete status and plan
+  - **UI/UX Skill:** `/ui-ux-pro-max/SKILL.md` - Design intelligence for implementation
+  - **Status:** Phase 1 complete, ready for design phase 🔄
+
 - ✅ **Error Recovery UX Enhancement (PR #55)** (Nov 20, 2025)
   - **Smart Location Suggestions:** Nearby city recommendations for failed location searches (40+ major cities)
   - **Date Range Hints:** Context-aware date availability messages for forecast/historical data
@@ -513,10 +525,11 @@ docker ps | grep meteo
   - Automated config validation (`npm run validate`)
   - Prevents Vite/CRA config drift
 ### 🔄 Current Tech Stack
-- **Frontend:** React 19.2.0, Vite 6.0.7, Recharts 3.3.0, Leaflet 1.9.4
+- **Frontend:** React 19.2.0, Vite 6.0.7, **Tailwind CSS v4.1.17**, Recharts 3.3.0, Leaflet 1.9.4
+- **Styling:** Tailwind CSS v4 (utility-first, CSS-based config in `@theme` block)
 - **Backend:** Node.js, Express 4.21.1, MySQL 8.0
 - **Security:** express-rate-limit 8.2.1, helmet 8.1.0
-- **Testing:** Jest/Vitest (476/476 tests passing)
+- **Testing:** Jest/Vitest (service/utility tests - UI tests need rebuild)
 - **CI/CD:** GitHub Actions (deploy.yml, ci.yml, security-scan.yml)
 ### 📊 Metrics
 - **Test Coverage:** Frontend 33.65%, Backend 60-65%

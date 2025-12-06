@@ -29,7 +29,7 @@
         "varsIgnorePattern": "^(React|_)"
       }
     ],
-    "no-console": "off",
+    "no-console": "warn",
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn"
   },
