@@ -16,7 +16,7 @@
     "react-dom": "^19.2.1",
     "react-leaflet": "^5.0.0",
     "react-router-dom": "^7.10.1",
-    "recharts": "^3.5.0",
+    "recharts": "^3.5.1",
     "web-vitals": "^5.1.0",
     "yaml": "^2.8.1"
   },
