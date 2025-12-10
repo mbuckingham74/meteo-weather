@@ -79,6 +79,15 @@
 - [docs/admin/QUICK_REFERENCE.md](docs/admin/QUICK_REFERENCE.md) - One-page cheat sheet (340 lines)
 - [docs/admin/IMPLEMENTATION_SUMMARY.md](docs/admin/IMPLEMENTATION_SUMMARY.md) - Technical details (890 lines)
 ### Recent Work (Nov-Dec 2025)
+- ✅ **Critical Security Updates & CI Fixes** (Dec 9, 2025)
+  - **CVE-2025-55182 (React2Shell):** Patched critical RCE vulnerability (CVSS 10.0) by upgrading React 19.2.0 → 19.2.1
+  - **GHSA-869p-cjfg-cm3x (jws):** Patched HMAC signature bypass via jsonwebtoken 9.0.2 → 9.0.3
+  - **Dependabot Cleanup:** Processed 11 PRs (8 merged, 1 closed as too risky, 1 auto-merging)
+  - **CI Pipeline:** Disabled frontend lint/tests during UI redesign (old components deleted)
+  - **Dependencies Updated:** Express 5.2.1, @anthropic-ai/sdk 0.71.2, actions/checkout v6, and more
+  - **Note:** Your app was NOT vulnerable to React2Shell (no RSC usage) but patched as precaution
+  - **Status:** Deployed to production ✅
+
 - 🔄 **UI Redesign: Bento Grid Dashboard** (Dec 5, 2025) - **PHASE 2 IN PROGRESS**
   - **Decision:** Complete frontend UI rebuild with vanilla CSS (Option A: Nuclear Reset)
   - **Reason:** 7 weeks of accumulated CSS debt (ITCSS, CSS modules, density systems, patches)
@@ -531,12 +540,12 @@ docker ps | grep meteo
   - Automated config validation (`npm run validate`)
   - Prevents Vite/CRA config drift
 ### 🔄 Current Tech Stack
-- **Frontend:** React 19.2.0, Vite 6.0.7, Recharts 3.3.0, Leaflet 1.9.4
+- **Frontend:** React 19.2.1, Vite 6.4.1, Recharts 3.5.1, Leaflet 1.9.4
 - **Styling:** Vanilla CSS with CSS custom properties (design tokens in `/src/index.css`)
-- **Backend:** Node.js, Express 4.21.1, MySQL 8.0
-- **Security:** express-rate-limit 8.2.1, helmet 8.1.0
-- **Testing:** Jest/Vitest (service/utility tests - UI tests need rebuild)
-- **CI/CD:** GitHub Actions (deploy.yml, ci.yml, security-scan.yml)
+- **Backend:** Node.js, Express 5.2.1, MySQL 8.0
+- **Security:** express-rate-limit 8.2.1, helmet 8.1.0, jsonwebtoken 9.0.3
+- **Testing:** Jest/Vitest (service/utility tests - UI tests disabled during redesign)
+- **CI/CD:** GitHub Actions (deploy.yml, ci.yml, security-scan.yml) - frontend tests disabled
 ### 📊 Metrics
 - **Test Coverage:** Frontend 33.65%, Backend 60-65%
 - **Security Score:** 9.4/10
@@ -624,8 +633,8 @@ meteo-app/
 9. **Regression prevention** - Pre-commit hooks and tests prevent "Old Location" bug
 10. **Express route ordering** - Parameter routes (`:id`) MUST come AFTER specific routes (`/reverse`, `/search`, etc.) or they will act as catch-alls
 ---
-**Last Updated:** November 6, 2025
-**Current Version:** v1.1.0-security
+**Last Updated:** December 9, 2025
+**Current Version:** v1.2.0-security
 **Maintainer:** Michael Buckingham
 ---
 ## 🎯 Session Startup Template
