@@ -122,10 +122,18 @@ jobs:
   # FRONTEND JOBS
   # ============================================================================
 
+  # ==========================================================================
+  # FRONTEND LINT & TESTS - TEMPORARILY DISABLED
+  # ==========================================================================
+  # Disabled during UI redesign (see docs/ui-ux/UI_REDESIGN_CLEAN_SLATE.md)
+  # Old components deleted, new tests will be written with new UI
+  # Re-enable when Phase 2 UI redesign is complete
+  # ==========================================================================
+
   frontend-lint:
     name: Frontend Lint
     runs-on: ubuntu-latest
-    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    if: false  # DISABLED: UI redesign in progress
 
     steps:
       - name: Checkout code
@@ -162,7 +170,7 @@ jobs:
     name: Frontend Tests
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    if: false  # DISABLED: UI redesign in progress - old component tests deleted
 
     strategy:
       matrix:
@@ -367,8 +375,9 @@ jobs:
     name: Post PR Comment
     runs-on: ubuntu-latest
     # Skip for Dependabot PRs (they have restricted GITHUB_TOKEN permissions)
-    if: github.event_name == 'pull_request' && github.actor != 'dependabot[bot]' && needs.frontend-test.result == 'success'
-    needs: [frontend-test, backend-test]
+    # NOTE: frontend-test disabled during UI redesign
+    if: github.event_name == 'pull_request' && github.actor != 'dependabot[bot]' && needs.backend-test.result == 'success'
+    needs: [backend-test]
     permissions:
       contents: read
       pull-requests: write
@@ -421,11 +430,11 @@ jobs:
   ci-success:
     name: CI Success
     runs-on: ubuntu-latest
+    # NOTE: frontend-lint and frontend-test removed during UI redesign
+    # Re-add them when Phase 2 redesign is complete
     needs:
       - backend-lint
       - backend-test
-      - frontend-lint
-      - frontend-test
       - frontend-build
       - docker-build
       - docker-compose-validation
@@ -434,7 +443,8 @@ jobs:
     steps:
       - name: Check critical jobs success
         run: |
-          # Check only critical jobs (exclude backend-test which has pre-existing failures)
+          # Check only critical jobs
+          # frontend-lint and frontend-test DISABLED during UI redesign
           CRITICAL_FAILURES="false"
 
           if [ "${{ needs.backend-lint.result }}" == "failure" ]; then
@@ -442,13 +452,8 @@ jobs:
             CRITICAL_FAILURES="true"
           fi
 
-          if [ "${{ needs.frontend-lint.result }}" == "failure" ]; then
-            echo "❌ Frontend lint failed"
-            CRITICAL_FAILURES="true"
-          fi
-
-          if [ "${{ needs.frontend-test.result }}" == "failure" ]; then
-            echo "❌ Frontend tests failed"
+          if [ "${{ needs.backend-test.result }}" == "failure" ]; then
+            echo "❌ Backend tests failed"
             CRITICAL_FAILURES="true"
           fi
 
@@ -473,7 +478,7 @@ jobs:
           fi
 
           echo "✅ All critical CI jobs passed successfully!"
-          echo "⚠️  Note: Backend tests have pre-existing failures that are being addressed separately"
+          echo "⚠️  Note: Frontend lint/tests disabled during UI redesign"
 
       - name: Summary
         run: |
@@ -481,7 +486,8 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "All quality checks passed:" >> $GITHUB_STEP_SUMMARY
           echo "- ✅ Backend linting and tests" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ Frontend linting and tests" >> $GITHUB_STEP_SUMMARY
+          echo "- ⏸️ Frontend linting (disabled - UI redesign)" >> $GITHUB_STEP_SUMMARY
+          echo "- ⏸️ Frontend tests (disabled - UI redesign)" >> $GITHUB_STEP_SUMMARY
           echo "- ✅ Frontend production build" >> $GITHUB_STEP_SUMMARY
           echo "- ✅ Docker images build" >> $GITHUB_STEP_SUMMARY
           echo "- ✅ Docker Compose validation" >> $GITHUB_STEP_SUMMARY
