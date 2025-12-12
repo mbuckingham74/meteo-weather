@@ -1,12 +1,22 @@
 /**
  * Centralized Configuration with Zod Validation
- * All environment variables are validated at startup
- * Fail-fast if configuration is invalid
+ *
+ * This module is SIDE-EFFECT-FREE - it does not call process.exit() on import.
+ * Configuration is lazily loaded and cached on first access.
  *
  * Usage:
- * const config = require('./config');
- * console.log(config.app.port); // 5001
- * console.log(config.weather.visualCrossingKey); // API key
+ *   // Option 1: Lazy loading (recommended for most files)
+ *   const { getConfig } = require('./config');
+ *   const config = getConfig();
+ *   console.log(config.app.port); // 5001
+ *
+ *   // Option 2: Explicit loading with error handling (recommended for server.js)
+ *   const { loadConfig } = require('./config');
+ *   const { config, error } = loadConfig();
+ *   if (error) {
+ *     console.error(error.message);
+ *     process.exit(1);
+ *   }
  */
 
 const { z } = require('zod');
@@ -33,8 +43,9 @@ const ConfigSchema = z.object({
   }),
 
   weather: z.object({
-    visualCrossingKey: z.string().min(1),
-    openWeatherKey: z.string().min(1),
+    // API keys are optional - server can start without them but weather features won't work
+    visualCrossingKey: z.string().optional(),
+    openWeatherKey: z.string().optional(),
     maxConcurrentRequests: z.number().int().positive().default(3),
     throttleMs: z.number().int().positive().default(100),
     apiTimeout: z.number().int().positive().default(10000),
@@ -199,7 +210,10 @@ function parseConfig() {
     },
 
     cors: {
-      allowedOrigins: process.env.CORS_ALLOWED_ORIGINS || 'http://localhost:3000',
+      // Default includes all common development ports (CRA, Vite, etc.)
+      allowedOrigins:
+        process.env.CORS_ALLOWED_ORIGINS ||
+        'http://localhost:3000,http://localhost:3001,http://localhost:3005,http://localhost:3006,http://localhost:5173',
     },
 
     admin: {
@@ -211,13 +225,16 @@ function parseConfig() {
 }
 
 /**
- * Validate and export configuration
- * Fails fast if required variables are missing
+ * Validate configuration and return result
+ * Does NOT call process.exit - caller decides how to handle errors
+ *
+ * @returns {{ config: Object|null, error: Error|null }}
  */
 function loadConfig() {
   try {
     const rawConfig = parseConfig();
-    return ConfigSchema.parse(rawConfig);
+    const config = ConfigSchema.parse(rawConfig);
+    return { config, error: null };
   } catch (error) {
     if (error?.issues) {
       // Zod validation error
@@ -231,29 +248,52 @@ function loadConfig() {
       fullError.name = 'ConfigValidationError';
       fullError.details = error.issues;
 
-      // In test environment, throw the error so tests can catch it
-      if (process.env.NODE_ENV === 'test') {
-        throw fullError;
-      }
-
-      // In production/development, log and exit
-      console.error('❌ Configuration validation failed:');
-      console.error('');
-      console.error(errorMessage);
-      console.error('');
-      console.error('💡 Check your .env file and ensure all required variables are set.');
-      console.error('   See .env.example for reference.');
-      // eslint-disable-next-line no-process-exit
-      process.exit(1);
+      return { config: null, error: fullError };
     } else {
-      if (process.env.NODE_ENV === 'test') {
-        throw error;
-      }
-      console.error('❌ Configuration error:', error);
-      // eslint-disable-next-line no-process-exit
-      process.exit(1);
+      const fullError = new Error(`Configuration error: ${error.message}`);
+      fullError.name = 'ConfigError';
+      fullError.cause = error;
+
+      return { config: null, error: fullError };
     }
   }
 }
 
-module.exports = loadConfig();
+// Cached config instance for lazy loading
+let cachedConfig = null;
+
+/**
+ * Get configuration (lazy loading with caching)
+ * Throws on validation error - use loadConfig() for explicit error handling
+ *
+ * @returns {Object} Validated configuration object
+ * @throws {Error} If configuration is invalid
+ */
+function getConfig() {
+  if (cachedConfig) {
+    return cachedConfig;
+  }
+
+  const { config, error } = loadConfig();
+  if (error) {
+    throw error;
+  }
+
+  cachedConfig = config;
+  return cachedConfig;
+}
+
+/**
+ * Clear cached config (useful for testing)
+ */
+function clearConfigCache() {
+  cachedConfig = null;
+}
+
+module.exports = {
+  loadConfig,
+  getConfig,
+  clearConfigCache,
+  // Export schema for testing
+  ConfigSchema,
+};

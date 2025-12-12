@@ -1,5 +1,9 @@
 const request = require('supertest');
-const app = require('../app');
+const createApp = require('../app');
+const { getConfig } = require('../config');
+
+// Create app instance with validated config
+const app = createApp(getConfig());
 
 describe('GET /api/health', () => {
   it('returns application health metadata when the database is reachable', async () => {

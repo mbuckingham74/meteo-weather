@@ -1,29 +1,39 @@
 require('dotenv').config();
-const app = require('./app');
+const { loadConfig } = require('./config');
 const { testConnection } = require('./config/database');
 
-const PORT = process.env.PORT || 5001;
+// Load and validate config at startup (fail-fast)
+const { config, error: configError } = loadConfig();
+if (configError) {
+  console.error('❌ ' + configError.message);
+  // eslint-disable-next-line no-process-exit
+  process.exit(1);
+}
+
+// Create app with validated config
+const createApp = require('./app');
+const app = createApp(config);
 
 async function startServer() {
   try {
     await testConnection();
 
-    if (!process.env.VISUAL_CROSSING_API_KEY) {
+    if (!config.weather.visualCrossingKey) {
       console.warn('\n⚠️  WARNING: VISUAL_CROSSING_API_KEY is not configured\n');
     }
 
-    const server = app.listen(PORT, '0.0.0.0', () => {
-      console.log(`\n🚀 Server running on port ${PORT}`);
-      console.log(`📊 Environment: ${process.env.NODE_ENV}`);
-      console.log(`🗄️  Database: ${process.env.DB_NAME}`);
-      console.log(`🌤️  Visual Crossing API: ${process.env.VISUAL_CROSSING_API_KEY ? 'Configured' : 'Not configured'}`);
+    const server = app.listen(config.app.port, '0.0.0.0', () => {
+      console.log(`\n🚀 Server running on port ${config.app.port}`);
+      console.log(`📊 Environment: ${config.app.env}`);
+      console.log(`🗄️  Database: ${config.database.name}`);
+      console.log(`🌤️  Visual Crossing API: ${config.weather.visualCrossingKey ? 'Configured' : 'Not configured'}`);
       console.log(`\n🔗 API Endpoints:`);
-      console.log(`   Health check:      http://localhost:${PORT}/api/health`);
-      console.log(`   Weather test:      http://localhost:${PORT}/api/weather/test`);
-      console.log(`   Current weather:   http://localhost:${PORT}/api/weather/current/:location`);
-      console.log(`   Forecast:          http://localhost:${PORT}/api/weather/forecast/:location`);
-      console.log(`   Historical:        http://localhost:${PORT}/api/weather/historical/:location`);
-      console.log(`   Locations:         http://localhost:${PORT}/api/locations\n`);
+      console.log(`   Health check:      http://localhost:${config.app.port}/api/health`);
+      console.log(`   Weather test:      http://localhost:${config.app.port}/api/weather/test`);
+      console.log(`   Current weather:   http://localhost:${config.app.port}/api/weather/current/:location`);
+      console.log(`   Forecast:          http://localhost:${config.app.port}/api/weather/forecast/:location`);
+      console.log(`   Historical:        http://localhost:${config.app.port}/api/weather/historical/:location`);
+      console.log(`   Locations:         http://localhost:${config.app.port}/api/locations\n`);
     });
 
     return server;
@@ -39,5 +49,6 @@ if (require.main === module) {
 
 module.exports = {
   app,
-  startServer
+  startServer,
+  config,
 };
