@@ -4,6 +4,9 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const { testConnection } = require('./config/database');
 
+// Logging and error handling middleware
+const { requestLogger, notFoundHandler, errorHandler } = require('./middleware/errorHandler');
+
 // API route modules
 const weatherRoutes = require('./routes/weather');
 const locationRoutes = require('./routes/locations');
@@ -119,7 +122,10 @@ function createApp(config) {
   app.use(express.json({ limit: '1mb' }));
   app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 
-  // 4. Rate limiting - Global API protection (using config)
+  // 4. Request logging (logs all HTTP requests with timing)
+  app.use(requestLogger);
+
+  // 5. Rate limiting - Global API protection (using config)
   const apiLimiter = rateLimit({
     windowMs: rateLimits.global.windowMs,
     max: isProduction ? rateLimits.global.max : 1000, // Higher limit for local dev testing
@@ -193,22 +199,12 @@ function createApp(config) {
   app.use('/api/admin', adminRoutes);
   app.use('/api/api-keys', apiKeysRoutes);
 
-  // 404 handler
-  app.use((req, res) => {
-    res.status(404).json({
-      success: false,
-      error: 'Endpoint not found',
-    });
-  });
+  // 404 handler - catches requests that don't match any route
+  app.use(notFoundHandler);
 
-  // Global error handler (express detects four-argument signature)
-  app.use((err, req, res, _next) => {
-    console.error('Unhandled error:', err);
-    res.status(500).json({
-      success: false,
-      error: isProduction ? 'Internal server error' : err.message,
-    });
-  });
+  // Global error handler - converts all errors to standardized API responses
+  // Uses structured logging and proper error codes
+  app.use(errorHandler);
 
   return app;
 }
