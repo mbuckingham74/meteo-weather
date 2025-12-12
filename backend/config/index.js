@@ -43,8 +43,9 @@ const ConfigSchema = z.object({
   }),
 
   weather: z.object({
-    visualCrossingKey: z.string().min(1),
-    openWeatherKey: z.string().min(1),
+    // API keys are optional - server can start without them but weather features won't work
+    visualCrossingKey: z.string().optional(),
+    openWeatherKey: z.string().optional(),
     maxConcurrentRequests: z.number().int().positive().default(3),
     throttleMs: z.number().int().positive().default(100),
     apiTimeout: z.number().int().positive().default(10000),
@@ -209,7 +210,10 @@ function parseConfig() {
     },
 
     cors: {
-      allowedOrigins: process.env.CORS_ALLOWED_ORIGINS || 'http://localhost:3000',
+      // Default includes all common development ports (CRA, Vite, etc.)
+      allowedOrigins:
+        process.env.CORS_ALLOWED_ORIGINS ||
+        'http://localhost:3000,http://localhost:3001,http://localhost:3005,http://localhost:3006,http://localhost:5173',
     },
 
     admin: {

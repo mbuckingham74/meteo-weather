@@ -45,11 +45,11 @@ describe('Configuration', () => {
   });
 
   describe('Weather API Configuration', () => {
-    it('should require API keys', () => {
+    it('should have weather config section', () => {
       const config = getConfig();
       expect(config.weather).toBeDefined();
-      expect(config.weather.visualCrossingKey).toBeDefined();
-      expect(config.weather.openWeatherKey).toBeDefined();
+      // API keys are optional - server can start without them
+      // but weather features won't work
     });
 
     it('should have default timeouts and limits', () => {
