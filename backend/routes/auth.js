@@ -6,147 +6,140 @@ const {
   refreshAccessToken,
   getUserById,
   updateUserProfile,
-  changePassword
+  changePassword,
 } = require('../services/authService');
 const { authenticateToken } = require('../middleware/authMiddleware');
+const { asyncHandler } = require('../middleware/errorHandler');
+const { createError, ERROR_CODES } = require('../utils/errorCodes');
 
 /**
  * Authentication Routes
+ *
+ * All routes use asyncHandler to automatically catch errors and pass them
+ * to the centralized error handler. Validation errors throw ApiError with
+ * appropriate error codes.
  */
 
 /**
  * POST /api/auth/register
  * Register a new user
  */
-router.post('/register', async (req, res) => {
-  try {
+router.post(
+  '/register',
+  asyncHandler(async (req, res) => {
     const { email, password, name } = req.body;
 
     // Validation
     if (!email || !password || !name) {
-      return res.status(400).json({
-        error: 'Email, password, and name are required'
-      });
+      throw createError(
+        ERROR_CODES.VALIDATION_ERROR,
+        'Email, password, and name are required'
+      );
     }
 
     // Email format validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      return res.status(400).json({
-        error: 'Invalid email format'
-      });
+      throw createError(ERROR_CODES.VALIDATION_ERROR, 'Invalid email format');
     }
 
     // Password strength validation
     if (password.length < 6) {
-      return res.status(400).json({
-        error: 'Password must be at least 6 characters long'
-      });
+      throw createError(
+        ERROR_CODES.WEAK_PASSWORD,
+        'Password must be at least 6 characters long'
+      );
     }
 
     const result = await registerUser(email, password, name);
 
     res.status(201).json({
+      success: true,
       message: 'User registered successfully',
-      ...result
+      ...result,
     });
-  } catch (error) {
-    console.error('Registration error:', error);
-
-    if (error.message === 'Email already registered') {
-      return res.status(409).json({ error: error.message });
-    }
-
-    res.status(500).json({
-      error: 'Registration failed. Please try again.'
-    });
-  }
-});
+  })
+);
 
 /**
  * POST /api/auth/login
  * Login user
  */
-router.post('/login', async (req, res) => {
-  try {
+router.post(
+  '/login',
+  asyncHandler(async (req, res) => {
     const { email, password } = req.body;
 
     // Validation
     if (!email || !password) {
-      return res.status(400).json({
-        error: 'Email and password are required'
-      });
+      throw createError(
+        ERROR_CODES.VALIDATION_ERROR,
+        'Email and password are required'
+      );
     }
 
     const result = await loginUser(email, password);
 
     res.json({
+      success: true,
       message: 'Login successful',
-      ...result
+      ...result,
     });
-  } catch (error) {
-    console.error('Login error:', error);
-
-    if (error.message === 'Invalid email or password') {
-      return res.status(401).json({ error: error.message });
-    }
-
-    res.status(500).json({
-      error: 'Login failed. Please try again.'
-    });
-  }
-});
+  })
+);
 
 /**
  * POST /api/auth/refresh
  * Refresh access token using refresh token
  */
-router.post('/refresh', async (req, res) => {
-  try {
+router.post(
+  '/refresh',
+  asyncHandler(async (req, res) => {
     const { refreshToken } = req.body;
 
     if (!refreshToken) {
-      return res.status(400).json({
-        error: 'Refresh token is required'
-      });
+      throw createError(
+        ERROR_CODES.VALIDATION_ERROR,
+        'Refresh token is required'
+      );
     }
 
     const result = await refreshAccessToken(refreshToken);
 
-    res.json(result);
-  } catch (error) {
-    console.error('Token refresh error:', error);
-    res.status(403).json({
-      error: 'Invalid or expired refresh token'
+    res.json({
+      success: true,
+      ...result,
     });
-  }
-});
+  })
+);
 
 /**
  * GET /api/auth/me
  * Get current user profile
  * Protected route
  */
-router.get('/me', authenticateToken, async (req, res) => {
-  try {
+router.get(
+  '/me',
+  authenticateToken,
+  asyncHandler(async (req, res) => {
     const user = await getUserById(req.user.userId);
 
-    res.json({ user });
-  } catch (error) {
-    console.error('Get user error:', error);
-    res.status(500).json({
-      error: 'Failed to fetch user profile'
+    res.json({
+      success: true,
+      user,
     });
-  }
-});
+  })
+);
 
 /**
  * PUT /api/auth/profile
  * Update user profile
  * Protected route
  */
-router.put('/profile', authenticateToken, async (req, res) => {
-  try {
+router.put(
+  '/profile',
+  authenticateToken,
+  asyncHandler(async (req, res) => {
     const { name, email } = req.body;
 
     const updates = {};
@@ -156,56 +149,47 @@ router.put('/profile', authenticateToken, async (req, res) => {
     const updatedUser = await updateUserProfile(req.user.userId, updates);
 
     res.json({
+      success: true,
       message: 'Profile updated successfully',
-      user: updatedUser
+      user: updatedUser,
     });
-  } catch (error) {
-    console.error('Update profile error:', error);
-    res.status(500).json({
-      error: 'Failed to update profile'
-    });
-  }
-});
+  })
+);
 
 /**
  * POST /api/auth/change-password
  * Change user password
  * Protected route
  */
-router.post('/change-password', authenticateToken, async (req, res) => {
-  try {
+router.post(
+  '/change-password',
+  authenticateToken,
+  asyncHandler(async (req, res) => {
     const { currentPassword, newPassword } = req.body;
 
     // Validation
     if (!currentPassword || !newPassword) {
-      return res.status(400).json({
-        error: 'Current password and new password are required'
-      });
+      throw createError(
+        ERROR_CODES.VALIDATION_ERROR,
+        'Current password and new password are required'
+      );
     }
 
     if (newPassword.length < 6) {
-      return res.status(400).json({
-        error: 'New password must be at least 6 characters long'
-      });
+      throw createError(
+        ERROR_CODES.WEAK_PASSWORD,
+        'New password must be at least 6 characters long'
+      );
     }
 
     await changePassword(req.user.userId, currentPassword, newPassword);
 
     res.json({
-      message: 'Password changed successfully'
+      success: true,
+      message: 'Password changed successfully',
     });
-  } catch (error) {
-    console.error('Change password error:', error);
-
-    if (error.message === 'Current password is incorrect') {
-      return res.status(400).json({ error: error.message });
-    }
-
-    res.status(500).json({
-      error: 'Failed to change password'
-    });
-  }
-});
+  })
+);
 
 /**
  * POST /api/auth/logout
@@ -215,7 +199,8 @@ router.post('/logout', authenticateToken, (req, res) => {
   // With JWT, logout is primarily handled client-side by removing tokens
   // This endpoint is mainly for logging/tracking purposes
   res.json({
-    message: 'Logout successful'
+    success: true,
+    message: 'Logout successful',
   });
 });
 
