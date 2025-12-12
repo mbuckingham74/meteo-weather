@@ -220,10 +220,18 @@ function toApiError(error, context = '') {
     return createError(ERROR_CODES.EXTERNAL_API_ERROR, 'External service error', { context });
   }
 
-  // Generic server error
-  return createError(ERROR_CODES.SERVER_ERROR, error.message || 'An unexpected error occurred', {
+  // Generic server error - never expose raw error.message in production
+  // (could leak SQL errors, internal paths, etc.)
+  const safeMessage =
+    process.env.NODE_ENV === 'production'
+      ? 'An unexpected error occurred'
+      : error.message || 'An unexpected error occurred';
+
+  return createError(ERROR_CODES.SERVER_ERROR, safeMessage, {
     context,
     originalError: error.name,
+    // Include raw message in context for logging (not sent to client in prod)
+    rawMessage: error.message,
   });
 }
 
