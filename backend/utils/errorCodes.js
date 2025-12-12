@@ -96,7 +96,7 @@ const ERROR_MESSAGES = {
   [ERROR_CODES.WEATHER_DATA_UNAVAILABLE]: 'Weather data is currently unavailable.',
   [ERROR_CODES.INVALID_CREDENTIALS]: 'Invalid email or password.',
   [ERROR_CODES.EMAIL_ALREADY_EXISTS]: 'An account with this email already exists.',
-  [ERROR_CODES.WEAK_PASSWORD]: 'Password must be at least 8 characters long.',
+  [ERROR_CODES.WEAK_PASSWORD]: 'Password must be at least 6 characters long.',
   [ERROR_CODES.INVALID_TOKEN]: 'Invalid authentication token.',
   [ERROR_CODES.CACHE_ERROR]: 'Cache operation failed.',
   [ERROR_CODES.AI_SERVICE_ERROR]: 'AI service is currently unavailable.',

@@ -1,10 +1,14 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { pool } = require('../config/database');
+const { createError, ERROR_CODES } = require('../utils/errorCodes');
 
 /**
  * Authentication Service
  * Handles user registration, login, and token management
+ *
+ * All errors thrown are ApiError instances with appropriate error codes,
+ * allowing the centralized error handler to return correct HTTP status codes.
  */
 
 const SALT_ROUNDS = 10;
@@ -21,7 +25,7 @@ async function registerUser(email, password, name) {
     );
 
     if (existingUsers.length > 0) {
-      throw new Error('Email already registered');
+      throw createError(ERROR_CODES.EMAIL_ALREADY_EXISTS, 'Email already registered');
     }
 
     // Check if this is the first user (will become admin)
@@ -79,7 +83,7 @@ async function loginUser(email, password) {
     );
 
     if (users.length === 0) {
-      throw new Error('Invalid email or password');
+      throw createError(ERROR_CODES.INVALID_CREDENTIALS, 'Invalid email or password');
     }
 
     const user = users[0];
@@ -88,7 +92,7 @@ async function loginUser(email, password) {
     const isValidPassword = await bcrypt.compare(password, user.password_hash);
 
     if (!isValidPassword) {
-      throw new Error('Invalid email or password');
+      throw createError(ERROR_CODES.INVALID_CREDENTIALS, 'Invalid email or password');
     }
 
     // Update last login
@@ -144,7 +148,10 @@ function verifyAccessToken(token) {
   try {
     return jwt.verify(token, process.env.JWT_SECRET);
   } catch (error) {
-    throw new Error('Invalid or expired token');
+    if (error.name === 'TokenExpiredError') {
+      throw createError(ERROR_CODES.TOKEN_EXPIRED, 'Your session has expired');
+    }
+    throw createError(ERROR_CODES.INVALID_TOKEN, 'Invalid or expired token');
   }
 }
 
@@ -155,7 +162,10 @@ function verifyRefreshToken(token) {
   try {
     return jwt.verify(token, process.env.JWT_REFRESH_SECRET);
   } catch (error) {
-    throw new Error('Invalid or expired refresh token');
+    if (error.name === 'TokenExpiredError') {
+      throw createError(ERROR_CODES.TOKEN_EXPIRED, 'Refresh token has expired');
+    }
+    throw createError(ERROR_CODES.INVALID_TOKEN, 'Invalid or expired refresh token');
   }
 }
 
@@ -173,7 +183,7 @@ async function refreshAccessToken(refreshToken) {
     );
 
     if (users.length === 0) {
-      throw new Error('User not found');
+      throw createError(ERROR_CODES.NOT_FOUND, 'User not found');
     }
 
     const user = users[0];
@@ -203,7 +213,7 @@ async function getUserById(userId) {
     );
 
     if (users.length === 0) {
-      throw new Error('User not found');
+      throw createError(ERROR_CODES.NOT_FOUND, 'User not found');
     }
 
     const user = users[0];
@@ -240,7 +250,7 @@ async function updateUserProfile(userId, updates) {
     }
 
     if (updateFields.length === 0) {
-      throw new Error('No valid fields to update');
+      throw createError(ERROR_CODES.VALIDATION_ERROR, 'No valid fields to update');
     }
 
     updateValues.push(userId);
@@ -269,14 +279,14 @@ async function changePassword(userId, currentPassword, newPassword) {
     );
 
     if (users.length === 0) {
-      throw new Error('User not found');
+      throw createError(ERROR_CODES.NOT_FOUND, 'User not found');
     }
 
     // Verify current password
     const isValidPassword = await bcrypt.compare(currentPassword, users[0].password_hash);
 
     if (!isValidPassword) {
-      throw new Error('Current password is incorrect');
+      throw createError(ERROR_CODES.INVALID_CREDENTIALS, 'Current password is incorrect');
     }
 
     // Hash new password
