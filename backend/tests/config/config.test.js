@@ -3,11 +3,18 @@
  * Tests centralized config validation and structure
  */
 
+const { getConfig, clearConfigCache } = require('../../config');
+
 describe('Configuration', () => {
+  // Clear config cache before each test to ensure fresh loading
+  beforeEach(() => {
+    clearConfigCache();
+  });
+
   describe('Configuration Loading', () => {
     it('should load successfully with test defaults', () => {
       // jest.env.js sets test defaults, so config should load
-      const config = require('../../config');
+      const config = getConfig();
       expect(config).toBeDefined();
       expect(config.app).toBeDefined();
       expect(config.database).toBeDefined();
@@ -17,7 +24,7 @@ describe('Configuration', () => {
 
   describe('App Configuration', () => {
     it('should load with valid config values', () => {
-      const config = require('../../config');
+      const config = getConfig();
       expect(config.app).toBeDefined();
       expect(typeof config.app.port).toBe('number');
       expect(config.app.port).toBeGreaterThan(0);
@@ -28,7 +35,7 @@ describe('Configuration', () => {
 
   describe('Database Configuration', () => {
     it('should have valid database config', () => {
-      const config = require('../../config');
+      const config = getConfig();
       expect(config.database).toBeDefined();
       expect(typeof config.database.host).toBe('string');
       expect(typeof config.database.port).toBe('number');
@@ -39,14 +46,14 @@ describe('Configuration', () => {
 
   describe('Weather API Configuration', () => {
     it('should require API keys', () => {
-      const config = require('../../config');
+      const config = getConfig();
       expect(config.weather).toBeDefined();
       expect(config.weather.visualCrossingKey).toBeDefined();
       expect(config.weather.openWeatherKey).toBeDefined();
     });
 
     it('should have default timeouts and limits', () => {
-      const config = require('../../config');
+      const config = getConfig();
       expect(config.weather.maxConcurrentRequests).toBe(3);
       expect(config.weather.throttleMs).toBe(100);
       expect(config.weather.apiTimeout).toBe(10000);
@@ -55,7 +62,7 @@ describe('Configuration', () => {
 
   describe('Cache Configuration', () => {
     it('should have TTL settings', () => {
-      const config = require('../../config');
+      const config = getConfig();
       expect(config.cache).toBeDefined();
       expect(typeof config.cache.enabled).toBe('boolean');
       expect(config.cache.ttl).toBeDefined();
@@ -67,7 +74,7 @@ describe('Configuration', () => {
 
   describe('AI Configuration', () => {
     it('should have default provider and token limits', () => {
-      const config = require('../../config');
+      const config = getConfig();
       expect(config.ai).toBeDefined();
       expect(config.ai.defaultProvider).toBe('anthropic');
       expect(config.ai.defaultMaxTokens).toBe(500);
@@ -75,7 +82,7 @@ describe('Configuration', () => {
     });
 
     it('should parse optional provider API keys when provided', () => {
-      const config = require('../../config');
+      const config = getConfig();
       // If the key is provided in .env, it should be loaded
       if (process.env.METEO_ANTHROPIC_API_KEY) {
         expect(config.ai.providers.anthropic).toBeDefined();
@@ -87,14 +94,14 @@ describe('Configuration', () => {
 
   describe('Security Configuration', () => {
     it('should require JWT secrets', () => {
-      const config = require('../../config');
+      const config = getConfig();
       expect(config.security).toBeDefined();
       expect(config.security.jwtSecret).toBeDefined();
       expect(config.security.jwtRefreshSecret).toBeDefined();
     });
 
     it('should have rate limit settings', () => {
-      const config = require('../../config');
+      const config = getConfig();
       expect(config.security.rateLimits).toBeDefined();
       expect(config.security.rateLimits.global).toBeDefined();
       expect(config.security.rateLimits.auth).toBeDefined();
@@ -104,7 +111,7 @@ describe('Configuration', () => {
 
   describe('CORS Configuration', () => {
     it('should parse comma-separated origins', () => {
-      const config = require('../../config');
+      const config = getConfig();
       expect(config.cors).toBeDefined();
       expect(Array.isArray(config.cors.allowedOrigins)).toBe(true);
       expect(config.cors.allowedOrigins.length).toBeGreaterThan(0);
@@ -113,7 +120,7 @@ describe('Configuration', () => {
 
   describe('Admin Configuration', () => {
     it('should parse admin emails as array', () => {
-      const config = require('../../config');
+      const config = getConfig();
       expect(config.admin).toBeDefined();
       expect(Array.isArray(config.admin.emails)).toBe(true);
     });
