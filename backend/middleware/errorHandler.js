@@ -19,7 +19,7 @@
  * ```
  */
 
-const { isApiError, toApiError, ERROR_CODES } = require('../utils/errorCodes');
+const { isApiError, toApiError } = require('../utils/errorCodes');
 const logger = require('../utils/logger');
 
 /**
@@ -74,21 +74,20 @@ function errorHandler(err, req, res, _next) {
 /**
  * 404 Not Found handler
  * Creates a standardized 404 response for unknown routes
+ * Maintains backwards-compatible response shape
  *
  * @param {Object} req - Express request
  * @param {Object} res - Express response
  */
 function notFoundHandler(req, res) {
-  const { createError } = require('../utils/errorCodes');
+  // Log the 404 for debugging (includes route details)
+  logger.warn('API', `404 Not Found: ${req.method} ${req.originalUrl || req.url}`);
 
-  res
-    .status(404)
-    .json(
-      createError(
-        ERROR_CODES.NOT_FOUND,
-        `Route ${req.method} ${req.originalUrl || req.url} not found`
-      ).toJSON()
-    );
+  // Return backwards-compatible response (same shape as before)
+  res.status(404).json({
+    success: false,
+    error: 'Endpoint not found',
+  });
 }
 
 /**
