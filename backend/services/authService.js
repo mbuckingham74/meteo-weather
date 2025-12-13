@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { pool } = require('../config/database');
+const { pool, withTransaction } = require('../config/database');
 const { createError, ERROR_CODES } = require('../utils/errorCodes');
 
 /**
@@ -15,53 +15,60 @@ const SALT_ROUNDS = 10;
 
 /**
  * Register a new user
+ * Uses a transaction to ensure user and preferences are created atomically
  */
 async function registerUser(email, password, name) {
+  // Check if user already exists (outside transaction for fast rejection)
+  const [existingUsers] = await pool.query(
+    'SELECT id FROM users WHERE email = ?',
+    [email]
+  );
+
+  if (existingUsers.length > 0) {
+    throw createError(ERROR_CODES.EMAIL_ALREADY_EXISTS, 'Email already registered');
+  }
+
+  // Hash password before transaction (CPU-intensive, don't hold connection)
+  const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
+
   try {
-    // Check if user already exists
-    const [existingUsers] = await pool.query(
-      'SELECT id FROM users WHERE email = ?',
-      [email]
-    );
+    // Use transaction to ensure atomicity of user + preferences creation
+    const result = await withTransaction(async (conn) => {
+      // Check if this is the first user (will become admin)
+      // Re-check inside transaction for race condition safety
+      const [userCount] = await conn.query('SELECT COUNT(*) as count FROM users');
+      const isFirstUser = userCount[0].count === 0;
 
-    if (existingUsers.length > 0) {
-      throw createError(ERROR_CODES.EMAIL_ALREADY_EXISTS, 'Email already registered');
-    }
+      // Create user (first user is automatically admin)
+      const [insertResult] = await conn.query(
+        'INSERT INTO users (email, password_hash, name, is_admin) VALUES (?, ?, ?, ?)',
+        [email, passwordHash, name, isFirstUser]
+      );
 
-    // Check if this is the first user (will become admin)
-    const [userCount] = await pool.query('SELECT COUNT(*) as count FROM users');
-    const isFirstUser = userCount[0].count === 0;
+      const userId = insertResult.insertId;
 
-    // Hash password
-    const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
+      if (isFirstUser) {
+        console.log(`🔧 First user registered as admin: ${email}`);
+      }
 
-    // Create user (first user is automatically admin)
-    const [result] = await pool.query(
-      'INSERT INTO users (email, password_hash, name, is_admin) VALUES (?, ?, ?, ?)',
-      [email, passwordHash, name, isFirstUser]
-    );
+      // Create default preferences
+      await conn.query(
+        'INSERT INTO user_preferences (user_id) VALUES (?)',
+        [userId]
+      );
 
-    const userId = result.insertId;
+      return { userId, isFirstUser };
+    });
 
-    if (isFirstUser) {
-      console.log(`🔧 First user registered as admin: ${email}`);
-    }
-
-    // Create default preferences
-    await pool.query(
-      'INSERT INTO user_preferences (user_id) VALUES (?)',
-      [userId]
-    );
-
-    // Generate tokens (include admin status)
-    const tokens = generateTokens(userId, email, isFirstUser);
+    // Generate tokens (include admin status) - outside transaction
+    const tokens = generateTokens(result.userId, email, result.isFirstUser);
 
     return {
       user: {
-        id: userId,
+        id: result.userId,
         email,
         name,
-        isAdmin: isFirstUser
+        isAdmin: result.isFirstUser
       },
       ...tokens
     };
