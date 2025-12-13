@@ -27,13 +27,38 @@ const CACHE_TTL = {
 };
 
 /**
+ * Stable JSON stringify with sorted keys
+ * Uses JSON.stringify with a replacer to ensure consistent key ordering.
+ * Handles Date (via toJSON), undefined (omitted), and other JSON.stringify semantics.
+ * @param {any} obj - Object to stringify
+ * @returns {string} Stable JSON string
+ */
+function stableStringify(obj) {
+  // Use JSON.stringify with a replacer that sorts object keys
+  // This preserves JSON.stringify semantics (Date.toJSON, undefined handling, etc.)
+  return JSON.stringify(obj, (key, value) => {
+    // For objects (not arrays, not null), return a new object with sorted keys
+    if (value && typeof value === 'object' && !Array.isArray(value)) {
+      return Object.keys(value)
+        .sort()
+        .reduce((sorted, k) => {
+          sorted[k] = value[k];
+          return sorted;
+        }, {});
+    }
+    return value;
+  });
+}
+
+/**
  * Generate cache key from request parameters
+ * Uses stable stringify to ensure consistent keys regardless of object key order
  * @param {string} apiSource - API source identifier (e.g., 'visualcrossing')
  * @param {object} params - Request parameters
  * @returns {string} MD5 hash cache key
  */
 function generateCacheKey(apiSource, params) {
-  const paramsString = JSON.stringify(params);
+  const paramsString = stableStringify(params);
   return crypto.createHash('md5').update(`${apiSource}:${paramsString}`).digest('hex');
 }
 
@@ -212,6 +237,10 @@ if (process.env.NODE_ENV !== 'test') {
     },
     60 * 60 * 1000
   ); // 1 hour
+
+  // Allow process to exit even if this interval is still running
+  // Without this, the interval keeps the event loop alive during graceful shutdown
+  cacheCleanupInterval.unref();
 }
 
 module.exports = {
