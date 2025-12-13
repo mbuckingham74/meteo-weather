@@ -15,7 +15,8 @@ const SALT_ROUNDS = 10;
 
 /**
  * Register a new user
- * Uses a transaction to ensure user and preferences are created atomically
+ * Uses a transaction to ensure user and preferences are created atomically.
+ * Handles race conditions via unique constraint on email (ER_DUP_ENTRY).
  */
 async function registerUser(email, password, name) {
   // Check if user already exists (outside transaction for fast rejection)
@@ -35,7 +36,9 @@ async function registerUser(email, password, name) {
     // Use transaction to ensure atomicity of user + preferences creation
     const result = await withTransaction(async (conn) => {
       // Check if this is the first user (will become admin)
-      // Re-check inside transaction for race condition safety
+      // Note: This is a best-effort check. In rare race conditions with concurrent
+      // first registrations, multiple users could become admin. For stricter control,
+      // use SELECT ... FOR UPDATE or a dedicated admin setup flow.
       const [userCount] = await conn.query('SELECT COUNT(*) as count FROM users');
       const isFirstUser = userCount[0].count === 0;
 
@@ -73,6 +76,10 @@ async function registerUser(email, password, name) {
       ...tokens
     };
   } catch (error) {
+    // Handle race condition where email was taken between pre-check and insert
+    if (error.code === 'ER_DUP_ENTRY' && error.message?.includes('email')) {
+      throw createError(ERROR_CODES.EMAIL_ALREADY_EXISTS, 'Email already registered');
+    }
     console.error('Registration error:', error);
     throw error;
   }

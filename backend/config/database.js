@@ -51,7 +51,7 @@ async function query(sql, params = [], options = {}) {
   const startTime = Date.now();
 
   try {
-    // mysql2 supports per-query timeout via queryTimeout option
+    // mysql2 supports per-query timeout via the 'timeout' option in query config
     const result = await pool.query({ sql, timeout }, params);
 
     const duration = Date.now() - startTime;
