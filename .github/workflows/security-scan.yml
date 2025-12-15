@@ -96,7 +96,7 @@ jobs:
 
       - name: Upload audit results
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: npm-audit-${{ matrix.workspace }}
           path: ${{ matrix.workspace }}/audit-results.json

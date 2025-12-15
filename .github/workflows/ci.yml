@@ -112,7 +112,7 @@ jobs:
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: backend-test-results-node-${{ matrix.node-version }}
           path: backend/coverage/
@@ -257,7 +257,7 @@ jobs:
 
       - name: Upload coverage reports
         if: matrix.node-version == '20.x'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: frontend-coverage-report
           path: frontend/coverage/
@@ -314,7 +314,7 @@ jobs:
           CI: true
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: frontend-build
           path: frontend/dist/
@@ -385,7 +385,7 @@ jobs:
 
     steps:
       - name: Download coverage report
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: frontend-coverage-report
           path: coverage/
