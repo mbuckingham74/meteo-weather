@@ -34,7 +34,7 @@
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.11.5",
-    "openai": "^4.104.0",
+    "openai": "^6.13.0",
     "zod": "^3.25.76"
   },
   "devDependencies": {
