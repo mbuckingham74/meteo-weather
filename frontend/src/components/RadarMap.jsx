@@ -8,8 +8,8 @@ import { Layers, CloudRain, Thermometer, Wind } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
 import './RadarMap.css';
 
-// OpenWeatherMap API key - using a free tier key
-const OWM_API_KEY = 'b5e73e90e2c092ddc27f6f087888c72c';
+// OpenWeatherMap API key from environment
+const OWM_API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
 
 // Available weather layers
 const WEATHER_LAYERS = {
