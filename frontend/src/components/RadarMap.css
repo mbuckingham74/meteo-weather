@@ -1,0 +1,128 @@
+/* ===========================================
+   RADAR MAP - Custom Leaflet Component
+   =========================================== */
+
+.radar-map-wrapper {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background-color: var(--color-surface-300);
+}
+
+.radar-map-container {
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-surface-300);
+}
+
+/* Override Leaflet's default zoom control styling */
+
+.radar-map-container .leaflet-control-zoom {
+  border: none;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.radar-map-container .leaflet-control-zoom a {
+  background-color: var(--color-surface-200);
+  color: var(--color-text-primary);
+  border: none;
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  font-size: 18px;
+  transition: background-color var(--transition-fast);
+}
+
+.radar-map-container .leaflet-control-zoom a:hover {
+  background-color: var(--color-surface-300);
+  color: var(--color-text-primary);
+}
+
+.radar-map-container .leaflet-control-zoom-in {
+  border-bottom: 1px solid var(--color-surface-300) !important;
+}
+
+/* Layer switcher */
+
+.radar-layer-switcher {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  background-color: rgb(15 23 42 / 0.9);
+  backdrop-filter: blur(8px);
+  border-radius: var(--radius-lg);
+  z-index: 1000;
+  box-shadow: var(--shadow-lg);
+}
+
+.radar-layer-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background-color: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.radar-layer-btn:hover {
+  background-color: var(--color-surface-300);
+  color: var(--color-text-primary);
+}
+
+.radar-layer-btn.active {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+/* Loading state */
+
+.radar-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+}
+
+.radar-loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--color-surface-300);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Light theme adjustments */
+
+.light .radar-controls {
+  background-color: rgb(255 255 255 / 0.95);
+}
+
+.light .radar-map-container .leaflet-control-zoom a {
+  background-color: white;
+  color: var(--color-text-primary);
+}
+
+.light .radar-map-container .leaflet-control-zoom a:hover {
+  background-color: var(--color-surface-100);
+}

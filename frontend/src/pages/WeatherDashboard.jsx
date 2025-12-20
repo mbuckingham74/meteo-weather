@@ -30,6 +30,7 @@ import {
   Sunset,
   Loader,
 } from 'lucide-react';
+import RadarMap from '../components/RadarMap';
 import './WeatherDashboard.css';
 
 // Weather icon mapping
@@ -319,92 +320,97 @@ export default function WeatherDashboard() {
       {/* Main Content - Bento Grid */}
       {currentWeather && !weatherLoading && (
         <div className="bento-grid">
-          {/* Current Weather Card */}
-          <div className="col-3 card current-weather">
-            <div className="current-weather-header">
-              <span className="current-day">
-                {now.toLocaleDateString('en-US', { weekday: 'long' })}
-              </span>
-              <span className="current-time">{currentTime}</span>
-            </div>
+          {/* Left Column - Current Weather + Forecast */}
+          <div className="col-4 left-column">
+            {/* Current Weather Card */}
+            <div className="card current-weather">
+              <div className="current-weather-header">
+                <span className="current-day">
+                  {now.toLocaleDateString('en-US', { weekday: 'long' })}
+                </span>
+                <span className="current-time">{currentTime}</span>
+              </div>
 
-            <div className="current-weather-main">
-              <div>
-                <div className="temperature-display">
-                  {convertTemp(currentWeather.temperature || currentWeather.temp, unit)}°
+              <div className="current-weather-main">
+                <div>
+                  <div className="temperature-display">
+                    {convertTemp(currentWeather.temperature || currentWeather.temp, unit)}°
+                  </div>
+                  <p className="conditions-text">
+                    {currentWeather.conditions || currentWeather.description || 'Clear'}
+                  </p>
                 </div>
-                <p className="conditions-text">
-                  {currentWeather.conditions || currentWeather.description || 'Clear'}
-                </p>
+                <div className="weather-icon-large">
+                  {getWeatherIcon(currentWeather.conditions || currentWeather.description, 64)}
+                </div>
               </div>
-              <div className="weather-icon-large">
-                {getWeatherIcon(currentWeather.conditions || currentWeather.description, 64)}
-              </div>
-            </div>
 
-            <div className="current-weather-details">
-              <div className="details-grid">
-                <div className="detail-item">
-                  <span className="detail-label">Real Feel</span>
-                  <span className="detail-value">
-                    {convertTemp(currentWeather.feelsLike || currentWeather.feelslike, unit)}°
-                  </span>
-                </div>
-                <div className="detail-item">
-                  <span className="detail-label">Wind</span>
-                  <span className="detail-value">
-                    {Math.round(currentWeather.windSpeed || currentWeather.windspeed || 0)} mph
-                  </span>
-                </div>
-                <div className="detail-item">
-                  <span className="detail-label">Pressure</span>
-                  <span className="detail-value">
-                    {Math.round(currentWeather.pressure || 1013)} MB
-                  </span>
-                </div>
-                <div className="detail-item">
-                  <span className="detail-label">Humidity</span>
-                  <span className="detail-value">{currentWeather.humidity || 0}%</span>
-                </div>
-              </div>
-              {forecastDays?.[0]?.sunrise && (
-                <div className="sun-times">
-                  <div className="sun-time">
-                    <Sunrise size={12} style={{ color: 'var(--color-accent-yellow)' }} />
+              <div className="current-weather-details">
+                <div className="details-grid">
+                  <div className="detail-item">
+                    <span className="detail-label">Real Feel</span>
                     <span className="detail-value">
-                      {forecastDays[0].sunrise?.slice(0, 5) || forecastDays[0].sunrise}
+                      {convertTemp(currentWeather.feelsLike || currentWeather.feelslike, unit)}°
                     </span>
                   </div>
-                  <div className="sun-time">
-                    <Sunset size={12} style={{ color: 'var(--color-accent-orange)' }} />
+                  <div className="detail-item">
+                    <span className="detail-label">Wind</span>
                     <span className="detail-value">
-                      {forecastDays[0].sunset?.slice(0, 5) || forecastDays[0].sunset}
+                      {Math.round(currentWeather.windSpeed || currentWeather.windspeed || 0)} mph
                     </span>
                   </div>
+                  <div className="detail-item">
+                    <span className="detail-label">Pressure</span>
+                    <span className="detail-value">
+                      {Math.round(currentWeather.pressure || 1013)} MB
+                    </span>
+                  </div>
+                  <div className="detail-item">
+                    <span className="detail-label">Humidity</span>
+                    <span className="detail-value">{currentWeather.humidity || 0}%</span>
+                  </div>
                 </div>
-              )}
+                {forecastDays?.[0]?.sunrise && (
+                  <div className="sun-times">
+                    <div className="sun-time">
+                      <Sunrise size={12} style={{ color: 'var(--color-accent-yellow)' }} />
+                      <span className="detail-value">
+                        {forecastDays[0].sunrise?.slice(0, 5) || forecastDays[0].sunrise}
+                      </span>
+                    </div>
+                    <div className="sun-time">
+                      <Sunset size={12} style={{ color: 'var(--color-accent-orange)' }} />
+                      <span className="detail-value">
+                        {forecastDays[0].sunset?.slice(0, 5) || forecastDays[0].sunset}
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
 
-          {/* 7-Day Forecast Row */}
-          <div className="col-6">
-            <div className="forecast-grid">
+            {/* 7-Day Forecast - Below Current Weather */}
+            <div className="forecast-column">
               {forecastDays.slice(0, 6).map((day, i) => {
                 const precipProb = day.precipProbability || day.precipprob || day.precip_prob || 0;
                 return (
                   <div
                     key={i}
-                    className={`card card-hover forecast-card ${i === 0 ? 'today' : ''}`}
+                    className={`card card-hover forecast-card-horizontal ${i === 0 ? 'today' : ''}`}
                   >
                     <p className="forecast-day">{formatDay(day.date || day.datetime, i)}</p>
-                    <div className="forecast-icon">{getWeatherIcon(day.conditions, 28)}</div>
-                    <p className="forecast-high">
-                      {convertTemp(day.tempMax || day.tempmax, unit)}°
-                    </p>
-                    <p className="forecast-low">{convertTemp(day.tempMin || day.tempmin, unit)}°</p>
+                    <div className="forecast-icon">{getWeatherIcon(day.conditions, 24)}</div>
+                    <div className="forecast-temps">
+                      <span className="forecast-high">
+                        {convertTemp(day.tempMax || day.tempmax, unit)}°
+                      </span>
+                      <span className="forecast-low">
+                        {convertTemp(day.tempMin || day.tempmin, unit)}°
+                      </span>
+                    </div>
                     {precipProb > 0 && (
                       <div className="forecast-precip">
-                        <Droplets size={10} />
+                        <Droplets size={12} />
                         <span>{Math.round(precipProb)}%</span>
                       </div>
                     )}
@@ -414,21 +420,17 @@ export default function WeatherDashboard() {
             </div>
           </div>
 
-          {/* Radar Map Card */}
-          <div className="col-3 card radar-card">
+          {/* Right Column - Large Radar Map */}
+          <div className="col-8 card radar-card-large">
             <div className="radar-header">
               <h3>Radar</h3>
               <span className="radar-live">LIVE</span>
             </div>
-            <div className="radar-map-container">
-              <iframe
-                src={`https://www.rainviewer.com/map.html?loc=${locationData?.latitude || 40},${locationData?.longitude || -100},6&oFa=1&oC=1&oU=0&oCS=1&oF=0&oAP=0&c=1&o=83&lm=0&layer=radar&sm=1&sn=1`}
-                width="100%"
+            <div className="radar-map-container-large">
+              <RadarMap
+                latitude={locationData?.latitude}
+                longitude={locationData?.longitude}
                 height="100%"
-                frameBorder="0"
-                style={{ borderRadius: 'var(--radius-lg)' }}
-                title="Weather Radar"
-                allowFullScreen
               />
             </div>
           </div>

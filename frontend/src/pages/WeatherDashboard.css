@@ -174,12 +174,27 @@
   grid-column: span 3;
 }
 
+.col-4 {
+  grid-column: span 4;
+}
+
 .col-6 {
   grid-column: span 6;
 }
 
+.col-8 {
+  grid-column: span 8;
+}
+
 .col-12 {
   grid-column: span 12;
+}
+
+@media (width <= 1024px) {
+  .col-4,
+  .col-8 {
+    grid-column: span 12;
+  }
 }
 
 @media (width <= 768px) {
@@ -187,6 +202,97 @@
   .col-6 {
     grid-column: span 12;
   }
+}
+
+/* ===========================================
+   LEFT COLUMN LAYOUT
+   =========================================== */
+
+.left-column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Forecast Column (vertical list) */
+
+.forecast-column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.forecast-card-horizontal {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  cursor: pointer;
+}
+
+.forecast-card-horizontal.today {
+  background-color: var(--color-surface-300);
+  box-shadow: inset 0 0 0 1px rgb(59 130 246 / 0.3);
+}
+
+.forecast-card-horizontal .forecast-day {
+  width: 48px;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.forecast-card-horizontal .forecast-icon {
+  margin: 0;
+}
+
+.forecast-temps {
+  display: flex;
+  gap: var(--space-2);
+  margin-left: auto;
+}
+
+.forecast-card-horizontal .forecast-high {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.forecast-card-horizontal .forecast-low {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+}
+
+.forecast-card-horizontal .forecast-precip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--text-xs);
+  color: var(--color-accent-blue);
+  min-width: 48px;
+  justify-content: flex-end;
+}
+
+/* ===========================================
+   LARGE RADAR MAP
+   =========================================== */
+
+.radar-card-large {
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 600px;
+}
+
+.radar-map-container-large {
+  flex: 1;
+  min-height: 550px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background-color: var(--color-surface-300);
 }
 
 /* ===========================================
@@ -301,68 +407,7 @@
 }
 
 /* ===========================================
-   FORECAST ROW
-   =========================================== */
-
-.forecast-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: var(--space-3);
-}
-
-@media (width <= 640px) {
-  .forecast-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.forecast-card {
-  text-align: center;
-  padding: var(--space-4);
-  cursor: pointer;
-}
-
-.forecast-card.today {
-  background-color: var(--color-surface-300);
-  box-shadow: inset 0 0 0 1px rgb(59 130 246 / 0.3);
-}
-
-.forecast-day {
-  font-size: var(--text-xs);
-  color: var(--color-text-tertiary);
-  margin-bottom: var(--space-2);
-}
-
-.forecast-icon {
-  display: flex;
-  justify-content: center;
-  margin: var(--space-3) 0;
-}
-
-.forecast-high {
-  font-family: var(--font-mono);
-  font-weight: 600;
-  color: var(--color-text-primary);
-}
-
-.forecast-low {
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  color: var(--color-text-tertiary);
-}
-
-.forecast-precip {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  margin-top: var(--space-2);
-  font-size: 10px;
-  color: var(--color-accent-blue);
-}
-
-/* ===========================================
-   RADAR MAP CARD
+   RADAR MAP CARD (legacy small card)
    =========================================== */
 
 .radar-card {
