@@ -88,7 +88,7 @@
   - **Note:** Your app was NOT vulnerable to React2Shell (no RSC usage) but patched as precaution
   - **Status:** Deployed to production ✅
 
-- 🔄 **UI Redesign: Bento Grid Dashboard** (Dec 5, 2025) - **PHASE 2 IN PROGRESS**
+- 🔄 **UI Redesign: Bento Grid Dashboard** (Dec 5-20, 2025) - **PHASE 2 IN PROGRESS**
   - **Decision:** Complete frontend UI rebuild with vanilla CSS (Option A: Nuclear Reset)
   - **Reason:** 7 weeks of accumulated CSS debt (ITCSS, CSS modules, density systems, patches)
   - **Phase 1 Complete:** Clean slate established
@@ -100,14 +100,19 @@
     - Created design system with CSS custom properties in `/src/index.css`
     - Built 12-column bento grid layout
     - Implemented location search with autocomplete
-    - Added live RainViewer radar map
-    - Created 7-day forecast display
+    - Created 7-day forecast display (horizontal cards)
     - Dark/light theme toggle working
     - **Deployed to production:** https://meteo-beta.tachyonfuture.com
-  - **Remaining (~90%):** Hourly forecast, charts, other pages, polish
+  - **Phase 2.1 Complete (Dec 20):** Dashboard layout redesign
+    - Reorganized layout: `col-4` (left) + `col-8` (radar map)
+    - Replaced RainViewer iframe with custom Leaflet + OpenWeatherMap component
+    - 4 weather layers: Precipitation, Clouds, Temperature, Wind
+    - Layer switcher UI with icons
+    - 7-day forecast moved below current conditions
+    - **Commit:** `8ec5ecc` - feat(ui): redesign dashboard layout with larger radar map
+  - **Remaining (~85%):** Hourly forecast, charts, other pages, polish
   - **Documentation:** [docs/ui-ux/UI_REDESIGN_CLEAN_SLATE.md](docs/ui-ux/UI_REDESIGN_CLEAN_SLATE.md) - Current status
-  - **Commit:** `d457a46` - 48 files, +3929/-3240 lines
-  - **Status:** Phase 2 ~10% complete, deployed to beta 🔄
+  - **Status:** Phase 2 ~15% complete, deployed to beta 🔄
 
 - ✅ **Error Recovery UX Enhancement (PR #55)** (Nov 20, 2025)
   - **Smart Location Suggestions:** Nearby city recommendations for failed location searches (40+ major cities)
@@ -633,7 +638,7 @@ meteo-app/
 9. **Regression prevention** - Pre-commit hooks and tests prevent "Old Location" bug
 10. **Express route ordering** - Parameter routes (`:id`) MUST come AFTER specific routes (`/reverse`, `/search`, etc.) or they will act as catch-alls
 ---
-**Last Updated:** December 9, 2025
+**Last Updated:** December 20, 2025
 **Current Version:** v1.2.0-security
 **Maintainer:** Michael Buckingham
 ---
