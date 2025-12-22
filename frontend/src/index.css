@@ -139,25 +139,63 @@
 /* Light Theme Override */
 
 .light {
+  /* Surface colors - clean, bright backgrounds */
+
   --color-surface-100: #f6f8fa;
 
   --color-surface-200: #fff;
 
-  --color-surface-300: #d0d7de;
+  --color-surface-300: #e1e4e8;
 
-  --color-surface-400: #afb8c1;
+  --color-surface-400: #d0d7de;
 
-  --color-text-primary: #24292f;
+  /* Text colors - good contrast for readability */
+
+  --color-text-primary: #1f2328;
 
   --color-text-secondary: #57606a;
 
   --color-text-tertiary: #6e7781;
 
-  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.1);
+  /* Primary color adjustments for light mode (slightly darker for contrast) */
 
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --color-primary: #2563eb;
 
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --color-primary-hover: #1d4ed8;
+
+  --color-primary-light: #3b82f6;
+
+  /* Accent color adjustments for better visibility on white */
+
+  --color-accent-blue: #0969da;
+
+  --color-accent-cyan: #0891b2;
+
+  --color-accent-green: #1a7f37;
+
+  --color-accent-yellow: #9a6700;
+
+  --color-accent-orange: #bc4c00;
+
+  --color-accent-red: #cf222e;
+
+  --color-accent-purple: #8250df;
+
+  /* Status colors (darker for light backgrounds) */
+
+  --color-success: #1a7f37;
+
+  --color-warning: #9a6700;
+
+  --color-danger: #cf222e;
+
+  /* Softer shadows for light mode */
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.05);
+
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.05);
 }
 
 /* ===========================================

@@ -94,10 +94,18 @@ export function ThemeProvider({ children }) {
     }
   };
 
+  // Toggle between light and dark (ignores 'auto' for simplicity)
+  const toggleTheme = () => {
+    const newTheme = actualTheme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+  };
+
   const value = {
     themePreference, // 'light', 'dark', 'auto'
+    theme: actualTheme, // alias for convenience (matches what components expect)
     actualTheme, // 'light' or 'dark' (resolved)
     setTheme,
+    toggleTheme, // convenience function to toggle
     loading,
   };
 

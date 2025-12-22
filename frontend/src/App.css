@@ -54,10 +54,6 @@
   border-bottom: 1px solid var(--color-surface-300);
 }
 
-.light .header {
-  background-color: rgb(246 248 250 / 0.95);
-}
-
 .header-container {
   max-width: 1280px;
   margin: 0 auto;
@@ -479,4 +475,39 @@
 .app-layout {
   min-height: 100vh;
   background-color: var(--color-surface-100);
+}
+
+/* ===========================================
+   LIGHT MODE OVERRIDES
+   =========================================== */
+
+.light .header {
+  background-color: rgb(255 255 255 / 0.95);
+  border-bottom-color: var(--color-surface-300);
+}
+
+.light .nav-link:hover,
+.light .nav-link.active {
+  background-color: var(--color-surface-100);
+}
+
+.light .icon-btn,
+.light .unit-toggle,
+.light .user-menu-trigger,
+.light .mobile-menu-btn,
+.light .mobile-toggle-btn {
+  background-color: var(--color-surface-100);
+}
+
+.light .icon-btn:hover,
+.light .unit-toggle:hover,
+.light .user-menu-trigger:hover,
+.light .mobile-menu-btn:hover,
+.light .mobile-toggle-btn:hover {
+  background-color: var(--color-surface-300);
+}
+
+.light .user-menu-dropdown {
+  background-color: var(--color-surface-200);
+  border-color: var(--color-surface-300);
 }
