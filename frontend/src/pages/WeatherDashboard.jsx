@@ -2,12 +2,13 @@
  * Weather Dashboard - Bento Grid Layout
  * Main page with current conditions, forecast, and weather stats
  */
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useLocation } from '../contexts/LocationContext';
 import {
   useCurrentWeatherQuery,
   useForecastQuery,
   useHourlyForecastQuery,
+  useHistoricalWeatherQuery,
 } from '../hooks/useWeatherQueries';
 import { useTemperatureUnit } from '../contexts/TemperatureUnitContext';
 import { geocodeLocation, getAirQuality } from '../services/weatherApi';
@@ -132,14 +133,12 @@ export default function WeatherDashboard() {
   const [searchResults, setSearchResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
   const [activeTab, setActiveTab] = useState('forecast');
+  const [activeContentTab, setActiveContentTab] = useState('today'); // today, hourly, 10day, history
   const [locating, setLocating] = useState(false);
   const [locationError, setLocationError] = useState(null);
   const [airQualityData, setAirQualityData] = useState(null);
   const [airQualityLoading, setAirQualityLoading] = useState(false);
-  const [activeTimeTab, setActiveTimeTab] = useState('today');
-  const [highlightedDay, setHighlightedDay] = useState(null);
   const searchRef = useRef(null);
-  const forecastRef = useRef(null);
 
   // Fetch weather data using React Query hooks
   const {
@@ -150,16 +149,40 @@ export default function WeatherDashboard() {
     enabled: Boolean(locationData?.latitude && locationData?.longitude),
   });
 
-  const { data: forecast } = useForecastQuery(locationData?.latitude, locationData?.longitude, 7, {
+  const { data: forecast } = useForecastQuery(locationData?.latitude, locationData?.longitude, 10, {
     enabled: Boolean(locationData?.latitude && locationData?.longitude),
   });
 
   const { data: hourlyData } = useHourlyForecastQuery(
     locationData?.latitude,
     locationData?.longitude,
-    24,
+    48,
     {
       enabled: Boolean(locationData?.latitude && locationData?.longitude),
+    }
+  );
+
+  // Calculate dates for historical data (last 7 days)
+  const historicalDates = useMemo(() => {
+    const endDate = new Date();
+    endDate.setDate(endDate.getDate() - 1); // Yesterday
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - 7); // 7 days ago
+    return {
+      start: startDate.toISOString().split('T')[0],
+      end: endDate.toISOString().split('T')[0],
+    };
+  }, []);
+
+  const { data: historicalData, isLoading: historicalLoading } = useHistoricalWeatherQuery(
+    locationData?.latitude,
+    locationData?.longitude,
+    historicalDates.start,
+    historicalDates.end,
+    {
+      enabled:
+        Boolean(locationData?.latitude && locationData?.longitude) &&
+        activeContentTab === 'history',
     }
   );
 
@@ -237,29 +260,6 @@ export default function WeatherDashboard() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Handle time tab clicks - scroll to forecast and highlight relevant day
-  const handleTimeTabClick = useCallback((tab) => {
-    setActiveTimeTab(tab);
-
-    // Scroll to forecast section
-    if (forecastRef.current) {
-      forecastRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-
-    // Set highlighted day based on tab
-    if (tab === 'tomorrow') {
-      setHighlightedDay(1);
-      // Clear highlight after animation
-      setTimeout(() => setHighlightedDay(null), 2000);
-    } else if (tab === 'next7') {
-      setHighlightedDay('all');
-      setTimeout(() => setHighlightedDay(null), 2000);
-    } else {
-      setHighlightedDay(0);
-      setTimeout(() => setHighlightedDay(null), 2000);
-    }
-  }, []);
-
   const handleSelectLocation = useCallback(
     (result) => {
       const address = result.address || result.display_name || result.name;
@@ -281,12 +281,8 @@ export default function WeatherDashboard() {
   // Extract data from API responses (handle both nested and flat structures)
   const currentWeather = weather?.current || weather;
   const forecastDays = forecast?.forecast || forecast?.days || [];
-  // hourlyHours available for future hourly display
-  const _hourlyHours =
-    hourlyData?.hourly?.slice(0, 6) ||
-    hourlyData?.hours?.slice(0, 6) ||
-    forecastDays?.[0]?.hours?.slice(0, 6) ||
-    [];
+  const hourlyHours = hourlyData?.hourly || hourlyData?.hours || forecastDays?.[0]?.hours || [];
+  const historicalDays = historicalData?.days || historicalData?.historical || [];
 
   // Current time for display
   const now = new Date();
@@ -371,25 +367,31 @@ export default function WeatherDashboard() {
         </div>
       )}
 
-      {/* Time Tabs */}
-      <div className="time-tabs">
+      {/* Content Tabs */}
+      <div className="content-tabs">
         <button
-          onClick={() => handleTimeTabClick('today')}
-          className={`time-tab ${activeTimeTab === 'today' ? 'active' : ''}`}
+          onClick={() => setActiveContentTab('today')}
+          className={`content-tab ${activeContentTab === 'today' ? 'active' : ''}`}
         >
           Today
         </button>
         <button
-          onClick={() => handleTimeTabClick('tomorrow')}
-          className={`time-tab ${activeTimeTab === 'tomorrow' ? 'active' : ''}`}
+          onClick={() => setActiveContentTab('hourly')}
+          className={`content-tab ${activeContentTab === 'hourly' ? 'active' : ''}`}
         >
-          Tomorrow
+          Hourly
         </button>
         <button
-          onClick={() => handleTimeTabClick('next7')}
-          className={`time-tab ${activeTimeTab === 'next7' ? 'active' : ''}`}
+          onClick={() => setActiveContentTab('10day')}
+          className={`content-tab ${activeContentTab === '10day' ? 'active' : ''}`}
         >
-          Next 7 days
+          10-Day
+        </button>
+        <button
+          onClick={() => setActiveContentTab('history')}
+          className={`content-tab ${activeContentTab === 'history' ? 'active' : ''}`}
+        >
+          History
         </button>
 
         <div className="tab-spacer" />
@@ -517,33 +519,215 @@ export default function WeatherDashboard() {
               </div>
             </div>
 
-            {/* 7-Day Forecast - Below Current Weather */}
-            <div className="forecast-column" ref={forecastRef}>
-              {forecastDays.slice(0, 6).map((day, i) => {
-                const precipProb = day.precipProbability || day.precipprob || day.precip_prob || 0;
-                const isHighlighted = highlightedDay === i || highlightedDay === 'all';
-                return (
-                  <div
-                    key={i}
-                    className={`card card-hover forecast-card-horizontal ${i === 0 ? 'today' : ''} ${isHighlighted ? 'highlighted' : ''}`}
-                  >
-                    <p className="forecast-day">{formatDay(day.date || day.datetime, i)}</p>
-                    <div className="forecast-icon">{getWeatherIcon(day.conditions, 24)}</div>
-                    <div className="forecast-temps">
-                      <span className="forecast-high">
-                        {convertTemp(day.tempMax || day.tempmax, unit)}°
-                      </span>
-                      <span className="forecast-low">
-                        {convertTemp(day.tempMin || day.tempmin, unit)}°
+            {/* Tab Content - Changes based on activeContentTab */}
+            <div className="tab-content-area">
+              {/* TODAY TAB - Shows today's detailed forecast */}
+              {activeContentTab === 'today' && (
+                <div className="tab-content today-content">
+                  <h4 className="tab-content-title">Today&apos;s Forecast</h4>
+                  <div className="today-hours-grid">
+                    {hourlyHours.slice(0, 8).map((hour, i) => {
+                      const hourTime = hour.datetime || hour.time;
+                      const displayTime = hourTime
+                        ? new Date(`2000-01-01T${hourTime}`).toLocaleTimeString('en-US', {
+                            hour: 'numeric',
+                            hour12: true,
+                          })
+                        : `${i}:00`;
+                      return (
+                        <div key={i} className="hour-card">
+                          <span className="hour-time">{displayTime}</span>
+                          <div className="hour-icon">
+                            {getWeatherIcon(hour.conditions || hour.icon, 20)}
+                          </div>
+                          <span className="hour-temp">
+                            {convertTemp(hour.temp || hour.temperature, unit)}°
+                          </span>
+                          <div className="hour-precip">
+                            <Droplets size={10} />
+                            <span>
+                              {Math.round(hour.precipprob || hour.precipProbability || 0)}%
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className="today-details">
+                    <div className="today-detail-row">
+                      <span className="today-detail-label">High / Low</span>
+                      <span className="today-detail-value">
+                        {convertTemp(forecastDays[0]?.tempMax || forecastDays[0]?.tempmax, unit)}° /{' '}
+                        {convertTemp(forecastDays[0]?.tempMin || forecastDays[0]?.tempmin, unit)}°
                       </span>
                     </div>
-                    <div className="forecast-precip">
-                      <Droplets size={12} />
-                      <span>{Math.round(precipProb)}%</span>
+                    <div className="today-detail-row">
+                      <span className="today-detail-label">Precipitation</span>
+                      <span className="today-detail-value">
+                        {Math.round(
+                          forecastDays[0]?.precipprob || forecastDays[0]?.precipProbability || 0
+                        )}
+                        % chance
+                      </span>
+                    </div>
+                    <div className="today-detail-row">
+                      <span className="today-detail-label">Wind</span>
+                      <span className="today-detail-value">
+                        {Math.round(forecastDays[0]?.windspeed || forecastDays[0]?.windSpeed || 0)}{' '}
+                        mph
+                      </span>
+                    </div>
+                    <div className="today-detail-row">
+                      <span className="today-detail-label">Humidity</span>
+                      <span className="today-detail-value">
+                        {Math.round(forecastDays[0]?.humidity || 0)}%
+                      </span>
                     </div>
                   </div>
-                );
-              })}
+                </div>
+              )}
+
+              {/* HOURLY TAB - Shows 48 hour breakdown */}
+              {activeContentTab === 'hourly' && (
+                <div className="tab-content hourly-content">
+                  <h4 className="tab-content-title">48-Hour Forecast</h4>
+                  <div className="hourly-scroll">
+                    {hourlyHours.map((hour, i) => {
+                      const hourTime = hour.datetime || hour.time;
+                      const displayTime = hourTime
+                        ? new Date(`2000-01-01T${hourTime}`).toLocaleTimeString('en-US', {
+                            hour: 'numeric',
+                            hour12: true,
+                          })
+                        : `${i}:00`;
+                      const dayLabel = i < 24 ? (i === 0 ? 'Now' : '') : 'Tomorrow';
+                      return (
+                        <div key={i} className={`hourly-row ${i === 0 ? 'now' : ''}`}>
+                          <div className="hourly-time">
+                            <span className="time">{i === 0 ? 'Now' : displayTime}</span>
+                            {dayLabel && i !== 0 && i === 24 && (
+                              <span className="day-label">{dayLabel}</span>
+                            )}
+                          </div>
+                          <div className="hourly-icon">
+                            {getWeatherIcon(hour.conditions || hour.icon, 20)}
+                          </div>
+                          <span className="hourly-temp">
+                            {convertTemp(hour.temp || hour.temperature, unit)}°
+                          </span>
+                          <div className="hourly-details">
+                            <span className="hourly-precip">
+                              <Droplets size={12} />
+                              {Math.round(hour.precipprob || hour.precipProbability || 0)}%
+                            </span>
+                            <span className="hourly-wind">
+                              <Wind size={12} />
+                              {Math.round(hour.windspeed || hour.windSpeed || 0)}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* 10-DAY TAB - Extended forecast */}
+              {activeContentTab === '10day' && (
+                <div className="tab-content tenday-content">
+                  <h4 className="tab-content-title">10-Day Forecast</h4>
+                  <div className="forecast-list">
+                    {forecastDays.slice(0, 10).map((day, i) => {
+                      const precipProb =
+                        day.precipProbability || day.precipprob || day.precip_prob || 0;
+                      return (
+                        <div key={i} className={`forecast-row ${i === 0 ? 'today' : ''}`}>
+                          <span className="forecast-day-name">
+                            {formatDay(day.date || day.datetime, i)}
+                          </span>
+                          <div className="forecast-icon">{getWeatherIcon(day.conditions, 24)}</div>
+                          <div className="tenday-temps">
+                            <span className="tenday-temp-high">
+                              {convertTemp(day.tempMax || day.tempmax, unit)}°
+                            </span>
+                            <div className="temp-bar">
+                              <div
+                                className="temp-bar-fill"
+                                style={{
+                                  left: `${((convertTemp(day.tempMin || day.tempmin, unit) - 20) / 80) * 100}%`,
+                                  width: `${((convertTemp(day.tempMax || day.tempmax, unit) - convertTemp(day.tempMin || day.tempmin, unit)) / 80) * 100}%`,
+                                }}
+                              />
+                            </div>
+                            <span className="tenday-temp-low">
+                              {convertTemp(day.tempMin || day.tempmin, unit)}°
+                            </span>
+                          </div>
+                          <div className="forecast-precip">
+                            <Droplets size={14} />
+                            <span>{Math.round(precipProb)}%</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* HISTORY TAB - Past weather data */}
+              {activeContentTab === 'history' && (
+                <div className="tab-content history-content">
+                  <h4 className="tab-content-title">Past 7 Days</h4>
+                  {historicalLoading && (
+                    <div className="history-loading">
+                      <Loader size={24} className="spin" />
+                      <span>Loading historical data...</span>
+                    </div>
+                  )}
+                  {!historicalLoading && historicalDays.length === 0 && (
+                    <div className="history-empty">
+                      <CloudRain size={32} />
+                      <p>No historical data available</p>
+                    </div>
+                  )}
+                  {!historicalLoading && historicalDays.length > 0 && (
+                    <div className="history-list">
+                      {historicalDays.map((day, i) => {
+                        const date = new Date(day.datetime || day.date);
+                        const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
+                        const dateStr = date.toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                        });
+                        return (
+                          <div key={i} className="history-row">
+                            <div className="history-date">
+                              <span className="history-day">{dayName}</span>
+                              <span className="history-date-str">{dateStr}</span>
+                            </div>
+                            <div className="history-icon">{getWeatherIcon(day.conditions, 20)}</div>
+                            <div className="history-temps">
+                              <span className="temp-high">
+                                {convertTemp(day.tempmax || day.tempMax, unit)}°
+                              </span>
+                              <span className="temp-separator">/</span>
+                              <span className="temp-low">
+                                {convertTemp(day.tempmin || day.tempMin, unit)}°
+                              </span>
+                            </div>
+                            <div className="history-details">
+                              <span className="history-precip">
+                                <Droplets size={12} />
+                                {(day.precip || day.precipitation || 0).toFixed(1)} in
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 

@@ -125,36 +125,419 @@
 }
 
 /* ===========================================
-   TIME TABS
+   CONTENT TABS
    =========================================== */
 
-.time-tabs {
+.content-tabs {
   display: flex;
   align-items: center;
-  gap: var(--space-6);
+  gap: var(--space-1);
   margin-bottom: var(--space-6);
+  border-bottom: 1px solid var(--color-surface-300);
+  padding-bottom: var(--space-3);
 }
 
-.time-tab {
+.content-tab {
+  position: relative;
   background: none;
   border: none;
-  font-size: var(--text-base);
-  font-weight: 500;
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: 600;
   color: var(--color-text-tertiary);
   cursor: pointer;
-  transition: color var(--transition-fast);
+  transition: all var(--transition-fast);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.time-tab:hover {
+.content-tab:hover {
   color: var(--color-text-secondary);
 }
 
-.time-tab.active {
+.content-tab.active {
   color: var(--color-text-primary);
+}
+
+.content-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: calc(-1 * var(--space-3) - 1px);
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--color-primary);
 }
 
 .tab-spacer {
   margin-left: auto;
+}
+
+/* ===========================================
+   TAB CONTENT AREA
+   =========================================== */
+
+.tab-content-area {
+  margin-top: var(--space-4);
+}
+
+.tab-content {
+  animation: fade-in 200ms ease-out;
+}
+
+.tab-content-title {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* TODAY TAB */
+
+.today-hours-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.hour-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  background-color: var(--color-surface-300);
+  border-radius: var(--radius-md);
+}
+
+.hour-time {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+}
+
+.hour-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hour-temp {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.hour-precip {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: var(--text-xs);
+  color: var(--color-accent-blue);
+}
+
+.today-details {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-2);
+}
+
+.today-detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-2) var(--space-3);
+  background-color: var(--color-surface-300);
+  border-radius: var(--radius-md);
+}
+
+.today-detail-label {
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+}
+
+.today-detail-value {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+/* HOURLY TAB */
+
+.hourly-scroll {
+  max-height: 400px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.hourly-row {
+  display: grid;
+  grid-template-columns: 80px 32px 48px 1fr;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  background-color: var(--color-surface-300);
+  border-radius: var(--radius-md);
+  transition: background-color var(--transition-fast);
+}
+
+.hourly-row:hover {
+  background-color: var(--color-surface-400);
+}
+
+.hourly-time {
+  display: flex;
+  flex-direction: column;
+}
+
+.hourly-time .time {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.hourly-time .day-label {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+}
+
+.hourly-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hourly-temp {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+/* Hourly row "now" state - must come after base selectors */
+
+.hourly-row.now {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.hourly-row.now .hourly-temp,
+.hourly-row.now .time {
+  color: white;
+}
+
+.hourly-details {
+  display: flex;
+  gap: var(--space-4);
+  justify-content: flex-end;
+}
+
+.hourly-precip,
+.hourly-wind {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+.hourly-precip svg {
+  color: var(--color-accent-blue);
+}
+
+.hourly-wind svg {
+  color: var(--color-text-tertiary);
+}
+
+/* 10-DAY TAB */
+
+.forecast-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.forecast-row {
+  display: grid;
+  grid-template-columns: 60px 32px 1fr 60px;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  background-color: var(--color-surface-300);
+  border-radius: var(--radius-md);
+  transition: background-color var(--transition-fast);
+}
+
+.forecast-row:hover {
+  background-color: var(--color-surface-400);
+}
+
+.forecast-day-name {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.tenday-temps {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.tenday-temp-high {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  min-width: 32px;
+}
+
+.tenday-temp-low {
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+  min-width: 32px;
+}
+
+.temp-bar {
+  flex: 1;
+  height: 4px;
+  background-color: var(--color-surface-400);
+  border-radius: var(--radius-full);
+  position: relative;
+  min-width: 80px;
+}
+
+.temp-bar-fill {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-accent-blue), var(--color-accent-orange));
+  border-radius: var(--radius-full);
+}
+
+.forecast-precip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--color-accent-blue);
+  justify-content: flex-end;
+}
+
+/* Forecast row "today" state - must come after base selectors */
+
+.forecast-row.today {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.forecast-row.today .forecast-day-name,
+.forecast-row.today .tenday-temp-high,
+.forecast-row.today .tenday-temp-low {
+  color: white;
+}
+
+/* HISTORY TAB */
+
+.history-loading,
+.history-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-8);
+  color: var(--color-text-tertiary);
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.history-row {
+  display: grid;
+  grid-template-columns: 80px 32px 80px 1fr;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  background-color: var(--color-surface-300);
+  border-radius: var(--radius-md);
+}
+
+.history-date {
+  display: flex;
+  flex-direction: column;
+}
+
+.history-day {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.history-date-str {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+}
+
+.history-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.history-temps {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.temp-separator {
+  color: var(--color-text-tertiary);
+}
+
+.history-details {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.history-precip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--color-accent-blue);
+}
+
+/* Responsive adjustments for tab content */
+
+@media (width <= 768px) {
+  .today-hours-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .today-details {
+    grid-template-columns: 1fr;
+  }
+
+  .hourly-row {
+    grid-template-columns: 60px 24px 40px 1fr;
+    gap: var(--space-2);
+    padding: var(--space-2);
+  }
+
+  .forecast-row {
+    grid-template-columns: 50px 24px 1fr 50px;
+    gap: var(--space-2);
+  }
+
+  .history-row {
+    grid-template-columns: 60px 24px 60px 1fr;
+    gap: var(--space-2);
+  }
 }
 
 /* ===========================================
@@ -1225,40 +1608,29 @@
   background-color: var(--color-surface-100);
 }
 
-/* Forecast cards */
+/* Tab content in light mode - base selectors first */
 
-.light .forecast-card-horizontal:hover {
+.light .hour-card,
+.light .today-detail-row,
+.light .hourly-row,
+.light .forecast-row,
+.light .history-row {
   background-color: var(--color-surface-100);
+  border: 1px solid var(--color-surface-300);
 }
 
-.light .forecast-card-horizontal.today {
-  background-color: var(--color-surface-100);
-  border: 1px solid var(--color-primary-light);
-  box-shadow: none;
+/* Hover states - must come after base */
+
+.light .forecast-row:hover,
+.light .hourly-row:hover {
+  background-color: var(--color-surface-300);
 }
 
-/* Highlighted forecast card animation */
+/* Active states - must come after hover */
 
-.forecast-card-horizontal.highlighted {
-  animation: highlight-pulse 0.6s ease-out;
-  box-shadow: 0 0 0 2px var(--color-primary);
-}
-
-@keyframes highlight-pulse {
-  0% {
-    transform: scale(1);
-    box-shadow: 0 0 0 0 var(--color-primary);
-  }
-
-  50% {
-    transform: scale(1.02);
-    box-shadow: 0 0 0 4px rgb(59 130 246 / 0.3);
-  }
-
-  100% {
-    transform: scale(1);
-    box-shadow: 0 0 0 2px var(--color-primary);
-  }
+.light .forecast-row.today,
+.light .hourly-row.now {
+  background-color: var(--color-primary);
 }
 
 /* AQI display */
