@@ -423,12 +423,8 @@ export default function WeatherDashboard() {
                       </span>
                     </div>
                     <div className="forecast-precip">
-                      {precipProb > 0 && (
-                        <>
-                          <Droplets size={12} />
-                          <span>{Math.round(precipProb)}%</span>
-                        </>
-                      )}
+                      <Droplets size={12} />
+                      <span>{Math.round(precipProb)}%</span>
                     </div>
                   </div>
                 );
