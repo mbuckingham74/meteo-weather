@@ -136,7 +136,10 @@ export default function WeatherDashboard() {
   const [locationError, setLocationError] = useState(null);
   const [airQualityData, setAirQualityData] = useState(null);
   const [airQualityLoading, setAirQualityLoading] = useState(false);
+  const [activeTimeTab, setActiveTimeTab] = useState('today');
+  const [highlightedDay, setHighlightedDay] = useState(null);
   const searchRef = useRef(null);
+  const forecastRef = useRef(null);
 
   // Fetch weather data using React Query hooks
   const {
@@ -232,6 +235,29 @@ export default function WeatherDashboard() {
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Handle time tab clicks - scroll to forecast and highlight relevant day
+  const handleTimeTabClick = useCallback((tab) => {
+    setActiveTimeTab(tab);
+
+    // Scroll to forecast section
+    if (forecastRef.current) {
+      forecastRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // Set highlighted day based on tab
+    if (tab === 'tomorrow') {
+      setHighlightedDay(1);
+      // Clear highlight after animation
+      setTimeout(() => setHighlightedDay(null), 2000);
+    } else if (tab === 'next7') {
+      setHighlightedDay('all');
+      setTimeout(() => setHighlightedDay(null), 2000);
+    } else {
+      setHighlightedDay(0);
+      setTimeout(() => setHighlightedDay(null), 2000);
+    }
   }, []);
 
   const handleSelectLocation = useCallback(
@@ -347,9 +373,24 @@ export default function WeatherDashboard() {
 
       {/* Time Tabs */}
       <div className="time-tabs">
-        <button className="time-tab active">Today</button>
-        <button className="time-tab">Tomorrow</button>
-        <button className="time-tab">Next 7 days</button>
+        <button
+          onClick={() => handleTimeTabClick('today')}
+          className={`time-tab ${activeTimeTab === 'today' ? 'active' : ''}`}
+        >
+          Today
+        </button>
+        <button
+          onClick={() => handleTimeTabClick('tomorrow')}
+          className={`time-tab ${activeTimeTab === 'tomorrow' ? 'active' : ''}`}
+        >
+          Tomorrow
+        </button>
+        <button
+          onClick={() => handleTimeTabClick('next7')}
+          className={`time-tab ${activeTimeTab === 'next7' ? 'active' : ''}`}
+        >
+          Next 7 days
+        </button>
 
         <div className="tab-spacer" />
 
@@ -477,13 +518,14 @@ export default function WeatherDashboard() {
             </div>
 
             {/* 7-Day Forecast - Below Current Weather */}
-            <div className="forecast-column">
+            <div className="forecast-column" ref={forecastRef}>
               {forecastDays.slice(0, 6).map((day, i) => {
                 const precipProb = day.precipProbability || day.precipprob || day.precip_prob || 0;
+                const isHighlighted = highlightedDay === i || highlightedDay === 'all';
                 return (
                   <div
                     key={i}
-                    className={`card card-hover forecast-card-horizontal ${i === 0 ? 'today' : ''}`}
+                    className={`card card-hover forecast-card-horizontal ${i === 0 ? 'today' : ''} ${isHighlighted ? 'highlighted' : ''}`}
                   >
                     <p className="forecast-day">{formatDay(day.date || day.datetime, i)}</p>
                     <div className="forecast-icon">{getWeatherIcon(day.conditions, 24)}</div>

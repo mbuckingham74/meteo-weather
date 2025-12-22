@@ -1237,6 +1237,30 @@
   box-shadow: none;
 }
 
+/* Highlighted forecast card animation */
+
+.forecast-card-horizontal.highlighted {
+  animation: highlight-pulse 0.6s ease-out;
+  box-shadow: 0 0 0 2px var(--color-primary);
+}
+
+@keyframes highlight-pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 var(--color-primary);
+  }
+
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 0 0 4px rgb(59 130 246 / 0.3);
+  }
+
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 2px var(--color-primary);
+  }
+}
+
 /* AQI display */
 
 .light .aqi-main {
