@@ -112,6 +112,19 @@ const getPollutantColor = (pollutant, value) => {
   return 'var(--color-accent-red)';
 };
 
+/**
+ * Get color for AQI value based on EPA standards
+ * @param {number} aqi - AQI value (0-500+)
+ * @returns {string} CSS color variable
+ */
+const getAQIColor = (aqi) => {
+  if (aqi == null || isNaN(aqi)) return 'var(--color-text-tertiary)';
+  if (aqi <= 50) return 'var(--color-accent-green)';
+  if (aqi <= 100) return 'var(--color-accent-yellow)';
+  if (aqi <= 150) return 'var(--color-accent-orange)';
+  return 'var(--color-accent-red)';
+};
+
 export default function WeatherDashboard() {
   const { locationData, selectLocation } = useLocation();
   const { unit, setUnitBasedOnLocation } = useTemperatureUnit();
@@ -536,8 +549,9 @@ export default function WeatherDashboard() {
                     <div
                       className="aqi-main"
                       style={{
-                        '--aqi-color':
-                          airQualityData.current.aqiLevel?.color || 'var(--color-text-secondary)',
+                        '--aqi-color': getAQIColor(
+                          airQualityData.current.usAQI || airQualityData.current.europeanAQI
+                        ),
                       }}
                     >
                       <div className="aqi-value-container">
@@ -551,7 +565,11 @@ export default function WeatherDashboard() {
                       <div className="aqi-level">
                         <span
                           className="aqi-level-badge"
-                          style={{ backgroundColor: airQualityData.current.aqiLevel?.color }}
+                          style={{
+                            backgroundColor: getAQIColor(
+                              airQualityData.current.usAQI || airQualityData.current.europeanAQI
+                            ),
+                          }}
                         >
                           {airQualityData.current.aqiLevel?.level || 'Unknown'}
                         </span>

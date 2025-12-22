@@ -1057,6 +1057,7 @@
   background: linear-gradient(135deg, var(--color-surface-300), var(--color-surface-200));
   border-radius: var(--radius-xl);
   margin-bottom: var(--space-4);
+  border-left: 6px solid var(--aqi-color, var(--color-surface-300));
 }
 
 .aqi-value-container {
