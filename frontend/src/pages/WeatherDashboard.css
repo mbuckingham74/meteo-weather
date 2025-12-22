@@ -223,7 +223,8 @@
 }
 
 .forecast-card-horizontal {
-  display: flex;
+  display: grid;
+  grid-template-columns: 48px 32px 1fr auto;
   align-items: center;
   gap: var(--space-3);
   padding: var(--space-3) var(--space-4);
@@ -236,7 +237,6 @@
 }
 
 .forecast-card-horizontal .forecast-day {
-  width: 48px;
   font-size: var(--text-sm);
   font-weight: 500;
   color: var(--color-text-secondary);
@@ -244,25 +244,32 @@
 }
 
 .forecast-card-horizontal .forecast-icon {
+  display: flex;
+  justify-content: center;
   margin: 0;
 }
 
 .forecast-temps {
   display: flex;
+  align-items: center;
   gap: var(--space-2);
-  margin-left: auto;
+  justify-content: flex-end;
 }
 
 .forecast-card-horizontal .forecast-high {
   font-family: var(--font-mono);
   font-weight: 600;
   color: var(--color-text-primary);
+  min-width: 32px;
+  text-align: right;
 }
 
 .forecast-card-horizontal .forecast-low {
   font-family: var(--font-mono);
   font-size: var(--text-sm);
   color: var(--color-text-tertiary);
+  min-width: 28px;
+  text-align: right;
 }
 
 .forecast-card-horizontal .forecast-precip {
