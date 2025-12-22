@@ -9,6 +9,86 @@ import { getUserPreferences, updateUserPreferences } from '../services/authApi';
 
 const TemperatureUnitContext = createContext(null);
 
+// US state abbreviations for location detection
+const US_STATE_ABBREVIATIONS = [
+  'AL',
+  'AK',
+  'AZ',
+  'AR',
+  'CA',
+  'CO',
+  'CT',
+  'DE',
+  'FL',
+  'GA',
+  'HI',
+  'ID',
+  'IL',
+  'IN',
+  'IA',
+  'KS',
+  'KY',
+  'LA',
+  'ME',
+  'MD',
+  'MA',
+  'MI',
+  'MN',
+  'MS',
+  'MO',
+  'MT',
+  'NE',
+  'NV',
+  'NH',
+  'NJ',
+  'NM',
+  'NY',
+  'NC',
+  'ND',
+  'OH',
+  'OK',
+  'OR',
+  'PA',
+  'RI',
+  'SC',
+  'SD',
+  'TN',
+  'TX',
+  'UT',
+  'VT',
+  'VA',
+  'WA',
+  'WV',
+  'WI',
+  'WY',
+  'DC',
+];
+
+/**
+ * Detect if a location address is in the United States
+ * @param {string} address - Location address string
+ * @returns {boolean} True if location appears to be in the US
+ */
+function isUSLocation(address) {
+  if (!address || typeof address !== 'string') return false;
+
+  const addressUpper = address.toUpperCase();
+
+  // Check for explicit US mentions
+  if (
+    addressUpper.includes('UNITED STATES') ||
+    addressUpper.includes('USA') ||
+    addressUpper.includes(', US')
+  ) {
+    return true;
+  }
+
+  // Check for US state abbreviations (must be a word boundary, e.g., "FL" not "FLORIDA")
+  // Match patterns like "City, FL" or "City, FL 12345" or "State, FL, US"
+  const statePattern = new RegExp(`[,\\s](${US_STATE_ABBREVIATIONS.join('|')})(\\s|,|$|\\d)`, 'i');
+  return statePattern.test(address);
+}
+
 export function useTemperatureUnit() {
   const context = useContext(TemperatureUnitContext);
   if (!context) {
@@ -73,6 +153,22 @@ export function TemperatureUnitProvider({ children }) {
   };
 
   /**
+   * Set temperature unit based on location (US = Fahrenheit, others = Celsius)
+   * Only sets if user hasn't explicitly saved a preference
+   * @param {string} address - Location address string
+   */
+  const setUnitBasedOnLocation = useCallback((address) => {
+    // Only auto-set if no stored preference exists
+    const storedUnit = localStorage.getItem('temperatureUnit');
+    if (storedUnit) {
+      return; // User has explicit preference, don't override
+    }
+
+    const shouldUseFahrenheit = isUSLocation(address);
+    setUnitState(shouldUseFahrenheit ? 'F' : 'C');
+  }, []);
+
+  /**
    * Format a temperature value with the current unit
    * API returns temperatures in Celsius (metric), so we convert to F when needed
    * @param {number} temp - Temperature in Celsius (API default: metric)
@@ -106,6 +202,7 @@ export function TemperatureUnitProvider({ children }) {
     unit,
     setUnit,
     toggleUnit,
+    setUnitBasedOnLocation,
     loading,
     formatTemperature,
     convertTemperature,

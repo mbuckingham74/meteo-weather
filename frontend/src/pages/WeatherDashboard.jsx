@@ -57,9 +57,11 @@ const getWeatherIcon = (conditions, size = 24) => {
 };
 
 // Temperature conversion helper
+// API returns temperatures in Celsius (metric), convert to F when needed
 const convertTemp = (temp, unit) => {
-  if (unit === 'C') {
-    return Math.round(((temp - 32) * 5) / 9);
+  if (temp == null || isNaN(temp)) return '--';
+  if (unit === 'F') {
+    return Math.round((temp * 9) / 5 + 32);
   }
   return Math.round(temp);
 };
@@ -74,7 +76,7 @@ const formatDay = (datetime, index) => {
 
 export default function WeatherDashboard() {
   const { locationData, selectLocation } = useLocation();
-  const { unit } = useTemperatureUnit();
+  const { unit, setUnitBasedOnLocation } = useTemperatureUnit();
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
@@ -105,6 +107,13 @@ export default function WeatherDashboard() {
     }
   );
 
+  // Auto-set temperature unit based on initial location (from localStorage)
+  useEffect(() => {
+    if (locationData?.address) {
+      setUnitBasedOnLocation(locationData.address);
+    }
+  }, []); // Only run on mount
+
   // Handle "Use My Location" click
   const handleUseMyLocation = useCallback(async () => {
     setLocating(true);
@@ -117,12 +126,14 @@ export default function WeatherDashboard() {
         address: location.address,
         city: location.address?.split(',')[0] || 'Your Location',
       });
+      // Auto-set temperature unit based on location (US = F, others = C)
+      setUnitBasedOnLocation(location.address);
     } catch (error) {
       setLocationError(error.message);
     } finally {
       setLocating(false);
     }
-  }, [selectLocation]);
+  }, [selectLocation, setUnitBasedOnLocation]);
 
   // Debounced search
   useEffect(() => {
@@ -152,17 +163,20 @@ export default function WeatherDashboard() {
 
   const handleSelectLocation = useCallback(
     (result) => {
+      const address = result.address || result.display_name || result.name;
       selectLocation({
         latitude: result.latitude || result.lat,
         longitude: result.longitude || result.lon,
-        address: result.address || result.display_name || result.name,
+        address: address,
         city: result.address?.split(',')[0] || result.name || result.address,
       });
+      // Auto-set temperature unit based on location (US = F, others = C)
+      setUnitBasedOnLocation(address);
       setSearchQuery('');
       setSearchResults([]);
       setShowResults(false);
     },
-    [selectLocation]
+    [selectLocation, setUnitBasedOnLocation]
   );
 
   // Extract data from API responses (handle both nested and flat structures)
