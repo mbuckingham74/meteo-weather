@@ -1,5 +1,10 @@
+/* stylelint-disable no-descending-specificity */
+
 /* ===========================================
    WEATHER DASHBOARD - Bento Grid Layout
+   Note: no-descending-specificity is disabled because
+   this file uses state-based selectors (.now, .today)
+   that intentionally override earlier element selectors.
    =========================================== */
 
 .dashboard {
@@ -174,11 +179,14 @@
 }
 
 /* ===========================================
-   TAB CONTENT AREA
+   MAIN CONTENT AREA (Right Column - Tab Controlled)
    =========================================== */
 
-.tab-content-area {
-  margin-top: var(--space-4);
+.main-content-area {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-height: 600px;
 }
 
 .tab-content {
@@ -192,6 +200,29 @@
   margin-bottom: var(--space-3);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+
+.tab-content-title-large {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-4);
+}
+
+/* TODAY TAB - Full Width */
+
+.today-tab-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.today-tab-content .radar-card-large {
+  min-height: 450px;
+}
+
+.today-hourly-preview {
+  padding: var(--space-4);
 }
 
 /* TODAY TAB */
@@ -263,7 +294,121 @@
   color: var(--color-text-primary);
 }
 
-/* HOURLY TAB */
+/* HOURLY TAB - Full Width Design */
+
+.hourly-tab-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.hourly-card-full {
+  padding: var(--space-4);
+}
+
+.hourly-list-full {
+  max-height: 600px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.hourly-date-separator {
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  background-color: var(--color-surface-200);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.hourly-row-full {
+  display: grid;
+  grid-template-columns: 80px 40px 60px 80px 100px 80px;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-surface-300);
+  transition: background-color var(--transition-fast);
+}
+
+.hourly-row-full:hover {
+  background-color: var(--color-surface-200);
+}
+
+.hourly-time-col {
+  display: flex;
+  align-items: center;
+}
+
+.hourly-time-text {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.hourly-icon-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hourly-temp-col {
+  display: flex;
+  align-items: center;
+}
+
+.hourly-temp-large {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.hourly-precip-col,
+.hourly-wind-col,
+.hourly-humidity-col {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.hourly-precip-col svg {
+  color: var(--color-accent-blue);
+}
+
+.hourly-wind-col svg {
+  color: var(--color-text-tertiary);
+}
+
+.hourly-humidity-col .humidity-icon-small {
+  color: var(--color-accent-cyan);
+}
+
+/* Hourly "now" state - MUST come after base selectors for specificity */
+
+.hourly-row-full.now {
+  background-color: var(--color-primary);
+}
+
+.hourly-row-full.now .hourly-time-text,
+.hourly-row-full.now .hourly-temp-large,
+.hourly-row-full.now .hourly-precip-col,
+.hourly-row-full.now .hourly-wind-col,
+.hourly-row-full.now .hourly-humidity-col {
+  color: white;
+}
+
+.hourly-row-full.now .hourly-precip-col svg,
+.hourly-row-full.now .hourly-wind-col svg,
+.hourly-row-full.now .hourly-humidity-col svg,
+.hourly-row-full.now .hourly-icon-col svg {
+  color: white !important;
+}
+
+/* Legacy hourly styles (small view) - kept for backwards compatibility */
 
 .hourly-scroll {
   max-height: 400px;
@@ -351,7 +496,138 @@
   color: var(--color-text-tertiary);
 }
 
-/* 10-DAY TAB */
+/* 10-DAY TAB - Full Width Design */
+
+.tenday-tab-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.tenday-card-full {
+  padding: var(--space-4);
+}
+
+.tenday-list-full {
+  display: flex;
+  flex-direction: column;
+}
+
+.tenday-row-full {
+  display: grid;
+  grid-template-columns: 100px 48px 1fr 80px 100px;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--color-surface-300);
+  transition: background-color var(--transition-fast);
+}
+
+.tenday-row-full:hover {
+  background-color: var(--color-surface-200);
+}
+
+.tenday-day-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.tenday-day-name {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.tenday-date {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+}
+
+.tenday-icon-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tenday-temps-col {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.tenday-high {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  min-width: 40px;
+}
+
+.tenday-low {
+  font-size: var(--text-base);
+  color: var(--color-text-tertiary);
+  min-width: 40px;
+}
+
+.tenday-temp-bar {
+  flex: 1;
+  height: 6px;
+  background-color: var(--color-surface-400);
+  border-radius: var(--radius-full);
+  position: relative;
+  min-width: 100px;
+}
+
+.tenday-temp-bar-fill {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    var(--color-accent-blue),
+    var(--color-accent-yellow),
+    var(--color-accent-orange)
+  );
+  border-radius: var(--radius-full);
+}
+
+.tenday-precip-col,
+.tenday-wind-col {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.tenday-precip-col svg {
+  color: var(--color-accent-blue);
+}
+
+.tenday-wind-col svg {
+  color: var(--color-text-tertiary);
+}
+
+/* 10-day "today" state - MUST come after base selectors for specificity */
+
+.tenday-row-full.today {
+  background-color: var(--color-primary);
+}
+
+.tenday-row-full.today .tenday-day-name,
+.tenday-row-full.today .tenday-date,
+.tenday-row-full.today .tenday-high,
+.tenday-row-full.today .tenday-low,
+.tenday-row-full.today .tenday-precip-col,
+.tenday-row-full.today .tenday-wind-col {
+  color: white;
+}
+
+.tenday-row-full.today .tenday-precip-col svg,
+.tenday-row-full.today .tenday-wind-col svg,
+.tenday-row-full.today .tenday-icon-col svg {
+  color: white !important;
+}
+
+/* Legacy 10-DAY styles (compact view) */
 
 .forecast-list {
   display: flex;
@@ -438,7 +714,222 @@
   color: white;
 }
 
-/* HISTORY TAB */
+/* HISTORY TAB - Full Width Design with Charts */
+
+.history-tab-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.history-card-full {
+  padding: var(--space-4);
+}
+
+.history-subtitle {
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+  margin-top: calc(-1 * var(--space-2));
+  margin-bottom: var(--space-6);
+}
+
+.history-loading-full,
+.history-empty-full {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  padding: var(--space-12);
+  color: var(--color-text-tertiary);
+}
+
+.history-chart-section {
+  margin-bottom: var(--space-6);
+}
+
+.history-chart-title {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-4);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Temperature Chart */
+
+.history-temp-chart {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+  height: 200px;
+  padding: var(--space-4);
+  background-color: var(--color-surface-200);
+  border-radius: var(--radius-lg);
+}
+
+.history-temp-bar-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.history-temp-values {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.history-temp-high {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-accent-orange);
+}
+
+.history-temp-low {
+  font-size: var(--text-xs);
+  color: var(--color-accent-blue);
+}
+
+.history-temp-bar-wrapper {
+  flex: 1;
+  width: 24px;
+  position: relative;
+  background-color: var(--color-surface-300);
+  border-radius: var(--radius-full);
+}
+
+.history-temp-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, var(--color-accent-blue), var(--color-accent-orange));
+  border-radius: var(--radius-full);
+}
+
+.history-day-label {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  font-weight: 500;
+}
+
+/* Precipitation Chart */
+
+.history-precip-chart {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+  height: 150px;
+  padding: var(--space-4);
+  background-color: var(--color-surface-200);
+  border-radius: var(--radius-lg);
+}
+
+.history-precip-bar-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.history-precip-value {
+  font-size: var(--text-xs);
+  color: var(--color-accent-blue);
+  font-weight: 500;
+}
+
+.history-precip-bar-wrapper {
+  flex: 1;
+  width: 32px;
+  position: relative;
+  background-color: var(--color-surface-300);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: flex-end;
+}
+
+.history-precip-bar {
+  width: 100%;
+  background: linear-gradient(to top, var(--color-accent-blue), var(--color-accent-cyan));
+  border-radius: var(--radius-sm);
+  min-height: 4px;
+}
+
+/* Daily Details List */
+
+.history-list-section {
+  margin-top: var(--space-4);
+}
+
+.history-details-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.history-detail-row {
+  display: grid;
+  grid-template-columns: 140px 40px 100px 1fr;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-surface-300);
+}
+
+.history-detail-row:hover {
+  background-color: var(--color-surface-200);
+}
+
+.history-detail-date {
+  display: flex;
+  flex-direction: column;
+}
+
+.history-detail-day {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.history-detail-datestr {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+}
+
+.history-detail-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.history-detail-temps {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.history-detail-stats {
+  display: flex;
+  gap: var(--space-4);
+  justify-content: flex-end;
+}
+
+.history-stat {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.history-stat svg {
+  color: var(--color-accent-blue);
+}
+
+/* Legacy HISTORY TAB styles (compact view) */
 
 .history-loading,
 .history-empty {
@@ -522,6 +1013,46 @@
   .today-details {
     grid-template-columns: 1fr;
   }
+
+  /* Hourly full-width responsive */
+
+  .hourly-row-full {
+    grid-template-columns: 60px 32px 50px 60px 80px;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .hourly-humidity-col {
+    display: none;
+  }
+
+  /* 10-day full-width responsive */
+
+  .tenday-row-full {
+    grid-template-columns: 80px 32px 1fr 60px;
+    gap: var(--space-2);
+    padding: var(--space-3);
+  }
+
+  .tenday-wind-col {
+    display: none;
+  }
+
+  /* History responsive */
+
+  .history-detail-row {
+    grid-template-columns: 100px 32px 80px 1fr;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .history-temp-chart,
+  .history-precip-chart {
+    gap: var(--space-1);
+    padding: var(--space-2);
+  }
+
+  /* Legacy responsive */
 
   .hourly-row {
     grid-template-columns: 60px 24px 40px 1fr;
@@ -1619,6 +2150,43 @@
   border: 1px solid var(--color-surface-300);
 }
 
+/* Full-width tab content in light mode */
+
+.light .hourly-card-full,
+.light .tenday-card-full,
+.light .history-card-full,
+.light .today-hourly-preview {
+  border: 1px solid var(--color-surface-300);
+}
+
+.light .hourly-row-full,
+.light .tenday-row-full,
+.light .history-detail-row {
+  border-bottom-color: var(--color-surface-300);
+}
+
+.light .hourly-row-full:hover,
+.light .tenday-row-full:hover,
+.light .history-detail-row:hover {
+  background-color: var(--color-surface-100);
+}
+
+.light .hourly-date-separator {
+  background-color: var(--color-surface-100);
+  border-bottom: 1px solid var(--color-surface-300);
+}
+
+.light .history-temp-chart,
+.light .history-precip-chart {
+  background-color: var(--color-surface-100);
+  border: 1px solid var(--color-surface-300);
+}
+
+.light .history-temp-bar-wrapper,
+.light .history-precip-bar-wrapper {
+  background-color: var(--color-surface-200);
+}
+
 /* Hover states - must come after base */
 
 .light .forecast-row:hover,
@@ -1629,7 +2197,9 @@
 /* Active states - must come after hover */
 
 .light .forecast-row.today,
-.light .hourly-row.now {
+.light .hourly-row.now,
+.light .hourly-row-full.now,
+.light .tenday-row-full.today {
   background-color: var(--color-primary);
 }
 

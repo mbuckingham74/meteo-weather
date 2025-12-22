@@ -367,7 +367,7 @@ export default function WeatherDashboard() {
         </div>
       )}
 
-      {/* Content Tabs */}
+      {/* Main Content Tabs - Controls the entire right column */}
       <div className="content-tabs">
         <button
           onClick={() => setActiveContentTab('today')}
@@ -393,23 +393,6 @@ export default function WeatherDashboard() {
         >
           History
         </button>
-
-        <div className="tab-spacer" />
-
-        <div className="tab-list">
-          <button
-            onClick={() => setActiveTab('forecast')}
-            className={`tab ${activeTab === 'forecast' ? 'active' : ''}`}
-          >
-            Forecast
-          </button>
-          <button
-            onClick={() => setActiveTab('airQuality')}
-            className={`tab ${activeTab === 'airQuality' ? 'active' : ''}`}
-          >
-            Air Quality
-          </button>
-        </div>
       </div>
 
       {/* Loading State */}
@@ -450,7 +433,7 @@ export default function WeatherDashboard() {
       {/* Main Content - Bento Grid */}
       {currentWeather && !weatherLoading && (
         <div className="bento-grid">
-          {/* Left Column - Current Weather + Forecast */}
+          {/* Left Column - Current Weather Summary (stays fixed) */}
           <div className="col-4 left-column">
             {/* Current Weather Card */}
             <div className="card current-weather">
@@ -518,23 +501,34 @@ export default function WeatherDashboard() {
                 )}
               </div>
             </div>
+          </div>
 
-            {/* Tab Content - Changes based on activeContentTab */}
-            <div className="tab-content-area">
-              {/* TODAY TAB - Shows today's detailed forecast */}
-              {activeContentTab === 'today' && (
-                <div className="tab-content today-content">
+          {/* Right Column - Main Content Area (changes based on tab) */}
+          <div className="col-8 main-content-area">
+            {/* TODAY TAB - Radar map + today's hourly preview */}
+            {activeContentTab === 'today' && (
+              <div className="tab-content today-tab-content">
+                <div className="card radar-card-large">
+                  <div className="radar-header">
+                    <h3>Radar</h3>
+                    <span className="radar-live">LIVE</span>
+                  </div>
+                  <div className="radar-map-container-large">
+                    <RadarMap
+                      latitude={locationData?.latitude}
+                      longitude={locationData?.longitude}
+                      height="100%"
+                    />
+                  </div>
+                </div>
+                {/* Today's hourly preview below radar */}
+                <div className="card today-hourly-preview">
                   <h4 className="tab-content-title">Today&apos;s Forecast</h4>
                   <div className="today-hours-grid">
                     {hourlyHours.slice(0, 8).map((hour, i) => {
-                      // Parse time from various formats:
-                      // - Full ISO: "2025-12-22T14:00:00"
-                      // - Time only: "14:00:00" or "14:00"
                       const hourTime = hour.time || hour.datetime;
                       let displayTime = `${i}:00`;
                       if (hourTime) {
-                        // If it contains 'T', it's full datetime - parse directly
-                        // Otherwise prepend a date to make it valid
                         const dateStr = hourTime.includes('T')
                           ? hourTime
                           : `2000-01-01T${hourTime}`;
@@ -565,51 +559,20 @@ export default function WeatherDashboard() {
                       );
                     })}
                   </div>
-                  <div className="today-details">
-                    <div className="today-detail-row">
-                      <span className="today-detail-label">High / Low</span>
-                      <span className="today-detail-value">
-                        {convertTemp(forecastDays[0]?.tempMax || forecastDays[0]?.tempmax, unit)}° /{' '}
-                        {convertTemp(forecastDays[0]?.tempMin || forecastDays[0]?.tempmin, unit)}°
-                      </span>
-                    </div>
-                    <div className="today-detail-row">
-                      <span className="today-detail-label">Precipitation</span>
-                      <span className="today-detail-value">
-                        {Math.round(
-                          forecastDays[0]?.precipprob || forecastDays[0]?.precipProbability || 0
-                        )}
-                        % chance
-                      </span>
-                    </div>
-                    <div className="today-detail-row">
-                      <span className="today-detail-label">Wind</span>
-                      <span className="today-detail-value">
-                        {Math.round(forecastDays[0]?.windspeed || forecastDays[0]?.windSpeed || 0)}{' '}
-                        mph
-                      </span>
-                    </div>
-                    <div className="today-detail-row">
-                      <span className="today-detail-label">Humidity</span>
-                      <span className="today-detail-value">
-                        {Math.round(forecastDays[0]?.humidity || 0)}%
-                      </span>
-                    </div>
-                  </div>
                 </div>
-              )}
+              </div>
+            )}
 
-              {/* HOURLY TAB - Shows 48 hour breakdown */}
-              {activeContentTab === 'hourly' && (
-                <div className="tab-content hourly-content">
-                  <h4 className="tab-content-title">48-Hour Forecast</h4>
-                  <div className="hourly-scroll">
+            {/* HOURLY TAB - Full 48-hour scrollable list */}
+            {activeContentTab === 'hourly' && (
+              <div className="tab-content hourly-tab-content">
+                <div className="card hourly-card-full">
+                  <h3 className="tab-content-title-large">48-Hour Forecast</h3>
+                  <div className="hourly-list-full">
                     {hourlyHours.map((hour, i) => {
-                      // Parse time from various formats:
-                      // - Full ISO: "2025-12-22T14:00:00"
-                      // - Time only: "14:00:00" or "14:00"
                       const hourTime = hour.time || hour.datetime;
                       let displayTime = `${i}:00`;
+                      let displayDate = '';
                       if (hourTime) {
                         const dateStr = hourTime.includes('T')
                           ? hourTime
@@ -620,323 +583,264 @@ export default function WeatherDashboard() {
                             hour: 'numeric',
                             hour12: true,
                           });
+                          // Show day label for first hour of each day
+                          if (i === 0) {
+                            displayDate = 'Today';
+                          } else if (hourTime.includes('T')) {
+                            const currentDate = new Date(hourTime).toDateString();
+                            const prevHour = hourlyHours[i - 1];
+                            const prevTime = prevHour?.time || prevHour?.datetime;
+                            if (prevTime?.includes('T')) {
+                              const prevDate = new Date(prevTime).toDateString();
+                              if (currentDate !== prevDate) {
+                                displayDate = new Date(hourTime).toLocaleDateString('en-US', {
+                                  weekday: 'short',
+                                  month: 'short',
+                                  day: 'numeric',
+                                });
+                              }
+                            }
+                          }
                         }
                       }
-                      const dayLabel = i < 24 ? (i === 0 ? 'Now' : '') : 'Tomorrow';
+                      const precipProb = Math.round(hour.precipprob || hour.precipProbability || 0);
+                      const windSpeed = Math.round(hour.windspeed || hour.windSpeed || 0);
+                      const humidity = Math.round(hour.humidity || 0);
+
                       return (
-                        <div key={i} className={`hourly-row ${i === 0 ? 'now' : ''}`}>
-                          <div className="hourly-time">
-                            <span className="time">{i === 0 ? 'Now' : displayTime}</span>
-                            {dayLabel && i !== 0 && i === 24 && (
-                              <span className="day-label">{dayLabel}</span>
-                            )}
-                          </div>
-                          <div className="hourly-icon">
-                            {getWeatherIcon(hour.conditions || hour.icon, 20)}
-                          </div>
-                          <span className="hourly-temp">
-                            {convertTemp(hour.temp || hour.temperature, unit)}°
-                          </span>
-                          <div className="hourly-details">
-                            <span className="hourly-precip">
-                              <Droplets size={12} />
-                              {Math.round(hour.precipprob || hour.precipProbability || 0)}%
-                            </span>
-                            <span className="hourly-wind">
-                              <Wind size={12} />
-                              {Math.round(hour.windspeed || hour.windSpeed || 0)}
-                            </span>
+                        <div key={i}>
+                          {displayDate && (
+                            <div className="hourly-date-separator">{displayDate}</div>
+                          )}
+                          <div className={`hourly-row-full ${i === 0 ? 'now' : ''}`}>
+                            <div className="hourly-time-col">
+                              <span className="hourly-time-text">
+                                {i === 0 ? 'Now' : displayTime}
+                              </span>
+                            </div>
+                            <div className="hourly-icon-col">
+                              {getWeatherIcon(hour.conditions || hour.icon, 24)}
+                            </div>
+                            <div className="hourly-temp-col">
+                              <span className="hourly-temp-large">
+                                {convertTemp(hour.temp || hour.temperature, unit)}°
+                              </span>
+                            </div>
+                            <div className="hourly-precip-col">
+                              <Droplets size={14} />
+                              <span>{precipProb}%</span>
+                            </div>
+                            <div className="hourly-wind-col">
+                              <Wind size={14} />
+                              <span>{windSpeed} mph</span>
+                            </div>
+                            <div className="hourly-humidity-col">
+                              <Droplets size={14} className="humidity-icon-small" />
+                              <span>{humidity}%</span>
+                            </div>
                           </div>
                         </div>
                       );
                     })}
                   </div>
                 </div>
-              )}
+              </div>
+            )}
 
-              {/* 10-DAY TAB - Extended forecast */}
-              {activeContentTab === '10day' && (
-                <div className="tab-content tenday-content">
-                  <h4 className="tab-content-title">10-Day Forecast</h4>
-                  <div className="forecast-list">
+            {/* 10-DAY TAB - Full extended forecast */}
+            {activeContentTab === '10day' && (
+              <div className="tab-content tenday-tab-content">
+                <div className="card tenday-card-full">
+                  <h3 className="tab-content-title-large">10-Day Forecast</h3>
+                  <div className="tenday-list-full">
                     {forecastDays.slice(0, 10).map((day, i) => {
                       const precipProb =
                         day.precipProbability || day.precipprob || day.precip_prob || 0;
+                      const windSpeed = Math.round(day.windspeed || day.windSpeed || 0);
+                      const date = new Date(
+                        day.date?.includes('T') || day.datetime?.includes('T')
+                          ? day.date || day.datetime
+                          : `${day.date || day.datetime}T12:00:00`
+                      );
+                      const dateStr = date.toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                      });
+                      const highTemp = convertTemp(day.tempMax || day.tempmax, unit);
+                      const lowTemp = convertTemp(day.tempMin || day.tempmin, unit);
+
                       return (
-                        <div key={i} className={`forecast-row ${i === 0 ? 'today' : ''}`}>
-                          <span className="forecast-day-name">
-                            {formatDay(day.date || day.datetime, i)}
-                          </span>
-                          <div className="forecast-icon">{getWeatherIcon(day.conditions, 24)}</div>
-                          <div className="tenday-temps">
-                            <span className="tenday-temp-high">
-                              {convertTemp(day.tempMax || day.tempmax, unit)}°
+                        <div key={i} className={`tenday-row-full ${i === 0 ? 'today' : ''}`}>
+                          <div className="tenday-day-col">
+                            <span className="tenday-day-name">
+                              {formatDay(day.date || day.datetime, i)}
                             </span>
-                            <div className="temp-bar">
+                            <span className="tenday-date">{dateStr}</span>
+                          </div>
+                          <div className="tenday-icon-col">
+                            {getWeatherIcon(day.conditions, 28)}
+                          </div>
+                          <div className="tenday-temps-col">
+                            <span className="tenday-high">{highTemp}°</span>
+                            <div className="tenday-temp-bar">
                               <div
-                                className="temp-bar-fill"
+                                className="tenday-temp-bar-fill"
                                 style={{
-                                  left: `${((convertTemp(day.tempMin || day.tempmin, unit) - 20) / 80) * 100}%`,
-                                  width: `${((convertTemp(day.tempMax || day.tempmax, unit) - convertTemp(day.tempMin || day.tempmin, unit)) / 80) * 100}%`,
+                                  left: `${Math.max(0, ((lowTemp - 20) / 80) * 100)}%`,
+                                  width: `${Math.max(5, ((highTemp - lowTemp) / 80) * 100)}%`,
                                 }}
                               />
                             </div>
-                            <span className="tenday-temp-low">
-                              {convertTemp(day.tempMin || day.tempmin, unit)}°
-                            </span>
+                            <span className="tenday-low">{lowTemp}°</span>
                           </div>
-                          <div className="forecast-precip">
+                          <div className="tenday-precip-col">
                             <Droplets size={14} />
                             <span>{Math.round(precipProb)}%</span>
+                          </div>
+                          <div className="tenday-wind-col">
+                            <Wind size={14} />
+                            <span>{windSpeed} mph</span>
                           </div>
                         </div>
                       );
                     })}
                   </div>
                 </div>
-              )}
+              </div>
+            )}
 
-              {/* HISTORY TAB - Past weather data */}
-              {activeContentTab === 'history' && (
-                <div className="tab-content history-content">
-                  <h4 className="tab-content-title">Past 7 Days</h4>
+            {/* HISTORY TAB - Charts and historical data */}
+            {activeContentTab === 'history' && (
+              <div className="tab-content history-tab-content">
+                <div className="card history-card-full">
+                  <h3 className="tab-content-title-large">Weather History</h3>
+                  <p className="history-subtitle">Past 7 Days</p>
+
                   {historicalLoading && (
-                    <div className="history-loading">
-                      <Loader size={24} className="spin" />
+                    <div className="history-loading-full">
+                      <Loader size={32} className="spin" />
                       <span>Loading historical data...</span>
                     </div>
                   )}
+
                   {!historicalLoading && historicalDays.length === 0 && (
-                    <div className="history-empty">
-                      <CloudRain size={32} />
+                    <div className="history-empty-full">
+                      <CloudRain size={48} />
                       <p>No historical data available</p>
                     </div>
                   )}
+
                   {!historicalLoading && historicalDays.length > 0 && (
-                    <div className="history-list">
-                      {historicalDays.map((day, i) => {
-                        const date = new Date(day.datetime || day.date);
-                        const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
-                        const dateStr = date.toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                        });
-                        return (
-                          <div key={i} className="history-row">
-                            <div className="history-date">
-                              <span className="history-day">{dayName}</span>
-                              <span className="history-date-str">{dateStr}</span>
-                            </div>
-                            <div className="history-icon">{getWeatherIcon(day.conditions, 20)}</div>
-                            <div className="history-temps">
-                              <span className="temp-high">
-                                {convertTemp(day.tempmax || day.tempMax, unit)}°
-                              </span>
-                              <span className="temp-separator">/</span>
-                              <span className="temp-low">
-                                {convertTemp(day.tempmin || day.tempMin, unit)}°
-                              </span>
-                            </div>
-                            <div className="history-details">
-                              <span className="history-precip">
-                                <Droplets size={12} />
-                                {(day.precip || day.precipitation || 0).toFixed(1)} in
-                              </span>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
+                    <>
+                      {/* Temperature Chart Area */}
+                      <div className="history-chart-section">
+                        <h4 className="history-chart-title">Temperature</h4>
+                        <div className="history-temp-chart">
+                          {historicalDays.map((day, i) => {
+                            const high = convertTemp(day.tempmax || day.tempMax, unit);
+                            const low = convertTemp(day.tempmin || day.tempMin, unit);
+                            const date = new Date(day.datetime || day.date);
+                            const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
+
+                            return (
+                              <div key={i} className="history-temp-bar-container">
+                                <div className="history-temp-values">
+                                  <span className="history-temp-high">{high}°</span>
+                                  <span className="history-temp-low">{low}°</span>
+                                </div>
+                                <div className="history-temp-bar-wrapper">
+                                  <div
+                                    className="history-temp-bar"
+                                    style={{
+                                      bottom: `${((low - 10) / 80) * 100}%`,
+                                      height: `${((high - low) / 80) * 100}%`,
+                                    }}
+                                  />
+                                </div>
+                                <span className="history-day-label">{dayName}</span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Precipitation Chart Area */}
+                      <div className="history-chart-section">
+                        <h4 className="history-chart-title">Precipitation</h4>
+                        <div className="history-precip-chart">
+                          {historicalDays.map((day, i) => {
+                            const precip = day.precip || day.precipitation || 0;
+                            const date = new Date(day.datetime || day.date);
+                            const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
+
+                            return (
+                              <div key={i} className="history-precip-bar-container">
+                                <span className="history-precip-value">
+                                  {precip.toFixed(2)}&quot;
+                                </span>
+                                <div className="history-precip-bar-wrapper">
+                                  <div
+                                    className="history-precip-bar"
+                                    style={{
+                                      height: `${Math.min(100, (precip / 2) * 100)}%`,
+                                    }}
+                                  />
+                                </div>
+                                <span className="history-day-label">{dayName}</span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Daily Details List */}
+                      <div className="history-list-section">
+                        <h4 className="history-chart-title">Daily Details</h4>
+                        <div className="history-details-list">
+                          {historicalDays.map((day, i) => {
+                            const date = new Date(day.datetime || day.date);
+                            const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
+                            const dateStr = date.toLocaleDateString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                            });
+
+                            return (
+                              <div key={i} className="history-detail-row">
+                                <div className="history-detail-date">
+                                  <span className="history-detail-day">{dayName}</span>
+                                  <span className="history-detail-datestr">{dateStr}</span>
+                                </div>
+                                <div className="history-detail-icon">
+                                  {getWeatherIcon(day.conditions, 24)}
+                                </div>
+                                <div className="history-detail-temps">
+                                  <span className="temp-high">
+                                    {convertTemp(day.tempmax || day.tempMax, unit)}°
+                                  </span>
+                                  <span className="temp-separator">/</span>
+                                  <span className="temp-low">
+                                    {convertTemp(day.tempmin || day.tempMin, unit)}°
+                                  </span>
+                                </div>
+                                <div className="history-detail-stats">
+                                  <span className="history-stat">
+                                    <Droplets size={12} />
+                                    {(day.precip || day.precipitation || 0).toFixed(2)} in
+                                  </span>
+                                  <span className="history-stat">
+                                    <Wind size={12} />
+                                    {Math.round(day.windspeed || day.windSpeed || 0)} mph
+                                  </span>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </>
                   )}
                 </div>
-              )}
-            </div>
-          </div>
-
-          {/* Right Column - Radar Map or Air Quality Display */}
-          <div className="col-8 card radar-card-large">
-            {activeTab === 'forecast' ? (
-              <>
-                <div className="radar-header">
-                  <h3>Radar</h3>
-                  <span className="radar-live">LIVE</span>
-                </div>
-                <div className="radar-map-container-large">
-                  <RadarMap
-                    latitude={locationData?.latitude}
-                    longitude={locationData?.longitude}
-                    height="100%"
-                  />
-                </div>
-              </>
-            ) : (
-              <div className="air-quality-display">
-                <div className="aqi-header">
-                  <h3>Air Quality Index</h3>
-                  <Activity size={20} />
-                </div>
-
-                {airQualityLoading && (
-                  <div className="aqi-loading">
-                    <Loader size={32} className="spin" />
-                    <p>Loading air quality data...</p>
-                  </div>
-                )}
-
-                {!airQualityLoading && !airQualityData && (
-                  <div className="aqi-error">
-                    <AlertTriangle size={48} />
-                    <p>Unable to load air quality data</p>
-                    <p className="aqi-error-hint">Please try again later</p>
-                  </div>
-                )}
-
-                {!airQualityLoading && airQualityData?.current && (
-                  <>
-                    {/* Main AQI Display */}
-                    <div
-                      className="aqi-main"
-                      style={{
-                        '--aqi-color': getAQIColor(
-                          airQualityData.current.usAQI || airQualityData.current.europeanAQI
-                        ),
-                      }}
-                    >
-                      <div className="aqi-value-container">
-                        <span className="aqi-value">
-                          {airQualityData.current.usAQI ||
-                            airQualityData.current.europeanAQI ||
-                            '--'}
-                        </span>
-                        <span className="aqi-label">US AQI</span>
-                      </div>
-                      <div className="aqi-level">
-                        <span
-                          className="aqi-level-badge"
-                          style={{
-                            backgroundColor: getAQIColor(
-                              airQualityData.current.usAQI || airQualityData.current.europeanAQI
-                            ),
-                          }}
-                        >
-                          {airQualityData.current.aqiLevel?.level || 'Unknown'}
-                        </span>
-                        <p className="aqi-description">
-                          {airQualityData.current.aqiLevel?.description}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Health Recommendations */}
-                    {airQualityData.current.healthRecommendation?.length > 0 && (
-                      <div className="aqi-health">
-                        <div className="aqi-health-header">
-                          <Heart size={16} />
-                          <span>Health Recommendations</span>
-                        </div>
-                        <ul className="aqi-health-list">
-                          {airQualityData.current.healthRecommendation.map((rec, i) => (
-                            <li key={i}>{rec}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-
-                    {/* Pollutant Breakdown */}
-                    <div className="pollutants-grid">
-                      <div
-                        className="pollutant-card"
-                        style={{
-                          '--pollutant-color': getPollutantColor(
-                            'pm2_5',
-                            airQualityData.current.pm2_5
-                          ),
-                        }}
-                      >
-                        <span className="pollutant-name">PM2.5</span>
-                        <span className="pollutant-value">
-                          {airQualityData.current.pm2_5?.toFixed(1) || '--'}
-                        </span>
-                        <span className="pollutant-unit">µg/m³</span>
-                      </div>
-                      <div
-                        className="pollutant-card"
-                        style={{
-                          '--pollutant-color': getPollutantColor(
-                            'pm10',
-                            airQualityData.current.pm10
-                          ),
-                        }}
-                      >
-                        <span className="pollutant-name">PM10</span>
-                        <span className="pollutant-value">
-                          {airQualityData.current.pm10?.toFixed(1) || '--'}
-                        </span>
-                        <span className="pollutant-unit">µg/m³</span>
-                      </div>
-                      <div
-                        className="pollutant-card"
-                        style={{
-                          '--pollutant-color': getPollutantColor(
-                            'ozone',
-                            airQualityData.current.ozone
-                          ),
-                        }}
-                      >
-                        <span className="pollutant-name">Ozone</span>
-                        <span className="pollutant-value">
-                          {airQualityData.current.ozone?.toFixed(1) || '--'}
-                        </span>
-                        <span className="pollutant-unit">µg/m³</span>
-                      </div>
-                      <div
-                        className="pollutant-card"
-                        style={{
-                          '--pollutant-color': getPollutantColor(
-                            'nitrogenDioxide',
-                            airQualityData.current.nitrogenDioxide
-                          ),
-                        }}
-                      >
-                        <span className="pollutant-name">NO₂</span>
-                        <span className="pollutant-value">
-                          {airQualityData.current.nitrogenDioxide?.toFixed(1) || '--'}
-                        </span>
-                        <span className="pollutant-unit">µg/m³</span>
-                      </div>
-                      <div
-                        className="pollutant-card"
-                        style={{
-                          '--pollutant-color': getPollutantColor(
-                            'sulphurDioxide',
-                            airQualityData.current.sulphurDioxide
-                          ),
-                        }}
-                      >
-                        <span className="pollutant-name">SO₂</span>
-                        <span className="pollutant-value">
-                          {airQualityData.current.sulphurDioxide?.toFixed(1) || '--'}
-                        </span>
-                        <span className="pollutant-unit">µg/m³</span>
-                      </div>
-                      <div
-                        className="pollutant-card"
-                        style={{
-                          '--pollutant-color': getPollutantColor(
-                            'carbonMonoxide',
-                            airQualityData.current.carbonMonoxide
-                          ),
-                        }}
-                      >
-                        <span className="pollutant-name">CO</span>
-                        <span className="pollutant-value">
-                          {airQualityData.current.carbonMonoxide?.toFixed(0) || '--'}
-                        </span>
-                        <span className="pollutant-unit">µg/m³</span>
-                      </div>
-                    </div>
-                  </>
-                )}
               </div>
             )}
           </div>
