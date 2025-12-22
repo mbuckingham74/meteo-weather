@@ -5,6 +5,7 @@
 import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, useMap } from 'react-leaflet';
 import { Layers, CloudRain, Thermometer, Wind } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
 import 'leaflet/dist/leaflet.css';
 import './RadarMap.css';
 
@@ -46,7 +47,14 @@ function MapUpdater({ center, zoom }) {
   return null;
 }
 
+// Base map tile URLs
+const BASE_MAPS = {
+  dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+  light: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+};
+
 export default function RadarMap({ latitude, longitude, height = '100%' }) {
+  const { theme } = useTheme();
   const [activeLayer, setActiveLayer] = useState('precipitation');
   const [loading, setLoading] = useState(true);
 
@@ -78,9 +86,10 @@ export default function RadarMap({ latitude, longitude, height = '100%' }) {
         zoomControl={true}
         attributionControl={false}
       >
-        {/* Dark base map */}
+        {/* Base map - switches between dark and light based on theme */}
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          key={theme} // Force re-render when theme changes
+          url={BASE_MAPS[theme] || BASE_MAPS.dark}
           maxZoom={19}
         />
 
