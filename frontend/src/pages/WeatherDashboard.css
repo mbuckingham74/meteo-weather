@@ -1003,6 +1003,236 @@
   color: var(--color-accent-blue);
 }
 
+/* ===========================================
+   TREND GRAPH SECTION
+   =========================================== */
+
+.history-trend-card {
+  margin-top: var(--space-4);
+  padding: var(--space-4);
+}
+
+.trend-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.trend-title-section {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-primary);
+}
+
+.trend-title {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  margin: 0;
+}
+
+.trend-range-selector {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-secondary);
+}
+
+.trend-date-input {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-surface-300);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-200);
+  color: var(--color-text-primary);
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+.trend-date-input:hover {
+  border-color: var(--color-primary);
+}
+
+.trend-date-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.2);
+}
+
+.trend-range-label {
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+}
+
+/* Quick range buttons */
+
+.trend-range-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+}
+
+.trend-range-btn {
+  padding: var(--space-2) var(--space-3);
+  background-color: var(--color-surface-200);
+  border: 1px solid var(--color-surface-300);
+  border-radius: var(--radius-full);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.trend-range-btn:hover {
+  background-color: var(--color-surface-300);
+  color: var(--color-text-primary);
+}
+
+.trend-range-btn.active {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+}
+
+/* Trend loading and empty states */
+
+.trend-loading,
+.trend-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-8);
+  color: var(--color-text-tertiary);
+}
+
+/* Trend chart sections */
+
+.trend-chart-section {
+  margin-bottom: var(--space-6);
+}
+
+.trend-chart-title {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.trend-chart-container {
+  display: flex;
+  gap: var(--space-2);
+  height: 150px;
+}
+
+.trend-y-axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 40px;
+  padding: var(--space-1) 0;
+}
+
+.trend-y-label {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  text-align: right;
+}
+
+.trend-graph-area {
+  flex: 1;
+  background-color: var(--color-surface-200);
+  border-radius: var(--radius-md);
+  padding: var(--space-2);
+  overflow: hidden;
+}
+
+.trend-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.trend-line {
+  vector-effect: non-scaling-stroke;
+}
+
+.trend-precip-bar {
+  opacity: 0.8;
+}
+
+/* Trend legend */
+
+.trend-legend {
+  display: flex;
+  gap: var(--space-4);
+  justify-content: center;
+  margin-top: var(--space-3);
+}
+
+.trend-legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.trend-legend-color {
+  width: 12px;
+  height: 3px;
+  border-radius: var(--radius-full);
+}
+
+/* Trend X-axis */
+
+.trend-x-axis {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-2) 0;
+  padding-left: 42px;
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+}
+
+/* Trend summary stats */
+
+.trend-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background-color: var(--color-surface-200);
+  border-radius: var(--radius-lg);
+  margin-top: var(--space-4);
+}
+
+.trend-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-1);
+}
+
+.trend-stat-label {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.trend-stat-value {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
 /* Responsive adjustments for tab content */
 
 @media (width <= 768px) {
@@ -1050,6 +1280,35 @@
   .history-precip-chart {
     gap: var(--space-1);
     padding: var(--space-2);
+  }
+
+  /* Trend responsive */
+
+  .trend-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .trend-range-buttons {
+    width: 100%;
+  }
+
+  .trend-range-btn {
+    flex: 1;
+    text-align: center;
+    min-width: 60px;
+  }
+
+  .trend-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .trend-chart-container {
+    height: 120px;
+  }
+
+  .trend-y-axis {
+    width: 32px;
   }
 
   /* Legacy responsive */
@@ -2185,6 +2444,36 @@
 .light .history-temp-bar-wrapper,
 .light .history-precip-bar-wrapper {
   background-color: var(--color-surface-200);
+}
+
+/* Trend graph in light mode */
+
+.light .history-trend-card {
+  border: 1px solid var(--color-surface-300);
+}
+
+.light .trend-date-input {
+  background-color: var(--color-surface-100);
+  border-color: var(--color-surface-300);
+}
+
+.light .trend-range-btn {
+  background-color: var(--color-surface-100);
+  border-color: var(--color-surface-300);
+}
+
+.light .trend-range-btn:hover {
+  background-color: var(--color-surface-200);
+}
+
+.light .trend-graph-area {
+  background-color: var(--color-surface-100);
+  border: 1px solid var(--color-surface-300);
+}
+
+.light .trend-summary {
+  background-color: var(--color-surface-100);
+  border: 1px solid var(--color-surface-300);
 }
 
 /* Hover states - must come after base */

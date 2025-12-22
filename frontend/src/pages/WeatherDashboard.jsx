@@ -34,6 +34,9 @@ import {
   Activity,
   AlertTriangle,
   Heart,
+  Calendar,
+  TrendingUp,
+  ChevronLeft,
 } from 'lucide-react';
 import RadarMap from '../components/RadarMap';
 import './WeatherDashboard.css';
@@ -162,23 +165,53 @@ export default function WeatherDashboard() {
     }
   );
 
-  // Calculate dates for historical data (last 7 days)
+  // Calculate dates for historical data (last 5 days for table)
   const historicalDates = useMemo(() => {
     const endDate = new Date();
     endDate.setDate(endDate.getDate() - 1); // Yesterday
     const startDate = new Date();
-    startDate.setDate(startDate.getDate() - 7); // 7 days ago
+    startDate.setDate(startDate.getDate() - 5); // 5 days ago
     return {
       start: startDate.toISOString().split('T')[0],
       end: endDate.toISOString().split('T')[0],
     };
   }, []);
 
+  // State for trend graph date range (30 days default, user can extend back)
+  const [trendRangeStart, setTrendRangeStart] = useState(() => {
+    const date = new Date();
+    date.setDate(date.getDate() - 30); // 30 days ago
+    return date.toISOString().split('T')[0];
+  });
+
+  // Calculate trend dates for 30-day graph
+  const trendDates = useMemo(() => {
+    const endDate = new Date();
+    endDate.setDate(endDate.getDate() - 1); // Yesterday
+    return {
+      start: trendRangeStart,
+      end: endDate.toISOString().split('T')[0],
+    };
+  }, [trendRangeStart]);
+
   const { data: historicalData, isLoading: historicalLoading } = useHistoricalWeatherQuery(
     locationData?.latitude,
     locationData?.longitude,
     historicalDates.start,
     historicalDates.end,
+    {
+      enabled:
+        Boolean(locationData?.latitude && locationData?.longitude) &&
+        activeContentTab === 'history',
+    }
+  );
+
+  // Trend data query (30+ days for the graph)
+  const { data: trendData, isLoading: trendLoading } = useHistoricalWeatherQuery(
+    locationData?.latitude,
+    locationData?.longitude,
+    trendDates.start,
+    trendDates.end,
     {
       enabled:
         Boolean(locationData?.latitude && locationData?.longitude) &&
@@ -283,6 +316,19 @@ export default function WeatherDashboard() {
   const forecastDays = forecast?.forecast || forecast?.days || [];
   const hourlyHours = hourlyData?.hourly || hourlyData?.hours || forecastDays?.[0]?.hours || [];
   const historicalDays = historicalData?.days || historicalData?.historical || [];
+  const trendDays = trendData?.days || trendData?.historical || [];
+
+  // Handle trend range change (for draggable date selector)
+  const handleTrendRangeChange = useCallback((newStartDate) => {
+    setTrendRangeStart(newStartDate);
+  }, []);
+
+  // Calculate how far back we can go (backend typically has ~1 year of data)
+  const minTrendDate = useMemo(() => {
+    const date = new Date();
+    date.setFullYear(date.getFullYear() - 1); // 1 year back max
+    return date.toISOString().split('T')[0];
+  }, []);
 
   // Current time for display
   const now = new Date();
@@ -712,9 +758,10 @@ export default function WeatherDashboard() {
             {/* HISTORY TAB - Charts and historical data */}
             {activeContentTab === 'history' && (
               <div className="tab-content history-tab-content">
+                {/* Past 5 Days Table */}
                 <div className="card history-card-full">
-                  <h3 className="tab-content-title-large">Weather History</h3>
-                  <p className="history-subtitle">Past 7 Days</p>
+                  <h3 className="tab-content-title-large">Recent Weather</h3>
+                  <p className="history-subtitle">Past 5 Days</p>
 
                   {historicalLoading && (
                     <div className="history-loading-full">
@@ -731,111 +778,399 @@ export default function WeatherDashboard() {
                   )}
 
                   {!historicalLoading && historicalDays.length > 0 && (
+                    <div className="history-details-list">
+                      {historicalDays.map((day, i) => {
+                        const date = new Date(day.datetime || day.date);
+                        const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
+                        const dateStr = date.toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                        });
+
+                        return (
+                          <div key={i} className="history-detail-row">
+                            <div className="history-detail-date">
+                              <span className="history-detail-day">{dayName}</span>
+                              <span className="history-detail-datestr">{dateStr}</span>
+                            </div>
+                            <div className="history-detail-icon">
+                              {getWeatherIcon(day.conditions, 24)}
+                            </div>
+                            <div className="history-detail-temps">
+                              <span className="temp-high">
+                                {convertTemp(day.tempmax || day.tempMax, unit)}°
+                              </span>
+                              <span className="temp-separator">/</span>
+                              <span className="temp-low">
+                                {convertTemp(day.tempmin || day.tempMin, unit)}°
+                              </span>
+                            </div>
+                            <div className="history-detail-stats">
+                              <span className="history-stat">
+                                <Droplets size={12} />
+                                {(day.precip || day.precipitation || 0).toFixed(2)} in
+                              </span>
+                              <span className="history-stat">
+                                <Wind size={12} />
+                                {Math.round(day.windspeed || day.windSpeed || 0)} mph
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+
+                {/* Trend Graph Section */}
+                <div className="card history-trend-card">
+                  <div className="trend-header">
+                    <div className="trend-title-section">
+                      <TrendingUp size={20} />
+                      <h3 className="trend-title">Weather Trends</h3>
+                    </div>
+                    <div className="trend-range-selector">
+                      <Calendar size={16} />
+                      <input
+                        type="date"
+                        className="trend-date-input"
+                        value={trendRangeStart}
+                        min={minTrendDate}
+                        max={
+                          new Date(Date.now() - 31 * 24 * 60 * 60 * 1000)
+                            .toISOString()
+                            .split('T')[0]
+                        }
+                        onChange={(e) => handleTrendRangeChange(e.target.value)}
+                      />
+                      <span className="trend-range-label">to Yesterday</span>
+                    </div>
+                  </div>
+
+                  {/* Quick range buttons */}
+                  <div className="trend-range-buttons">
+                    <button
+                      className={`trend-range-btn ${
+                        (() => {
+                          const thirtyDaysAgo = new Date();
+                          thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+                          return trendRangeStart === thirtyDaysAgo.toISOString().split('T')[0];
+                        })()
+                          ? 'active'
+                          : ''
+                      }`}
+                      onClick={() => {
+                        const date = new Date();
+                        date.setDate(date.getDate() - 30);
+                        handleTrendRangeChange(date.toISOString().split('T')[0]);
+                      }}
+                    >
+                      30 Days
+                    </button>
+                    <button
+                      className={`trend-range-btn ${
+                        (() => {
+                          const sixtyDaysAgo = new Date();
+                          sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
+                          return trendRangeStart === sixtyDaysAgo.toISOString().split('T')[0];
+                        })()
+                          ? 'active'
+                          : ''
+                      }`}
+                      onClick={() => {
+                        const date = new Date();
+                        date.setDate(date.getDate() - 60);
+                        handleTrendRangeChange(date.toISOString().split('T')[0]);
+                      }}
+                    >
+                      60 Days
+                    </button>
+                    <button
+                      className={`trend-range-btn ${
+                        (() => {
+                          const ninetyDaysAgo = new Date();
+                          ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+                          return trendRangeStart === ninetyDaysAgo.toISOString().split('T')[0];
+                        })()
+                          ? 'active'
+                          : ''
+                      }`}
+                      onClick={() => {
+                        const date = new Date();
+                        date.setDate(date.getDate() - 90);
+                        handleTrendRangeChange(date.toISOString().split('T')[0]);
+                      }}
+                    >
+                      90 Days
+                    </button>
+                    <button
+                      className={`trend-range-btn ${
+                        (() => {
+                          const sixMonthsAgo = new Date();
+                          sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+                          return trendRangeStart === sixMonthsAgo.toISOString().split('T')[0];
+                        })()
+                          ? 'active'
+                          : ''
+                      }`}
+                      onClick={() => {
+                        const date = new Date();
+                        date.setMonth(date.getMonth() - 6);
+                        handleTrendRangeChange(date.toISOString().split('T')[0]);
+                      }}
+                    >
+                      6 Months
+                    </button>
+                    <button
+                      className={`trend-range-btn ${
+                        (() => {
+                          const oneYearAgo = new Date();
+                          oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+                          return trendRangeStart === oneYearAgo.toISOString().split('T')[0];
+                        })()
+                          ? 'active'
+                          : ''
+                      }`}
+                      onClick={() => {
+                        const date = new Date();
+                        date.setFullYear(date.getFullYear() - 1);
+                        handleTrendRangeChange(date.toISOString().split('T')[0]);
+                      }}
+                    >
+                      1 Year
+                    </button>
+                  </div>
+
+                  {trendLoading && (
+                    <div className="trend-loading">
+                      <Loader size={24} className="spin" />
+                      <span>Loading trend data...</span>
+                    </div>
+                  )}
+
+                  {!trendLoading && trendDays.length === 0 && (
+                    <div className="trend-empty">
+                      <CloudRain size={32} />
+                      <p>No trend data available for this period</p>
+                    </div>
+                  )}
+
+                  {!trendLoading && trendDays.length > 0 && (
                     <>
-                      {/* Temperature Chart Area */}
-                      <div className="history-chart-section">
-                        <h4 className="history-chart-title">Temperature</h4>
-                        <div className="history-temp-chart">
-                          {historicalDays.map((day, i) => {
-                            const high = convertTemp(day.tempmax || day.tempMax, unit);
-                            const low = convertTemp(day.tempmin || day.tempMin, unit);
-                            const date = new Date(day.datetime || day.date);
-                            const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
-
-                            return (
-                              <div key={i} className="history-temp-bar-container">
-                                <div className="history-temp-values">
-                                  <span className="history-temp-high">{high}°</span>
-                                  <span className="history-temp-low">{low}°</span>
-                                </div>
-                                <div className="history-temp-bar-wrapper">
-                                  <div
-                                    className="history-temp-bar"
-                                    style={{
-                                      bottom: `${((low - 10) / 80) * 100}%`,
-                                      height: `${((high - low) / 80) * 100}%`,
-                                    }}
-                                  />
-                                </div>
-                                <span className="history-day-label">{dayName}</span>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-
-                      {/* Precipitation Chart Area */}
-                      <div className="history-chart-section">
-                        <h4 className="history-chart-title">Precipitation</h4>
-                        <div className="history-precip-chart">
-                          {historicalDays.map((day, i) => {
-                            const precip = day.precip || day.precipitation || 0;
-                            const date = new Date(day.datetime || day.date);
-                            const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
-
-                            return (
-                              <div key={i} className="history-precip-bar-container">
-                                <span className="history-precip-value">
-                                  {precip.toFixed(2)}&quot;
+                      {/* Temperature Trend Graph */}
+                      <div className="trend-chart-section">
+                        <h4 className="trend-chart-title">Temperature Trend</h4>
+                        <div className="trend-chart-container">
+                          <div className="trend-y-axis">
+                            {(() => {
+                              const temps = trendDays.flatMap((d) => [
+                                convertTemp(d.tempmax || d.tempMax, unit),
+                                convertTemp(d.tempmin || d.tempMin, unit),
+                              ]);
+                              const maxTemp = Math.max(...temps);
+                              const minTemp = Math.min(...temps);
+                              const range = maxTemp - minTemp || 20;
+                              const step = Math.ceil(range / 4);
+                              return [0, 1, 2, 3, 4].map((i) => (
+                                <span key={i} className="trend-y-label">
+                                  {Math.round(maxTemp - i * step)}°
                                 </span>
-                                <div className="history-precip-bar-wrapper">
-                                  <div
-                                    className="history-precip-bar"
-                                    style={{
-                                      height: `${Math.min(100, (precip / 2) * 100)}%`,
-                                    }}
-                                  />
-                                </div>
-                                <span className="history-day-label">{dayName}</span>
-                              </div>
-                            );
-                          })}
+                              ));
+                            })()}
+                          </div>
+                          <div className="trend-graph-area">
+                            <svg
+                              className="trend-svg"
+                              viewBox={`0 0 ${trendDays.length * 12} 120`}
+                              preserveAspectRatio="none"
+                            >
+                              {/* High temperature line */}
+                              <polyline
+                                className="trend-line trend-line-high"
+                                fill="none"
+                                stroke="var(--color-accent-red)"
+                                strokeWidth="2"
+                                points={trendDays
+                                  .map((d, i) => {
+                                    const temps = trendDays.flatMap((day) => [
+                                      convertTemp(day.tempmax || day.tempMax, unit),
+                                      convertTemp(day.tempmin || day.tempMin, unit),
+                                    ]);
+                                    const maxTemp = Math.max(...temps);
+                                    const minTemp = Math.min(...temps);
+                                    const range = maxTemp - minTemp || 20;
+                                    const high = convertTemp(d.tempmax || d.tempMax, unit);
+                                    const y = 110 - ((high - minTemp) / range) * 100;
+                                    return `${i * 12 + 6},${y}`;
+                                  })
+                                  .join(' ')}
+                              />
+                              {/* Low temperature line */}
+                              <polyline
+                                className="trend-line trend-line-low"
+                                fill="none"
+                                stroke="var(--color-accent-blue)"
+                                strokeWidth="2"
+                                points={trendDays
+                                  .map((d, i) => {
+                                    const temps = trendDays.flatMap((day) => [
+                                      convertTemp(day.tempmax || day.tempMax, unit),
+                                      convertTemp(day.tempmin || day.tempMin, unit),
+                                    ]);
+                                    const maxTemp = Math.max(...temps);
+                                    const minTemp = Math.min(...temps);
+                                    const range = maxTemp - minTemp || 20;
+                                    const low = convertTemp(d.tempmin || d.tempMin, unit);
+                                    const y = 110 - ((low - minTemp) / range) * 100;
+                                    return `${i * 12 + 6},${y}`;
+                                  })
+                                  .join(' ')}
+                              />
+                            </svg>
+                          </div>
+                        </div>
+                        <div className="trend-legend">
+                          <span className="trend-legend-item">
+                            <span
+                              className="trend-legend-color"
+                              style={{ backgroundColor: 'var(--color-accent-red)' }}
+                            />
+                            High
+                          </span>
+                          <span className="trend-legend-item">
+                            <span
+                              className="trend-legend-color"
+                              style={{ backgroundColor: 'var(--color-accent-blue)' }}
+                            />
+                            Low
+                          </span>
                         </div>
                       </div>
 
-                      {/* Daily Details List */}
-                      <div className="history-list-section">
-                        <h4 className="history-chart-title">Daily Details</h4>
-                        <div className="history-details-list">
-                          {historicalDays.map((day, i) => {
-                            const date = new Date(day.datetime || day.date);
-                            const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
-                            const dateStr = date.toLocaleDateString('en-US', {
-                              month: 'short',
-                              day: 'numeric',
-                            });
+                      {/* Precipitation Trend Graph */}
+                      <div className="trend-chart-section">
+                        <h4 className="trend-chart-title">Precipitation Trend</h4>
+                        <div className="trend-chart-container">
+                          <div className="trend-y-axis">
+                            {(() => {
+                              const precips = trendDays.map(
+                                (d) => d.precip || d.precipitation || 0
+                              );
+                              const maxPrecip = Math.max(...precips, 0.5);
+                              return [0, 1, 2, 3, 4].map((i) => (
+                                <span key={i} className="trend-y-label">
+                                  {(maxPrecip - (i * maxPrecip) / 4).toFixed(1)}&quot;
+                                </span>
+                              ));
+                            })()}
+                          </div>
+                          <div className="trend-graph-area">
+                            <svg
+                              className="trend-svg precip-svg"
+                              viewBox={`0 0 ${trendDays.length * 12} 120`}
+                              preserveAspectRatio="none"
+                            >
+                              {/* Precipitation bars */}
+                              {trendDays.map((d, i) => {
+                                const precips = trendDays.map(
+                                  (day) => day.precip || day.precipitation || 0
+                                );
+                                const maxPrecip = Math.max(...precips, 0.5);
+                                const precip = d.precip || d.precipitation || 0;
+                                const height = (precip / maxPrecip) * 100;
+                                return (
+                                  <rect
+                                    key={i}
+                                    className="trend-precip-bar"
+                                    x={i * 12 + 2}
+                                    y={110 - height}
+                                    width="8"
+                                    height={height}
+                                    fill="var(--color-accent-cyan)"
+                                    rx="1"
+                                  />
+                                );
+                              })}
+                            </svg>
+                          </div>
+                        </div>
+                        <div className="trend-x-axis">
+                          {trendDays.length > 0 && (
+                            <>
+                              <span>
+                                {new Date(
+                                  trendDays[0].datetime || trendDays[0].date
+                                ).toLocaleDateString('en-US', {
+                                  month: 'short',
+                                  day: 'numeric',
+                                })}
+                              </span>
+                              <span>
+                                {new Date(
+                                  trendDays[Math.floor(trendDays.length / 2)]?.datetime ||
+                                    trendDays[Math.floor(trendDays.length / 2)]?.date
+                                ).toLocaleDateString('en-US', {
+                                  month: 'short',
+                                  day: 'numeric',
+                                })}
+                              </span>
+                              <span>
+                                {new Date(
+                                  trendDays[trendDays.length - 1].datetime ||
+                                    trendDays[trendDays.length - 1].date
+                                ).toLocaleDateString('en-US', {
+                                  month: 'short',
+                                  day: 'numeric',
+                                })}
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      </div>
 
-                            return (
-                              <div key={i} className="history-detail-row">
-                                <div className="history-detail-date">
-                                  <span className="history-detail-day">{dayName}</span>
-                                  <span className="history-detail-datestr">{dateStr}</span>
-                                </div>
-                                <div className="history-detail-icon">
-                                  {getWeatherIcon(day.conditions, 24)}
-                                </div>
-                                <div className="history-detail-temps">
-                                  <span className="temp-high">
-                                    {convertTemp(day.tempmax || day.tempMax, unit)}°
-                                  </span>
-                                  <span className="temp-separator">/</span>
-                                  <span className="temp-low">
-                                    {convertTemp(day.tempmin || day.tempMin, unit)}°
-                                  </span>
-                                </div>
-                                <div className="history-detail-stats">
-                                  <span className="history-stat">
-                                    <Droplets size={12} />
-                                    {(day.precip || day.precipitation || 0).toFixed(2)} in
-                                  </span>
-                                  <span className="history-stat">
-                                    <Wind size={12} />
-                                    {Math.round(day.windspeed || day.windSpeed || 0)} mph
-                                  </span>
-                                </div>
-                              </div>
-                            );
-                          })}
+                      {/* Summary stats */}
+                      <div className="trend-summary">
+                        <div className="trend-stat">
+                          <span className="trend-stat-label">Avg High</span>
+                          <span className="trend-stat-value">
+                            {Math.round(
+                              trendDays.reduce(
+                                (sum, d) => sum + convertTemp(d.tempmax || d.tempMax, unit),
+                                0
+                              ) / trendDays.length
+                            )}
+                            °
+                          </span>
+                        </div>
+                        <div className="trend-stat">
+                          <span className="trend-stat-label">Avg Low</span>
+                          <span className="trend-stat-value">
+                            {Math.round(
+                              trendDays.reduce(
+                                (sum, d) => sum + convertTemp(d.tempmin || d.tempMin, unit),
+                                0
+                              ) / trendDays.length
+                            )}
+                            °
+                          </span>
+                        </div>
+                        <div className="trend-stat">
+                          <span className="trend-stat-label">Total Precip</span>
+                          <span className="trend-stat-value">
+                            {trendDays
+                              .reduce((sum, d) => sum + (d.precip || d.precipitation || 0), 0)
+                              .toFixed(2)}
+                            &quot;
+                          </span>
+                        </div>
+                        <div className="trend-stat">
+                          <span className="trend-stat-label">Rainy Days</span>
+                          <span className="trend-stat-value">
+                            {
+                              trendDays.filter((d) => (d.precip || d.precipitation || 0) > 0.01)
+                                .length
+                            }
+                          </span>
                         </div>
                       </div>
                     </>
