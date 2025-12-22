@@ -258,3 +258,25 @@ export async function testApiConnection() {
     throw handleAPIError(error, 'Testing API connection');
   }
 }
+
+/**
+ * Get air quality data for a location
+ * @param {number} lat - Latitude
+ * @param {number} lon - Longitude
+ * @returns {Promise<Object>} Air quality data with AQI, pollutants, and health recommendations
+ * @throws {AppError} User-friendly error with recovery guidance
+ */
+export async function getAirQuality(lat, lon) {
+  try {
+    debugInfo('Weather API', `Fetching air quality for: (${lat}, ${lon})`);
+
+    const params = new URLSearchParams({ lat: lat.toString(), lon: lon.toString() });
+    const endpoint = `${API_CONFIG.ENDPOINTS.AIR_QUALITY}?${params}`;
+    const response = await apiRequest(endpoint, { method: 'GET' });
+
+    debugInfo('Weather API', `Successfully fetched air quality for: (${lat}, ${lon})`);
+    return response.data;
+  } catch (error) {
+    throw handleAPIError(error, `Loading air quality data`);
+  }
+}

@@ -10,7 +10,7 @@ import {
   useHourlyForecastQuery,
 } from '../hooks/useWeatherQueries';
 import { useTemperatureUnit } from '../contexts/TemperatureUnitContext';
-import { geocodeLocation } from '../services/weatherApi';
+import { geocodeLocation, getAirQuality } from '../services/weatherApi';
 import { getCurrentLocation } from '../services/geolocationService';
 import {
   Search,
@@ -29,6 +29,10 @@ import {
   Sunrise,
   Sunset,
   Loader,
+  Wind,
+  Activity,
+  AlertTriangle,
+  Heart,
 } from 'lucide-react';
 import RadarMap from '../components/RadarMap';
 import './WeatherDashboard.css';
@@ -83,6 +87,8 @@ export default function WeatherDashboard() {
   const [activeTab, setActiveTab] = useState('forecast');
   const [locating, setLocating] = useState(false);
   const [locationError, setLocationError] = useState(null);
+  const [airQualityData, setAirQualityData] = useState(null);
+  const [airQualityLoading, setAirQualityLoading] = useState(false);
   const searchRef = useRef(null);
 
   // Fetch weather data using React Query hooks
@@ -113,6 +119,26 @@ export default function WeatherDashboard() {
       setUnitBasedOnLocation(locationData.address);
     }
   }, []); // Only run on mount
+
+  // Fetch air quality data when tab is switched or location changes
+  useEffect(() => {
+    const fetchAirQuality = async () => {
+      if (activeTab !== 'airQuality' || !locationData?.latitude || !locationData?.longitude) {
+        return;
+      }
+      setAirQualityLoading(true);
+      try {
+        const data = await getAirQuality(locationData.latitude, locationData.longitude);
+        setAirQualityData(data);
+      } catch (error) {
+        console.error('Failed to fetch air quality:', error);
+        setAirQualityData(null);
+      } finally {
+        setAirQualityLoading(false);
+      }
+    };
+    fetchAirQuality();
+  }, [activeTab, locationData?.latitude, locationData?.longitude]);
 
   // Handle "Use My Location" click
   const handleUseMyLocation = useCallback(async () => {
@@ -432,19 +458,139 @@ export default function WeatherDashboard() {
             </div>
           </div>
 
-          {/* Right Column - Large Radar Map */}
+          {/* Right Column - Radar Map or Air Quality Display */}
           <div className="col-8 card radar-card-large">
-            <div className="radar-header">
-              <h3>Radar</h3>
-              <span className="radar-live">LIVE</span>
-            </div>
-            <div className="radar-map-container-large">
-              <RadarMap
-                latitude={locationData?.latitude}
-                longitude={locationData?.longitude}
-                height="100%"
-              />
-            </div>
+            {activeTab === 'forecast' ? (
+              <>
+                <div className="radar-header">
+                  <h3>Radar</h3>
+                  <span className="radar-live">LIVE</span>
+                </div>
+                <div className="radar-map-container-large">
+                  <RadarMap
+                    latitude={locationData?.latitude}
+                    longitude={locationData?.longitude}
+                    height="100%"
+                  />
+                </div>
+              </>
+            ) : (
+              <div className="air-quality-display">
+                <div className="aqi-header">
+                  <h3>Air Quality Index</h3>
+                  <Activity size={20} />
+                </div>
+
+                {airQualityLoading && (
+                  <div className="aqi-loading">
+                    <Loader size={32} className="spin" />
+                    <p>Loading air quality data...</p>
+                  </div>
+                )}
+
+                {!airQualityLoading && !airQualityData && (
+                  <div className="aqi-error">
+                    <AlertTriangle size={48} />
+                    <p>Unable to load air quality data</p>
+                    <p className="aqi-error-hint">Please try again later</p>
+                  </div>
+                )}
+
+                {!airQualityLoading && airQualityData?.current && (
+                  <>
+                    {/* Main AQI Display */}
+                    <div
+                      className="aqi-main"
+                      style={{
+                        '--aqi-color':
+                          airQualityData.current.aqiLevel?.color || 'var(--color-text-secondary)',
+                      }}
+                    >
+                      <div className="aqi-value-container">
+                        <span className="aqi-value">
+                          {airQualityData.current.usAQI ||
+                            airQualityData.current.europeanAQI ||
+                            '--'}
+                        </span>
+                        <span className="aqi-label">US AQI</span>
+                      </div>
+                      <div className="aqi-level">
+                        <span
+                          className="aqi-level-badge"
+                          style={{ backgroundColor: airQualityData.current.aqiLevel?.color }}
+                        >
+                          {airQualityData.current.aqiLevel?.level || 'Unknown'}
+                        </span>
+                        <p className="aqi-description">
+                          {airQualityData.current.aqiLevel?.description}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Health Recommendations */}
+                    {airQualityData.current.healthRecommendation?.length > 0 && (
+                      <div className="aqi-health">
+                        <div className="aqi-health-header">
+                          <Heart size={16} />
+                          <span>Health Recommendations</span>
+                        </div>
+                        <ul className="aqi-health-list">
+                          {airQualityData.current.healthRecommendation.map((rec, i) => (
+                            <li key={i}>{rec}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* Pollutant Breakdown */}
+                    <div className="pollutants-grid">
+                      <div className="pollutant-card">
+                        <span className="pollutant-name">PM2.5</span>
+                        <span className="pollutant-value">
+                          {airQualityData.current.pm2_5?.toFixed(1) || '--'}
+                        </span>
+                        <span className="pollutant-unit">µg/m³</span>
+                      </div>
+                      <div className="pollutant-card">
+                        <span className="pollutant-name">PM10</span>
+                        <span className="pollutant-value">
+                          {airQualityData.current.pm10?.toFixed(1) || '--'}
+                        </span>
+                        <span className="pollutant-unit">µg/m³</span>
+                      </div>
+                      <div className="pollutant-card">
+                        <span className="pollutant-name">Ozone</span>
+                        <span className="pollutant-value">
+                          {airQualityData.current.ozone?.toFixed(1) || '--'}
+                        </span>
+                        <span className="pollutant-unit">µg/m³</span>
+                      </div>
+                      <div className="pollutant-card">
+                        <span className="pollutant-name">NO₂</span>
+                        <span className="pollutant-value">
+                          {airQualityData.current.nitrogenDioxide?.toFixed(1) || '--'}
+                        </span>
+                        <span className="pollutant-unit">µg/m³</span>
+                      </div>
+                      <div className="pollutant-card">
+                        <span className="pollutant-name">SO₂</span>
+                        <span className="pollutant-value">
+                          {airQualityData.current.sulphurDioxide?.toFixed(1) || '--'}
+                        </span>
+                        <span className="pollutant-unit">µg/m³</span>
+                      </div>
+                      <div className="pollutant-card">
+                        <span className="pollutant-name">CO</span>
+                        <span className="pollutant-value">
+                          {airQualityData.current.carbonMonoxide?.toFixed(0) || '--'}
+                        </span>
+                        <span className="pollutant-unit">µg/m³</span>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Section Header - Today's Overview */}
