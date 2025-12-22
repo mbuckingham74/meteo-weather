@@ -527,13 +527,25 @@ export default function WeatherDashboard() {
                   <h4 className="tab-content-title">Today&apos;s Forecast</h4>
                   <div className="today-hours-grid">
                     {hourlyHours.slice(0, 8).map((hour, i) => {
-                      const hourTime = hour.datetime || hour.time;
-                      const displayTime = hourTime
-                        ? new Date(`2000-01-01T${hourTime}`).toLocaleTimeString('en-US', {
+                      // Parse time from various formats:
+                      // - Full ISO: "2025-12-22T14:00:00"
+                      // - Time only: "14:00:00" or "14:00"
+                      const hourTime = hour.time || hour.datetime;
+                      let displayTime = `${i}:00`;
+                      if (hourTime) {
+                        // If it contains 'T', it's full datetime - parse directly
+                        // Otherwise prepend a date to make it valid
+                        const dateStr = hourTime.includes('T')
+                          ? hourTime
+                          : `2000-01-01T${hourTime}`;
+                        const parsed = new Date(dateStr);
+                        if (!isNaN(parsed.getTime())) {
+                          displayTime = parsed.toLocaleTimeString('en-US', {
                             hour: 'numeric',
                             hour12: true,
-                          })
-                        : `${i}:00`;
+                          });
+                        }
+                      }
                       return (
                         <div key={i} className="hour-card">
                           <span className="hour-time">{displayTime}</span>
@@ -593,13 +605,23 @@ export default function WeatherDashboard() {
                   <h4 className="tab-content-title">48-Hour Forecast</h4>
                   <div className="hourly-scroll">
                     {hourlyHours.map((hour, i) => {
-                      const hourTime = hour.datetime || hour.time;
-                      const displayTime = hourTime
-                        ? new Date(`2000-01-01T${hourTime}`).toLocaleTimeString('en-US', {
+                      // Parse time from various formats:
+                      // - Full ISO: "2025-12-22T14:00:00"
+                      // - Time only: "14:00:00" or "14:00"
+                      const hourTime = hour.time || hour.datetime;
+                      let displayTime = `${i}:00`;
+                      if (hourTime) {
+                        const dateStr = hourTime.includes('T')
+                          ? hourTime
+                          : `2000-01-01T${hourTime}`;
+                        const parsed = new Date(dateStr);
+                        if (!isNaN(parsed.getTime())) {
+                          displayTime = parsed.toLocaleTimeString('en-US', {
                             hour: 'numeric',
                             hour12: true,
-                          })
-                        : `${i}:00`;
+                          });
+                        }
+                      }
                       const dayLabel = i < 24 ? (i === 0 ? 'Now' : '') : 'Tomorrow';
                       return (
                         <div key={i} className={`hourly-row ${i === 0 ? 'now' : ''}`}>
