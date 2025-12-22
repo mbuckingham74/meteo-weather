@@ -78,6 +78,40 @@ const formatDay = (datetime, index) => {
   return date.toLocaleDateString('en-US', { weekday: 'short' });
 };
 
+/**
+ * Get color for pollutant level based on EPA AQI breakpoints
+ * Returns CSS variable name for consistent theming
+ * Breakpoints based on EPA standards (updated 2024)
+ * Note: Open-Meteo returns µg/m³ for all pollutants
+ */
+const getPollutantColor = (pollutant, value) => {
+  if (value == null || isNaN(value)) return 'var(--color-text-tertiary)';
+
+  // EPA AQI breakpoints converted to µg/m³ where needed
+  const thresholds = {
+    // PM2.5: Good <9, Moderate 9-35.4, Unhealthy Sensitive 35.5-55.4, Unhealthy 55.5+
+    pm2_5: { good: 9, moderate: 35.4, unhealthySensitive: 55.4, unhealthy: 125.4 },
+    // PM10: Good <54, Moderate 55-154, Unhealthy Sensitive 155-254, Unhealthy 255+
+    pm10: { good: 54, moderate: 154, unhealthySensitive: 254, unhealthy: 354 },
+    // Ozone: Good <100, Moderate 100-160, Unhealthy Sensitive 160-200, Unhealthy 200+ (µg/m³)
+    ozone: { good: 100, moderate: 160, unhealthySensitive: 200, unhealthy: 300 },
+    // NO2: Good <40, Moderate 40-100, Unhealthy Sensitive 100-200, Unhealthy 200+ (µg/m³)
+    nitrogenDioxide: { good: 40, moderate: 100, unhealthySensitive: 200, unhealthy: 400 },
+    // SO2: Good <40, Moderate 40-80, Unhealthy Sensitive 80-150, Unhealthy 150+ (µg/m³)
+    sulphurDioxide: { good: 40, moderate: 80, unhealthySensitive: 150, unhealthy: 250 },
+    // CO: Good <4400, Moderate 4400-9400, Unhealthy Sensitive 9400-12400, Unhealthy 12400+ (µg/m³)
+    carbonMonoxide: { good: 4400, moderate: 9400, unhealthySensitive: 12400, unhealthy: 15400 },
+  };
+
+  const t = thresholds[pollutant];
+  if (!t) return 'var(--color-text-primary)';
+
+  if (value <= t.good) return 'var(--color-accent-green)';
+  if (value <= t.moderate) return 'var(--color-accent-yellow)';
+  if (value <= t.unhealthySensitive) return 'var(--color-accent-orange)';
+  return 'var(--color-accent-red)';
+};
+
 export default function WeatherDashboard() {
   const { locationData, selectLocation } = useLocation();
   const { unit, setUnitBasedOnLocation } = useTemperatureUnit();
@@ -544,42 +578,90 @@ export default function WeatherDashboard() {
 
                     {/* Pollutant Breakdown */}
                     <div className="pollutants-grid">
-                      <div className="pollutant-card">
+                      <div
+                        className="pollutant-card"
+                        style={{
+                          '--pollutant-color': getPollutantColor(
+                            'pm2_5',
+                            airQualityData.current.pm2_5
+                          ),
+                        }}
+                      >
                         <span className="pollutant-name">PM2.5</span>
                         <span className="pollutant-value">
                           {airQualityData.current.pm2_5?.toFixed(1) || '--'}
                         </span>
                         <span className="pollutant-unit">µg/m³</span>
                       </div>
-                      <div className="pollutant-card">
+                      <div
+                        className="pollutant-card"
+                        style={{
+                          '--pollutant-color': getPollutantColor(
+                            'pm10',
+                            airQualityData.current.pm10
+                          ),
+                        }}
+                      >
                         <span className="pollutant-name">PM10</span>
                         <span className="pollutant-value">
                           {airQualityData.current.pm10?.toFixed(1) || '--'}
                         </span>
                         <span className="pollutant-unit">µg/m³</span>
                       </div>
-                      <div className="pollutant-card">
+                      <div
+                        className="pollutant-card"
+                        style={{
+                          '--pollutant-color': getPollutantColor(
+                            'ozone',
+                            airQualityData.current.ozone
+                          ),
+                        }}
+                      >
                         <span className="pollutant-name">Ozone</span>
                         <span className="pollutant-value">
                           {airQualityData.current.ozone?.toFixed(1) || '--'}
                         </span>
                         <span className="pollutant-unit">µg/m³</span>
                       </div>
-                      <div className="pollutant-card">
+                      <div
+                        className="pollutant-card"
+                        style={{
+                          '--pollutant-color': getPollutantColor(
+                            'nitrogenDioxide',
+                            airQualityData.current.nitrogenDioxide
+                          ),
+                        }}
+                      >
                         <span className="pollutant-name">NO₂</span>
                         <span className="pollutant-value">
                           {airQualityData.current.nitrogenDioxide?.toFixed(1) || '--'}
                         </span>
                         <span className="pollutant-unit">µg/m³</span>
                       </div>
-                      <div className="pollutant-card">
+                      <div
+                        className="pollutant-card"
+                        style={{
+                          '--pollutant-color': getPollutantColor(
+                            'sulphurDioxide',
+                            airQualityData.current.sulphurDioxide
+                          ),
+                        }}
+                      >
                         <span className="pollutant-name">SO₂</span>
                         <span className="pollutant-value">
                           {airQualityData.current.sulphurDioxide?.toFixed(1) || '--'}
                         </span>
                         <span className="pollutant-unit">µg/m³</span>
                       </div>
-                      <div className="pollutant-card">
+                      <div
+                        className="pollutant-card"
+                        style={{
+                          '--pollutant-color': getPollutantColor(
+                            'carbonMonoxide',
+                            airQualityData.current.carbonMonoxide
+                          ),
+                        }}
+                      >
                         <span className="pollutant-name">CO</span>
                         <span className="pollutant-value">
                           {airQualityData.current.carbonMonoxide?.toFixed(0) || '--'}

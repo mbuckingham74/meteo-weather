@@ -1168,6 +1168,8 @@
   background-color: var(--color-surface-200);
   border-radius: var(--radius-lg);
   text-align: center;
+  border-left: 4px solid var(--pollutant-color, var(--color-surface-300));
+  transition: border-color var(--transition-fast);
 }
 
 .pollutant-name {
@@ -1183,7 +1185,7 @@
   font-family: var(--font-mono);
   font-size: var(--text-2xl);
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: var(--pollutant-color, var(--color-text-primary));
   line-height: 1;
 }
 
