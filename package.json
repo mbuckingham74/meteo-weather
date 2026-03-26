@@ -63,6 +63,6 @@
     "stylelint-config-standard": "^39.0.1"
   },
   "dependencies": {
-    "react-router-dom": "^7.9.5"
+    "react-router-dom": "^7.13.0"
   }
 }
