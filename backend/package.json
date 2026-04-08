@@ -23,7 +23,7 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.82.0",
     "@google/generative-ai": "^0.24.1",
-    "@mistralai/mistralai": "^1.10.0",
+    "@mistralai/mistralai": "^2.1.2",
     "axios": "^1.7.7",
     "bcryptjs": "^3.0.2",
     "cohere-ai": "^7.19.0",
