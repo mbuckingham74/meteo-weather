@@ -148,7 +148,7 @@ export function formatPressure(pressure) {
  * @returns {string} Weather emoji
  */
 export function getWeatherEmoji(conditions) {
-  if (!conditions) return '☀️';
+  if (!conditions) return '☁️';
 
   const c = conditions.toLowerCase();
 
@@ -162,7 +162,7 @@ export function getWeatherEmoji(conditions) {
   if (c.includes('cloud') || c.includes('overcast')) return '☁️';
   if (c.includes('clear') || c.includes('sunny') || c.includes('fair')) return '☀️';
 
-  return '☀️';
+  return '☁️';
 }
 
 /**

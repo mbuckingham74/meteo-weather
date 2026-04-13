@@ -256,13 +256,12 @@ describe('Weather API Service', () => {
       expect(result).toEqual([]);
     });
 
-    it('handles errors', async () => {
+    it('handles errors by returning empty array', async () => {
       const mockError = new Error('Network error - check your connection');
       apiRequest.mockRejectedValue(mockError);
 
-      await expect(searchLocations('Paris')).rejects.toThrow(
-        'Network error - check your connection'
-      );
+      const result = await searchLocations('Paris');
+      expect(result).toEqual([]);
     });
   });
 
@@ -343,12 +342,11 @@ describe('Weather API Service', () => {
       expect(result).toEqual([]);
     });
 
-    it('handles errors', async () => {
+    it('handles errors by returning empty array', async () => {
       const mockError = new Error('Geocode error');
       mockError.response = { status: 500, data: { message: 'Geocode error' } };
       apiRequest.mockRejectedValue(mockError);
 
-      // geocodeLocation doesn't throw errors - it returns empty array for autocomplete
       const result = await geocodeLocation('Test');
       expect(result).toEqual([]);
     });

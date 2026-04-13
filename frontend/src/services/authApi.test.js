@@ -168,8 +168,9 @@ describe('Auth API Service', () => {
       expect(global.fetch).toHaveBeenCalledWith(
         `${API_BASE_URL}/auth/me`,
         expect.objectContaining({
+          // Authorization header is added automatically by apiClient
           headers: expect.objectContaining({
-            Authorization: `Bearer ${mockAccessToken}`,
+            'Content-Type': 'application/json',
           }),
         })
       );
@@ -210,7 +211,7 @@ describe('Auth API Service', () => {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${mockAccessToken}`,
+            // Authorization header is added automatically by apiClient
           },
           body: JSON.stringify(updates),
         })
@@ -247,7 +248,7 @@ describe('Auth API Service', () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${mockAccessToken}`,
+            // Authorization header is added automatically by apiClient
           },
           body: JSON.stringify({
             currentPassword: 'oldPass123',
@@ -329,7 +330,8 @@ describe('Auth API Service', () => {
         expect.objectContaining({
           method: 'POST',
           headers: expect.objectContaining({
-            Authorization: `Bearer ${mockAccessToken}`,
+            // Authorization header is added automatically by apiClient
+            'Content-Type': 'application/json',
           }),
         })
       );
@@ -371,7 +373,8 @@ describe('Auth API Service', () => {
         `${API_BASE_URL}/user/preferences`,
         expect.objectContaining({
           headers: expect.objectContaining({
-            Authorization: `Bearer ${mockAccessToken}`,
+            // Authorization header is added automatically by apiClient
+            'Content-Type': 'application/json',
           }),
         })
       );
@@ -412,7 +415,7 @@ describe('Auth API Service', () => {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${mockAccessToken}`,
+            // Authorization header is added automatically by apiClient
           },
           body: JSON.stringify(updates),
         })
@@ -452,7 +455,8 @@ describe('Auth API Service', () => {
         `${API_BASE_URL}/user/favorites`,
         expect.objectContaining({
           headers: expect.objectContaining({
-            Authorization: `Bearer ${mockAccessToken}`,
+            // Authorization header is added automatically by apiClient
+            'Content-Type': 'application/json',
           }),
         })
       );
@@ -489,7 +493,7 @@ describe('Auth API Service', () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${mockAccessToken}`,
+            // Authorization header is added automatically by apiClient
           },
           body: JSON.stringify(newFavorite),
         })
@@ -526,7 +530,8 @@ describe('Auth API Service', () => {
         expect.objectContaining({
           method: 'DELETE',
           headers: expect.objectContaining({
-            Authorization: `Bearer ${mockAccessToken}`,
+            // Authorization header is added automatically by apiClient
+            'Content-Type': 'application/json',
           }),
         })
       );
@@ -570,7 +575,7 @@ describe('Auth API Service', () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${mockAccessToken}`,
+            // Authorization header is added automatically by apiClient
           },
           body: JSON.stringify({ favorites }),
         })

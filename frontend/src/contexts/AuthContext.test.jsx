@@ -3,14 +3,12 @@
  * Testing authentication state management and persistence
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { render, screen, waitFor, act, cleanup } from '@testing-library/react';
-
-// Auto-mock auth API module
-vi.mock('../services/authApi');
-import * as authApi from '../services/authApi';
-const mockAuthApi = vi.mocked(authApi);
+import { render, screen, waitFor, act } from '@testing-library/react';
 import { AuthProvider, useAuth } from './AuthContext';
+import * as authApi from '../services/authApi';
+
+// Mock authApi
+vi.mock('../services/authApi');
 
 // Test component
 function TestComponent() {
@@ -48,40 +46,57 @@ function TestComponent() {
 }
 
 describe('AuthContext', () => {
-  const originalLocalStorage = globalThis.localStorage;
-  let mockLocalStorage;
+  let getItemSpy,
+    setItemSpy,
+    removeItemSpy,
+    sessionStorageSetItemSpy,
+    sessionStorageGetItemSpy,
+    sessionStorageRemoveItemSpy,
+    consoleErrorSpy;
 
   beforeEach(() => {
-    vi.clearAllMocks();
-    mockLocalStorage = {
-      getItem: vi.fn().mockReturnValue(null),
-      setItem: vi.fn(),
-      removeItem: vi.fn(),
-      clear: vi.fn(),
-    };
-    Object.defineProperty(globalThis, 'localStorage', {
-      value: mockLocalStorage,
-      configurable: true,
-    });
+    // Mock localStorage
+    getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockReturnValue(null);
+    setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {});
+    removeItemSpy = vi.spyOn(Storage.prototype, 'removeItem').mockImplementation(() => {});
 
-    // Mock console.error
-    vi.spyOn(console, 'error').mockImplementation(() => {});
+    // Mock sessionStorage
+    sessionStorageSetItemSpy = vi
+      .spyOn(Storage.prototype, 'setItem')
+      .mockImplementation(function (key, value) {
+        if (this === sessionStorage) {
+          sessionStorageMock[key] = value;
+        }
+      });
+    sessionStorageGetItemSpy = vi
+      .spyOn(Storage.prototype, 'getItem')
+      .mockImplementation(function (key) {
+        if (this === sessionStorage) {
+          return sessionStorageMock[key] || null;
+        }
+        return null;
+      });
+    sessionStorageRemoveItemSpy = vi
+      .spyOn(Storage.prototype, 'removeItem')
+      .mockImplementation(function (key) {
+        if (this === sessionStorage) {
+          delete sessionStorageMock[key];
+        }
+      });
 
-    // Reset and stub auth API mocks between tests
-    Object.values(mockAuthApi).forEach((fn) => fn.mockReset && fn.mockReset());
-    mockAuthApi.getCurrentUser.mockResolvedValue(null);
-    mockAuthApi.refreshAccessToken.mockResolvedValue({});
-    mockAuthApi.registerUser.mockResolvedValue({});
-    mockAuthApi.loginUser.mockResolvedValue({});
-    mockAuthApi.logoutUser.mockResolvedValue({});
+    // Mock console.error to avoid noisy output
+    consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
   });
 
   afterEach(() => {
-    Object.defineProperty(globalThis, 'localStorage', {
-      value: originalLocalStorage,
-      configurable: true,
-    });
-    cleanup();
+    getItemSpy.mockRestore();
+    setItemSpy.mockRestore();
+    removeItemSpy.mockRestore();
+    sessionStorageSetItemSpy.mockRestore();
+    sessionStorageGetItemSpy.mockRestore();
+    sessionStorageRemoveItemSpy.mockRestore();
+    consoleErrorSpy.mockRestore();
+    vi.restoreAllMocks();
   });
 
   describe('Provider', () => {
@@ -104,7 +119,7 @@ describe('AuthContext', () => {
     it('loads tokens from localStorage and fetches user', async () => {
       const mockUser = { id: 1, email: 'test@example.com', name: 'Test User' };
 
-      mockLocalStorage.getItem.mockImplementation((key) => {
+      getItemSpy.mockImplementation((key) => {
         if (key === 'accessToken') return 'stored-access-token';
         if (key === 'refreshToken') return 'stored-refresh-token';
         return null;
@@ -130,7 +145,7 @@ describe('AuthContext', () => {
     it('refreshes expired token and fetches user', async () => {
       const mockUser = { id: 1, email: 'test@example.com' };
 
-      mockLocalStorage.getItem.mockImplementation((key) => {
+      getItemSpy.mockImplementation((key) => {
         if (key === 'accessToken') return 'expired-token';
         if (key === 'refreshToken') return 'valid-refresh-token';
         return null;
@@ -159,12 +174,12 @@ describe('AuthContext', () => {
       });
 
       expect(authApi.refreshAccessToken).toHaveBeenCalledWith('valid-refresh-token');
-      expect(mockLocalStorage.setItem).toHaveBeenCalledWith('accessToken', 'new-access-token');
+      expect(setItemSpy).toHaveBeenCalledWith('accessToken', 'new-access-token');
       expect(screen.getByTestId('is-authenticated')).toHaveTextContent('yes');
     });
 
     it('clears tokens when refresh fails', async () => {
-      mockLocalStorage.getItem.mockImplementation((key) => {
+      getItemSpy.mockImplementation((key) => {
         if (key === 'accessToken') return 'expired-token';
         if (key === 'refreshToken') return 'invalid-refresh-token';
         return null;
@@ -183,8 +198,8 @@ describe('AuthContext', () => {
         expect(screen.getByTestId('loading')).toHaveTextContent('ready');
       });
 
-      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('accessToken');
-      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('refreshToken');
+      expect(removeItemSpy).toHaveBeenCalledWith('accessToken');
+      expect(removeItemSpy).toHaveBeenCalledWith('refreshToken');
       expect(screen.getByTestId('is-authenticated')).toHaveTextContent('no');
     });
   });
@@ -224,8 +239,8 @@ describe('AuthContext', () => {
         'Test User'
       );
 
-      expect(mockLocalStorage.setItem).toHaveBeenCalledWith('accessToken', 'new-access-token');
-      expect(mockLocalStorage.setItem).toHaveBeenCalledWith('refreshToken', 'new-refresh-token');
+      expect(setItemSpy).toHaveBeenCalledWith('accessToken', 'new-access-token');
+      expect(setItemSpy).toHaveBeenCalledWith('refreshToken', 'new-refresh-token');
       expect(screen.getByTestId('user')).toHaveTextContent(JSON.stringify(mockUser));
     });
   });
@@ -260,7 +275,7 @@ describe('AuthContext', () => {
       });
 
       expect(authApi.loginUser).toHaveBeenCalledWith('test@example.com', 'password123');
-      expect(mockLocalStorage.setItem).toHaveBeenCalledWith('accessToken', 'new-access-token');
+      expect(setItemSpy).toHaveBeenCalledWith('accessToken', 'new-access-token');
       expect(screen.getByTestId('user')).toHaveTextContent(JSON.stringify(mockUser));
     });
   });
@@ -269,7 +284,7 @@ describe('AuthContext', () => {
     it('logs out user successfully', async () => {
       const mockUser = { id: 1, email: 'test@example.com' };
 
-      mockLocalStorage.getItem.mockImplementation((key) => {
+      getItemSpy.mockImplementation((key) => {
         if (key === 'accessToken') return 'access-token';
         if (key === 'refreshToken') return 'refresh-token';
         return null;
@@ -297,14 +312,14 @@ describe('AuthContext', () => {
       });
 
       expect(authApi.logoutUser).toHaveBeenCalledWith('access-token');
-      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('accessToken');
-      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('refreshToken');
+      expect(removeItemSpy).toHaveBeenCalledWith('accessToken');
+      expect(removeItemSpy).toHaveBeenCalledWith('refreshToken');
     });
 
     it('handles logout errors gracefully', async () => {
       const mockUser = { id: 1, email: 'test@example.com' };
 
-      mockLocalStorage.getItem.mockImplementation((key) => {
+      getItemSpy.mockImplementation((key) => {
         if (key === 'accessToken') return 'access-token';
         return null;
       });
@@ -332,7 +347,7 @@ describe('AuthContext', () => {
 
       expect(console.error).toHaveBeenCalledWith('Logout error:', expect.any(Error));
       // Should still clear state even if API call fails
-      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('accessToken');
+      expect(removeItemSpy).toHaveBeenCalledWith('accessToken');
     });
   });
 
@@ -340,7 +355,7 @@ describe('AuthContext', () => {
     it('updates user data', async () => {
       const mockUser = { id: 1, email: 'test@example.com' };
 
-      mockLocalStorage.getItem.mockImplementation((key) => {
+      getItemSpy.mockImplementation((key) => {
         if (key === 'accessToken') return 'access-token';
         return null;
       });
@@ -380,7 +395,7 @@ describe('AuthContext', () => {
         }
       };
 
-      const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
       render(<TestWithoutProvider />);
 
@@ -392,7 +407,7 @@ describe('AuthContext', () => {
     });
 
     it('handles auth initialization errors gracefully', async () => {
-      mockLocalStorage.getItem.mockImplementation(() => {
+      getItemSpy.mockImplementation(() => {
         throw new Error('localStorage unavailable');
       });
 
